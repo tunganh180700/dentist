@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const ForgotPassword = () => {
     return (
         <>
-        Forgot
+        Forgot haha
         </>
     )
 }
