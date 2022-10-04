@@ -18,19 +18,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import HeaderAdmin from '../HeaderComponent/HeaderAdmin';
+import Sidebar from '../SidebarComponent/Sidebar'
 
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 const drawerWidth = 240;
 
@@ -126,7 +115,7 @@ function DashboardContent({ title, component }) {
                     </Toolbar>
                     <Divider />
                     <List component="nav">
-                        <Divider sx={{ my: 1 }} />
+                        <Sidebar />
                     </List>
                 </Drawer>
                 <Box
@@ -143,10 +132,9 @@ function DashboardContent({ title, component }) {
                 >
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                        <Grid container spacing={3}>
+                        <Grid container spacing={3} textAlign="center" display={"block"}>
                             {component}
                         </Grid>
-                        <Copyright sx={{ pt: 4 }} />
                     </Container>
                 </Box>
             </Box>
