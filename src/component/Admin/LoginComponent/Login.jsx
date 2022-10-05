@@ -1,7 +1,8 @@
 import { Grid, Typography, Box, TextField, Button, Link, Avatar } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import React, { useState } from 'react';
-import { findByLabelText } from '@testing-library/react';
+import { useFormik } from "formik";
+import ValidatedLoginForm from './Validation/Validate';
 
 const LoginComponent = () => {
     const paperStyle = {
@@ -11,6 +12,14 @@ const LoginComponent = () => {
         justifyContent: 'center',
         alignItems: 'center',
     }
+
+    const formik = useFormik({
+        initialValues: {
+            username: "",
+            password: "",
+        },
+        validation: ValidatedLoginForm,
+    })
 
     return (
         <Grid container style={paperStyle}>
@@ -44,6 +53,7 @@ const LoginComponent = () => {
                     id="password"
                     label="Mật khẩu"
                     name="password"
+                    type="password"
                     autoComplete="password"
                     autoFocus
                 />
