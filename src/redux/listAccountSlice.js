@@ -5,6 +5,8 @@ import { listUserAPI } from "../config/baseAPI"
 const initState = {
     listAccount: [],
     status: false,
+    number: 0,
+    index: 0
 }
 
 const listAccountSlice = createSlice({
@@ -14,6 +16,14 @@ const listAccountSlice = createSlice({
         setListAccount: (state, action) => {
             state.listAccount = action.payload
         },
+        setPaginationListAccount: (state, action) => {
+            state.listAccount = []
+            state.number = 0
+            state.index = 0
+        },
+        setIndexPagination: (state, action) => {
+            state.index = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -22,7 +32,8 @@ const listAccountSlice = createSlice({
             })
             .addCase(fetchAllAccount.fulfilled, (state, action) => {
                 state.listAccount = action.payload.content;
-                state.status = false
+                state.status = false;
+                state.number = action.payload.content.length
             })
     }
 })
@@ -31,21 +42,13 @@ export const fetchAllAccount = createAsyncThunk('listAccount/fetchAllAccount', a
     try {
         const res = await axios.get(`http://localhost:8080/api/users/get_list_users`, {
             params: paramsSearch,
-            headers: {
-                'Access-Control-Allow-Origin': 'http://localhost:8080/api/users/get_list_users',
-                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-                'Access-Control-Allow-Headers': 'append,delete,entries,foreach,get,has,keys,set,values,Authorization',
-            }
         })
         console.log(res)
-        return res.data.data
+        return res.data
     } catch (error) {
         console.log(error)
     }
 })
 
-export const { setListAccount } = listAccountSlice.actions;
+export const { setListAccount, setPaginationListAccount, setIndexPagination } = listAccountSlice.actions;
 export default listAccountSlice.reducer;
-// header: {
-//     "Access-Control-Allow-Origin": "http://localhost:8080"
-// }
