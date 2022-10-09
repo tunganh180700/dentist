@@ -21,7 +21,7 @@ const AccountManagementContent = () => {
             size: 10,
             page: 0
         }))
-    }, []
+    }, [listAccount]
     )
 
     return (
@@ -47,15 +47,17 @@ const AccountManagementContent = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                    </TableRow>
+                    {listAccount.map((item) =>
+                        <TableRow key={item.userId}>
+                            <TableCell></TableCell>
+                            <TableCell>{item.fullName}</TableCell>
+                            <TableCell>{item.username}</TableCell>
+                            <TableCell>{item.phone}</TableCell>
+                            <TableCell>{item.birthdate}</TableCell>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
             {/* <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
