@@ -5,34 +5,32 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Pagination, Typography } from '@mui/material';
+import { Pagination, Typography, IconButton } from '@mui/material';
 import { listUserAPI } from '../../../config/baseAPI';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllAccount, setIndexPagination, setPaginationListAccount } from '../../../redux/listAccountSlice';
+import { fetchAllAccount } from '../../../redux/listAccountSlice';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { Modal } from 'antd';
 
 const AccountManagementContent = () => {
 
     const listAccount = useSelector(state => state.listAccount.listAccount)
     const dispatch = useDispatch()
-    const number = useSelector(state => parseInt(state.listAccount.number))
-    const index = useSelector(state => parseInt(state.listAccount.index))
-    const [currentPage, setCurrentPage] = useState()
-    const handleChangePage = (accountNumber) => {
-        dispatch(setIndexPagination(accountNumber - 1))
-    }
+    const pageNumber = useSelector(state => state.listAccount.pageNumber)
+    const pageSize = useSelector(state => state.listAccount.pageSize)
+    const totalElements = useSelector(state => state.listAccount.totalElements)
+    const totalPages = useSelector(state => state.listAccount.totalPage)
+    const [currentPage, setCurrentPage] = useState(0);
 
-    console.log(index)
+    console.log(totalPages)
     useEffect(() => {
         dispatch(fetchAllAccount({
-            size: 10,
-            page: 0
-        }))
-    }, []
-    )
-
-    useEffect(() => {
-        setCurrentPage({ ...listAccount[index] })
-    }, [index, listAccount])
+            size: pageSize,
+            page: currentPage
+        },
+        ));
+    }, [currentPage])
 
     return (
         <>
@@ -54,29 +52,40 @@ const AccountManagementContent = () => {
                         <TableCell>Ngày sinh</TableCell>
                         <TableCell>Quyền hạn</TableCell>
                         <TableCell></TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {listAccount.map((item) =>
+                    {listAccount.map((item, index) =>
                         <TableRow key={item.userId}>
-                            <TableCell></TableCell>
+                            <TableCell>{index + 1}</TableCell>
                             <TableCell>{item.fullName}</TableCell>
                             <TableCell>{item.userName}</TableCell>
                             <TableCell>{item.phone}</TableCell>
                             <TableCell>{item.birthdate}</TableCell>
                             <TableCell></TableCell>
-                            <TableCell></TableCell>
+                            <TableCell>
+                                <IconButton aria-label="edit">
+                                    <EditIcon />
+                                </IconButton>
+                            </TableCell>
+                            <TableCell>
+                                <IconButton aria-label="delete">
+                                    <DeleteIcon />
+                                </IconButton>
+                            </TableCell>
                         </TableRow>
                     )}
                 </TableBody>
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Pagination
-                    count={number}
+                    count={totalPages}
                     defaultPage={1}
-                    onChange={(event, pageNumber) => {
-                        handleChangePage(pageNumber)
-                    }} />
+                    onChange={(e, pageNumber) => {
+                        setCurrentPage(pageNumber - 1)
+                    }}
+                />
             </div>
             {/* <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
                     See more orders

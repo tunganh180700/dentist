@@ -4,9 +4,13 @@ import { listUserAPI } from "../config/baseAPI"
 
 const initState = {
     listAccount: [],
+    pagination: [],
     status: false,
-    number: 0,
-    index: 0
+    index: 0,
+    pageSize: 3,
+    pageNumber: 0,
+    totalElements: 0,
+    totalPage: 0
 }
 
 const listAccountSlice = createSlice({
@@ -16,14 +20,6 @@ const listAccountSlice = createSlice({
         setListAccount: (state, action) => {
             state.listAccount = action.payload
         },
-        setPaginationListAccount: (state, action) => {
-            state.listAccount = []
-            state.number = 0
-            state.index = 0
-        },
-        setIndexPagination: (state, action) => {
-            state.index = action.payload
-        }
     },
     extraReducers: (builder) => {
         builder
@@ -33,14 +29,16 @@ const listAccountSlice = createSlice({
             .addCase(fetchAllAccount.fulfilled, (state, action) => {
                 state.listAccount = action.payload.content;
                 state.status = false;
-                state.number = action.payload.content.length
+                state.pageNumber = action.payload.pageNumber;
+                state.totalElements = action.payload.totalElements;
+                state.totalPage = action.payload.totalPages
             })
     }
 })
 
 export const fetchAllAccount = createAsyncThunk('listAccount/fetchAllAccount', async (paramsSearch) => {
     try {
-        const res = await axios.get(`http://localhost:8080/api/users/get_list_users`, {
+        const res = await axios.get(listUserAPI, {
             params: paramsSearch,
         })
         console.log(res)
@@ -50,5 +48,5 @@ export const fetchAllAccount = createAsyncThunk('listAccount/fetchAllAccount', a
     }
 })
 
-export const { setListAccount, setPaginationListAccount, setIndexPagination } = listAccountSlice.actions;
+export const { setListAccount } = listAccountSlice.actions;
 export default listAccountSlice.reducer;
