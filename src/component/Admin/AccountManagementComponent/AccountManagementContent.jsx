@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Link from '@mui/material/Link';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -22,8 +21,10 @@ const AccountManagementContent = () => {
     const totalElements = useSelector(state => state.listAccount.totalElements)
     const totalPages = useSelector(state => state.listAccount.totalPage)
     const [currentPage, setCurrentPage] = useState(0);
+    const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
 
-    console.log(totalPages)
+
+    console.log(modalUpdateOpen)
     useEffect(() => {
         dispatch(fetchAllAccount({
             size: pageSize,
@@ -65,7 +66,7 @@ const AccountManagementContent = () => {
                             <TableCell>{item.birthdate}</TableCell>
                             <TableCell></TableCell>
                             <TableCell>
-                                <IconButton aria-label="edit">
+                                <IconButton aria-label="edit" onClick={() => setModalUpdateOpen(true)}>
                                     <EditIcon />
                                 </IconButton>
                             </TableCell>
@@ -87,9 +88,17 @@ const AccountManagementContent = () => {
                     }}
                 />
             </div>
-            {/* <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
-                    See more orders
-                </Link> */}
+            <Modal
+                title="20px to Top"
+                style={{ top: 20 }}
+                open={modalUpdateOpen}
+                onOk={() => setModalUpdateOpen(false)}
+                onCancel={() => setModalUpdateOpen(false)}
+            >
+                <p>some contents...</p>
+                <p>some contents...</p>
+                <p>some contents...</p>
+            </Modal>
         </>
     )
 }
