@@ -2,9 +2,21 @@ import { Grid, Typography, Box, TextField, Button, Link, Avatar } from '@mui/mat
 import LoginIcon from '@mui/icons-material/Login';
 import React, { useState } from 'react';
 import { useFormik } from "formik";
-import ValidatedLoginForm from './Validation/Validate';
+// import ValidatedLoginForm from './Validation/Validate';
+import * as yup from "yup";
+
+const ValidatedLoginForm = yup.object({
+    username: yup
+        .string("Enter username")
+        .required("Username is required"),
+    password: yup
+        .string("Enter password")
+        .min(6, "Password should be of minimum 6 characters length")
+        .required("Password is required"),
+});
 
 const LoginComponent = () => {
+
     const paperStyle = {
         height: '100vh',
         width: '100%',
@@ -19,7 +31,15 @@ const LoginComponent = () => {
             password: "",
         },
         validation: ValidatedLoginForm,
+        onSubmit: (values) => {
+            console.log(formik.errors)
+            console.log(values)
+        }
     })
+
+    const handleChange = (e) => {
+        formik.handleChange(e)
+    }
 
     return (
         <Grid container style={paperStyle}>
@@ -44,7 +64,9 @@ const LoginComponent = () => {
                     name="username"
                     autoComplete="username"
                     autoFocus
+                    onChange={handleChange}
                 />
+                {formik.errors.username && <Typography>{formik.errors.username}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -55,12 +77,16 @@ const LoginComponent = () => {
                     type="password"
                     autoComplete="password"
                     autoFocus
+                    onChange={handleChange}
+                    error={formik.touched.password && Boolean(formik.errors.password)}
+                    helperText={formik.touched.password && formik.errors.password}
                 />
                 <Button
                     type="submit"
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
+                    onClick={formik.handleSubmit}
                 >
                     Đăng nhập
                 </Button>
