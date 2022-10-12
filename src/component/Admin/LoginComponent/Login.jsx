@@ -25,8 +25,7 @@ const LoginComponent = () => {
         <Grid container style={paperStyle}>
             <Box
                 sx={{
-                    width: 300,
-                    height: 350,
+                    width: 500,
                     padding: 10,
                     borderRadius: 5,
                     boxShadow: "0px 6px 6px -3px rgb(0 0 0 / 20%), 0px 10px 14px 1px rgb(0 0 0 / 14%), 0px 4px 18px 3px rgb(0 0 0 / 12%)",
