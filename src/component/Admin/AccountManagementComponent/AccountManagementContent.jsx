@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import 'antd/dist/antd.css';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -10,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllAccount } from '../../../redux/listAccountSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { Modal } from 'antd';
+import ModalUpdateAccount from '../../ModalComponent/ModalUpdateAccount';
 
 const AccountManagementContent = () => {
 
@@ -21,6 +22,7 @@ const AccountManagementContent = () => {
     const totalElements = useSelector(state => state.listAccount.totalElements)
     const totalPages = useSelector(state => state.listAccount.totalPage)
     const [currentPage, setCurrentPage] = useState(0);
+
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
 
 
@@ -66,7 +68,9 @@ const AccountManagementContent = () => {
                             <TableCell>{item.birthdate}</TableCell>
                             <TableCell></TableCell>
                             <TableCell>
-                                <IconButton aria-label="edit" onClick={() => setModalUpdateOpen(true)}>
+                                <IconButton aria-label="edit" onClick={() => {
+                                    setModalUpdateOpen(true)
+                                }}>
                                     <EditIcon />
                                 </IconButton>
                             </TableCell>
@@ -88,17 +92,10 @@ const AccountManagementContent = () => {
                     }}
                 />
             </div>
-            <Modal
-                title="20px to Top"
-                style={{ top: 20 }}
-                open={modalUpdateOpen}
-                onOk={() => setModalUpdateOpen(false)}
-                onCancel={() => setModalUpdateOpen(false)}
-            >
-                <p>some contents...</p>
-                <p>some contents...</p>
-                <p>some contents...</p>
-            </Modal>
+            <div>
+                <ModalUpdateAccount modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
+            </div>
+
         </>
     )
 }
