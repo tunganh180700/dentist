@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import 'antd/dist/antd.css';
 import { Modal } from 'antd';
 import { TextField } from '@mui/material';
@@ -16,6 +17,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     // const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
+    const dispatch = useDispatch();
+    const userId = useSelector(state => state.modal.userId);
     const [value, setValue] = useState();
     const [permisstion, setPermisstion] = useState();
     const handleChange = (SelectChangeEvent) => {
@@ -75,7 +78,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                 </LocalizationProvider>
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl fullWidth>
-                        <InputLabel id="permisstion">Age</InputLabel>
+                        <InputLabel id="permisstion">Quyền hạn</InputLabel>
                         <Select
                             labelId="permisstion"
                             id="permisstionSelect"

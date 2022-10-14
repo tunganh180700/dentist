@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import listAccountSlice from "./listAccountSlice";
+import modalSlice from "./modalSlice";
 
 const store = configureStore({
     reducer: {
-        listAccount: listAccountSlice
+        listAccount: listAccountSlice,
+        modal: modalSlice
     }
 })
 
