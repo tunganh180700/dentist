@@ -7,16 +7,25 @@ import { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import "./style.css"
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     // const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [value, setValue] = useState();
+    const [permisstion, setPermisstion] = useState();
+    const handleChange = (SelectChangeEvent) => {
+        setPermisstion(SelectChangeEvent);
+    };
 
     return (
         <>
             <Modal
-                title="20px to Top"
+                title="Thông tin nhân viên"
                 open={modalUpdateOpen}
                 onOk={() => setModalUpdateOpen(false)}
                 onCancel={() => setModalUpdateOpen(false)}
@@ -56,7 +65,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
-                        label="Basic example"
+                        label="Ngày sinh"
                         value={value}
                         onChange={(newValue) => {
                             setValue(newValue);
@@ -64,6 +73,22 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
+                <Box sx={{ minWidth: 120 }}>
+                    <FormControl fullWidth>
+                        <InputLabel id="permisstion">Age</InputLabel>
+                        <Select
+                            labelId="permisstion"
+                            id="permisstionSelect"
+                            value={permisstion}
+                            label="Quyền hạn"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
             </Modal>
         </>
     )
