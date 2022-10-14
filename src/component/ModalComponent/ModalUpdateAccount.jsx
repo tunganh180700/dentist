@@ -3,6 +3,9 @@ import 'antd/dist/antd.css';
 import { Modal } from 'antd';
 import { TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { Dayjs } from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { dayjs, Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -11,6 +14,7 @@ import "./style.css"
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     // const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
+    const [value, setValue] = useState < Dayjs | null > (null);
     const [value, setValue] = useState();
 
     return (
