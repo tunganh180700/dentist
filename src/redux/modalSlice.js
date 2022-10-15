@@ -17,4 +17,5 @@ const modalSlice = createSlice({
         }
     }
 })
+export const { setUserId } = modalSlice.actions;
 export default modalSlice.reducer;

@@ -9,6 +9,7 @@ import { Pagination, Typography, IconButton } from '@mui/material';
 import { listUserAPI } from '../../../config/baseAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllAccount } from '../../../redux/listAccountSlice';
+import { setUserId } from '../../../redux/modalSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ModalUpdateAccount from '../../ModalComponent/ModalUpdateAccount';
@@ -22,11 +23,12 @@ const AccountManagementContent = () => {
     const totalElements = useSelector(state => state.listAccount.totalElements)
     const totalPages = useSelector(state => state.listAccount.totalPage)
     const [currentPage, setCurrentPage] = useState(0);
+    // const userId = useSelector(state=>state.modal.userId);
 
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
 
 
-    console.log(modalUpdateOpen)
+    // console.log(modalUpdateOpen)
     useEffect(() => {
         dispatch(fetchAllAccount({
             size: pageSize,
@@ -70,6 +72,7 @@ const AccountManagementContent = () => {
                             <TableCell>
                                 <IconButton aria-label="edit" onClick={() => {
                                     setModalUpdateOpen(true)
+                                    dispatch(setUserId(item.userId))
                                 }}>
                                     <EditIcon />
                                 </IconButton>

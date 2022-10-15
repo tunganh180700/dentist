@@ -50,7 +50,6 @@ export const fetchAllAccount = createAsyncThunk('listAccount/fetchAllAccount', a
         const res = await axios.get(listUserAPI, {
             params: paramsSearch,
         })
-        console.log(res)
         return res.data
     } catch (error) {
         console.log(error)

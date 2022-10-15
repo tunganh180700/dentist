@@ -7,7 +7,11 @@ const initState = {
     status: false,
     statusUser: false,
     statusDeleteAccount: false,
-    name: ''
+    name: '',
+    userName: '',
+    birthdate: '',
+    phone: '',
+
 }
 const choosenAccountSlice = createSlice({
     name: 'choosenAccount',
@@ -19,6 +23,15 @@ const choosenAccountSlice = createSlice({
         setName: (state, action) => {
             state.name = action.payload
         },
+        setUserName: (state, action) => {
+            state.userName = action.payload
+        },
+        setBirthdate: (state, action) => {
+            state.birthdate = action.payload
+        },
+        setPhone: (state, action) => {
+            state.phone = action.payload
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -27,7 +40,10 @@ const choosenAccountSlice = createSlice({
             })
             .addCase(fetchAccount.fulfilled, (state, action) => {
                 state.choosenAccount = action.payload;
-                state.name = action.payload.name
+                state.name = action.payload.fullName;
+                state.userName = action.payload.userName;
+                state.birthdate = action.payload.birthdate;
+                state.phone = action.payload.phone;
                 state.status = false
             })
     }
@@ -37,11 +53,12 @@ export const fetchAccount = createAsyncThunk('users/fetchAccount', async (userId
         const res = await axios.get(
             getAccountByIdAPI + userId,
         )
+        console.log(res.data)
         return res.data
     } catch (error) {
         console.log(error)
     }
 })
-export const { setChoosenAccount, setName } = currentUserSlice.actions;
+export const { setChoosenAccount, setName } = choosenAccountSlice.actions;
 export default choosenAccountSlice.reducer;
 
