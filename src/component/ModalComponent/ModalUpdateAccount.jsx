@@ -19,11 +19,17 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     // const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const dispatch = useDispatch();
     const userId = useSelector(state => state.modal.userId);
+    const status = useSelector(state => state.listAccount.status)
+    const statusUpdateAccount = useSelector(state => state.listAccount.statusUpdateAccount);
     const [value, setValue] = useState();
     const [permisstion, setPermisstion] = useState();
     const handleChange = (SelectChangeEvent) => {
         setPermisstion(SelectChangeEvent);
     };
+
+    const handleOk = () => {
+
+    }
 
     return (
         <>
