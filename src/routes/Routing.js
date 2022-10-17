@@ -4,6 +4,7 @@ import LoginComponent from "../component/Admin/LoginComponent/Login";
 import ForgotPassword from "../component/ForgotPassComponent/ForgotPassword";
 import AccountManagement from "../component/Admin/AccountManagementComponent/AccountManagement"
 import HomePage from "../component/HomeComponent/Home";
+import WaitingRoomManagement from "../component/Admin/WaitingRoomManagementComponent/WaitingRoomManagement";
 
 const Routing = () => {
     return (
@@ -12,6 +13,7 @@ const Routing = () => {
                 <Route path='/login' element={<LoginComponent />} />
                 <Route path='/forgot' element={<ForgotPassword />} />
                 <Route path='/accmanagement' element={<AccountManagement />} />
+                <Route path='/meetingroom' element={<WaitingRoomManagement />} />
                 <Route path='/' element={<HomePage />} />
                 <Route path='*' element={<>404 Error</>} />
             </Routes>
