@@ -59,6 +59,6 @@ export const fetchAccount = createAsyncThunk('users/fetchAccount', async (userId
         console.log(error)
     }
 })
-export const { setChoosenAccount, setName } = choosenAccountSlice.actions;
+export const { setChoosenAccount, setName, setUserName, setBirthdate, setPhone } = choosenAccountSlice.actions;
 export default choosenAccountSlice.reducer;
 

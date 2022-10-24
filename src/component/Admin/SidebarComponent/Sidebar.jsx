@@ -7,6 +7,7 @@ import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import PaidIcon from '@mui/icons-material/Paid';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DescriptionIcon from '@mui/icons-material/Description';
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
     return (
@@ -18,11 +19,13 @@ const Sidebar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Quản lý danh mục" />
                 </ListItemButton>
-                <ListItemButton href='/meetingroom'>
+                <ListItemButton>
                     <ListItemIcon>
                         <MeetingRoomIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Quản lý phòng chờ" />
+                    <Link to={'/meetingroom'}>
+                        <ListItemText primary="Quản lý phòng chờ" />
+                    </Link>
                 </ListItemButton>
                 <ListItemButton>
                     <ListItemIcon>
@@ -30,11 +33,13 @@ const Sidebar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Quản lý doanh thu" />
                 </ListItemButton>
-                <ListItemButton href='/accmanagement'>
+                <ListItemButton>
                     <ListItemIcon>
                         <AccountCircleIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Quản lý tài khoản" />
+                    <Link to={'/accmanagement'}>
+                        <ListItemText primary="Quản lý tài khoản" />
+                    </Link>
                 </ListItemButton>
                 <ListItemButton>
                     <ListItemIcon>

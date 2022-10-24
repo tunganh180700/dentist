@@ -19,8 +19,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import HeaderAdmin from '../HeaderComponent/HeaderAdmin';
 import Sidebar from '../SidebarComponent/Sidebar'
-import ContainerDetail from '../../ContainerComponent/Container';
-
 
 const drawerWidth = 240;
 
@@ -70,7 +68,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+function DashboardContent({ component }) {
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -119,7 +117,7 @@ function DashboardContent() {
                         <Sidebar />
                     </List>
                 </Drawer>
-                {/* <Box
+                <Box
                     component="main"
                     sx={{
                         backgroundColor: (theme) =>
@@ -137,7 +135,7 @@ function DashboardContent() {
                             {component}
                         </Grid>
                     </Container>
-                </Box> */}
+                </Box>
             </Box>
         </ThemeProvider>
     );
