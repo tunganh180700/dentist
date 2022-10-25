@@ -24,6 +24,7 @@ const AccountManagementContent = () => {
     const totalPages = useSelector(state => state.listAccount.totalPage)
     const [currentPage, setCurrentPage] = useState(0);
     // const userId = useSelector(state=>state.modal.userId);
+    const isUpdateAccount = useSelector(state=>state.listAccount.isUpdateAccount);
 
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
 
@@ -35,7 +36,7 @@ const AccountManagementContent = () => {
             page: currentPage
         },
         ));
-    }, [currentPage])
+    }, [currentPage, isUpdateAccount])
 
     return (
         <>

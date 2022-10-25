@@ -18,6 +18,7 @@ import * as yup from "yup";
 import { fetchAccount, setBirthdate, setName, setPhone, setUserName } from '../../redux/choosenAccountSlice';
 import FormList from 'antd/lib/form/FormList';
 import { updateAccount } from '../../redux/listAccountSlice';
+import AccountManagementContent from '../Admin/AccountManagementComponent/AccountManagementContent';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -48,17 +49,17 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         setPermisstion(SelectChangeEvent);
     };
 
-    console.log(userId)
     const handleOk = () => {
         const data = {
             id: userId,
-            name: choosenAccount.fullName,
-            username: choosenAccount.userName,
-            phone: choosenAccount.phone,
-            birthdate: choosenAccount.birthdate,
+            name: fullName,
+            username: userName,
+            phone: phone,
+            birthdate: birthdate,
         }
         dispatch(updateAccount(data));
-        setModalUpdateOpen(false)
+        setModalUpdateOpen(false);
+        
     }
 
     useEffect(() => {

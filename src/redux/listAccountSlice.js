@@ -42,6 +42,10 @@ const listAccountSlice = createSlice({
             .addCase(updateAccount.pending, (state, action) => {
                 state.statusUpdateAccount = true
             })
+            .addCase(updateAccount.fulfilled, (state, action) => {
+                state.isUpdateAccount = true
+            })
+            
     }
 })
 
@@ -56,21 +60,27 @@ export const fetchAllAccount = createAsyncThunk('listAccount/fetchAllAccount', a
     }
 })
 
-export const updateAccount = createAsyncThunk('listAccount/updateUser', async (data) => {
+export const updateAccount = createAsyncThunk('listAccount/updateAccount', async (data) => {
+    console.log(data)
     try {
         const tempData = {
-            name: data.name,
+            fullName: data.name,
+            userName: data.username,
+            birthdate: data.birthdate,
             phone: data.phone,
-            dob: data.dob,
-            permisstion: data.permisstion
+            salary: 1,
+            roleId: 1
         }
+        console.log(tempData)
         const res = await axios.put(
-            updateAccountAPI + data.userId, tempData
+            updateAccountAPI + data.id, tempData
         )
-        toast.success(res.data.message, toastCss)
+        console.log(res)
+        toast.success("Huhu", toastCss)
         return res.data
     } catch (error) {
         toast.error('Update failed', toastCss)
+       
     }
 })
 
