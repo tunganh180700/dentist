@@ -15,7 +15,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { fetchAccount, setName, setPhone, setUserName } from '../../redux/choosenAccountSlice';
+import { fetchAccount, setBirthdate, setName, setPhone, setUserName } from '../../redux/choosenAccountSlice';
 import FormList from 'antd/lib/form/FormList';
 import { updateAccount } from '../../redux/listAccountSlice';
 
@@ -30,7 +30,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const fullName = useSelector(state => state.choosenAccount.name);
     const phone = useSelector(state => state.choosenAccount.phone);
     const userName = useSelector(state => state.choosenAccount.userName);
-    const [value, setValue] = useState();
+    const birthdate = useSelector(state => state.choosenAccount.birthdate);
     const [permisstion, setPermisstion] = useState();
 
     const formik = useFormik({
@@ -48,7 +48,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         setPermisstion(SelectChangeEvent);
     };
 
-    // console.log(choosenAccount.userName)
+    console.log(userId)
     const handleOk = () => {
         const data = {
             id: userId,
@@ -71,18 +71,6 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         }
     }, [userId])
 
-    // useEffect(() => {
-    //     if(choosenAccount){
-    //         setValue(choosenAccount.name);
-    //         setValue(choosenAccount.userName);
-    //         setValue(choosenAccount.phone);
-    //         // setValue(choosenAccount.name),
-    //     }
-    // },[choosenAccount])
-
-    // const myHandleChange = (e) => {
-    //     dispatch(setName(e.target.value))
-    // }
     return (
         <>
             <Modal
@@ -101,7 +89,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     autoComplete="name"
                     value={fullName}
                     autoFocus
-                    onChange={e => setName(e.target.value)}
+                    onChange={e => dispatch(setName(e.target.value))}
                 />
                 <TextField
                     margin="normal"
@@ -113,7 +101,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     autoComplete="username"
                     value={userName}
                     autoFocus
-                    onChange={e => setUserName(e.target.value)}
+                    onChange={e => dispatch(setUserName(e.target.value))}
                 />
                 <TextField
                     margin="normal"
@@ -125,14 +113,14 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     autoComplete="phonenumber"
                     value={phone}
                     autoFocus
-                    onChange={e => setPhone(e.target.value)}
+                    onChange={e => dispatch(setPhone(e.target.value))}
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Ngày sinh"
-                        value={value}
+                        value={birthdate}
                         onChange={(newValue) => {
-                            setValue(newValue);
+                            dispatch(setBirthdate(newValue));
                         }}
                         renderInput={(params) => <TextField {...params} />}
                     />
