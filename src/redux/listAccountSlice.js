@@ -1,7 +1,7 @@
-import { TonalitySharp } from "@mui/icons-material"
+import { Rtt, TonalitySharp } from "@mui/icons-material"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
-import { listUserAPI, updateAccountAPI } from "../config/baseAPI"
+import { listUserAPI, updateAccountAPI, deleteAccountAPI } from "../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "./toastCss"
 
@@ -16,6 +16,8 @@ const initState = {
     totalPage: 0,
     statusUpdateAccount: false,
     isUpdateAccount: false,
+    statusDeleteAccount: false,
+    isDeleteAccount: false,
 }
 
 const listAccountSlice = createSlice({
@@ -36,8 +38,9 @@ const listAccountSlice = createSlice({
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
                 state.totalElements = action.payload.totalElements;
-                state.totalPage = action.payload.totalPages
-                state.isUpdateAccount = false
+                state.totalPage = action.payload.totalPages;
+                state.isUpdateAccount = false;
+                state.isDeleteAccount = false;
             })
             .addCase(updateAccount.pending, (state, action) => {
                 state.statusUpdateAccount = true
@@ -45,7 +48,13 @@ const listAccountSlice = createSlice({
             .addCase(updateAccount.fulfilled, (state, action) => {
                 state.isUpdateAccount = true
             })
-            
+            .addCase(deleteAccount.pending, (state, action) => {
+                state.statusDeleteAccount = true
+            })
+            .addCase(deleteAccount.fulfilled, (state, action) => {
+                state.isDeleteAccount = true
+            })
+
     }
 })
 
@@ -61,7 +70,6 @@ export const fetchAllAccount = createAsyncThunk('listAccount/fetchAllAccount', a
 })
 
 export const updateAccount = createAsyncThunk('listAccount/updateAccount', async (data) => {
-    console.log(data)
     try {
         const tempData = {
             fullName: data.name,
@@ -71,16 +79,27 @@ export const updateAccount = createAsyncThunk('listAccount/updateAccount', async
             salary: 1,
             roleId: 1
         }
-        console.log(tempData)
         const res = await axios.put(
             updateAccountAPI + data.id, tempData
         )
         console.log(res)
-        toast.success("Huhu", toastCss)
+        toast.success("Cập nhật thành công !!!!!", toastCss)
         return res.data
     } catch (error) {
-        toast.error('Update failed', toastCss)
-       
+        toast.error('Cập nhật thất bại :(', toastCss)
+
+    }
+})
+
+export const deleteAccount = createAsyncThunk('listAccount/deleteAccount', async (userId) => {
+    console.log(userId)
+    try {
+        const res = await axios.delete(deleteAccountAPI + userId)
+        toast.success("Xóa thành công !!!!! ", toastCss)
+        return userId
+    } catch (error) {
+        toast.error('Xóa thất bại :(', toastCss)
+
     }
 })
 

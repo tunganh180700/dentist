@@ -18,11 +18,9 @@ import * as yup from "yup";
 import { fetchAccount, setBirthdate, setName, setPhone, setUserName } from '../../redux/choosenAccountSlice';
 import FormList from 'antd/lib/form/FormList';
 import { updateAccount } from '../../redux/listAccountSlice';
-import AccountManagementContent from '../Admin/AccountManagementComponent/AccountManagementContent';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
-    // const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const dispatch = useDispatch();
     const userId = useSelector(state => state.modal.userId);
     const status = useSelector(state => state.listAccount.status)
@@ -45,6 +43,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             console.log(values)
         }
     })
+
     const handleChange = (SelectChangeEvent) => {
         setPermisstion(SelectChangeEvent);
     };
@@ -59,7 +58,6 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         }
         dispatch(updateAccount(data));
         setModalUpdateOpen(false);
-        
     }
 
     useEffect(() => {

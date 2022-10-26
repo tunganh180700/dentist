@@ -13,6 +13,7 @@ import { setUserId } from '../../../redux/modalSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ModalUpdateAccount from '../../ModalComponent/ModalUpdateAccount';
+import ModalDeleteAccount from '../../ModalComponent/ModalDeleteAccount';
 
 const AccountManagementContent = () => {
 
@@ -24,9 +25,11 @@ const AccountManagementContent = () => {
     const totalPages = useSelector(state => state.listAccount.totalPage)
     const [currentPage, setCurrentPage] = useState(0);
     // const userId = useSelector(state=>state.modal.userId);
-    const isUpdateAccount = useSelector(state=>state.listAccount.isUpdateAccount);
+    const isUpdateAccount = useSelector(state => state.listAccount.isUpdateAccount);
+    const isDeleteAccount = useSelector(state => state.listAccount.isDeleteAccount);
 
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
+    const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
 
 
     // console.log(modalUpdateOpen)
@@ -36,7 +39,7 @@ const AccountManagementContent = () => {
             page: currentPage
         },
         ));
-    }, [currentPage, isUpdateAccount])
+    }, [currentPage, isUpdateAccount, isDeleteAccount])
 
     return (
         <>
@@ -79,7 +82,10 @@ const AccountManagementContent = () => {
                                 </IconButton>
                             </TableCell>
                             <TableCell>
-                                <IconButton aria-label="delete">
+                                <IconButton aria-label="delete" onClick={() => {
+                                    setModalDeleteOpen(true)
+                                    dispatch(setUserId(item.userId))
+                                }}>
                                     <DeleteIcon />
                                 </IconButton>
                             </TableCell>
@@ -98,6 +104,9 @@ const AccountManagementContent = () => {
             </div>
             <div>
                 <ModalUpdateAccount modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
+            </div>
+            <div>
+                <ModalDeleteAccount modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
             </div>
 
         </>
