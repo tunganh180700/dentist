@@ -4,7 +4,6 @@ import 'antd/dist/antd.css';
 import { Modal } from 'antd';
 import { TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import "./style.css"
@@ -16,7 +15,6 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { fetchAccount, setBirthdate, setName, setPhone, setUserName } from '../../redux/choosenAccountSlice';
-import FormList from 'antd/lib/form/FormList';
 import { updateAccount } from '../../redux/listAccountSlice';
 
 
@@ -95,6 +93,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     required
                     fullWidth
                     id="username"
+                    disabled
                     label="Tên đăng nhập"
                     name="username"
                     autoComplete="username"

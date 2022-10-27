@@ -12,6 +12,7 @@ import { fetchAllAccount } from '../../../redux/listAccountSlice';
 import { setUserId } from '../../../redux/modalSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
 import ModalUpdateAccount from '../../ModalComponent/ModalUpdateAccount';
 import ModalDeleteAccount from '../../ModalComponent/ModalDeleteAccount';
 
@@ -51,6 +52,9 @@ const AccountManagementContent = () => {
             >
                 Quản lý tài khoản
             </Typography>
+            <IconButton aria-label="add">
+                <AddIcon /> Thêm mới
+            </IconButton>
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
