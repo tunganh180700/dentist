@@ -15,6 +15,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import ModalUpdateAccount from '../../ModalComponent/ModalUpdateAccount';
 import ModalDeleteAccount from '../../ModalComponent/ModalDeleteAccount';
+import ModalAddAcount from '../../ModalComponent/ModalAddAccount';
 
 const AccountManagementContent = () => {
 
@@ -31,6 +32,7 @@ const AccountManagementContent = () => {
 
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
+    const [modalAddOpen, setModalAddOpen] = useState(false);
 
 
     // console.log(modalUpdateOpen)
@@ -52,7 +54,9 @@ const AccountManagementContent = () => {
             >
                 Quản lý tài khoản
             </Typography>
-            <IconButton aria-label="add">
+            <IconButton aria-label="add" onClick={() => {
+                setModalAddOpen(true)
+            }}>
                 <AddIcon /> Thêm mới
             </IconButton>
             <Table size="small" style={{ marginTop: "15px" }}>
@@ -111,6 +115,9 @@ const AccountManagementContent = () => {
             </div>
             <div>
                 <ModalDeleteAccount modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
+            </div>
+            <div>
+                <ModalAddAcount modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
             </div>
 
         </>
