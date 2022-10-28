@@ -18,6 +18,8 @@ const initState = {
     isUpdateAccount: false,
     statusDeleteAccount: false,
     isDeleteAccount: false,
+    statusAddAccount: false,
+    isAddAccount: false,
 }
 
 const listAccountSlice = createSlice({
@@ -54,7 +56,12 @@ const listAccountSlice = createSlice({
             .addCase(deleteAccount.fulfilled, (state, action) => {
                 state.isDeleteAccount = true
             })
-
+            .addCase(addAccount.pending, (state, action) => {
+                state.statusAddAccount = true
+            })
+            .addCase(addAccount.fulfilled, (state, action) => {
+                state.isAddAccount = true
+            })
     }
 })
 
@@ -103,5 +110,16 @@ export const deleteAccount = createAsyncThunk('listAccount/deleteAccount', async
     }
 })
 
+export const addAccount = createAsyncThunk('listAccount/addAccount', async (paramsSearch) => {
+    try {
+        const res = await axios.post(listUserAPI, {
+            param: paramsSearch,
+        })
+        toast.success("Thêm mới thành công !!!!!", toastCss)
+        return res.data
+    } catch(error) {
+        toast.error('Thêm mới thất bại :(', toastCss)
+    }
+})
 export const { setListAccount } = listAccountSlice.actions;
 export default listAccountSlice.reducer;

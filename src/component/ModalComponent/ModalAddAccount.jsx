@@ -11,11 +11,14 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-const ModalAddAcount = ({modalAddOpen, setModalAddOpen}) => {
+const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
     const [value, setValue] = useState();
+    const handleOk = () => {
+        
+    }
     return (
         <>
-           <Modal
+            <Modal
                 title="Thêm tài khoản"
                 open={modalAddOpen}
                 onOk={() => setModalAddOpen(false)}
@@ -29,7 +32,6 @@ const ModalAddAcount = ({modalAddOpen, setModalAddOpen}) => {
                     label="Họ và tên"
                     name="name"
                     autoComplete="name"
-                    // value={fullName}
                     autoFocus
                 />
                 <TextField
@@ -41,7 +43,6 @@ const ModalAddAcount = ({modalAddOpen, setModalAddOpen}) => {
                     label="Tên đăng nhập"
                     name="username"
                     autoComplete="username"
-                    // value={userName}
                     autoFocus
                 />
                 <TextField
@@ -52,7 +53,6 @@ const ModalAddAcount = ({modalAddOpen, setModalAddOpen}) => {
                     label="Số điện thoại"
                     name="phonenumber"
                     autoComplete="phonenumber"
-                    // value={phone}
                     autoFocus
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -60,7 +60,7 @@ const ModalAddAcount = ({modalAddOpen, setModalAddOpen}) => {
                         label="Ngày sinh"
                         value={value}
                         onChange={(newValue) => {
-                           setValue(newValue);
+                            setValue(newValue);
                         }}
                         renderInput={(params) => <TextField {...params} />}
                     />
@@ -82,7 +82,6 @@ const ModalAddAcount = ({modalAddOpen, setModalAddOpen}) => {
                         <Select
                             labelId="permisstion"
                             id="permisstionSelect"
-                            // value={permisstion}
                             label="Quyền hạn"
                         >
                             <MenuItem value={10}>Ten</MenuItem>
