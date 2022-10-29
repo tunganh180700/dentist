@@ -4,6 +4,7 @@ import axios from "axios"
 import { listUserAPI, updateAccountAPI, deleteAccountAPI } from "../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "./toastCss"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../config/constant"
 
 const initState = {
     listAccount: [],
@@ -20,6 +21,7 @@ const initState = {
     isDeleteAccount: false,
     statusAddAccount: false,
     isAddAccount: false,
+    message: ''
 }
 
 const listAccountSlice = createSlice({
@@ -43,6 +45,7 @@ const listAccountSlice = createSlice({
                 state.totalPage = action.payload.totalPages;
                 state.isUpdateAccount = false;
                 state.isDeleteAccount = false;
+                state.message = action.payload.message
             })
             .addCase(updateAccount.pending, (state, action) => {
                 state.statusUpdateAccount = true
@@ -90,10 +93,10 @@ export const updateAccount = createAsyncThunk('listAccount/updateAccount', async
             updateAccountAPI + data.id, tempData
         )
         console.log(res)
-        toast.success("Cập nhật thành công !!!!!", toastCss)
+        toast.success(UPDATE_SUCCESS, toastCss)
         return res.data
     } catch (error) {
-        toast.error('Cập nhật thất bại :(', toastCss)
+        toast.error(UPDATE_FAIL, toastCss)
 
     }
 })
@@ -102,10 +105,10 @@ export const deleteAccount = createAsyncThunk('listAccount/deleteAccount', async
     console.log(userId)
     try {
         const res = await axios.delete(deleteAccountAPI + userId)
-        toast.success("Xóa thành công !!!!! ", toastCss)
+        toast.success(DELETE_SUCCESS, toastCss)
         return userId
     } catch (error) {
-        toast.error('Xóa thất bại :(', toastCss)
+        toast.error(DELETE_FAIL, toastCss)
 
     }
 })
@@ -117,7 +120,7 @@ export const addAccount = createAsyncThunk('listAccount/addAccount', async (para
         })
         toast.success("Thêm mới thành công !!!!!", toastCss)
         return res.data
-    } catch(error) {
+    } catch (error) {
         toast.error('Thêm mới thất bại :(', toastCss)
     }
 })

@@ -17,6 +17,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { fetchAccount, setBirthdate, setName, setPhone, setUserName, setMessage } from '../../redux/choosenAccountSlice';
 import { updateAccount } from '../../redux/listAccountSlice';
+import { INPUT_EMPTY } from '../../config/constant';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -29,9 +30,8 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const phone = useSelector(state => state.choosenAccount.phone);
     const userName = useSelector(state => state.choosenAccount.userName);
     const birthdate = useSelector(state => state.choosenAccount.birthdate);
-    const message = useSelector(state => state.choosenAccount.message);
     const [permisstion, setPermisstion] = useState();
-    const [errors, setErrors] = useState({ name: ''})
+    const [errors, setErrors] = useState({ message: '' })
 
     // const formik = useFormik({
     //     initialValues: {
@@ -48,15 +48,15 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const handleChange = (SelectChangeEvent) => {
         setPermisstion(SelectChangeEvent);
     };
-    console.log(message)
+
     const handleOk = () => {
         setErrors({})
         if (fullName === '') {
-            setErrors({ ...errors, name: 'message' })
+            setErrors({ ...errors, message: INPUT_EMPTY })
             return;
         }
         if (phone === '') {
-            setErrors({ ...errors, name: 'message'  })
+            setErrors({ ...errors, message: INPUT_EMPTY })
             return;
         }
         const data = {
@@ -100,7 +100,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     autoFocus
                     onChange={e => dispatch(setName(e.target.value))}
                 />
-                {errors.name && <Typography style={{ color: 'red' }}>{errors.name}</Typography>}
+                {errors.message && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{errors.message}</Typography>}
                 <TextField
                     margin="normal"
                     required
