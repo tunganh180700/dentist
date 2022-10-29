@@ -11,6 +11,7 @@ const initState = {
     userName: '',
     birthdate: '',
     phone: '',
+    message: ''
 
 }
 const choosenAccountSlice = createSlice({
@@ -32,6 +33,9 @@ const choosenAccountSlice = createSlice({
         setPhone: (state, action) => {
             state.phone = action.payload
         },
+        setMessage: (state, action) => {
+            state.message = action.payload
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -44,6 +48,7 @@ const choosenAccountSlice = createSlice({
                 state.userName = action.payload.userName;
                 state.birthdate = action.payload.birthdate;
                 state.phone = action.payload.phone;
+                state.message = action.payload.message;
                 state.status = false
             })
     }
@@ -59,6 +64,6 @@ export const fetchAccount = createAsyncThunk('users/fetchAccount', async (userId
         console.log(error)
     }
 })
-export const { setChoosenAccount, setName, setUserName, setBirthdate, setPhone } = choosenAccountSlice.actions;
+export const { setChoosenAccount, setName, setUserName, setBirthdate, setPhone, setMessage } = choosenAccountSlice.actions;
 export default choosenAccountSlice.reducer;
 
