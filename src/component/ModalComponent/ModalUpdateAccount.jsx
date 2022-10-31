@@ -17,7 +17,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { fetchAccount, setBirthdate, setName, setPhone, setUserName, setMessage } from '../../redux/choosenAccountSlice';
 import { updateAccount } from '../../redux/listAccountSlice';
-import { INPUT_EMPTY } from '../../config/constant';
+import { INPUT_EMPTY, INPUT_PHONE } from '../../config/constant';
+import { regexPhone } from '../../config/validation';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -31,7 +32,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const userName = useSelector(state => state.choosenAccount.userName);
     const birthdate = useSelector(state => state.choosenAccount.birthdate);
     const [permisstion, setPermisstion] = useState();
-    const [errors, setErrors] = useState({ message: '' })
+    const [errors, setErrors] = useState({ messageName: '', messagePhone: '' })
 
     // const formik = useFormik({
     //     initialValues: {
@@ -52,12 +53,17 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const handleOk = () => {
         setErrors({})
         if (fullName === '') {
-            setErrors({ ...errors, message: INPUT_EMPTY })
+            setErrors({ ...errors, messageName: INPUT_EMPTY })
             return;
         }
         if (phone === '') {
-            setErrors({ ...errors, message: INPUT_EMPTY })
+            setErrors({ ...errors, messagePhone: INPUT_EMPTY })
             return;
+        }
+        if (regexPhone.test(phone)) {
+            setErrors({})
+        } else {
+            setErrors({ ...errors, messagePhone: INPUT_PHONE })
         }
         const data = {
             id: userId,
@@ -100,7 +106,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     autoFocus
                     onChange={e => dispatch(setName(e.target.value))}
                 />
-                {errors.message && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{errors.message}</Typography>}
+                {errors.messageName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{errors.messageName}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -126,6 +132,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     autoFocus
                     onChange={e => dispatch(setPhone(e.target.value))}
                 />
+                {errors.messagePhone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{errors.messagePhone}</Typography>}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Ngày sinh"
