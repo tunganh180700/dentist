@@ -64,6 +64,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             setErrors({})
         } else {
             setErrors({ ...errors, messagePhone: INPUT_PHONE })
+            return;
         }
         const data = {
             id: userId,
