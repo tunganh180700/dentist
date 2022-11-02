@@ -33,6 +33,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const birthdate = useSelector(state => state.choosenAccount.birthdate);
     const [permisstion, setPermisstion] = useState();
     const [errors, setErrors] = useState({ messageName: '', messagePhone: '' })
+    const listAccount = useSelector(state => state.listAccount.listAccount)
 
     // const formik = useFormik({
     //     initialValues: {
@@ -154,9 +155,11 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                             label="Quyền hạn"
                             onChange={handleChange}
                         >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            {/* {listAccount.map((item) =>
+                                <MenuItem value={item.roleName}>{item.roleName}</MenuItem>
+                            )} */}
+                            <MenuItem value={1}>One</MenuItem>
+                            <MenuItem value={2}>Two</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>

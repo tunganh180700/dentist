@@ -1,7 +1,7 @@
 import { Rtt, TonalitySharp } from "@mui/icons-material"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
-import { listUserAPI, updateAccountAPI, deleteAccountAPI } from "../config/baseAPI"
+import { listUserAPI, updateAccountAPI, deleteAccountAPI, addAccountAPI } from "../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "./toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../config/constant"
@@ -45,6 +45,7 @@ const listAccountSlice = createSlice({
                 state.totalPage = action.payload.totalPages;
                 state.isUpdateAccount = false;
                 state.isDeleteAccount = false;
+                state.isAddAccount = false;
                 state.message = action.payload.message
             })
             .addCase(updateAccount.pending, (state, action) => {
@@ -86,8 +87,8 @@ export const updateAccount = createAsyncThunk('listAccount/updateAccount', async
             userName: data.username,
             birthdate: data.birthdate,
             phone: data.phone,
-            salary: 1,
-            roleId: 1
+            salary: data.salary,
+            roleId: data.roleId
         }
         const res = await axios.put(
             updateAccountAPI + data.id, tempData
@@ -113,14 +114,22 @@ export const deleteAccount = createAsyncThunk('listAccount/deleteAccount', async
     }
 })
 
-export const addAccount = createAsyncThunk('listAccount/addAccount', async (paramsSearch) => {
+export const addAccount = createAsyncThunk('listAccount/addAccount', async (values) => {
     try {
-        const res = await axios.post(listUserAPI, {
-            param: paramsSearch,
-        })
+        const formValue = {
+            fullName: values.fullName,
+            birthdate: values.birthdate,
+            phone: values.phone,
+            salary: values.salary,
+            roleId: values.roleId
+        }
+        console.log(values)
+        const res = await axios.post(addAccountAPI, formValue)
         toast.success("Thêm mới thành công !!!!!", toastCss)
+        console.log(res.data)
         return res.data
     } catch (error) {
+        console.log(error)
         toast.error('Thêm mới thất bại :(', toastCss)
     }
 })

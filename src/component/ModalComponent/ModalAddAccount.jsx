@@ -10,18 +10,87 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useDispatch, useSelector } from "react-redux";
+import { addAccount } from '../../redux/listAccountSlice';
+import { useFormik } from "formik";
+import * as yup from "yup";
+import { regexPhone } from '../../config/validation';
+import axios from 'axios';
+import { listRoleAPI } from '../../config/baseAPI';
+import moment from 'moment/moment';
 
 const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
-    const [value, setValue] = useState();
+    const dispatch = useDispatch();
+    const [value, setValue] = useState(null);
+    const [roleIds, setRoleIds] = useState([]);
+    const [roleId, setRoleId] = useState();
+
+    const validationSchema = yup.object({
+        fullName: yup
+            .string('Enter your name')
+            .required('Your name is required'),
+        phone: yup
+            .string("Enter your phone")
+            .matches(regexPhone, "Invalid Phone")
+            .required("Phone is required"),
+        password: yup
+            .string("Enter your password")
+            .required("Password is required"),
+        salary: yup
+            .string('Enter your salary')
+            .required('Salary is required')
+    });
+
+    const loadRole = async () => {
+        try {
+            const res = await axios.get(listRoleAPI)
+            console.log(res)
+            setRoleId(res.data[0].roleId)
+            setRoleIds(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        loadRole();
+    }, [])
+
+    const formik = useFormik({
+        initialValues: {
+            fullName: '',
+            phone: "",
+            password: "",
+            salary: '',
+        },
+        validationSchema: validationSchema,
+        onSubmit: (values) => {
+            console.log(values)
+            values.birthdate = moment(value.$d).format('YYYY-MM-DD');
+            values.roleId = roleId;
+            // handleOk(values);
+            dispatch(addAccount(values))
+        }
+    });
+
     const handleOk = () => {
-        
+        formik.handleSubmit();
+        // const newData = {
+        //     fullName: data.name,
+        //     userName: data.username,
+        //     birthdate: data.birthdate,
+        //     phone: data.phone,
+        //     salary: data.salary,
+        //     roleId: data.roleId
+        // }
+        // dispatch(addAccount(newData));
+        // setModalAddOpen(false);
     }
     return (
         <>
             <Modal
                 title="Thêm tài khoản"
                 open={modalAddOpen}
-                onOk={() => setModalAddOpen(false)}
+                onOk={formik.handleSubmit}
                 onCancel={() => setModalAddOpen(false)}
             >
                 <TextField
@@ -30,9 +99,24 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     fullWidth
                     id="name"
                     label="Họ và tên"
-                    name="name"
+                    name="fullName"
                     autoComplete="name"
+                    value={formik.values.fullName}
                     autoFocus
+                    onChange={formik.handleChange}
+                />
+                {formik.errors.fullName && <Typography style={{ color: 'red' }}>{formik.errors.fullName}</Typography>}
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="password"
+                    label="Mat khau"
+                    name="password"
+                    autoComplete="password"
+                    autoFocus
+                    type={"password"}
+                    onChange={formik.handleChange}
                 />
                 <TextField
                     margin="normal"
@@ -51,16 +135,21 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     fullWidth
                     id="phonenumber"
                     label="Số điện thoại"
-                    name="phonenumber"
+                    name="phone"
                     autoComplete="phonenumber"
+                    value={formik.values.phone}
                     autoFocus
+                    onChange={formik.handleChange}
                 />
+                {formik.errors.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Ngày sinh"
+                        name="birthdate"
                         value={value}
                         onChange={(newValue) => {
                             setValue(newValue);
+                            console.log(newValue)
                         }}
                         renderInput={(params) => <TextField {...params} />}
                     />
@@ -73,9 +162,11 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     label="Lương"
                     name="salary"
                     autoComplete="salary"
-                    // value={phone}
+                    value={formik.values.salary}
                     autoFocus
+                    onChange={formik.handleChange}
                 />
+                {formik.errors.salary && <Typography style={{ color: 'red' }}>{formik.errors.salary}</Typography>}
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl fullWidth>
                         <InputLabel id="permisstion">Quyền hạn</InputLabel>
@@ -83,10 +174,12 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                             labelId="permisstion"
                             id="permisstionSelect"
                             label="Quyền hạn"
+                            value={roleId}
+                            onChange={(e)=>setRoleId(e.target.value)}
                         >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            {roleIds?.map(item => (
+                                <MenuItem key={item.roleId} value={item.roleId}>{item.roleName}</MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                 </Box>

@@ -29,20 +29,21 @@ const AccountManagementContent = () => {
     // const userId = useSelector(state=>state.modal.userId);
     const isUpdateAccount = useSelector(state => state.listAccount.isUpdateAccount);
     const isDeleteAccount = useSelector(state => state.listAccount.isDeleteAccount);
+    const isAddAccount = useSelector(state => state.listAccount.isAddAccount);
 
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
 
 
-    // console.log(modalUpdateOpen)
+    
     useEffect(() => {
         dispatch(fetchAllAccount({
             size: pageSize,
             page: currentPage
         },
         ));
-    }, [currentPage, isUpdateAccount, isDeleteAccount])
+    }, [currentPage, isUpdateAccount, isDeleteAccount, isAddAccount])
 
     return (
         <>
@@ -80,7 +81,7 @@ const AccountManagementContent = () => {
                             <TableCell>{item.userName}</TableCell>
                             <TableCell>{item.phone}</TableCell>
                             <TableCell>{item.birthdate}</TableCell>
-                            <TableCell></TableCell>
+                            <TableCell>{item.roleName}</TableCell>
                             <TableCell>
                                 <IconButton aria-label="edit" onClick={() => {
                                     setModalUpdateOpen(true)

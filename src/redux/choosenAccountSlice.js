@@ -11,6 +11,8 @@ const initState = {
     userName: '',
     birthdate: '',
     phone: '',
+    salary: '',
+    roleId: ''
 
 }
 const choosenAccountSlice = createSlice({
@@ -47,6 +49,8 @@ const choosenAccountSlice = createSlice({
                 state.userName = action.payload.userName;
                 state.birthdate = action.payload.birthdate;
                 state.phone = action.payload.phone;
+                state.salary = action.payload.salary;
+                state.roleId = action.payload.roleId;
                 state.status = false
             })
     }
