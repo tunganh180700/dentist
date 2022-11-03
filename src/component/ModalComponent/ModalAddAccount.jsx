@@ -67,24 +67,11 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
             console.log(values)
             values.birthdate = moment(value.$d).format('YYYY-MM-DD');
             values.roleId = roleId;
-            // handleOk(values);
             dispatch(addAccount(values))
+            setModalAddOpen(false)
         }
     });
 
-    const handleOk = () => {
-        formik.handleSubmit();
-        // const newData = {
-        //     fullName: data.name,
-        //     userName: data.username,
-        //     birthdate: data.birthdate,
-        //     phone: data.phone,
-        //     salary: data.salary,
-        //     roleId: data.roleId
-        // }
-        // dispatch(addAccount(newData));
-        // setModalAddOpen(false);
-    }
     return (
         <>
             <Modal
@@ -115,6 +102,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     name="password"
                     autoComplete="password"
                     autoFocus
+                    value={formik.values.password}
                     type={"password"}
                     onChange={formik.handleChange}
                 />

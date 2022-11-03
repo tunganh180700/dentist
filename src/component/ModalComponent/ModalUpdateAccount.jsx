@@ -19,6 +19,8 @@ import { fetchAccount, setBirthdate, setName, setPhone, setUserName, setMessage 
 import { updateAccount } from '../../redux/listAccountSlice';
 import { INPUT_EMPTY, INPUT_PHONE } from '../../config/constant';
 import { regexPhone } from '../../config/validation';
+import axios from 'axios';
+import { listRoleAPI } from '../../config/baseAPI';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -34,39 +36,40 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [permisstion, setPermisstion] = useState();
     const [errors, setErrors] = useState({ messageName: '', messagePhone: '' })
     const listAccount = useSelector(state => state.listAccount.listAccount)
+    const [roleIds, setRoleIds] = useState([]);
+    const [roleId, setRoleId] = useState();
 
-    // const formik = useFormik({
-    //     initialValues: {
-    //         name: "",
-    //         userName: "",
-    //         phone: "",
-    //     },
-    //     onSubmit: (values) => {
-    //         console.log(formik.errors)
-    //         console.log(values)
-    //     }
-    // })
+
+    const validationSchema = yup.object({
+        fullName: yup
+            .string('Enter your name')
+            .required('Your name is required'),
+        phone: yup
+            .string("Enter your phone")
+            .matches(regexPhone, "Invalid Phone")
+            .required("Phone is required"),
+        salary: yup
+            .string('Enter your salary')
+            .required('Salary is required')
+    });
+
+    const formik = useFormik({
+        initialValues: {
+            fullName: "",
+            phone: "",
+            salary: ""
+        },
+        onSubmit: (values) => {
+            console.log(formik.errors)
+            console.log(values)
+        }
+    })
 
     const handleChange = (SelectChangeEvent) => {
         setPermisstion(SelectChangeEvent);
     };
 
     const handleOk = () => {
-        setErrors({})
-        if (fullName === '') {
-            setErrors({ ...errors, messageName: INPUT_EMPTY })
-            return;
-        }
-        if (phone === '') {
-            setErrors({ ...errors, messagePhone: INPUT_EMPTY })
-            return;
-        }
-        if (regexPhone.test(phone)) {
-            setErrors({})
-        } else {
-            setErrors({ ...errors, messagePhone: INPUT_PHONE })
-            return;
-        }
         const data = {
             id: userId,
             name: fullName,
@@ -87,6 +90,22 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             dispatch(fetchAccount(userId))
         }
     }, [userId])
+
+    const loadRole = async () => {
+        try {
+            const res = await axios.get(listRoleAPI)
+            console.log(res)
+            setRoleId(res.data[0].roleId)
+            setRoleIds(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        loadRole();
+    }, [])
+
 
     return (
         <>
@@ -126,10 +145,10 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     margin="normal"
                     required
                     fullWidth
-                    id="phonenumber"
+                    id="phone"
                     label="Số điện thoại"
-                    name="phonenumber"
-                    autoComplete="phonenumber"
+                    name="phone"
+                    autoComplete="phone"
                     value={phone}
                     autoFocus
                     onChange={e => dispatch(setPhone(e.target.value))}
@@ -155,11 +174,9 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                             label="Quyền hạn"
                             onChange={handleChange}
                         >
-                            {/* {listAccount.map((item) =>
-                                <MenuItem value={item.roleName}>{item.roleName}</MenuItem>
-                            )} */}
-                            <MenuItem value={1}>One</MenuItem>
-                            <MenuItem value={2}>Two</MenuItem>
+                            {roleIds?.map(item => (
+                                <MenuItem key={item.roleId} value={item.roleId}>{item.roleName}</MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                 </Box>
