@@ -8,6 +8,7 @@ import WaitingRoomManagement from "../component/Admin/WaitingRoomManagementCompo
 import Sidebar from "../component/Admin/SidebarComponent/Sidebar";
 import Dashboard from "../component/Admin/Dashboard/Dashboard";
 import DashboardContent from "../component/Admin/Dashboard/Dashboard";
+import PatientManagement from "../component/Admin/PatientManagementComponent/PatientManagement";
 
 const Routing = () => {
     return (
@@ -18,6 +19,7 @@ const Routing = () => {
                 <Route path='/forgot' element={<ForgotPassword />} />
                 <Route path='/accmanagement' element={<AccountManagement />} />
                 <Route path='/meetingroom' element={<WaitingRoomManagement />} />
+                <Route path='/patient-management' element={<PatientManagement />} />
                 <Route path='/' element={<HomePage />} />
                 <Route path='*' element={<>404 Error</>} />
             </Routes>

@@ -18,9 +18,10 @@ import * as yup from "yup";
 import { fetchAccount, setBirthdate, setName, setPhone, setUserName, setMessage } from '../../redux/choosenAccountSlice';
 import { updateAccount } from '../../redux/listAccountSlice';
 import { INPUT_EMPTY, INPUT_PHONE } from '../../config/constant';
-import { regexPhone } from '../../config/validation';
+import { regexPhone, validationDate } from '../../config/validation';
 import axios from 'axios';
 import { listRoleAPI } from '../../config/baseAPI';
+import moment from 'moment/moment';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -33,13 +34,14 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const phone = useSelector(state => state.choosenAccount.phone);
     const userName = useSelector(state => state.choosenAccount.userName);
     const birthdate = useSelector(state => state.choosenAccount.birthdate);
-    const [permisstion, setPermisstion] = useState();
+    const roleName = useSelector(state => state.choosenAccount.roleName);
     const [errors, setErrors] = useState({ messageName: '', messagePhone: '' })
     const listAccount = useSelector(state => state.listAccount.listAccount)
+    const [value, setValue] = useState(null);
     const [roleIds, setRoleIds] = useState([]);
     const [roleId, setRoleId] = useState();
 
-
+    console.log(roleName)
     const validationSchema = yup.object({
         fullName: yup
             .string('Enter your name')
@@ -59,31 +61,23 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             phone: "",
             salary: ""
         },
+        validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log(formik.errors)
-            console.log(values)
+            const data = {
+                id: userId,
+                name: fullName,
+                username: userName,
+                phone: phone,
+                roleId: roleId,
+                birthdate: birthdate,
+                roleName: roleName,
+            }
+            values.birthdate = moment(value.$d).format(validationDate);
+            values.roleId = roleId;
+            dispatch(updateAccount(data));
+            setModalUpdateOpen(false);
         }
     })
-
-    const handleChange = (SelectChangeEvent) => {
-        setPermisstion(SelectChangeEvent);
-    };
-
-    const handleOk = () => {
-        const data = {
-            id: userId,
-            name: fullName,
-            username: userName,
-            phone: phone,
-            birthdate: birthdate,
-        }
-        dispatch(updateAccount(data));
-        setModalUpdateOpen(false);
-    }
-
-    // useEffect(() => {
-    //     formik.setValues(choosenAccount)
-    // }, [choosenAccount])
 
     useEffect(() => {
         if (userId > 0 && modalUpdateOpen) {
@@ -112,7 +106,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             <Modal
                 title="Thông tin nhân viên"
                 open={modalUpdateOpen}
-                onOk={handleOk}
+                onOk={formik.handleSubmit}
                 onCancel={() => setModalUpdateOpen(false)}
             >
                 <TextField
@@ -170,9 +164,9 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         <Select
                             labelId="permisstion"
                             id="permisstionSelect"
-                            value={permisstion}
+                            value={roleId}
                             label="Quyền hạn"
-                            onChange={handleChange}
+                            onChange={(e) => setRoleId(e.target.value)}
                         >
                             {roleIds?.map(item => (
                                 <MenuItem key={item.roleId} value={item.roleId}>{item.roleName}</MenuItem>

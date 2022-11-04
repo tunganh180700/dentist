@@ -8,17 +8,42 @@ import PaidIcon from '@mui/icons-material/Paid';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { Link } from "react-router-dom";
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Collapse from '@mui/material/Collapse';
+import List from '@mui/material/List';
+import StarBorder from '@mui/icons-material/StarBorder';
+import { useState } from 'react';
 
 const Sidebar = () => {
+    const [open, setOpen] = useState(true);
+    const handleClick = () => {
+        setOpen(!open);
+    };
+
     return (
         <>
             <React.Fragment>
-                <ListItemButton>
+                <ListItemButton onClick={handleClick}>
                     <ListItemIcon>
                         <CategoryIcon />
                     </ListItemIcon>
                     <ListItemText primary="Quản lý danh mục" />
+                    {open ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
+                <Collapse in={open} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <StarBorder />
+                            </ListItemIcon>
+                            <Link to={'/patient-management'}>
+                                <ListItemText primary="Bệnh nhân" />
+                            </Link>
+                        </ListItemButton>
+                    </List>
+                </Collapse>
+
                 <ListItemButton>
                     <ListItemIcon>
                         <MeetingRoomIcon />
@@ -27,12 +52,14 @@ const Sidebar = () => {
                         <ListItemText primary="Quản lý phòng chờ" />
                     </Link>
                 </ListItemButton>
+
                 <ListItemButton>
                     <ListItemIcon>
                         <PaidIcon />
                     </ListItemIcon>
                     <ListItemText primary="Quản lý doanh thu" />
                 </ListItemButton>
+
                 <ListItemButton>
                     <ListItemIcon>
                         <AccountCircleIcon />
@@ -41,6 +68,7 @@ const Sidebar = () => {
                         <ListItemText primary="Quản lý tài khoản" />
                     </Link>
                 </ListItemButton>
+
                 <ListItemButton>
                     <ListItemIcon>
                         <DescriptionIcon />

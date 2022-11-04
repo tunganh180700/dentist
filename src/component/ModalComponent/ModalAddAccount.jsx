@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addAccount } from '../../redux/listAccountSlice';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { regexPhone } from '../../config/validation';
+import { regexPhone, validationDate } from '../../config/validation';
 import axios from 'axios';
 import { listRoleAPI } from '../../config/baseAPI';
 import moment from 'moment/moment';
@@ -64,8 +64,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log(values)
-            values.birthdate = moment(value.$d).format('YYYY-MM-DD');
+            values.birthdate = moment(value.$d).format(validationDate);
             values.roleId = roleId;
             dispatch(addAccount(values))
             setModalAddOpen(false)
