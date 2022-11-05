@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Pagination, Typography, IconButton } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,11 +9,24 @@ import TableRow from '@mui/material/TableRow';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { fetchAllPatient } from '../../../redux/PatienSlice/listPatientSlice';
 
 const PatientManagementContent = () => {
+    const dispatch = useDispatch();
+    const listPatient = useSelector(state => state.listPatient.listPatient)
+    const pageSize = useSelector(state => state.listPatient.pageSize)
+    const totalPages = useSelector(state => state.listPatient.totalPage)
+    const [currentPage, setCurrentPage] = useState(0);
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
+
+    useEffect(() => {
+        dispatch(fetchAllPatient({
+            size: pageSize,
+            page: currentPage
+        }));
+    }, [currentPage])
     return (
         <>
             <Typography
@@ -33,43 +47,46 @@ const PatientManagementContent = () => {
                     <TableRow>
                         <TableCell>STT</TableCell>
                         <TableCell>Họ tên</TableCell>
-                        <TableCell>Tên đăng nhập</TableCell>
-                        <TableCell>Số điện thoại</TableCell>
                         <TableCell>Ngày sinh</TableCell>
-                        <TableCell>Quyền hạn</TableCell>
+                        <TableCell>Số điện thoại</TableCell>
+                        <TableCell>Giới tính</TableCell>
+                        <TableCell>Địa chỉ</TableCell>
+                        <TableCell>Email</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-
-                    <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>
-                            <IconButton aria-label="edit" onClick={() => {
-                                setModalUpdateOpen(true)
-                                // dispatch(setUserId(item.userId))
-                            }}>
-                                <EditIcon />
-                            </IconButton>
-                        </TableCell>
-                        <TableCell>
-                            <IconButton aria-label="delete" onClick={() => {
-                                setModalDeleteOpen(true)
-                                // dispatch(setUserId(item.userId))
-                            }}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </TableCell>
-                    </TableRow>
+                    {listPatient.map((item, index) =>
+                        <TableRow key={item.patientId}>
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>{item.patientName}</TableCell>
+                            <TableCell>{item.birthdate}</TableCell>
+                            <TableCell>{item.phone}</TableCell>
+                            <TableCell>{item.gender}</TableCell>
+                            <TableCell>{item.address}</TableCell>
+                            <TableCell>{item.email}</TableCell>
+                            <TableCell>
+                                <IconButton aria-label="edit" onClick={() => {
+                                    setModalUpdateOpen(true)
+                                    // dispatch(setUserId(item.userId))
+                                }}>
+                                    <EditIcon />
+                                </IconButton>
+                            </TableCell>
+                            <TableCell>
+                                <IconButton aria-label="delete" onClick={() => {
+                                    setModalDeleteOpen(true)
+                                    // dispatch(setUserId(item.userId))
+                                }}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </TableCell>
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
-            {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Pagination
                     count={totalPages}
                     defaultPage={1}
@@ -77,7 +94,7 @@ const PatientManagementContent = () => {
                         setCurrentPage(pageNumber - 1)
                     }}
                 />
-            </div> */}
+            </div>
         </>
     )
 }

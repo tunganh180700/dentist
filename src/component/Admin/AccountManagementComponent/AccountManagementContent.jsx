@@ -8,7 +8,6 @@ import TableRow from '@mui/material/TableRow';
 import { Pagination, Typography, IconButton } from '@mui/material';
 import { listUserAPI } from '../../../config/baseAPI';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllAccount } from '../../../redux/listAccountSlice';
 import { setUserId } from '../../../redux/modalSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -16,14 +15,13 @@ import AddIcon from '@mui/icons-material/Add';
 import ModalUpdateAccount from '../../ModalComponent/ModalUpdateAccount';
 import ModalDeleteAccount from '../../ModalComponent/ModalDeleteAccount';
 import ModalAddAcount from '../../ModalComponent/ModalAddAccount';
+import { fetchAllAccount } from '../../../redux/AccountSlice/listAccountSlice';
 
 const AccountManagementContent = () => {
 
     const listAccount = useSelector(state => state.listAccount.listAccount)
     const dispatch = useDispatch()
-    const pageNumber = useSelector(state => state.listAccount.pageNumber)
     const pageSize = useSelector(state => state.listAccount.pageSize)
-    const totalElements = useSelector(state => state.listAccount.totalElements)
     const totalPages = useSelector(state => state.listAccount.totalPage)
     const [currentPage, setCurrentPage] = useState(0);
     // const userId = useSelector(state=>state.modal.userId);

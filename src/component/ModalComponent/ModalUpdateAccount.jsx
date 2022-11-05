@@ -15,13 +15,13 @@ import Typography from '@mui/material/Typography';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { fetchAccount, setBirthdate, setName, setPhone, setUserName, setMessage } from '../../redux/choosenAccountSlice';
-import { updateAccount } from '../../redux/listAccountSlice';
 import { INPUT_EMPTY, INPUT_PHONE } from '../../config/constant';
 import { regexPhone, validationDate } from '../../config/validation';
 import axios from 'axios';
 import { listRoleAPI } from '../../config/baseAPI';
 import moment from 'moment/moment';
+import { updateAccount } from '../../redux/AccountSlice/listAccountSlice';
+import { setName, setBirthdate, setUserName, setPhone, fetchAccount } from '../../redux/AccountSlice/choosenAccountSlice';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {

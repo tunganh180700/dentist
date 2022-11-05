@@ -11,13 +11,13 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useDispatch, useSelector } from "react-redux";
-import { addAccount } from '../../redux/listAccountSlice';
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { regexPhone, validationDate } from '../../config/validation';
 import axios from 'axios';
 import { listRoleAPI } from '../../config/baseAPI';
 import moment from 'moment/moment';
+import { addAccount } from '../../redux/AccountSlice/listAccountSlice';
 
 const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();

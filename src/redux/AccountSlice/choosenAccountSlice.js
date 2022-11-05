@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
-import { getAccountByIdAPI } from "../config/baseAPI"
+import { getAccountByIdAPI } from "../../config/baseAPI"
 
 const initState = {
     choosenAccount: {},

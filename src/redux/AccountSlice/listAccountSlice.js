@@ -1,10 +1,9 @@
-import { Rtt, TonalitySharp } from "@mui/icons-material"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
-import { listUserAPI, updateAccountAPI, deleteAccountAPI, addAccountAPI } from "../config/baseAPI"
+import { listUserAPI, updateAccountAPI, deleteAccountAPI, addAccountAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
-import { toastCss } from "./toastCss"
-import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../config/constant"
+import { toastCss } from "../toastCss"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
 
 const initState = {
     listAccount: [],
@@ -12,8 +11,6 @@ const initState = {
     status: false,
     index: 0,
     pageSize: 3,
-    pageNumber: 0,
-    totalElements: 0,
     totalPage: 0,
     statusUpdateAccount: false,
     isUpdateAccount: false,
@@ -41,7 +38,6 @@ const listAccountSlice = createSlice({
                 state.listAccount = action.payload.content;
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
-                state.totalElements = action.payload.totalElements;
                 state.totalPage = action.payload.totalPages;
                 state.isUpdateAccount = false;
                 state.isDeleteAccount = false;
