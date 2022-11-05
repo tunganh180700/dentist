@@ -21,12 +21,14 @@ const PatientManagementContent = () => {
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
 
+    // console.log(gender)
     useEffect(() => {
         dispatch(fetchAllPatient({
             size: pageSize,
             page: currentPage
         }));
     }, [currentPage])
+
     return (
         <>
             <Typography
@@ -63,7 +65,7 @@ const PatientManagementContent = () => {
                             <TableCell>{item.patientName}</TableCell>
                             <TableCell>{item.birthdate}</TableCell>
                             <TableCell>{item.phone}</TableCell>
-                            <TableCell>{item.gender}</TableCell>
+                            <TableCell>{item.gender ? "Nam" : "Nu"}</TableCell>
                             <TableCell>{item.address}</TableCell>
                             <TableCell>{item.email}</TableCell>
                             <TableCell>

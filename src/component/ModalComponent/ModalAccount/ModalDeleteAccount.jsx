@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Modal } from 'antd';
-import './style.css';
-import { deleteAccount } from '../../redux/AccountSlice/listAccountSlice';
-import { fetchAccount } from '../../redux/AccountSlice/choosenAccountSlice';
+import './../style.css';
+import { deleteAccount } from '../../../redux/AccountSlice/listAccountSlice';
+import { fetchAccount } from '../../../redux/AccountSlice/choosenAccountSlice'
 
 const ModalDeleteAccount = ({ modalDeleteOpen, setModalDeleteOpen }) => {
     const dispatch = useDispatch();

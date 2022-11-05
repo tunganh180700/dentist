@@ -16,7 +16,7 @@ const initState = {
     isDeletePatient: false,
     statusAddPatient: false,
     isAddPatient: false,
-    message: ''
+    message: '',
 }
 
 const listPatientSlice = createSlice({
@@ -54,5 +54,5 @@ export const fetchAllPatient = createAsyncThunk('listPatient/fetchAllPatient', a
     }
 })
 
-export const { setListPatient } = listPatientSlice.actions;
+export const { setListPatient, setGender } = listPatientSlice.actions;
 export default listPatientSlice.reducer;

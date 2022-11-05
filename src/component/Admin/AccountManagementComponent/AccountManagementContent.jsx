@@ -12,10 +12,11 @@ import { setUserId } from '../../../redux/modalSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
-import ModalUpdateAccount from '../../ModalComponent/ModalUpdateAccount';
-import ModalDeleteAccount from '../../ModalComponent/ModalDeleteAccount';
-import ModalAddAcount from '../../ModalComponent/ModalAddAccount';
+
 import { fetchAllAccount } from '../../../redux/AccountSlice/listAccountSlice';
+import ModalUpdateAccount from '../../ModalComponent/ModalAccount/ModalUpdateAccount';
+import ModalDeleteAccount from '../../ModalComponent/ModalAccount/ModalDeleteAccount';
+import ModalAddAcount from '../../ModalComponent/ModalAccount/ModalAddAccount';
 
 const AccountManagementContent = () => {
 
@@ -34,7 +35,7 @@ const AccountManagementContent = () => {
     const [modalAddOpen, setModalAddOpen] = useState(false);
 
 
-    
+
     useEffect(() => {
         dispatch(fetchAllAccount({
             size: pageSize,

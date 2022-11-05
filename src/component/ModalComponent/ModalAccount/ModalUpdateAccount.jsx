@@ -6,7 +6,7 @@ import { TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import "./style.css"
+import "./../style.css"
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -15,13 +15,12 @@ import Typography from '@mui/material/Typography';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { INPUT_EMPTY, INPUT_PHONE } from '../../config/constant';
-import { regexPhone, validationDate } from '../../config/validation';
 import axios from 'axios';
-import { listRoleAPI } from '../../config/baseAPI';
 import moment from 'moment/moment';
-import { updateAccount } from '../../redux/AccountSlice/listAccountSlice';
-import { setName, setBirthdate, setUserName, setPhone, fetchAccount } from '../../redux/AccountSlice/choosenAccountSlice';
+import { updateAccount } from '../../../redux/AccountSlice/listAccountSlice';
+import { fetchAccount, setBirthdate, setName, setPhone, setUserName } from '../../../redux/AccountSlice/choosenAccountSlice';
+import { regexPhone, validationDate } from '../../../config/validation';
+import { listRoleAPI } from '../../../config/baseAPI';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {

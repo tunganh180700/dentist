@@ -13,11 +13,11 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { regexPhone, validationDate } from '../../config/validation';
+import { regexPhone, validationDate } from '../../../config/validation';
 import axios from 'axios';
-import { listRoleAPI } from '../../config/baseAPI';
+import { listRoleAPI } from '../../../config/baseAPI';
 import moment from 'moment/moment';
-import { addAccount } from '../../redux/AccountSlice/listAccountSlice';
+import { addAccount } from '../../../redux/AccountSlice/listAccountSlice';
 
 const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -83,10 +83,10 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     margin="normal"
                     required
                     fullWidth
-                    id="name"
+                    id="fullName"
                     label="Họ và tên"
                     name="fullName"
-                    autoComplete="name"
+                    autoComplete="fullName"
                     value={formik.values.fullName}
                     autoFocus
                     onChange={formik.handleChange}
