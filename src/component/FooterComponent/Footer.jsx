@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-const LoginComponent = () => {
+const Footer = () => {
     return (
         <>
-        Logion
+        
         </>
     )
 }
 
-export default LoginComponent;
+export default Footer;
