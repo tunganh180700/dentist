@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { fetchAllPatient } from '../../../redux/PatienSlice/listPatientSlice';
+import ModalAddPatient from '../../ModalComponent/ModalPatient/ModalAddPatient';
 
 const PatientManagementContent = () => {
     const dispatch = useDispatch();
@@ -96,6 +97,9 @@ const PatientManagementContent = () => {
                         setCurrentPage(pageNumber - 1)
                     }}
                 />
+            </div>
+            <div>
+                <ModalAddPatient modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
             </div>
         </>
     )
