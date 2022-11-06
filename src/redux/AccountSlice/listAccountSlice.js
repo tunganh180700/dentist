@@ -77,22 +77,16 @@ export const fetchAllAccount = createAsyncThunk('listAccount/fetchAllAccount', a
 })
 
 export const updateAccount = createAsyncThunk('listAccount/updateAccount', async (data) => {
+    // console.log(data.userId)
     try {
-        const tempData = {
-            fullName: data.name,
-            userName: data.username,
-            birthdate: data.birthdate,
-            phone: data.phone,
-            salary: data.salary,
-            roleId: data.roleId
-        }
         const res = await axios.put(
-            updateAccountAPI + data.id, tempData
+            updateAccountAPI + data.userId, data
         )
         console.log(res)
         toast.success(UPDATE_SUCCESS, toastCss)
         return res.data
     } catch (error) {
+        console.log(error)
         toast.error(UPDATE_FAIL, toastCss)
 
     }

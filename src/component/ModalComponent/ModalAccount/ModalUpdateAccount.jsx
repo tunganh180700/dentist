@@ -12,35 +12,24 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Typography from '@mui/material/Typography';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from 'axios';
 import moment from 'moment/moment';
 import { updateAccount } from '../../../redux/AccountSlice/listAccountSlice';
-import { fetchAccount, setBirthdate, setName, setPhone, setUserName } from '../../../redux/AccountSlice/choosenAccountSlice';
 import { regexPhone, validationDate } from '../../../config/validation';
-import { listRoleAPI } from '../../../config/baseAPI';
+import { getAccountByIdAPI, listRoleAPI } from '../../../config/baseAPI';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const dispatch = useDispatch();
     const userId = useSelector(state => state.modal.userId);
-    const status = useSelector(state => state.listAccount.status)
-    const statusUpdateAccount = useSelector(state => state.listAccount.statusUpdateAccount);
-    const choosenAccount = useSelector(state => state.choosenAccount.choosenAccount);
-    const fullName = useSelector(state => state.choosenAccount.name);
-    const phone = useSelector(state => state.choosenAccount.phone);
-    const userName = useSelector(state => state.choosenAccount.userName);
-    const birthdate = useSelector(state => state.choosenAccount.birthdate);
-    const roleName = useSelector(state => state.choosenAccount.roleName);
-    const [errors, setErrors] = useState({ messageName: '', messagePhone: '' })
-    const listAccount = useSelector(state => state.listAccount.listAccount)
+    const [loading, setLoading] = useState();
     const [value, setValue] = useState(null);
     const [roleIds, setRoleIds] = useState([]);
     const [roleId, setRoleId] = useState();
 
-    console.log(roleName)
     const validationSchema = yup.object({
         fullName: yup
             .string('Enter your name')
@@ -56,38 +45,48 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
     const formik = useFormik({
         initialValues: {
-            fullName: "",
-            phone: "",
-            salary: ""
+
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            const data = {
-                id: userId,
-                name: fullName,
-                username: userName,
-                phone: phone,
-                roleId: roleId,
-                birthdate: birthdate,
-                roleName: roleName,
-            }
             values.birthdate = moment(value.$d).format(validationDate);
             values.roleId = roleId;
-            dispatch(updateAccount(data));
+            const roleNameArray = roleIds.filter((el) => {
+                if (el.roleId === roleId) {
+                    return el
+                }
+            })
+
+            values.roleName = roleNameArray[0].roleName
+            dispatch(updateAccount(values));
             setModalUpdateOpen(false);
         }
     })
 
-    useEffect(() => {
-        if (userId > 0 && modalUpdateOpen) {
-            dispatch(fetchAccount(userId))
+    const fetchAccount = async (userId) => {
+        setLoading(true)
+        try {
+            const res = await axios.get(
+                getAccountByIdAPI + userId,
+            )
+            console.log(res.data)
+            formik.setValues(res.data)
+            setRoleId(res.data.roleId)
+            setValue(res.data.birthdate)
+        } catch (error) {
+            console.log(error)
         }
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        if (userId > 0)
+            fetchAccount(userId)
     }, [userId])
 
     const loadRole = async () => {
         try {
             const res = await axios.get(listRoleAPI)
-            console.log(res)
             setRoleId(res.data[0].roleId)
             setRoleIds(res.data)
         } catch (error) {
@@ -108,71 +107,88 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                 onOk={formik.handleSubmit}
                 onCancel={() => setModalUpdateOpen(false)}
             >
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="name"
-                    label="Họ và tên"
-                    name="name"
-                    autoComplete="name"
-                    value={fullName}
-                    autoFocus
-                    onChange={e => dispatch(setName(e.target.value))}
-                />
-                {errors.messageName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{errors.messageName}</Typography>}
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="username"
-                    disabled
-                    label="Tên đăng nhập"
-                    name="username"
-                    autoComplete="username"
-                    value={userName}
-                    autoFocus
-                    onChange={e => dispatch(setUserName(e.target.value))}
-                />
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="phone"
-                    label="Số điện thoại"
-                    name="phone"
-                    autoComplete="phone"
-                    value={phone}
-                    autoFocus
-                    onChange={e => dispatch(setPhone(e.target.value))}
-                />
-                {errors.messagePhone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{errors.messagePhone}</Typography>}
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        label="Ngày sinh"
-                        value={birthdate}
-                        onChange={(newValue) => {
-                            dispatch(setBirthdate(newValue));
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
+                {loading === false && <>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="fullName"
+                        label="Họ và tên"
+                        name="fullName"
+                        autoComplete="fullName"
+                        value={formik.values.fullName}
+                        autoFocus
+                        onChange={formik.handleChange}
                     />
-                </LocalizationProvider>
-                <Box sx={{ minWidth: 120 }}>
-                    <FormControl fullWidth>
-                        <InputLabel id="permisstion">Quyền hạn</InputLabel>
-                        <Select
-                            labelId="permisstion"
-                            id="permisstionSelect"
-                            value={roleId}
-                            label="Quyền hạn"
-                            onChange={(e) => setRoleId(e.target.value)}
-                        >
-                            {roleIds?.map(item => (
-                                <MenuItem key={item.roleId} value={item.roleId}>{item.roleName}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Box>
+                    {formik.errors.fullName && <Typography style={{ color: 'red' }}>{formik.errors.fullName}</Typography>}
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        disabled
+                        label="Tên đăng nhập"
+                        name="username"
+                        value={formik.values.userName}
+                        autoComplete="username"
+                        autoFocus
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="phonenumber"
+                        label="Số điện thoại"
+                        name="phone"
+                        autoComplete="phonenumber"
+                        value={formik.values.phone}
+                        autoFocus
+                        onChange={formik.handleChange}
+                    />
+                    {formik.errors.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="Ngày sinh"
+                            name="birthdate"
+                            value={value}
+                            onChange={(newValue) => {
+                                setValue(newValue);
+                                console.log(newValue)
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="salary"
+                        label="Lương"
+                        name="salary"
+                        autoComplete="salary"
+                        value={formik.values.salary}
+                        autoFocus
+                        onChange={formik.handleChange}
+                    />
+                    {formik.errors.salary && <Typography style={{ color: 'red' }}>{formik.errors.salary}</Typography>}
+                    <Box sx={{ minWidth: 120 }}>
+                        <FormControl fullWidth>
+                            <InputLabel id="permisstion">Quyền hạn</InputLabel>
+                            <Select
+                                labelId="permisstion"
+                                id="permisstionSelect"
+                                label="Quyền hạn"
+                                value={roleId}
+                                onChange={(e) => setRoleId(e.target.value)}
+                            >
+                                {roleIds?.map(item => (
+                                    <MenuItem key={item.roleId} value={item.roleId}>{item.roleName}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </>}
+
             </Modal>
         </>
     )
