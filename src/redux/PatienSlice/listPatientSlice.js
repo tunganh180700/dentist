@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 import { toast } from "react-toastify"
-import { addPatientAPI, listPatientAPI } from "../../config/baseAPI"
+import { addPatientAPI, deletePatientAPI, listPatientAPI } from "../../config/baseAPI"
+import { DELETE_FAIL, DELETE_SUCCESS } from "../../config/constant"
 import { toastCss } from "../toastCss"
 
 const initState = {
@@ -37,12 +38,19 @@ const listPatientSlice = createSlice({
                 state.status = false;
                 state.totalPage = action.payload.totalPages;
                 state.isAddPatient = false;
+                state.isDeletePatient = false
             })
             .addCase(addPatient.pending, (state, action) => {
                 state.statusAddPatient = true
             })
             .addCase(addPatient.fulfilled, (state, action) => {
                 state.isAddPatient = true
+            })
+            .addCase(deletePatient.pending, (state, action) => {
+                state.statusDeletePatient = true
+            })
+            .addCase(deletePatient.fulfilled, (state, action) => {
+                state.isDeletePatient = true
             })
 
 
@@ -83,5 +91,18 @@ export const addPatient = createAsyncThunk('listPatient/addPatient', async (valu
         toast.error('Thêm mới thất bại :(', toastCss)
     }
 })
+
+export const deletePatient = createAsyncThunk('listPatient/deletePatient', async (patientId) => {
+    console.log(patientId)
+    try {
+        const res = await axios.delete(deletePatientAPI + patientId)
+        toast.success(DELETE_SUCCESS, toastCss)
+        return patientId
+    } catch (error) {
+        toast.error(DELETE_FAIL, toastCss)
+
+    }
+})
+
 export const { setListPatient } = listPatientSlice.actions;
 export default listPatientSlice.reducer;

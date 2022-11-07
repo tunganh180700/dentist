@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { fetchAllPatient } from '../../../redux/PatienSlice/listPatientSlice';
 import ModalAddPatient from '../../ModalComponent/ModalPatient/ModalAddPatient';
+import ModalDeletePatient from '../../ModalComponent/ModalPatient/ModalDeletePatient';
 
 const PatientManagementContent = () => {
     const dispatch = useDispatch();
@@ -100,6 +101,9 @@ const PatientManagementContent = () => {
             </div>
             <div>
                 <ModalAddPatient modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+            </div>
+            <div>
+                <ModalDeletePatient modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
             </div>
         </>
     )
