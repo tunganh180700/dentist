@@ -7,5 +7,6 @@ export const deleteAccountAPI = `${baseUrl}/api/users/`
 export const addAccountAPI = `${baseUrl}/api/users/register`
 
 export const listPatientAPI = `${baseUrl}/api/patients/get_list_patients`
+export const addPatientAPI = `${baseUrl}/api/patients/`
 
 export const listRoleAPI = `${baseUrl}/api/roles/get_list_roles`

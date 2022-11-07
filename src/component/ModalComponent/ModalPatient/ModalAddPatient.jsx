@@ -15,13 +15,53 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useDispatch, useSelector } from "react-redux";
+import * as yup from "yup";
+import { regexEmail, regexPhone, validationDate } from '../../../config/validation';
+import { useFormik } from 'formik';
+import moment from 'moment';
+import { addPatient } from '../../../redux/PatienSlice/listPatientSlice';
 
 const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
+    const dispatch = useDispatch();
     const [value, setValue] = useState(null);
+    const [gender, setGender] = useState();
 
-    const formik = () => {
+    const validationSchema = yup.object({
+        patientName: yup
+            .string('Enter your name')
+            .required('Your name is required'),
+        phone: yup
+            .string("Enter your phone")
+            .matches(regexPhone, "Invalid Phone")
+            .required("Phone is required"),
+        email: yup
+            .string("Enter your email")
+            .matches(regexEmail, "Invalid email")
+            .required("Email is required"),
+        address: yup
+            .string("Enter your address")
+            .required("Address is required"),
+    });
 
-    }
+    const formik = useFormik({
+        initialValues: {
+            patientName: '',
+            phone: "",
+            email: "",
+            address: '',
+            bodyPrehistory: '',
+            teethPrehistory: ''
+        },
+        validationSchema: validationSchema,
+        onSubmit: (values) => {
+            values.birthdate = moment(value.$d).format(validationDate);
+            values.gender = gender;
+            dispatch(addPatient(values))
+            setModalAddOpen(false)
+            formik.handleReset()
+        }
+    });
+
     return (
         <>
             <Modal
@@ -34,15 +74,15 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     margin="normal"
                     required
                     fullWidth
-                    id="fullName"
-                    label="Họ và tên"
-                    name="fullName"
-                    autoComplete="fullName"
-                    // value={formik.values.fullName}
+                    id="patientName"
+                    label="Họ và tên bệnh nhân"
+                    name="patientName"
+                    autoComplete="patientName"
+                    value={formik.values.patientName}
                     autoFocus
-                // onChange={formik.handleChange}
+                    onChange={formik.handleChange}
                 />
-                {/* {formik.errors.fullName && <Typography style={{ color: 'red' }}>{formik.errors.fullName}</Typography>} */}
+                {formik.errors.patientName && <Typography style={{ color: 'red' }}>{formik.errors.patientName}</Typography>}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Ngày sinh"
@@ -63,11 +103,11 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     label="Số điện thoại"
                     name="phone"
                     autoComplete="phonenumber"
-                    // value={formik.values.phone}
+                    value={formik.values.phone}
                     autoFocus
-                // onChange={formik.handleChange}
+                    onChange={formik.handleChange}
                 />
-                {/* {formik.errors.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>} */}
+                {formik.errors.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
                 <FormControl style={{ display: 'flex' }}>
                     <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginRight: "80%" }}>Gender</FormLabel>
                     <RadioGroup
@@ -75,10 +115,10 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                         aria-labelledby="demo-row-radio-buttons-group-label"
                         name="row-radio-buttons-group"
                         style={{ marginRight: "30%" }}
+                        onChange={(e) => setGender(e.target.value)}
                     >
-                        <FormControlLabel value="female" control={<Radio />} label="Female" />
-                        <FormControlLabel value="male" control={<Radio />} label="Male" />
-                        <FormControlLabel value="other" control={<Radio />} label="Other" />
+                        <FormControlLabel value={false} control={<Radio />} label="Nữ" />
+                        <FormControlLabel value={true} control={<Radio />} label="Nam" />
                     </RadioGroup>
                 </FormControl>
                 <TextField
@@ -89,11 +129,11 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     label="Địa chỉ"
                     name="address"
                     autoComplete="address"
-                    // value={formik.values.salary}
+                    value={formik.values.address}
                     autoFocus
-                // onChange={formik.handleChange}
+                    onChange={formik.handleChange}
                 />
-                {/* {formik.errors.salary && <Typography style={{ color: 'red' }}>{formik.errors.salary}</Typography>} */}
+                {formik.errors.address && <Typography style={{ color: 'red' }}>{formik.errors.address}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -102,9 +142,32 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     label="Email"
                     name="email"
                     autoComplete="email"
-                    // value={formik.values.salary}
+                    value={formik.values.email}
                     autoFocus
-                // onChange={formik.handleChange}
+                    onChange={formik.handleChange}
+                />
+                {formik.errors.email && <Typography style={{ color: 'red' }}>{formik.errors.email}</Typography>}
+                <TextField
+                    margin="normal"
+                    fullWidth
+                    id="bodyPrehistory"
+                    label="Tiền sử cơ thể"
+                    name="bodyPrehistory"
+                    autoComplete="bodyPrehistory"
+                    value={formik.values.bodyPrehistory}
+                    autoFocus
+                    onChange={formik.handleChange}
+                />
+                <TextField
+                    margin="normal"
+                    fullWidth
+                    id="teethPrehistory"
+                    label="Tiền sử răng miệng"
+                    name="teethPrehistory"
+                    autoComplete="teethPrehistory"
+                    value={formik.values.teethPrehistory}
+                    autoFocus
+                    onChange={formik.handleChange}
                 />
             </Modal>
         </>

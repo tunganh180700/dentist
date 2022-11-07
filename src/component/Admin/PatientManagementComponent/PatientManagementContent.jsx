@@ -66,7 +66,7 @@ const PatientManagementContent = () => {
                             <TableCell>{item.patientName}</TableCell>
                             <TableCell>{item.birthdate}</TableCell>
                             <TableCell>{item.phone}</TableCell>
-                            <TableCell>{item.gender ? "Nam" : "Nu"}</TableCell>
+                            <TableCell>{item.gender ? "Nam" : "Nữ"}</TableCell>
                             <TableCell>{item.address}</TableCell>
                             <TableCell>{item.email}</TableCell>
                             <TableCell>

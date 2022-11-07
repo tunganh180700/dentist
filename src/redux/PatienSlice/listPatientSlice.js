@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 import { toast } from "react-toastify"
-import { listPatientAPI } from "../../config/baseAPI"
+import { addPatientAPI, listPatientAPI } from "../../config/baseAPI"
 import { toastCss } from "../toastCss"
 
 const initState = {
@@ -36,6 +36,13 @@ const listPatientSlice = createSlice({
                 state.listPatient = action.payload.content;
                 state.status = false;
                 state.totalPage = action.payload.totalPages;
+                state.isAddPatient = false;
+            })
+            .addCase(addPatient.pending, (state, action) => {
+                state.statusAddPatient = true
+            })
+            .addCase(addPatient.fulfilled, (state, action) => {
+                state.isAddPatient = true
             })
 
 
@@ -54,5 +61,27 @@ export const fetchAllPatient = createAsyncThunk('listPatient/fetchAllPatient', a
     }
 })
 
-export const { setListPatient, setGender } = listPatientSlice.actions;
+export const addPatient = createAsyncThunk('listPatient/addPatient', async (values) => {
+    try {
+        const formValue = {
+            patientName: values.patientName,
+            birthdate: values.birthdate,
+            gender: values.gender,
+            address: values.address,
+            phone: values.phone,
+            email: values.email,
+            bodyPrehistory: values.bodyPrehistory,
+            teethPrehistory: values.teethPrehistory
+        }
+        console.log(values)
+        const res = await axios.post(addPatientAPI, formValue)
+        toast.success("Thêm mới thành công !!!!!", toastCss)
+        console.log(res.data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+        toast.error('Thêm mới thất bại :(', toastCss)
+    }
+})
+export const { setListPatient } = listPatientSlice.actions;
 export default listPatientSlice.reducer;
