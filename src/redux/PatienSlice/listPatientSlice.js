@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 import { toast } from "react-toastify"
-import { addPatientAPI, deletePatientAPI, listPatientAPI } from "../../config/baseAPI"
-import { DELETE_FAIL, DELETE_SUCCESS } from "../../config/constant"
+import { addPatientAPI, deletePatientAPI, listPatientAPI, updatePatientAPI } from "../../config/baseAPI"
+import { DELETE_FAIL, DELETE_SUCCESS, UPDATE_FAIL, UPDATE_SUCCESS } from "../../config/constant"
 import { toastCss } from "../toastCss"
 
 const initState = {
@@ -38,7 +38,8 @@ const listPatientSlice = createSlice({
                 state.status = false;
                 state.totalPage = action.payload.totalPages;
                 state.isAddPatient = false;
-                state.isDeletePatient = false
+                state.isDeletePatient = false;
+                state.isUpdatePatient = false;
             })
             .addCase(addPatient.pending, (state, action) => {
                 state.statusAddPatient = true
@@ -52,7 +53,12 @@ const listPatientSlice = createSlice({
             .addCase(deletePatient.fulfilled, (state, action) => {
                 state.isDeletePatient = true
             })
-
+            .addCase(updatePatient.pending, (state, action) => {
+                state.statusUpdatePatient = true
+            })
+            .addCase(updatePatient.fulfilled, (state, action) => {
+                state.isUpdatePatient = true
+            })
 
     }
 })
@@ -93,13 +99,30 @@ export const addPatient = createAsyncThunk('listPatient/addPatient', async (valu
 })
 
 export const deletePatient = createAsyncThunk('listPatient/deletePatient', async (patientId) => {
-    console.log(patientId)
+
     try {
         const res = await axios.delete(deletePatientAPI + patientId)
         toast.success(DELETE_SUCCESS, toastCss)
+        console.log(patientId)
         return patientId
     } catch (error) {
         toast.error(DELETE_FAIL, toastCss)
+
+    }
+})
+
+export const updatePatient = createAsyncThunk('listPatient/updatePatient', async (data) => {
+    // console.log(data.userId)
+    try {
+        const res = await axios.put(
+            updatePatientAPI + data.patientId, data
+        )
+        console.log(res)
+        toast.success(UPDATE_SUCCESS, toastCss)
+        return res.data
+    } catch (error) {
+        console.log(error)
+        toast.error(UPDATE_FAIL, toastCss)
 
     }
 })

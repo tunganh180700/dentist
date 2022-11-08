@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
-import { getAccountByIdAPI, getPatientByIdAPI } from "../../config/baseAPI"
+import {  getPatientByIdAPI } from "../../config/baseAPI"
 
 const initState = {
     choosenPatient: {},

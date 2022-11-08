@@ -12,6 +12,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import { fetchAllPatient } from '../../../redux/PatienSlice/listPatientSlice';
 import ModalAddPatient from '../../ModalComponent/ModalPatient/ModalAddPatient';
 import ModalDeletePatient from '../../ModalComponent/ModalPatient/ModalDeletePatient';
+import { setUserId } from '../../../redux/modalSlice';
+import ModalUpdatePatient from '../../ModalComponent/ModalPatient/ModalUpdatePatient';
 
 const PatientManagementContent = () => {
     const dispatch = useDispatch();
@@ -23,13 +25,17 @@ const PatientManagementContent = () => {
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
 
+    const isDeletePatient = useSelector(state => state.listPatient.isDeletePatient);
+    const isAddPatient = useSelector(state => state.listPatient.isAddPatient);
+    const isUpdatePatient = useSelector(state => state.listPatient.isUpdatePatient);
+
     // console.log(gender)
     useEffect(() => {
         dispatch(fetchAllPatient({
             size: pageSize,
             page: currentPage
         }));
-    }, [currentPage])
+    }, [currentPage, isAddPatient, isDeletePatient, isUpdatePatient])
 
     return (
         <>
@@ -73,7 +79,7 @@ const PatientManagementContent = () => {
                             <TableCell>
                                 <IconButton aria-label="edit" onClick={() => {
                                     setModalUpdateOpen(true)
-                                    // dispatch(setUserId(item.userId))
+                                    dispatch(setUserId(item.patientId))
                                 }}>
                                     <EditIcon />
                                 </IconButton>
@@ -81,7 +87,7 @@ const PatientManagementContent = () => {
                             <TableCell>
                                 <IconButton aria-label="delete" onClick={() => {
                                     setModalDeleteOpen(true)
-                                    // dispatch(setUserId(item.userId))
+                                    dispatch(setUserId(item.patientId))
                                 }}>
                                     <DeleteIcon />
                                 </IconButton>
@@ -104,6 +110,9 @@ const PatientManagementContent = () => {
             </div>
             <div>
                 <ModalDeletePatient modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
+            </div>
+            <div>
+                <ModalUpdatePatient modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
             </div>
         </>
     )

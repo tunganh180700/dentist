@@ -14,7 +14,7 @@ const ModalDeletePatient = ({ modalDeleteOpen, setModalDeleteOpen }) => {
 
     console.log(patientId)
     const handleOk = () => {
-        setModalText('Bạn chắc chắn muốn xóa không ?');
+        setModalText('Đang xóa bệnh nhân');
         handleDelete(patientId);
         setConfirmLoading(true);
         setTimeout(() => {

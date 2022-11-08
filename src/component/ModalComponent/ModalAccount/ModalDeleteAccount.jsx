@@ -14,7 +14,7 @@ const ModalDeleteAccount = ({ modalDeleteOpen, setModalDeleteOpen }) => {
 
     console.log(userId)
     const handleOk = () => {
-        setModalText('Bạn chắc chắn muốn xóa không ?');
+        setModalText('Đang xóa tài khoản !');
         handleDelete(userId);
         setConfirmLoading(true);
         setTimeout(() => {
