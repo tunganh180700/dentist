@@ -53,7 +53,7 @@ const AccountManagementContent = () => {
             >
                 Quản lý tài khoản
             </Typography>
-            <IconButton aria-label="add" onClick={() => {
+            <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
                 setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
@@ -61,7 +61,6 @@ const AccountManagementContent = () => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>STT</TableCell>
                         <TableCell>Họ tên</TableCell>
                         <TableCell>Tên đăng nhập</TableCell>
                         <TableCell>Số điện thoại</TableCell>
@@ -72,9 +71,8 @@ const AccountManagementContent = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {listAccount.map((item, index) =>
+                    {listAccount.map((item) =>
                         <TableRow key={item.userId}>
-                            <TableCell>{index + 1}</TableCell>
                             <TableCell>{item.fullName}</TableCell>
                             <TableCell>{item.userName}</TableCell>
                             <TableCell>{item.phone}</TableCell>
@@ -100,7 +98,7 @@ const AccountManagementContent = () => {
                     )}
                 </TableBody>
             </Table>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
                 <Pagination
                     count={totalPages}
                     defaultPage={1}
