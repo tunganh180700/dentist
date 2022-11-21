@@ -44,6 +44,7 @@ const listPatientSlice = createSlice({
                 state.isAddPatient = false;
                 state.isDeletePatient = false;
                 state.isUpdatePatient = false;
+                state.isSearchPatient = false;
             })
             .addCase(addPatient.pending, (state, action) => {
                 state.statusAddPatient = true
@@ -67,6 +68,7 @@ const listPatientSlice = createSlice({
                 state.statusSearchPatient = true
             })
             .addCase(searchPatient.fulfilled, (state, action) => {
+                state.listPatient = action.payload.content;
                 state.isSearchPatient= true
             })
 
@@ -95,6 +97,9 @@ export const searchPatient = createAsyncThunk('listPatient/searchPatient', async
         console.log(error)
     }
 })
+
+
+
 export const addPatient = createAsyncThunk('listPatient/addPatient', async (values) => {
     try {
         const formValue = {
