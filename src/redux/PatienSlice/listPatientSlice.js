@@ -18,6 +18,8 @@ const initState = {
     isDeletePatient: false,
     statusAddPatient: false,
     isAddPatient: false,
+    statusSearchPatient: false,
+    isSearchPatient: false,
     message: '',
 }
 
@@ -60,6 +62,12 @@ const listPatientSlice = createSlice({
             })
             .addCase(updatePatient.fulfilled, (state, action) => {
                 state.isUpdatePatient = true
+            })
+            .addCase(searchPatient.pending, (state, action) => {
+                state.statusSearchPatient = true
+            })
+            .addCase(searchPatient.fulfilled, (state, action) => {
+                state.isSearchPatient= true
             })
 
     }
