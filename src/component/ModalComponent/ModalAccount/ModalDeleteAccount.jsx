@@ -12,7 +12,6 @@ const ModalDeleteAccount = ({ modalDeleteOpen, setModalDeleteOpen }) => {
     const isOpenDeleteAccount = useSelector(state => state.modal.isOpenDeleteAccount)
     const [modalText, setModalText] = useState('Bạn có chắc chắn muốn xóa không ?');
 
-    console.log(userId)
     const handleOk = () => {
         setModalText('Đang xóa tài khoản !');
         handleDelete(userId);

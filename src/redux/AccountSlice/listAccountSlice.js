@@ -12,6 +12,7 @@ const initState = {
     index: 0,
     pageSize: 3,
     totalPage: 0,
+    totalElements: 0,
     statusUpdateAccount: false,
     isUpdateAccount: false,
     statusDeleteAccount: false,
@@ -39,6 +40,7 @@ const listAccountSlice = createSlice({
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
                 state.totalPage = action.payload.totalPages;
+                state.totalElements = action.payload.totalElements;
                 state.isUpdateAccount = false;
                 state.isDeleteAccount = false;
                 state.isAddAccount = false;

@@ -1,12 +1,15 @@
-import { Grid, Typography, Box, TextField, Button, Link, Avatar } from '@mui/material';
+import { Grid, Typography, Box, TextField, Link, Avatar, Button } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import React, { useState } from 'react';
 import { useFormik } from "formik";
-// import ValidatedLoginForm from './Validation/Validate';
 import * as yup from "yup";
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { toastCss } from '../../../redux/toastCss';
+import { loginAPI } from '../../../config/baseAPI';
 
-const ValidatedLoginForm = yup.object({
-    username: yup
+const validationSchema = yup.object({
+    userName: yup
         .string("Enter username")
         .required("Username is required"),
     password: yup
@@ -16,7 +19,7 @@ const ValidatedLoginForm = yup.object({
 });
 
 const LoginComponent = () => {
-
+    const [loading, setLoading] = useState(false)
     const paperStyle = {
         height: '100vh',
         width: '100%',
@@ -27,20 +30,28 @@ const LoginComponent = () => {
 
     const formik = useFormik({
         initialValues: {
-            username: "",
+            userName: "",
             password: "",
         },
-        validation: ValidatedLoginForm,
+        validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log(formik.errors)
-            console.log(values)
+            handleLogin(values)
         }
     })
 
     const handleChange = (e) => {
         formik.handleChange(e)
     }
-
+    const handleLogin = async (values) => {
+        setLoading(true)
+        try {
+            const res = await axios.post(loginAPI, values)
+            console.log(res)
+        } catch (error) {
+            toast.error("Login failed", toastCss)
+        }
+        setLoading(false)
+    }
     return (
         <Grid container style={paperStyle}>
             <Box
@@ -59,14 +70,15 @@ const LoginComponent = () => {
                     margin="normal"
                     required
                     fullWidth
-                    id="username"
+                    id="userName"
                     label="Tên đăng nhập"
-                    name="username"
+                    name="userName"
                     autoComplete="username"
                     autoFocus
+                    value={formik.values.userName}
                     onChange={handleChange}
                 />
-                {formik.errors.username && <Typography>{formik.errors.username}</Typography>}
+                {formik.errors.userName && <Typography color={'red'}>{formik.errors.userName}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -75,13 +87,14 @@ const LoginComponent = () => {
                     label="Mật khẩu"
                     name="password"
                     type="password"
+                    value={formik.values.password}
                     autoComplete="password"
                     autoFocus
                     onChange={handleChange}
-                    error={formik.touched.password && Boolean(formik.errors.password)}
-                    helperText={formik.touched.password && formik.errors.password}
                 />
+                {formik.errors.password && <Typography color={'red'}>{formik.errors.password}</Typography>}
                 <Button
+                    loading = {loading}
                     type="submit"
                     fullWidth
                     variant="contained"

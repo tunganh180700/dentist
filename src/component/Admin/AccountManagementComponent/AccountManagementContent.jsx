@@ -24,7 +24,7 @@ const AccountManagementContent = () => {
     const pageSize = useSelector(state => state.listAccount.pageSize)
     const totalPages = useSelector(state => state.listAccount.totalPage)
     const [currentPage, setCurrentPage] = useState(0);
-    // const userId = useSelector(state=>state.modal.userId);
+    const totalElements = useSelector(state => state.listAccount.totalElements)
     const isUpdateAccount = useSelector(state => state.listAccount.isUpdateAccount);
     const isDeleteAccount = useSelector(state => state.listAccount.isDeleteAccount);
     const isAddAccount = useSelector(state => state.listAccount.isAddAccount);
@@ -36,6 +36,15 @@ const AccountManagementContent = () => {
 
 
     useEffect(() => {
+        if (isDeleteAccount && totalElements % pageSize == 1) {
+            const newCurrentPage = currentPage - 1
+            setCurrentPage((prev) => prev - 1)
+            dispatch(fetchAllAccount({
+                size: pageSize,
+                page: newCurrentPage,
+            })
+            );
+        }
         dispatch(fetchAllAccount({
             size: pageSize,
             page: currentPage

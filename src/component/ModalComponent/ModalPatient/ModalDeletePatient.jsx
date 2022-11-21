@@ -12,7 +12,6 @@ const ModalDeletePatient = ({ modalDeleteOpen, setModalDeleteOpen }) => {
     const isOpenDeletePatient = useSelector(state => state.modal.isOpenDeletePatient)
     const [modalText, setModalText] = useState('Bạn có chắc chắn muốn xóa không ?');
 
-    console.log(patientId)
     const handleOk = () => {
         setModalText('Đang xóa bệnh nhân');
         handleDelete(patientId);

@@ -1,8 +1,14 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import { baseUrl } from "./baseAPI";
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "./token";
 
 const axiosInstance = axios.create({
     baseURL: baseUrl,
+    headers: {
+        'Authorization': `Bearer ${Cookies.get(ACCESS_TOKEN_KEY)}`,
+        'Content-Type': 'application/json',
+    }
 });
 
 axiosInstance.interceptors.request.use(async (req) => {

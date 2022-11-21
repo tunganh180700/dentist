@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 import { toast } from "react-toastify"
-import { addPatientAPI, deletePatientAPI, listPatientAPI, updatePatientAPI } from "../../config/baseAPI"
+import { addPatientAPI, deletePatientAPI, listPatientAPI, searchPatientAPI, updatePatientAPI } from "../../config/baseAPI"
 import { DELETE_FAIL, DELETE_SUCCESS, UPDATE_FAIL, UPDATE_SUCCESS } from "../../config/constant"
 import { toastCss } from "../toastCss"
 
@@ -11,6 +11,7 @@ const initState = {
     index: 0,
     pageSize: 3,
     totalPage: 0,
+    totalElements: 0,
     statusUpdatePatient: false,
     isUpdatePatient: false,
     statusDeletePatient: false,
@@ -36,6 +37,7 @@ const listPatientSlice = createSlice({
             .addCase(fetchAllPatient.fulfilled, (state, action) => {
                 state.listPatient = action.payload.content;
                 state.status = false;
+                state.totalElements = action.payload.totalElements;
                 state.totalPage = action.payload.totalPages;
                 state.isAddPatient = false;
                 state.isDeletePatient = false;
@@ -74,7 +76,17 @@ export const fetchAllPatient = createAsyncThunk('listPatient/fetchAllPatient', a
         console.log(error)
     }
 })
-
+export const searchPatient = createAsyncThunk('listPatient/searchPatient', async (paramSearch) => {
+    try {
+        const res = await axios.get(searchPatientAPI, {
+            params: paramSearch,
+        })
+        console.log(res)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+})
 export const addPatient = createAsyncThunk('listPatient/addPatient', async (values) => {
     try {
         const formValue = {
@@ -103,7 +115,6 @@ export const deletePatient = createAsyncThunk('listPatient/deletePatient', async
     try {
         const res = await axios.delete(deletePatientAPI + patientId)
         toast.success(DELETE_SUCCESS, toastCss)
-        console.log(patientId)
         return patientId
     } catch (error) {
         toast.error(DELETE_FAIL, toastCss)
