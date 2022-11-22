@@ -21,6 +21,7 @@ const initState = {
     statusSearchPatient: false,
     isSearchPatient: false,
     message: '',
+    statusPatient: 0
 }
 
 const listPatientSlice = createSlice({
@@ -38,6 +39,7 @@ const listPatientSlice = createSlice({
             })
             .addCase(fetchAllPatient.fulfilled, (state, action) => {
                 state.listPatient = action.payload.content;
+                state.statusPatient = action.payload.status
                 state.status = false;
                 state.totalElements = action.payload.totalElements;
                 state.totalPage = action.payload.totalPages;
@@ -69,7 +71,7 @@ const listPatientSlice = createSlice({
             })
             .addCase(searchPatient.fulfilled, (state, action) => {
                 state.listPatient = action.payload.content;
-                state.isSearchPatient= true
+                state.isSearchPatient = true
             })
 
     }
@@ -86,6 +88,7 @@ export const fetchAllPatient = createAsyncThunk('listPatient/fetchAllPatient', a
         console.log(error)
     }
 })
+
 export const searchPatient = createAsyncThunk('listPatient/searchPatient', async (paramSearch) => {
     try {
         const res = await axios.get(searchPatientAPI, {

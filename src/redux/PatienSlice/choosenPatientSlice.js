@@ -1,15 +1,23 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
-import {  getPatientByIdAPI } from "../../config/baseAPI"
+import { getPatientByIdAPI } from "../../config/baseAPI"
 
 const initState = {
     choosenPatient: {},
     status: false,
     statusUser: false,
     statusDeletePatient: false,
+    patientName: '',
+    birthdate: '',
+    gender: false,
+    address: '',
+    phone: '',
+    email: '',
+    bodyPrehistory: '',
+    teethPrehistory: ''
 
 }
-const choosenAccountSlice = createSlice({
+const choosenPatientSlice = createSlice({
     name: 'choosenPatient',
     initialState: initState,
     reducers: {
@@ -24,6 +32,14 @@ const choosenAccountSlice = createSlice({
             })
             .addCase(fetchPatient.fulfilled, (state, action) => {
                 state.choosenPatient = action.payload;
+                state.patientName = action.payload.patientName;
+                state.birthdate = action.payload.birthdate;
+                state.gender = action.payload.gender;
+                state.address = action.payload.address;
+                state.phone = action.payload.phone;
+                state.email = action.payload.email
+                state.bodyPrehistory = action.payload.bodyPrehistory
+                state.teethPrehistory = action.payload.teethPrehistory
                 state.status = false
             })
     }
@@ -39,6 +55,6 @@ export const fetchPatient = createAsyncThunk('patients/fetchPatient', async (pat
         console.log(error)
     }
 })
-export const { setChoosenPatient } = choosenAccountSlice.actions;
-export default choosenAccountSlice.reducer;
+export const { setChoosenPatient } = choosenPatientSlice.actions;
+export default choosenPatientSlice.reducer;
 

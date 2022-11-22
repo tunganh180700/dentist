@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { fetchAllPatient, searchPatient } from '../../../redux/PatienSlice/listPatientSlice';
 import ModalAddPatient from '../../ModalComponent/ModalPatient/ModalAddPatient';
 import ModalDeletePatient from '../../ModalComponent/ModalPatient/ModalDeletePatient';
@@ -16,6 +17,8 @@ import { setUserId } from '../../../redux/modalSlice';
 import ModalUpdatePatient from '../../ModalComponent/ModalPatient/ModalUpdatePatient';
 import "./style.css";
 import _ from "lodash";
+import ModalDetailPatient from '../../ModalComponent/ModalPatient/ModalDetailPatient';
+import e from 'cors';
 
 
 const PatientManagementContent = () => {
@@ -28,6 +31,7 @@ const PatientManagementContent = () => {
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
+    const [modalDetailOpen, setModalDetailOpen] = useState(false);
 
     const isDeletePatient = useSelector(state => state.listPatient.isDeletePatient);
     const isAddPatient = useSelector(state => state.listPatient.isAddPatient);
@@ -35,6 +39,22 @@ const PatientManagementContent = () => {
 
     const [searchInput, setSearchInput] = useState('');
     const [loading, setLoading] = useState(false)
+    const statusPatient = useSelector(state => state.listPatient.statusPatient)
+    const styleText = {}
+
+    // if (statusPatient === 0) {
+    //     styleText = {
+    //         color: 'green'
+    //     }
+    // } else if (statusPatient === 1) {
+    //     styleText = {
+    //         color: 'red'
+    //     }
+    // } else {
+    //     styleText = {
+    //         color: 'blue'
+    //     }
+    // }
 
     useEffect(() => {
         setLoading(true)
@@ -57,7 +77,6 @@ const PatientManagementContent = () => {
         }
         setLoading(false)
     }, [currentPage, isAddPatient, isUpdatePatient])
-
 
     useEffect(() => {
         if (isDeletePatient == true && totalElements % pageSize == 1) {
@@ -99,7 +118,7 @@ const PatientManagementContent = () => {
             handleSearchDebounce.cancel();
         };
     }, [handleSearchDebounce]);
-    
+
     return (
         <>
             <Typography
@@ -120,6 +139,7 @@ const PatientManagementContent = () => {
                 <Table size="small" style={{ marginTop: "15px" }}>
                     <TableHead>
                         <TableRow>
+                            <TableCell></TableCell>
                             <TableCell>
                                 <div className='attibute'>Họ tên</div>
                                 <div style={{ width: "160px" }}>
@@ -153,18 +173,28 @@ const PatientManagementContent = () => {
                             </TableCell>
                             <TableCell></TableCell>
                             <TableCell></TableCell>
+                            <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {listPatient.map((item) =>
                             <TableRow key={item.patientId}>
-                                <TableCell>{item.patientName}</TableCell>
-                                <TableCell>{item.birthdate}</TableCell>
-                                <TableCell>{item.phone}</TableCell>
-                                <TableCell>{item.gender ? "Nam" : "Nữ"}</TableCell>
-                                <TableCell>{item.address}</TableCell>
-                                <TableCell>{item.email}</TableCell>
-                                <TableCell>
+                                <TableCell style={styleText}>
+                                    <IconButton aria-label="detail" onClick={() => {
+                                        setModalDetailOpen(true)
+                                        dispatch(setUserId(item.patientId))
+                                    }}>
+                                        <RemoveRedEyeIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell style={styleText}>{item.patientName}</TableCell>
+                                <TableCell style={styleText}>{item.birthdate}</TableCell>
+                                <TableCell style={styleText}>{item.phone}</TableCell>
+                                <TableCell style={styleText}>{item.gender ? "Nam" : "Nữ"}</TableCell>
+                                <TableCell style={styleText}>{item.address}</TableCell>
+                                <TableCell style={styleText}>{item.email}</TableCell>
+                                <TableCell style={styleText}>{item.status === 0 ? "NOT TREATMENT" : item.status === 1 ? "TREATING" : "DONE"}</TableCell>
+                                <TableCell style={styleText}>
                                     <IconButton aria-label="edit" onClick={() => {
                                         setModalUpdateOpen(true)
                                         dispatch(setUserId(item.patientId))
@@ -172,7 +202,7 @@ const PatientManagementContent = () => {
                                         <EditIcon />
                                     </IconButton>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell style={styleText}>
                                     <IconButton aria-label="delete" onClick={() => {
                                         setModalDeleteOpen(true)
                                         dispatch(setUserId(item.patientId))
@@ -202,6 +232,9 @@ const PatientManagementContent = () => {
             </div>
             <div>
                 <ModalUpdatePatient modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
+            </div>
+            <div>
+                <ModalDetailPatient modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
             </div>
         </>
     )
