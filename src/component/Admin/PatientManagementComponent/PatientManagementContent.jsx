@@ -18,7 +18,6 @@ import ModalUpdatePatient from '../../ModalComponent/ModalPatient/ModalUpdatePat
 import "./style.css";
 import _ from "lodash";
 import ModalDetailPatient from '../../ModalComponent/ModalPatient/ModalDetailPatient';
-import e from 'cors';
 
 
 const PatientManagementContent = () => {
@@ -40,21 +39,21 @@ const PatientManagementContent = () => {
     const [searchInput, setSearchInput] = useState('');
     const [loading, setLoading] = useState(false)
     const statusPatient = useSelector(state => state.listPatient.statusPatient)
-    const styleText = {}
+    let styleText = {}
 
-    // if (statusPatient === 0) {
-    //     styleText = {
-    //         color: 'green'
-    //     }
-    // } else if (statusPatient === 1) {
-    //     styleText = {
-    //         color: 'red'
-    //     }
-    // } else {
-    //     styleText = {
-    //         color: 'blue'
-    //     }
-    // }
+    if (statusPatient === 0) {
+        styleText = {
+            color: 'green'
+        }
+    } else if (statusPatient === 1) {
+        styleText = {
+            color: 'red'
+        }
+    } else {
+        styleText = {
+            color: 'blue'
+        }
+    }
 
     useEffect(() => {
         setLoading(true)
