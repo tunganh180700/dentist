@@ -18,6 +18,7 @@ import ModalUpdatePatient from '../../ModalComponent/ModalPatient/ModalUpdatePat
 import "./style.css";
 import _ from "lodash";
 import ModalDetailPatient from '../../ModalComponent/ModalPatient/ModalDetailPatient';
+import { Link } from 'react-router-dom';
 
 
 const PatientManagementContent = () => {
@@ -36,29 +37,36 @@ const PatientManagementContent = () => {
     const isAddPatient = useSelector(state => state.listPatient.isAddPatient);
     const isUpdatePatient = useSelector(state => state.listPatient.isUpdatePatient);
 
-    const [searchInput, setSearchInput] = useState('');
+    const [searchInputName, setSearchInputName] = useState('');
+    const [searchInputBirthdate, setSearchInputBirthdate] = useState('');
+    const [searchInputAddress, setSearchInputAddress] = useState('');
+    const [searchInputPhone, setSearchInputPhone] = useState('');
+    const [searchInputEmail, setSearchInputEmail] = useState('');
     const [loading, setLoading] = useState(false)
     const statusPatient = useSelector(state => state.listPatient.statusPatient)
     let styleText = {}
 
-    if (statusPatient === 0) {
-        styleText = {
-            color: 'green'
+    function changeColor(status) {
+        if (status === 0) {
+            styleText = {
+                color: 'green'
+            }
+        } else if (status === 1) {
+            styleText = {
+                color: 'red'
+            }
+        } else {
+            styleText = {
+                color: 'blue'
+            }
         }
-    } else if (statusPatient === 1) {
-        styleText = {
-            color: 'red'
-        }
-    } else {
-        styleText = {
-            color: 'blue'
-        }
+
     }
 
     useEffect(() => {
         setLoading(true)
         try {
-            if (searchInput === '') {
+            if (searchInputName === '') {
                 dispatch(fetchAllPatient({
                     size: pageSize,
                     page: currentPage,
@@ -66,7 +74,11 @@ const PatientManagementContent = () => {
                 );
             } else {
                 dispatch(searchPatient({
-                    name: searchInput,
+                    name: searchInputName,
+                    birthdate: searchInputBirthdate,
+                    address: searchInputAddress,
+                    phone: searchInputPhone,
+                    email: searchInputEmail,
                     size: pageSize,
                     page: currentPage,
                 }))
@@ -85,10 +97,10 @@ const PatientManagementContent = () => {
     }, [isDeletePatient])
 
 
-    const handleSearchDebounce = useRef(_.debounce(async (value) => {
+    const handleSearchDebounce = useRef(_.debounce(async (valueName, valueBirthdate, valueAddress, valuePhone, valueEmail) => {
         setLoading(true)
         try {
-            if (value === '') {
+            if (valueName === '' && valueBirthdate === '' && valueAddress === '' && valuePhone === '' && valueEmail === '') {
                 dispatch(fetchAllPatient({
                     size: pageSize,
                     page: currentPage,
@@ -96,7 +108,11 @@ const PatientManagementContent = () => {
                 );
             } else {
                 dispatch(searchPatient({
-                    name: value,
+                    name: valueName,
+                    birthdate: valueBirthdate,
+                    address: valueAddress,
+                    phone: valuePhone,
+                    email: valueEmail,
                     size: pageSize,
                     page: currentPage,
                 }))
@@ -107,8 +123,32 @@ const PatientManagementContent = () => {
         setLoading(false)
     }, 500)).current;
 
-    const handleSearch = (e) => {
-        setSearchInput(e.target.value)
+    const handleSearchName = (e) => {
+        setSearchInputName(e.target.value)
+        // setSearchInputAddress(e.target.value)
+        // setSearchInputPhone(e.target.value)
+        // setSearchInputBirthdate(e.target.value)
+        // setSearchInputEmail(e.target.value)
+        handleSearchDebounce(e.target.value)
+    }
+
+    const handleSearchAddress = (e) => {
+        setSearchInputAddress(e.target.value)
+        handleSearchDebounce(e.target.value)
+    }
+
+    const handleSearchPhone = (e) => {
+        setSearchInputPhone(e.target.value)
+        handleSearchDebounce(e.target.value)
+    }
+
+    const handleSearchBirthDate = (e) => {
+        setSearchInputBirthdate(e.target.value)
+        handleSearchDebounce(e.target.value)
+    }
+
+    const handleSearchEmail = (e) => {
+        setSearchInputEmail(e.target.value)
         handleSearchDebounce(e.target.value)
     }
 
@@ -129,7 +169,7 @@ const PatientManagementContent = () => {
             >
                 Quản lý bệnh nhân
             </Typography>
-            <IconButton aria-label="add" onClick={() => {
+            <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
                 setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
@@ -149,28 +189,82 @@ const PatientManagementContent = () => {
                                         label="Tìm kiếm"
                                         name="searchRoom"
                                         autoComplete="searchRoom"
-                                        value={searchInput}
+                                        value={searchInputName}
                                         autoFocus
-                                        onChange={handleSearch}
+                                        onChange={handleSearchName}
                                     />
                                 </div>
                             </TableCell>
                             <TableCell>
                                 <div className='attibute'>Ngày sinh</div>
+                                <div style={{ width: "160px" }}>
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        id="searchBirth"
+                                        label="Tìm kiếm"
+                                        name="searchRoom"
+                                        autoComplete="searchRoom"
+                                        value={searchInputBirthdate}
+                                        autoFocus
+                                        onChange={handleSearchBirthDate}
+                                    />
+                                </div>
                             </TableCell>
                             <TableCell>
                                 <div className='attibute'>Số điện thoại</div>
+                                <div style={{ width: "160px" }}>
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        id="searchRoom"
+                                        label="Tìm kiếm"
+                                        name="searchRoom"
+                                        autoComplete="searchRoom"
+                                        value={searchInputPhone}
+                                        autoFocus
+                                        onChange={handleSearchPhone}
+                                    />
+                                </div>
                             </TableCell>
                             <TableCell>
                                 <div className='attibute'>Giới tính</div>
                             </TableCell>
                             <TableCell>
                                 <div className='attibute'>Địa chỉ</div>
+                                <div style={{ width: "160px" }}>
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        id="searchRoom"
+                                        label="Tìm kiếm"
+                                        name="searchRoom"
+                                        autoComplete="searchRoom"
+                                        value={searchInputAddress}
+                                        autoFocus
+                                        onChange={handleSearchAddress}
+                                    />
+                                </div>
                             </TableCell>
                             <TableCell>
                                 <div className='attibute'>Email</div>
+                                <div style={{ width: "160px" }}>
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        id="searchRoom"
+                                        label="Tìm kiếm"
+                                        name="searchRoom"
+                                        autoComplete="searchRoom"
+                                        value={searchInputEmail}
+                                        autoFocus
+                                        onChange={handleSearchEmail}
+                                    />
+                                </div>
                             </TableCell>
-                            <TableCell></TableCell>
+                            <TableCell>
+                                <div className='attibute'>Trạng thái</div>
+                            </TableCell>
                             <TableCell></TableCell>
                             <TableCell></TableCell>
                         </TableRow>
@@ -186,7 +280,11 @@ const PatientManagementContent = () => {
                                         <RemoveRedEyeIcon />
                                     </IconButton>
                                 </TableCell>
-                                <TableCell style={styleText}>{item.patientName}</TableCell>
+                                <TableCell style={styleText}>
+                                    <Link to={'/record'}>
+                                        {item.patientName}
+                                    </Link>
+                                </TableCell>
                                 <TableCell style={styleText}>{item.birthdate}</TableCell>
                                 <TableCell style={styleText}>{item.phone}</TableCell>
                                 <TableCell style={styleText}>{item.gender ? "Nam" : "Nữ"}</TableCell>

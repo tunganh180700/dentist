@@ -13,7 +13,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { regexPhone, validationDate } from '../../../config/validation';
+import { regexEmail, regexPhone, validationDate } from '../../../config/validation';
 import axios from 'axios';
 import { listRoleAPI } from '../../../config/baseAPI';
 import moment from 'moment/moment';
@@ -36,6 +36,10 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
         password: yup
             .string("Enter your password")
             .required("Password is required"),
+        email: yup
+            .string("Enter your email")
+            .matches(regexEmail, "Invalid email")
+            .required("Email is required"),
         salary: yup
             .string('Enter your salary')
             .required('Salary is required')
@@ -51,6 +55,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
             console.log(error)
         }
     }
+    
     useEffect(() => {
         loadRole();
     }, [])
@@ -59,6 +64,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
         initialValues: {
             fullName: '',
             phone: "",
+            email: "",
             password: "",
             salary: '',
         },
@@ -130,6 +136,19 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     onChange={formik.handleChange}
                 />
                 {formik.errors.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email"
+                    name="email"
+                    autoComplete="email"
+                    value={formik.values.email}
+                    autoFocus
+                    onChange={formik.handleChange}
+                />
+                {formik.errors.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Ngày sinh"

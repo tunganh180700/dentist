@@ -112,6 +112,7 @@ export const addAccount = createAsyncThunk('listAccount/addAccount', async (valu
             fullName: values.fullName,
             birthdate: values.birthdate,
             password: values.password,
+            email: values.email,
             phone: values.phone,
             salary: values.salary,
             roleId: values.roleId

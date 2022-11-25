@@ -73,6 +73,7 @@ const AccountManagementContent = () => {
                         <TableCell>Họ tên</TableCell>
                         <TableCell>Tên đăng nhập</TableCell>
                         <TableCell>Số điện thoại</TableCell>
+                        <TableCell>Email</TableCell>
                         <TableCell>Ngày sinh</TableCell>
                         <TableCell>Quyền hạn</TableCell>
                         <TableCell></TableCell>
@@ -85,6 +86,7 @@ const AccountManagementContent = () => {
                             <TableCell>{item.fullName}</TableCell>
                             <TableCell>{item.userName}</TableCell>
                             <TableCell>{item.phone}</TableCell>
+                            <TableCell>{item.email}</TableCell>
                             <TableCell>{item.birthdate}</TableCell>
                             <TableCell>{item.roleName}</TableCell>
                             <TableCell>

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { toastCss } from '../../../redux/toastCss';
 import { loginAPI } from '../../../config/baseAPI';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object({
     userName: yup
@@ -20,6 +21,7 @@ const validationSchema = yup.object({
 
 const LoginComponent = () => {
     const [loading, setLoading] = useState(false)
+    const navigate = useNavigate();
     const paperStyle = {
         height: '100vh',
         width: '100%',
@@ -43,15 +45,27 @@ const LoginComponent = () => {
         formik.handleChange(e)
     }
     const handleLogin = async (values) => {
-        setLoading(true)
         try {
             const res = await axios.post(loginAPI, values)
             console.log(res)
+            localStorage.setItem('token', res.data.jwt)
+            localStorage.setItem('role', res.data.role)
+            switch (res.data.role) {
+                case "Admin":
+                case "Doctor":
+                case "LeaderNurse":
+                case "Nurse":
+                    navigate("/patient-management")
+                    break;
+                case "Receptionist":
+                    navigate("/meetingroom")
+                    break;
+            }
         } catch (error) {
             toast.error("Login failed", toastCss)
         }
-        setLoading(false)
     }
+
     return (
         <Grid container style={paperStyle}>
             <Box
@@ -94,7 +108,7 @@ const LoginComponent = () => {
                 />
                 {formik.errors.password && <Typography color={'red'}>{formik.errors.password}</Typography>}
                 <Button
-                    loading = {loading}
+                    loading={loading}
                     type="submit"
                     fullWidth
                     variant="contained"

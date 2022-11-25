@@ -18,7 +18,7 @@ import * as yup from "yup";
 import axios from 'axios';
 import moment from 'moment/moment';
 import { updateAccount } from '../../../redux/AccountSlice/listAccountSlice';
-import { regexPhone, validationDate } from '../../../config/validation';
+import { regexEmail, regexPhone, validationDate } from '../../../config/validation';
 import { getAccountByIdAPI, listRoleAPI } from '../../../config/baseAPI';
 
 
@@ -38,6 +38,10 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             .string("Enter your phone")
             .matches(regexPhone, "Invalid Phone")
             .required("Phone is required"),
+        email: yup
+            .string("Enter your email")
+            .matches(regexEmail, "Invalid email")
+            .required("Email is required"),
         salary: yup
             .string('Enter your salary')
             .required('Salary is required')
@@ -146,6 +150,19 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         onChange={formik.handleChange}
                     />
                     {formik.errors.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email"
+                        name="email"
+                        autoComplete="email"
+                        value={formik.values.email}
+                        autoFocus
+                        onChange={formik.handleChange}
+                    />
+                    {formik.errors.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Ngày sinh"
