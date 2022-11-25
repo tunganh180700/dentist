@@ -9,6 +9,9 @@ import Sidebar from "../component/Admin/SidebarComponent/Sidebar";
 import Dashboard from "../component/Admin/Dashboard/Dashboard";
 import DashboardContent from "../component/Admin/Dashboard/Dashboard";
 import PatientManagement from "../component/Admin/PatientManagementComponent/PatientManagement";
+import LaboManagement from "../component/Admin/LaboComponent/LaboManagement";
+import MaterialManagement from "../component/Admin/MaterialManagementComponent/MaterialManagement";
+import MaterialImportManagement from "../component/Admin/MaterialManagementComponent/MaterialImportManagement";
 
 const Routing = () => {
     return (
@@ -18,8 +21,12 @@ const Routing = () => {
                 <Route path='/login' element={<LoginComponent />} />
                 <Route path='/forgot' element={<ForgotPassword />} />
                 <Route path='/accmanagement' element={<AccountManagement />} />
+                <Route path='/labo' element={<LaboManagement />} />
                 <Route path='/meetingroom' element={<WaitingRoomManagement />} />
                 <Route path='/patient-management' element={<PatientManagement />} />
+                <Route path='/materialmanagement' element={<MaterialManagement />} />
+                <Route path='/materialimport' element={<MaterialImportManagement />} />
+                
                 <Route path='/' element={<HomePage />} />
                 <Route path='*' element={<>404 Error</>} />
             </Routes>

@@ -75,6 +75,43 @@ const Sidebar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Quản lý hóa đơn" />
                 </ListItemButton>
+
+                <ListItemButton onClick={handleClick}>
+                    <ListItemIcon>
+                        <CategoryIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Quản lý vật liệu" />
+                    {open ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={open} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <StarBorder />
+                            </ListItemIcon>
+                            <Link to={'/materialmanagement'}>
+                                <ListItemText primary="Vật liệu" />
+                            </Link>
+                        </ListItemButton>
+                        <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <StarBorder />
+                            </ListItemIcon>
+                            <Link to={'/materialimport'}>
+                                <ListItemText primary="Vật liệu nhập khẩu" />
+                            </Link>
+                        </ListItemButton>
+                    </List>
+                </Collapse>
+
+                <ListItemButton>
+                    <ListItemIcon>
+                        <AccountCircleIcon />
+                    </ListItemIcon>
+                    <Link to={'/labo'}>
+                        <ListItemText primary="Quản lý Labo" />
+                    </Link>
+                </ListItemButton>
             </React.Fragment>
         </>
     )
