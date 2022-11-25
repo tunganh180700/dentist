@@ -31,3 +31,4 @@ export const updateMaterialImportAPI =`${baseUrl}/api/material_imports/`
 export const deleteMaterialImportAPI =`${baseUrl}/api/material_imports/`
 export const addMaterialImportAPI = `${baseUrl}/api/material_imports/`
 
+export const listServiceAndCategoryAPI = `${baseUrl}/api/categories/get_list_service`

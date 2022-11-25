@@ -16,6 +16,10 @@ import choosenMaterialImportSlice from "./MaterialSlice/choosenMaterialImportSli
 import listmaterialImportSlice from "./MaterialSlice/listMaterialImportSlice";
 
 
+import choosenServiceAndCategorySlice from "./ServiceAndCategorySlice/choosenServiceAndCategorySlice";
+import listServiceAndCategorySlice from "./ServiceAndCategorySlice/listServiceAndCategorySlice";
+
+
 const store = configureStore({
     reducer: {
         listAccount: listAccountSlice,
@@ -31,7 +35,10 @@ const store = configureStore({
 
 
         choosenLabo: choosenLaboSlice,
-        listLabo: listLaboSlice
+        listLabo: listLaboSlice,
+
+        choosenServiceAndCategory: choosenServiceAndCategorySlice,
+        listServiceAndCategory: listServiceAndCategorySlice
     }
 })
 

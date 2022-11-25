@@ -112,6 +112,16 @@ const Sidebar = () => {
                         <ListItemText primary="Quản lý Labo" />
                     </Link>
                 </ListItemButton>
+
+                
+                <ListItemButton>
+                    <ListItemIcon>
+                        <AccountCircleIcon />
+                    </ListItemIcon>
+                    <Link to={'/serviceandcategory'}>
+                        <ListItemText primary="Quản lý Dịch vụ" />
+                    </Link>
+                </ListItemButton>
             </React.Fragment>
         </>
     )

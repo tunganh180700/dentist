@@ -16,6 +16,12 @@ const initState = {
     isOpenUpdateMaterialImport: false,
     isOpenDeleteMaterialImport: false,
     materialImportId: 0,
+
+    
+
+    isOpenUpdateServiceAndCategory: false,
+    isOpenDeleteServiceAndCategory: false,
+    categoryServiceId: 0,
 }
 
 const modalSlice = createSlice({
@@ -51,6 +57,13 @@ const modalSlice = createSlice({
         },
         setLaboId: (state,action) => {
             state.laboId = action.payload
+        },
+
+        setIsOpenDeleteServiceAndCategory: (state, action) => {
+            state.isOpenDeleteServiceAndCategory = action.payload
+        },
+        setCategoryServiceId: (state,action) => {
+            state.categoryServiceId = action.payload
         }
     }
 })
@@ -58,4 +71,6 @@ export const { setUserId } = modalSlice.actions;
 export const { setLaboId } = modalSlice.actions;
 export const { setMaterialId } = modalSlice.actions;
 export const { setMaterialImportId } = modalSlice.actions;
+export const { setCategoryServiceId } = modalSlice.actions;
+
 export default modalSlice.reducer;
