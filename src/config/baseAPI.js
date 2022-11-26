@@ -1,0 +1,18 @@
+export const baseUrl = `http://localhost:8080`
+
+export const listUserAPI = `${baseUrl}/api/users/get_list_users`
+export const getAccountByIdAPI = `${baseUrl}/api/users/`
+export const updateAccountAPI = `${baseUrl}/api/users/`
+export const deleteAccountAPI = `${baseUrl}/api/users/`
+export const addAccountAPI = `${baseUrl}/api/users/register`
+
+export const listPatientAPI = `${baseUrl}/api/patients/get_list_patients`
+export const getPatientByIdAPI = `${baseUrl}/api/patients/`
+export const addPatientAPI = `${baseUrl}/api/patients/`
+export const deletePatientAPI = `${baseUrl}/api/patients/`
+export const updatePatientAPI = `${baseUrl}/api/patients/`
+export const searchPatientAPI = `${baseUrl}/api/patients/get_list_patients?`
+
+export const listRoleAPI = `${baseUrl}/api/roles/get_list_roles`
+
+export const loginAPI = `${baseUrl}/api/login`

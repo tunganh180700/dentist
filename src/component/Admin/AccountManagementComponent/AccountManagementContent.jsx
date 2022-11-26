@@ -24,7 +24,7 @@ const AccountManagementContent = () => {
     const pageSize = useSelector(state => state.listAccount.pageSize)
     const totalPages = useSelector(state => state.listAccount.totalPage)
     const [currentPage, setCurrentPage] = useState(0);
-    // const userId = useSelector(state=>state.modal.userId);
+    const totalElements = useSelector(state => state.listAccount.totalElements)
     const isUpdateAccount = useSelector(state => state.listAccount.isUpdateAccount);
     const isDeleteAccount = useSelector(state => state.listAccount.isDeleteAccount);
     const isAddAccount = useSelector(state => state.listAccount.isAddAccount);
@@ -36,6 +36,15 @@ const AccountManagementContent = () => {
 
 
     useEffect(() => {
+        if (isDeleteAccount && totalElements % pageSize == 1) {
+            const newCurrentPage = currentPage - 1
+            setCurrentPage((prev) => prev - 1)
+            dispatch(fetchAllAccount({
+                size: pageSize,
+                page: newCurrentPage,
+            })
+            );
+        }
         dispatch(fetchAllAccount({
             size: pageSize,
             page: currentPage
@@ -53,7 +62,7 @@ const AccountManagementContent = () => {
             >
                 Quản lý tài khoản
             </Typography>
-            <IconButton aria-label="add" onClick={() => {
+            <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
                 setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
@@ -61,10 +70,10 @@ const AccountManagementContent = () => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>STT</TableCell>
                         <TableCell>Họ tên</TableCell>
                         <TableCell>Tên đăng nhập</TableCell>
                         <TableCell>Số điện thoại</TableCell>
+                        <TableCell>Email</TableCell>
                         <TableCell>Ngày sinh</TableCell>
                         <TableCell>Quyền hạn</TableCell>
                         <TableCell></TableCell>
@@ -72,12 +81,12 @@ const AccountManagementContent = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {listAccount.map((item, index) =>
+                    {listAccount.map((item) =>
                         <TableRow key={item.userId}>
-                            <TableCell>{index + 1}</TableCell>
                             <TableCell>{item.fullName}</TableCell>
                             <TableCell>{item.userName}</TableCell>
                             <TableCell>{item.phone}</TableCell>
+                            <TableCell>{item.email}</TableCell>
                             <TableCell>{item.birthdate}</TableCell>
                             <TableCell>{item.roleName}</TableCell>
                             <TableCell>
@@ -100,7 +109,7 @@ const AccountManagementContent = () => {
                     )}
                 </TableBody>
             </Table>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
                 <Pagination
                     count={totalPages}
                     defaultPage={1}

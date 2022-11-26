@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Modal } from 'antd';
 import './../style.css';
-import { deleteAccount } from '../../../redux/AccountSlice/listAccountSlice';
-import { fetchAccount } from '../../../redux/AccountSlice/choosenAccountSlice'
+import { deletePatient } from '../../../redux/PatienSlice/listPatientSlice';
+import { fetchPatient } from '../../../redux/PatienSlice/choosenPatientSlice';
 
-const ModalDeleteAccount = ({ modalDeleteOpen, setModalDeleteOpen }) => {
+const ModalDeletePatient = ({ modalDeleteOpen, setModalDeleteOpen }) => {
     const dispatch = useDispatch();
-    const userId = useSelector(state => state.modal.userId);
+    const patientId = useSelector(state => state.modal.userId);
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const isOpenDeleteAccount = useSelector(state => state.modal.isOpenDeleteAccount)
+    const isOpenDeletePatient = useSelector(state => state.modal.isOpenDeletePatient)
     const [modalText, setModalText] = useState('Bạn có chắc chắn muốn xóa không ?');
 
     const handleOk = () => {
-        setModalText('Đang xóa tài khoản !');
-        handleDelete(userId);
+        setModalText('Đang xóa bệnh nhân');
+        handleDelete(patientId);
         setConfirmLoading(true);
         setTimeout(() => {
             setModalDeleteOpen(false);
@@ -26,15 +26,15 @@ const ModalDeleteAccount = ({ modalDeleteOpen, setModalDeleteOpen }) => {
         setModalDeleteOpen(false);
     };
 
-    const handleDelete = (userId) => {
-        dispatch(deleteAccount(userId))
+    const handleDelete = (patientId) => {
+        dispatch(deletePatient(patientId))
     }
 
     useEffect(() => {
-        if (userId > 0 && modalDeleteOpen) {
-            dispatch(fetchAccount(userId))
+        if (patientId > 0 && modalDeleteOpen) {
+            dispatch(fetchPatient(patientId))
         }
-    }, [isOpenDeleteAccount])
+    }, [isOpenDeletePatient])
 
     return (
         <>
@@ -50,4 +50,4 @@ const ModalDeleteAccount = ({ modalDeleteOpen, setModalDeleteOpen }) => {
         </>
     )
 }
-export default ModalDeleteAccount
+export default ModalDeletePatient

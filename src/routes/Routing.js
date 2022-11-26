@@ -5,10 +5,9 @@ import ForgotPassword from "../component/ForgotPassComponent/ForgotPassword";
 import AccountManagement from "../component/Admin/AccountManagementComponent/AccountManagement"
 import HomePage from "../component/HomeComponent/Home";
 import WaitingRoomManagement from "../component/Admin/WaitingRoomManagementComponent/WaitingRoomManagement";
-import Sidebar from "../component/Admin/SidebarComponent/Sidebar";
-import Dashboard from "../component/Admin/Dashboard/Dashboard";
-import DashboardContent from "../component/Admin/Dashboard/Dashboard";
 import PatientManagement from "../component/Admin/PatientManagementComponent/PatientManagement";
+import RecordManagement from "../component/Admin/RecordComponent/RecordManagement";
+import ProtectedRoute from "./ProtectedRoute";
 
 const Routing = () => {
     return (
@@ -20,6 +19,7 @@ const Routing = () => {
                 <Route path='/accmanagement' element={<AccountManagement />} />
                 <Route path='/meetingroom' element={<WaitingRoomManagement />} />
                 <Route path='/patient-management' element={<PatientManagement />} />
+                <Route path='/record' element={<RecordManagement />} />
                 <Route path='/' element={<HomePage />} />
                 <Route path='*' element={<>404 Error</>} />
             </Routes>
