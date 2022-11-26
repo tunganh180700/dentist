@@ -3,6 +3,7 @@ import axios from "axios"
 import { toast } from "react-toastify"
 import { addPatientAPI, deletePatientAPI, listPatientAPI, searchPatientAPI, updatePatientAPI } from "../../config/baseAPI"
 import { DELETE_FAIL, DELETE_SUCCESS, UPDATE_FAIL, UPDATE_SUCCESS } from "../../config/constant"
+import axiosInstance from "../../config/customAxios"
 import { toastCss } from "../toastCss"
 
 const initState = {
@@ -79,10 +80,9 @@ const listPatientSlice = createSlice({
 
 export const fetchAllPatient = createAsyncThunk('listPatient/fetchAllPatient', async (paramSearch) => {
     try {
-        const res = await axios.get(listPatientAPI, {
+        const res = await axiosInstance.get(listPatientAPI, {
             params: paramSearch,
         })
-        console.log(res)
         return res.data
     } catch (error) {
         console.log(error)
