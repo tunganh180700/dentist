@@ -19,7 +19,7 @@ const Routing = () => {
                 <Route path='/accmanagement' element={<AccountManagement />} />
                 <Route path='/meetingroom' element={<WaitingRoomManagement />} />
                 <Route path='/patient-management' element={<PatientManagement />} />
-                <Route path='/record' element={<RecordManagement />} />
+                <Route path='/record/:id' element={<RecordManagement />} />
                 <Route path='/' element={<HomePage />} />
                 <Route path='*' element={<>404 Error</>} />
             </Routes>

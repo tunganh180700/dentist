@@ -4,6 +4,7 @@ import { listUserAPI, updateAccountAPI, deleteAccountAPI, addAccountAPI } from "
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     listAccount: [],
@@ -69,7 +70,7 @@ const listAccountSlice = createSlice({
 
 export const fetchAllAccount = createAsyncThunk('listAccount/fetchAllAccount', async (paramsSearch) => {
     try {
-        const res = await axios.get(listUserAPI, {
+        const res = await axiosInstance.get(listUserAPI, {
             params: paramsSearch,
         })
         return res.data

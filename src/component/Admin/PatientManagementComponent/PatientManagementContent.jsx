@@ -281,7 +281,7 @@ const PatientManagementContent = () => {
                                     </IconButton>
                                 </TableCell>
                                 <TableCell style={styleText}>
-                                    <Link to={'/record'}>
+                                    <Link to={`/record/${item.patientId}`}>
                                         {item.patientName}
                                     </Link>
                                 </TableCell>

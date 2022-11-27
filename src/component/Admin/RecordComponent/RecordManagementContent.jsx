@@ -3,8 +3,26 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../../config/customAxios";
+import { patientRecordAPI } from "../../../config/baseAPI";
 
 const RecordManagementContent = () => {
+    const { id } = useParams()
+    const [recordList, setRecordList] = useState([])
+    const getDetail = async (id) => {
+        try {
+            const res = await axiosInstance.get(patientRecordAPI + id)
+            console.log(res)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        getDetail(id)
+    }, [id])
+
     return (
         <>
             <Typography

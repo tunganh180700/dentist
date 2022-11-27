@@ -14,5 +14,6 @@ export const updatePatientAPI = `${baseUrl}/api/patients/`
 export const searchPatientAPI = `${baseUrl}/api/patients/get_list_patients?`
 
 export const listRoleAPI = `${baseUrl}/api/roles/get_list_roles`
+export const patientRecordAPI = `${baseUrl}/api/patient_record/`
 
 export const loginAPI = `${baseUrl}/api/login`
