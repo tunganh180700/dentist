@@ -20,6 +20,7 @@ import moment from 'moment/moment';
 import { updateAccount } from '../../../redux/AccountSlice/listAccountSlice';
 import { regexEmail, regexPhone, validationDate } from '../../../config/validation';
 import { getAccountByIdAPI, listRoleAPI } from '../../../config/baseAPI';
+import axiosInstance from '../../../config/customAxios';
 
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -70,7 +71,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const fetchAccount = async (userId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 getAccountByIdAPI + userId,
             )
             console.log(res.data)

@@ -116,7 +116,7 @@ export const addPatient = createAsyncThunk('listPatient/addPatient', async (valu
             teethPrehistory: values.teethPrehistory
         }
         console.log(values)
-        const res = await axios.post(addPatientAPI, formValue)
+        const res = await axiosInstance.post(addPatientAPI, formValue)
         toast.success("Thêm mới thành công !!!!!", toastCss)
         console.log(res.data)
         return res.data
