@@ -35,7 +35,7 @@ const ServiceAndCategoryManagementContent = () => {
     // const [modalAddOpen, setModalAddOpen] = useState(false);
 
 
-    console.log('list: ', listServiceDTO)
+    // console.log('list: ', listServiceDTO)
 
     useEffect(() => {
         dispatch(fetchAllServiceAndCategory({
