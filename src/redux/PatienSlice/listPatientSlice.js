@@ -91,8 +91,16 @@ export const fetchAllPatient = createAsyncThunk('listPatient/fetchAllPatient', a
 
 export const searchPatient = createAsyncThunk('listPatient/searchPatient', async (paramSearch) => {
     try {
-        const res = await axios.get(searchPatientAPI, {
-            params: paramSearch,
+        // const formValue = {
+        //     name: values.patientName,
+        //     birthdate: values.birthdate,
+        //     gender: values.gender,
+        //     address: values.address,
+        //     phone: values.phone,
+        //     email: values.email,
+        // }
+        const res = await axiosInstance.get(searchPatientAPI, {
+            params: paramSearch
         })
         console.log(res)
         return res.data
@@ -129,7 +137,7 @@ export const addPatient = createAsyncThunk('listPatient/addPatient', async (valu
 export const deletePatient = createAsyncThunk('listPatient/deletePatient', async (patientId) => {
 
     try {
-        const res = await axios.delete(deletePatientAPI + patientId)
+        const res = await axiosInstance.delete(deletePatientAPI + patientId)
         toast.success(DELETE_SUCCESS, toastCss)
         return patientId
     } catch (error) {

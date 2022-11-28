@@ -91,7 +91,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
     const loadRole = async () => {
         try {
-            const res = await axios.get(listRoleAPI)
+            const res = await axiosInstance.get(listRoleAPI)
             setRoleId(res.data[0].roleId)
             setRoleIds(res.data)
         } catch (error) {

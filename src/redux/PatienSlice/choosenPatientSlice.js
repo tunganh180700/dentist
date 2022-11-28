@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 import { getPatientByIdAPI } from "../../config/baseAPI"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     choosenPatient: {},
@@ -46,7 +47,7 @@ const choosenPatientSlice = createSlice({
 })
 export const fetchPatient = createAsyncThunk('patients/fetchPatient', async (patientId) => {
     try {
-        const res = await axios.get(
+        const res = await axiosInstance.get(
             getPatientByIdAPI + patientId,
         )
         console.log(res.data)

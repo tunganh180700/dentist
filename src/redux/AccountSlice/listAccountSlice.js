@@ -109,17 +109,17 @@ export const deleteAccount = createAsyncThunk('listAccount/deleteAccount', async
 
 export const addAccount = createAsyncThunk('listAccount/addAccount', async (values) => {
     try {
-        const formValue = {
-            fullName: values.fullName,
-            birthdate: values.birthdate,
-            password: values.password,
-            email: values.email,
-            phone: values.phone,
-            salary: values.salary,
-            roleId: values.roleId
-        }
+        // const formValue = {
+        //     fullName: values.fullName,
+        //     birthdate: values.birthdate,
+        //     password: values.password,
+        //     email: values.email,
+        //     phone: values.phone,
+        //     salary: values.salary,
+        //     roleId: values.roleId
+        // }
         console.log(values)
-        const res = await axiosInstance.post(addAccountAPI, formValue)
+        const res = await axiosInstance.post(addAccountAPI, values)
         toast.success("Thêm mới thành công !!!!!", toastCss)
         console.log(res.data)
         return res.data

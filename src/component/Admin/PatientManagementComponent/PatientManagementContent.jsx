@@ -36,6 +36,7 @@ const PatientManagementContent = () => {
     const isDeletePatient = useSelector(state => state.listPatient.isDeletePatient);
     const isAddPatient = useSelector(state => state.listPatient.isAddPatient);
     const isUpdatePatient = useSelector(state => state.listPatient.isUpdatePatient);
+    const isSearchPatient = useSelector(state => state.listPatient.isSearchPatient);
 
     const [searchInputName, setSearchInputName] = useState('');
     const [searchInputBirthdate, setSearchInputBirthdate] = useState('');
@@ -43,6 +44,15 @@ const PatientManagementContent = () => {
     const [searchInputPhone, setSearchInputPhone] = useState('');
     const [searchInputEmail, setSearchInputEmail] = useState('');
     const [loading, setLoading] = useState(false)
+
+    const [searchValue, setSearchValue] = useState({
+        name: "",
+        birthdate: "",
+        address: "",
+        phone: "",
+        email: ""
+    })
+
     const statusPatient = useSelector(state => state.listPatient.statusPatient)
     let styleText = {}
 
@@ -97,25 +107,33 @@ const PatientManagementContent = () => {
     }, [isDeletePatient])
 
 
-    const handleSearchDebounce = useRef(_.debounce(async (valueName, valueBirthdate, valueAddress, valuePhone, valueEmail) => {
+    const handleSearchDebounce = useRef(_.debounce(async (searchValue) => {
         setLoading(true)
         try {
-            if (valueName === '' && valueBirthdate === '' && valueAddress === '' && valuePhone === '' && valueEmail === '') {
+            if (searchValue === '') {
                 dispatch(fetchAllPatient({
                     size: pageSize,
                     page: currentPage,
                 })
                 );
             } else {
-                dispatch(searchPatient({
-                    name: valueName,
-                    birthdate: valueBirthdate,
-                    address: valueAddress,
-                    phone: valuePhone,
-                    email: valueEmail,
-                    size: pageSize,
-                    page: currentPage,
-                }))
+                // dispatch(searchPatient({
+                //     name: searchValue.name,
+                //     birthdate: searchValue.birthdate,
+                //     address: searchValue.address,
+                //     phone: searchValue.phone,
+                //     email: searchValue.email,
+                //     size: pageSize,
+                //     page: currentPage,
+                // }))
+                const formValues = {
+                    name: searchValue.name,
+                    birthdate: searchValue.birthdate,
+                    address: searchValue.address,
+                    phone: searchValue.phone,
+                    email: searchValue.email,
+                }
+                console.log(formValues)
             }
         } catch (error) {
             console.log(error)
@@ -125,10 +143,6 @@ const PatientManagementContent = () => {
 
     const handleSearchName = (e) => {
         setSearchInputName(e.target.value)
-        // setSearchInputAddress(e.target.value)
-        // setSearchInputPhone(e.target.value)
-        // setSearchInputBirthdate(e.target.value)
-        // setSearchInputEmail(e.target.value)
         handleSearchDebounce(e.target.value)
     }
 
