@@ -8,6 +8,7 @@ import WaitingRoomManagement from "../component/Admin/WaitingRoomManagementCompo
 import PatientManagement from "../component/Admin/PatientManagementComponent/PatientManagement";
 import RecordManagement from "../component/Admin/RecordComponent/RecordManagement";
 import ProtectedRoute from "./ProtectedRoute";
+import TimekeepingManagement from "../component/Admin/TimekeepingManagementComponet/TimekeepingManagement";
 
 const Routing = () => {
     return (
@@ -19,6 +20,7 @@ const Routing = () => {
                 <Route path='/accmanagement' element={<AccountManagement />} />
                 <Route path='/meetingroom' element={<WaitingRoomManagement />} />
                 <Route path='/patient-management' element={<PatientManagement />} />
+                <Route path='/timekeeping' element={<TimekeepingManagement />} />
                 <Route path='/record/:id' element={<RecordManagement />} />
                 <Route path='/' element={<HomePage />} />
                 <Route path='*' element={<>404 Error</>} />

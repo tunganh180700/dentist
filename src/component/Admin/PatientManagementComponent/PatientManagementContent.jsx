@@ -70,7 +70,7 @@ const PatientManagementContent = () => {
     useEffect(() => {
         setLoading(true)
         try {
-            if (searchValue.name === '') {
+            if (searchValue.name === '' && searchValue.birthdate === '' && searchValue.phone === '' && searchValue.address === '' && searchValue.email === '') {
                 dispatch(fetchAllPatient({
                     size: pageSize,
                     page: currentPage,
@@ -100,7 +100,7 @@ const PatientManagementContent = () => {
     const handleSearchDebounce = useRef(_.debounce(async (formValues) => {
         setLoading(true)
         try {
-            await dispatch(searchPatient({
+            dispatch(searchPatient({
                 ...formValues,
                 size: pageSize,
                 page: currentPage,

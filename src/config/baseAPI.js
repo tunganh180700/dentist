@@ -16,4 +16,6 @@ export const searchPatientAPI = `${baseUrl}/api/patients/get_list_patients?`
 export const listRoleAPI = `${baseUrl}/api/roles/get_list_roles`
 export const patientRecordAPI = `${baseUrl}/api/patient_record/`
 
+export const listTimekeepingAPI = `${baseUrl}/api/timekeeping/get_list_timekeeping`
+
 export const loginAPI = `${baseUrl}/api/login`

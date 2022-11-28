@@ -89,16 +89,28 @@ export const fetchAllPatient = createAsyncThunk('listPatient/fetchAllPatient', a
     }
 })
 
+// export const searchPatient = createAsyncThunk('listPatient/searchPatient', async (paramSearch) => {
+//     try {
+//         // const formValue = {
+//         //     name: values.patientName,
+//         //     birthdate: values.birthdate,
+//         //     gender: values.gender,
+//         //     address: values.address,
+//         //     phone: values.phone,
+//         //     email: values.email,
+//         // }
+//         const res = await axiosInstance.get(searchPatientAPI, {
+//             params: paramSearch
+//         })
+//         console.log(res)
+//         return res.data
+//     } catch (error) {
+//         console.log(error)
+//     }
+// })
 export const searchPatient = createAsyncThunk('listPatient/searchPatient', async (paramSearch) => {
     try {
-        // const formValue = {
-        //     name: values.patientName,
-        //     birthdate: values.birthdate,
-        //     gender: values.gender,
-        //     address: values.address,
-        //     phone: values.phone,
-        //     email: values.email,
-        // }
+
         const res = await axiosInstance.get(searchPatientAPI, {
             params: paramSearch
         })
@@ -108,7 +120,6 @@ export const searchPatient = createAsyncThunk('listPatient/searchPatient', async
         console.log(error)
     }
 })
-
 
 
 export const addPatient = createAsyncThunk('listPatient/addPatient', async (values) => {
