@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { getPatientByIdAPI } from "../../../config/baseAPI";
+import axiosInstance from "../../../config/customAxios";
 import { regexEmail, regexPhone, validationDate } from "../../../config/validation";
 import { updatePatient } from "../../../redux/PatienSlice/listPatientSlice";
 
@@ -53,7 +54,7 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const fetchPatient = async (patientId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 getPatientByIdAPI + patientId,
             )
             console.log(res.data)

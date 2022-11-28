@@ -36,13 +36,17 @@ const PatientManagementContent = () => {
     const isDeletePatient = useSelector(state => state.listPatient.isDeletePatient);
     const isAddPatient = useSelector(state => state.listPatient.isAddPatient);
     const isUpdatePatient = useSelector(state => state.listPatient.isUpdatePatient);
-
-    const [searchInputName, setSearchInputName] = useState('');
-    const [searchInputBirthdate, setSearchInputBirthdate] = useState('');
-    const [searchInputAddress, setSearchInputAddress] = useState('');
-    const [searchInputPhone, setSearchInputPhone] = useState('');
-    const [searchInputEmail, setSearchInputEmail] = useState('');
+    const isSearchPatient = useSelector(state => state.listPatient.isSearchPatient);
     const [loading, setLoading] = useState(false)
+
+    const [searchValue, setSearchValue] = useState({
+        name: "",
+        birthdate: "",
+        address: "",
+        phone: "",
+        email: ""
+    })
+
     const statusPatient = useSelector(state => state.listPatient.statusPatient)
     let styleText = {}
 
@@ -66,7 +70,7 @@ const PatientManagementContent = () => {
     useEffect(() => {
         setLoading(true)
         try {
-            if (searchInputName === '') {
+            if (searchValue.name === '') {
                 dispatch(fetchAllPatient({
                     size: pageSize,
                     page: currentPage,
@@ -74,11 +78,7 @@ const PatientManagementContent = () => {
                 );
             } else {
                 dispatch(searchPatient({
-                    name: searchInputName,
-                    birthdate: searchInputBirthdate,
-                    address: searchInputAddress,
-                    phone: searchInputPhone,
-                    email: searchInputEmail,
+                    ...searchValue,
                     size: pageSize,
                     page: currentPage,
                 }))
@@ -97,59 +97,23 @@ const PatientManagementContent = () => {
     }, [isDeletePatient])
 
 
-    const handleSearchDebounce = useRef(_.debounce(async (valueName, valueBirthdate, valueAddress, valuePhone, valueEmail) => {
+    const handleSearchDebounce = useRef(_.debounce(async (formValues) => {
         setLoading(true)
         try {
-            if (valueName === '' && valueBirthdate === '' && valueAddress === '' && valuePhone === '' && valueEmail === '') {
-                dispatch(fetchAllPatient({
-                    size: pageSize,
-                    page: currentPage,
-                })
-                );
-            } else {
-                dispatch(searchPatient({
-                    name: valueName,
-                    birthdate: valueBirthdate,
-                    address: valueAddress,
-                    phone: valuePhone,
-                    email: valueEmail,
-                    size: pageSize,
-                    page: currentPage,
-                }))
-            }
+            await dispatch(searchPatient({
+                ...formValues,
+                size: pageSize,
+                page: currentPage,
+            }))
         } catch (error) {
             console.log(error)
         }
         setLoading(false)
     }, 500)).current;
 
-    const handleSearchName = (e) => {
-        setSearchInputName(e.target.value)
-        // setSearchInputAddress(e.target.value)
-        // setSearchInputPhone(e.target.value)
-        // setSearchInputBirthdate(e.target.value)
-        // setSearchInputEmail(e.target.value)
-        handleSearchDebounce(e.target.value)
-    }
-
-    const handleSearchAddress = (e) => {
-        setSearchInputAddress(e.target.value)
-        handleSearchDebounce(e.target.value)
-    }
-
-    const handleSearchPhone = (e) => {
-        setSearchInputPhone(e.target.value)
-        handleSearchDebounce(e.target.value)
-    }
-
-    const handleSearchBirthDate = (e) => {
-        setSearchInputBirthdate(e.target.value)
-        handleSearchDebounce(e.target.value)
-    }
-
-    const handleSearchEmail = (e) => {
-        setSearchInputEmail(e.target.value)
-        handleSearchDebounce(e.target.value)
+    const handleSearch = (e) => {
+        setSearchValue(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
+        handleSearchDebounce(searchValue)
     }
 
     useEffect(() => {
@@ -187,11 +151,11 @@ const PatientManagementContent = () => {
                                         required
                                         id="searchRoom"
                                         label="Tìm kiếm"
-                                        name="searchRoom"
+                                        name="name"
                                         autoComplete="searchRoom"
-                                        value={searchInputName}
+                                        value={searchValue.name}
                                         autoFocus
-                                        onChange={handleSearchName}
+                                        onChange={handleSearch}
                                     />
                                 </div>
                             </TableCell>
@@ -203,11 +167,11 @@ const PatientManagementContent = () => {
                                         required
                                         id="searchBirth"
                                         label="Tìm kiếm"
-                                        name="searchRoom"
+                                        name="birthdate"
                                         autoComplete="searchRoom"
-                                        value={searchInputBirthdate}
+                                        value={searchValue.birthdate}
                                         autoFocus
-                                        onChange={handleSearchBirthDate}
+                                        onChange={handleSearch}
                                     />
                                 </div>
                             </TableCell>
@@ -219,11 +183,11 @@ const PatientManagementContent = () => {
                                         required
                                         id="searchRoom"
                                         label="Tìm kiếm"
-                                        name="searchRoom"
+                                        name="phone"
                                         autoComplete="searchRoom"
-                                        value={searchInputPhone}
+                                        value={searchValue.phone}
                                         autoFocus
-                                        onChange={handleSearchPhone}
+                                        onChange={handleSearch}
                                     />
                                 </div>
                             </TableCell>
@@ -238,11 +202,11 @@ const PatientManagementContent = () => {
                                         required
                                         id="searchRoom"
                                         label="Tìm kiếm"
-                                        name="searchRoom"
+                                        name="address"
                                         autoComplete="searchRoom"
-                                        value={searchInputAddress}
+                                        value={searchValue.address}
                                         autoFocus
-                                        onChange={handleSearchAddress}
+                                        onChange={handleSearch}
                                     />
                                 </div>
                             </TableCell>
@@ -254,11 +218,11 @@ const PatientManagementContent = () => {
                                         required
                                         id="searchRoom"
                                         label="Tìm kiếm"
-                                        name="searchRoom"
+                                        name="email"
                                         autoComplete="searchRoom"
-                                        value={searchInputEmail}
+                                        value={searchValue.email}
                                         autoFocus
-                                        onChange={handleSearchEmail}
+                                        onChange={handleSearch}
                                     />
                                 </div>
                             </TableCell>

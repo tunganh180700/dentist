@@ -18,6 +18,7 @@ import axios from 'axios';
 import { listRoleAPI } from '../../../config/baseAPI';
 import moment from 'moment/moment';
 import { addAccount } from '../../../redux/AccountSlice/listAccountSlice';
+import axiosInstance from '../../../config/customAxios';
 
 const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -47,7 +48,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
 
     const loadRole = async () => {
         try {
-            const res = await axios.get(listRoleAPI)
+            const res = await axiosInstance.get(listRoleAPI)
             console.log(res)
             setRoleId(res.data[0].roleId)
             setRoleIds(res.data)
