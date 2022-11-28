@@ -6,15 +6,16 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../config/customAxios";
-import { patientRecordAPI } from "../../../config/baseAPI";
+import { allPatientRecordAPI } from "../../../config/baseAPI";
 
 const RecordManagementContent = () => {
     const { id } = useParams()
     const [recordList, setRecordList] = useState([])
     const getDetail = async (id) => {
         try {
-            const res = await axiosInstance.get(patientRecordAPI + id)
-            console.log(res)
+            const res = await axiosInstance.get(allPatientRecordAPI + id)
+            console.log(res.data.content)
+            setRecordList(res.data.content)
         } catch (error) {
             console.log(error)
         }
@@ -131,44 +132,47 @@ const RecordManagementContent = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow>
-                        <TableCell>
-                            <IconButton aria-label="detail" onClick={() => {
-                                // setModalDetailOpen(true)
-                                // dispatch(setUserId(item.patientId))
-                            }}>
-                                <RemoveRedEyeIcon />
-                            </IconButton>
-                        </TableCell>
-                        <TableCell>fix cung</TableCell>
-                        <TableCell>fix cung</TableCell>
-                        <TableCell>fix cung</TableCell>
-                        <TableCell>fix cung</TableCell>
-                        <TableCell>fix cung</TableCell>
-                        <TableCell>fix cung</TableCell>
-                        <TableCell>
-                            <Button>
-                                Dịch vụ
-                            </Button>
-                        </TableCell>
-                        <TableCell>
-                            <IconButton aria-label="edit" onClick={() => {
-                                // setModalUpdateOpen(true)
-                                // dispatch(setUserId(item.patientId))
-                            }}>
-                                <EditIcon />
-                            </IconButton>
-                        </TableCell>
-                        <TableCell>
-                            <IconButton aria-label="delete" onClick={() => {
-                                // setModalDeleteOpen(true)
-                                // dispatch(setUserId(item.patientId))
-                            }}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </TableCell>
-                    </TableRow>
+                    {recordList?.map(el => (
+                        <TableRow key={el.patientRecordId}>
+                            <TableCell>
+                                <IconButton aria-label="detail" onClick={() => {
+                                    // setModalDetailOpen(true)
+                                    // dispatch(setUserId(item.patientId))
+                                }}>
+                                    <RemoveRedEyeIcon />
+                                </IconButton>
+                            </TableCell>
+                            <TableCell>{el.reason}</TableCell>
+                            <TableCell>{el.diagnostic}</TableCell>
+                            <TableCell>{el.causal}</TableCell>
+                            <TableCell>{el.date}</TableCell>
+                            <TableCell>{el.marrowRecord}</TableCell>
+                            <TableCell>{el.note}</TableCell>
+                            <TableCell>
+                                <Button>
+                                    Dịch vụ
+                                </Button>
+                            </TableCell>
+                            <TableCell>
+                                <IconButton aria-label="edit" onClick={() => {
+                                    console.log(el.patientRecordId)
+                                    // setModalUpdateOpen(true)
+                                    // dispatch(setUserId(item.patientId))
+                                }}>
+                                    <EditIcon />
+                                </IconButton>
+                            </TableCell>
+                            <TableCell>
+                                <IconButton aria-label="delete" onClick={() => {
+                                    // setModalDeleteOpen(true)
+                                    // dispatch(setUserId(item.patientId))
+                                }}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </TableCell>
+                        </TableRow>
 
+                    ))}
                 </TableBody>
             </Table>
         </>
