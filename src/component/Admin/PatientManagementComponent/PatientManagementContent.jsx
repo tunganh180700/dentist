@@ -100,31 +100,11 @@ const PatientManagementContent = () => {
     const handleSearchDebounce = useRef(_.debounce(async (formValues) => {
         setLoading(true)
         try {
-            if (searchValue === '') {
-                dispatch(fetchAllPatient({
-                    size: pageSize,
-                    page: currentPage,
-                })
-                );
-            } else {
-                // dispatch(searchPatient({
-                //     name: searchValue.name,
-                //     birthdate: searchValue.birthdate,
-                //     address: searchValue.address,
-                //     phone: searchValue.phone,
-                //     email: searchValue.email,
-                //     size: pageSize,
-                //     page: currentPage,
-                // }))
-                const formValues = {
-                    name: searchValue.name,
-                    birthdate: searchValue.birthdate,
-                    address: searchValue.address,
-                    phone: searchValue.phone,
-                    email: searchValue.email,
-                }
-                console.log(formValues)
-            }
+            await dispatch(searchPatient({
+                ...formValues,
+                size: pageSize,
+                page: currentPage,
+            }))
         } catch (error) {
             console.log(error)
         }
