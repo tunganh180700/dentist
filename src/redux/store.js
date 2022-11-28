@@ -16,6 +16,10 @@ import choosenMaterialImportSlice from "./MaterialSlice/choosenMaterialImportSli
 import listmaterialImportSlice from "./MaterialSlice/listMaterialImportSlice";
 
 
+import choosenMaterialExportSlice from "./MaterialSlice/choosenMaterialExportSlice";
+import listMaterialExportSlice from "./MaterialSlice/listMaterialExportSlice";
+
+
 import choosenServiceAndCategorySlice from "./ServiceAndCategorySlice/choosenServiceAndCategorySlice";
 import listServiceAndCategorySlice from "./ServiceAndCategorySlice/listServiceAndCategorySlice";
 
@@ -32,6 +36,9 @@ const store = configureStore({
 
         choosenMaterialImport: choosenMaterialImportSlice,
         listMaterialImport: listmaterialImportSlice,
+
+        choosenMaterialExport: choosenMaterialExportSlice,
+        listMaterialExport: listMaterialExportSlice,
 
 
         choosenLabo: choosenLaboSlice,

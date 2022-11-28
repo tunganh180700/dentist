@@ -9,8 +9,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from 'axios';
 import { updateMaterialImport } from '../../../redux/MaterialSlice/listMaterialImportSlice';
-import { getMaterialImportByIdAPI } from '../../../config/baseAPI';
-import {validationDate } from '../../../config/validation';
+import { getMaterialImportByIdAPI, listAllMaterialAPI } from '../../../config/baseAPI';
+import { validationDate } from '../../../config/validation';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -21,6 +21,9 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const materialImportId = useSelector(state => state.modal.materialImportId);
     const [loading, setLoading] = useState();
     const [value, setValue] = useState(null);
+    const [materialIds, setMaterialIds] = useState([]);
+    const [materialId, setMaterialId] = useState();
+    const [materialPrice, setMaterialPrice] = useState();
 
     const validationSchema = yup.object({
         materialName: yup
@@ -32,9 +35,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         amount: yup
             .string('Enter amount')
             .required('Your amount is required'),
-        totalPrice: yup
-            .string('Enter totalPrice')
-            .required('Your totalPrice is required')
+
     });
 
     const formik = useFormik({
@@ -44,6 +45,8 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         validationSchema: validationSchema,
         onSubmit: (values) => {
             values.date = moment(value.$d).format(validationDate);
+            values.materialId = materialId;
+            values.totalPrice = materialPrice;
             dispatch(updateMaterialImport(values));
             setModalUpdateOpen(false);
         }
@@ -57,6 +60,9 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             )
             console.log(res.data)
             formik.setValues(res.data)
+            console.log('id', res.data.materialId)
+            setMaterialId(res.data.materialId)
+            console.log('here: ',res.data.materialId )
             setValue(res.data.date)
         } catch (error) {
             console.log(error)
@@ -66,8 +72,27 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
     useEffect(() => {
         if (materialImportId > 0)
-        fetchMaterialImport(materialImportId)
+            fetchMaterialImport(materialImportId)
     }, [materialImportId])
+
+
+    useEffect(() => {
+        const price = materialIds?.filter(e => e.materialId === materialId)[0]?.price * (formik.values.amount || 0)
+        setMaterialPrice(price)
+    }, [materialId, formik.values.amount])
+    const loadMaterial = async () => {
+        try {
+            const res = await axios.get(listAllMaterialAPI)
+            setMaterialIds(res.data)
+
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        loadMaterial();
+    }, [])
 
     return (
         <>
@@ -93,30 +118,30 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     />
                     {formik.errors.materialName && <Typography style={{ color: 'red' }}>{formik.errors.materialName}</Typography>}
                     <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="supplyName"
-                    label="Vật liệu cung cấp"
-                    name="supplyName"
-                    autoComplete="supplyName"
-                    value={formik.values.supplyName}
-                    autoFocus
-                    onChange={formik.handleChange}
-                />
-                {formik.errors.supplyName && <Typography style={{ color: 'red' }}>{formik.errors.supplyName}</Typography>}
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        label="Date"
-                        name="date"
-                        value={value}
-                        onChange={(newValue) => {
-                            setValue(newValue);
-                            console.log(newValue)
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="supplyName"
+                        label="Vật liệu cung cấp"
+                        name="supplyName"
+                        autoComplete="supplyName"
+                        value={formik.values.supplyName}
+                        autoFocus
+                        onChange={formik.handleChange}
                     />
-                </LocalizationProvider>
+                    {formik.errors.supplyName && <Typography style={{ color: 'red' }}>{formik.errors.supplyName}</Typography>}
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="Date"
+                            name="date"
+                            value={value}
+                            onChange={(newValue) => {
+                                setValue(newValue);
+                                console.log(newValue)
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
                     <TextField
                         margin="normal"
                         required
@@ -129,7 +154,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}           
+                    {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -138,7 +163,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         label="Tổng giá"
                         name="totalPrice"
                         autoComplete="totalPrice"
-                        value={formik.values.totalPrice}
+                        value={materialPrice}
                         autoFocus
                         onChange={formik.handleChange}
                     />

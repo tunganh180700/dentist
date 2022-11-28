@@ -18,9 +18,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
         unit: yup
             .string('Enter unit')
             .required('Your unit is required'),
-        amount: yup
-            .string('Enter amount')
-            .required('Your amount is required'),
+
         price: yup
             .string('Enter price')
             .required('Your price is required')
@@ -30,7 +28,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
         initialValues: {
             materialName: '',
             unit: "",
-            amount: "",
+
             price: '',
         },
         validationSchema: validationSchema,
@@ -74,7 +72,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
                     type={"unit"}
                     onChange={formik.handleChange}
                 />
-                <TextField
+                {/* <TextField
                     margin="normal"
                     required
                     fullWidth
@@ -86,7 +84,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
+                {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>} */}
                 <TextField
                     margin="normal"
                     required

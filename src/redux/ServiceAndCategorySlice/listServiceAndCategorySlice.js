@@ -18,21 +18,7 @@ const initState = {
     isDeleteServiceAndCategory: false,
     statusAddServiceAndCategory: false,
     isAddServiceAndCategory: false,
-
-    // statusUpdateService: false,
-    // isUpdateService: false,
-    // statusDeleteService: false,
-    // isDeleteService: false,
-    // statusAddService: false,
-    // isAddService: false,
-
-    // statusUpdateCategory: false,
-    // isUpdateCategory: false,
-    // statusDeleteCategory: false,
-    // isDeleteCategory: false,
-    // statusAddCategory: false,
-    // isAddCategory: false,
-
+    listServiceDTO: [],
     message: ''
 }
 
@@ -51,6 +37,7 @@ const listServiceAndCategorySlice = createSlice({
             })
             .addCase(fetchAllServiceAndCategory.fulfilled, (state, action) => {
                 state.listServiceAndCategory = action.payload;
+
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
                 state.totalPage = action.payload.totalPages;
@@ -59,6 +46,7 @@ const listServiceAndCategorySlice = createSlice({
                 // state.isAddServiceAndCategory = false;
                 state.message = action.payload.message
             })
+
         // .addCase(updateServiceAndCategory.pending, (state, action) => {
         //     state.statusUpdateServiceAndCategory = true
         // })
@@ -92,6 +80,8 @@ export const fetchAllServiceAndCategory = createAsyncThunk('listServiceAndCatego
         console.log(error)
     }
 })
+
+
 
 // export const updateMaterial = createAsyncThunk('listMaterial/updateMaterial', async (data) => {
 //     // console.log(data.userId)

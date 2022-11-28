@@ -106,15 +106,9 @@ export const deleteMaterialImport = createAsyncThunk('listMaterialImport/deleteM
 
 export const addMaterialImport = createAsyncThunk('listMaterialImport/addMaterialImport', async (values) => {
     try {
-        const formValue = {
-            materialName: values.materialName,
-            supplyName: values.supplyName,
-            date: values.date,
-            amount: values.amount,
-            totalPrice: values.totalPrice
-        }
+      
         console.log(values)
-        const res = await axios.post(addMaterialImportAPI, formValue)
+        const res = await axios.post(addMaterialImportAPI, values)
         toast.success("Thêm vật liệu thành công !!!!!", toastCss)
         console.log(res.data)
         return res.data

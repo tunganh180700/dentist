@@ -12,6 +12,7 @@ import PatientManagement from "../component/Admin/PatientManagementComponent/Pat
 import LaboManagement from "../component/Admin/LaboComponent/LaboManagement";
 import MaterialManagement from "../component/Admin/MaterialManagementComponent/MaterialManagement";
 import MaterialImportManagement from "../component/Admin/MaterialManagementComponent/MaterialImportManagement";
+import MaterialExportManagement from "../component/Admin/MaterialManagementComponent/MaterialExportManagement";
 import ServiceAndCategoryManagement from "../component/Admin/ServiceAndCategoryManagementComponent/ServiceAndCategoryManagement";
 
 const Routing = () => {
@@ -27,6 +28,7 @@ const Routing = () => {
                 <Route path='/patient-management' element={<PatientManagement />} />
                 <Route path='/materialmanagement' element={<MaterialManagement />} />
                 <Route path='/materialimport' element={<MaterialImportManagement />} />
+                <Route path='/materialexport' element={<MaterialExportManagement />} />
                 <Route path='/serviceandcategory' element={<ServiceAndCategoryManagement />} />
                 <Route path='/' element={<HomePage />} />
                 <Route path='*' element={<>404 Error</>} />

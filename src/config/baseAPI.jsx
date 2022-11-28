@@ -19,6 +19,7 @@ export const deleteLaboAPI = `${baseUrl}/api/labos/`
 export const addLaboAPI = `${baseUrl}/api/labos/`
 
 export const listMaterialAPI = `${baseUrl}/api/materials/get_list_materials`
+export const listAllMaterialAPI = `${baseUrl}/api/materials/get_all_material`
 export const getMaterialByIdAPI =`${baseUrl}/api/materials/`
 export const updateMaterialAPI =`${baseUrl}/api/materials/`
 export const deleteMaterialAPI =`${baseUrl}/api/materials/`
@@ -32,3 +33,14 @@ export const deleteMaterialImportAPI =`${baseUrl}/api/material_imports/`
 export const addMaterialImportAPI = `${baseUrl}/api/material_imports/`
 
 export const listServiceAndCategoryAPI = `${baseUrl}/api/categories/get_list_service`
+
+export const listMaterialExportAPI = `${baseUrl}/api/material_export/get_list_export`
+export const getMaterialExportByIdAPI = `${baseUrl}/api/material_export/`
+export const updateMaterialExportAPI = `${baseUrl}/api/material_export/`
+export const addMaterialExportAPI = `${baseUrl}/api/material_export/`
+export const deleteMaterialExportAPI = `${baseUrl}/api/material_export/`
+
+export const listAllPatientAPI = `${baseUrl}/api/patients/get_all_patients`
+
+export const listPatientRecordByTreatmentIdAPI = `${baseUrl}/api/patient_record/get_all_record/`
+

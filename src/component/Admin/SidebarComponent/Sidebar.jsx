@@ -101,6 +101,14 @@ const Sidebar = () => {
                                 <ListItemText primary="Vật liệu nhập khẩu" />
                             </Link>
                         </ListItemButton>
+                        <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <StarBorder />
+                            </ListItemIcon>
+                            <Link to={'/materialexport'}>
+                                <ListItemText primary="Vật liệu xuất khẩu" />
+                            </Link>
+                        </ListItemButton>
                     </List>
                 </Collapse>
 

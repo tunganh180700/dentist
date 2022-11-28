@@ -10,7 +10,7 @@ import { validationDate } from '../../../config/validation';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { listMaterialAPI } from '../../../config/baseAPI';
+import { listMaterialAPI, listAllMaterialAPI } from '../../../config/baseAPI';
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -18,13 +18,18 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import moment from 'moment/moment';
+import { Label } from '@mui/icons-material';
 
 const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
     const [value, setValue] = useState(null);
     const [materialIds, setMaterialIds] = useState([]);
     const [materialId, setMaterialId] = useState();
+    const [materialPrice, setMaterialPrice] = useState();
+    
 
+    // const [listMaterialPrice, setListMaterialPrice] = useState([]);
+   
     const validationSchema = yup.object({
         supplyName: yup
             .string('Enter supplyName')
@@ -32,24 +37,21 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
         amount: yup
             .string('Enter amount')
             .required('Your amount is required'),
-        totalPrice: yup
-            .string('Enter totalPrice')
-            .required('Your totalPrice is required')
+
     });
 
-    
+
 
     const loadMaterial = async () => {
         try {
-            const res = await axios.get(listMaterialAPI)
-           
-            console.log(res)
+            const res = await axios.get(listAllMaterialAPI)
+
+
             setMaterialId(res.data[0].materialId)
             setMaterialIds(res.data)
+            setMaterialPrice(res.data[0].price)
 
-            // console.log(materialIds)
-            // console.log(materialId)
-           
+
         } catch (error) {
             console.log(error)
         }
@@ -58,20 +60,31 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
         loadMaterial();
     }, [])
 
+
+
     const formik = useFormik({
         initialValues: {
             supplyName: "",
             amount: "",
-            totalPrice: '',
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
             values.date = moment(value.$d).format(validationDate);
             values.materialId = materialId;
+            values.totalPrice = materialPrice;
+            console.log(values);
             dispatch(addMaterialImport(values))
             setModalAddOpen(false)
         }
     });
+
+    useEffect(() => {
+        const price = materialIds?.filter(e => e.materialId === materialId)[0]?.price * (formik.values.amount || 0)
+       
+          setMaterialPrice(price)
+    },[materialId,formik.values.amount])
+
+    
 
     return (
         <>
@@ -94,12 +107,13 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                         >
                             {materialIds?.map(item => (
                                 <MenuItem key={item.materialId} value={item.materialId}>{item.materialName}</MenuItem>
+                            
                             ))}
+
                         </Select>
+
                     </FormControl>
                 </Box>
-
-
 
                 <TextField
                     margin="normal"
@@ -139,20 +153,20 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     onChange={formik.handleChange}
                 />
                 {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
+
                 <TextField
                     margin="normal"
                     required
+                    disabled
                     fullWidth
                     id="totalPrice"
-                    label="Tổng giá"
+                    label="Total Price"
                     name="totalPrice"
                     autoComplete="totalPrice"
-                    value={formik.values.totalPrice}
+                    value={materialPrice}
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.totalPrice && <Typography style={{ color: 'red' }}>{formik.errors.totalPrice}</Typography>}
-
             </Modal>
         </>
     )
