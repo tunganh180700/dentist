@@ -13,6 +13,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
 import StarBorder from '@mui/icons-material/StarBorder';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import { useState } from 'react';
 
 const Sidebar = () => {
@@ -76,12 +77,67 @@ const Sidebar = () => {
                     <ListItemText primary="Quản lý hóa đơn" />
                 </ListItemButton>
 
+                <ListItemButton onClick={handleClick}>
+                    <ListItemIcon>
+                        <CategoryIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Quản lý vật liệu" />
+                    {open ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={open} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <StarBorder />
+                            </ListItemIcon>
+                            <Link to={'/materialmanagement'}>
+                                <ListItemText primary="Vật liệu" />
+                            </Link>
+                        </ListItemButton>
+                        <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <StarBorder />
+                            </ListItemIcon>
+                            <Link to={'/materialimport'}>
+                                <ListItemText primary="Vật liệu nhập khẩu" />
+                            </Link>
+                        </ListItemButton>
+                        <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <StarBorder />
+                            </ListItemIcon>
+                            <Link to={'/materialexport'}>
+                                <ListItemText primary="Vật liệu xuất khẩu" />
+                            </Link>
+                        </ListItemButton>
+                    </List>
+                </Collapse>
+
                 <ListItemButton>
                     <ListItemIcon>
-                        <DescriptionIcon />
+                        <AccountCircleIcon />
                     </ListItemIcon>
-                    <Link to={'/timekeeping'}>
-                        <ListItemText primary="Chấm công" />
+                    <Link to={'/labo'}>
+                        <ListItemText primary="Quản lý Labo" />
+                    </Link>
+                </ListItemButton>
+
+                
+                <ListItemButton>
+                    <ListItemIcon>
+                        <AccountCircleIcon />
+                    </ListItemIcon>
+                    <Link to={'/serviceandcategory'}>
+                        <ListItemText primary="Quản lý Dịch vụ" />
+                    </Link>
+                </ListItemButton>
+
+                <ListItemButton>
+                    <ListItemIcon>
+                        <PointOfSaleIcon />
+                    </ListItemIcon>
+                    <Link to={'/income'}>
+                        <ListItemText primary="Thu nhập" />
                     </Link>
                 </ListItemButton>
             </React.Fragment>
