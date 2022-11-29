@@ -19,3 +19,4 @@ export const allPatientRecordAPI = `${baseUrl}/api/patient_record/get_list_recor
 export const patientRecordAPI = `${baseUrl}/api/patient_record/`
 
 export const loginAPI = `${baseUrl}/api/login`
+export const listTreatingServiceAPI = `${baseUrl}/api/categories/get_treating_service/`

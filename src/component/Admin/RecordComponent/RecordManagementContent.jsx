@@ -1,17 +1,21 @@
-import { Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material"
+import { Button, IconButton, ListItemButton, ListItemIcon, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material"
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../config/customAxios";
 import { allPatientRecordAPI } from "../../../config/baseAPI";
 import ModalAddRecord from "../../ModalComponent/ModalRecord/ModalAddRecord";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { useSelector } from "react-redux";
 
 const RecordManagementContent = () => {
     const [modalAddOpen, setModalAddOpen] = useState(false);
+    const patientName = useSelector(state => state.choosenPatient.patientName)
 
+    // console.log(patientName)
     const { id } = useParams()
     const [recordList, setRecordList] = useState([])
     const getDetail = async (id) => {
@@ -36,12 +40,17 @@ const RecordManagementContent = () => {
                 noWrap
                 fontWeight="bold"
             >
-                Hồ sơ bệnh án của ...
+                Hồ sơ bệnh án của {patientName}
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
                 setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
+            </IconButton>
+            <IconButton aria-label="back" style={{ borderRadius: "20%", marginRight: "83%" }}>
+                <Link to={'/patient-management'}>
+                    <ArrowBackIosNewIcon />
+                </Link>
             </IconButton>
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>

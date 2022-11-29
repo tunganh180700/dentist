@@ -8,11 +8,28 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Button from '@mui/material/Button';
-import { width } from "@mui/system";
+import axiosInstance from "../../../config/customAxios";
+import { useParams } from "react-router-dom";
+import { listTreatingServiceAPI } from "../../../config/baseAPI";
+import { useEffect } from "react";
 
 const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [value, setValue] = useState(null);
+    const { id } = useParams()
+    const [listTreatingService, setListTreatingService] = useState([])
+    const getServiceTreating = async (id) => {
+        try {
+            const res = await axiosInstance.get(listTreatingServiceAPI + id)
+            console.log(res.data)
+            setListTreatingService(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getServiceTreating(id)
+    }, [id])
 
     return (
         <>
@@ -104,22 +121,30 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>
-                                        Lý do đến khám
+                                        Dich vụ
                                     </TableCell>
                                     <TableCell>
-                                        Chẩn đoán
+                                        Giá tiền
                                     </TableCell>
                                     <TableCell>
-                                        Nguyên nhân
+                                        Giảm giá
                                     </TableCell>
                                     <TableCell>
-                                        Dịch vụ
+                                        Trạng thái
                                     </TableCell>
 
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {/* {recordList?.map(el => ( */}
+                                {/* {listTreatingService?.map(item => ( */}
+                                {listTreatingService?.map(item => (
+                                    <TableRow key={item.serviceId}>
+                                        <TableCell>1</TableCell>
+                                        <TableCell>2</TableCell>
+                                        <TableCell>3</TableCell>
+                                        <TableCell>4</TableCell>
+                                    </TableRow>
+                                ))}
                                 <TableRow >
                                     {/* <TableCell>
                                             <IconButton aria-label="detail" onClick={() => {
@@ -129,10 +154,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                                 <RemoveRedEyeIcon />
                                             </IconButton>
                                         </TableCell> */}
-                                    <TableCell>1</TableCell>
-                                    <TableCell>2</TableCell>
-                                    <TableCell>3</TableCell>
-                                    <TableCell>4</TableCell>
+
                                     {/* <TableCell>
                                             <IconButton aria-label="edit" onClick={() => {
                                                 console.log(el.patientRecordId)
