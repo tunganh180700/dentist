@@ -7,8 +7,11 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../config/customAxios";
 import { allPatientRecordAPI } from "../../../config/baseAPI";
+import ModalAddRecord from "../../ModalComponent/ModalRecord/ModalAddRecord";
 
 const RecordManagementContent = () => {
+    const [modalAddOpen, setModalAddOpen] = useState(false);
+
     const { id } = useParams()
     const [recordList, setRecordList] = useState([])
     const getDetail = async (id) => {
@@ -36,7 +39,7 @@ const RecordManagementContent = () => {
                 Hồ sơ bệnh án của ...
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
-                // setModalAddOpen(true)
+                setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
             </IconButton>
@@ -175,6 +178,9 @@ const RecordManagementContent = () => {
                     ))}
                 </TableBody>
             </Table>
+            <div>
+                <ModalAddRecord modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+            </div>
         </>
     )
 }
