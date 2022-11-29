@@ -73,6 +73,9 @@ const listPatientSlice = createSlice({
             .addCase(searchPatient.fulfilled, (state, action) => {
                 state.listPatient = action.payload.content;
                 state.isSearchPatient = true
+                state.totalElements = action.payload.totalElements;
+                state.totalPage = action.payload.totalPages;
+                state.isSearchPatient = true;
             })
 
     }
@@ -160,7 +163,7 @@ export const deletePatient = createAsyncThunk('listPatient/deletePatient', async
 export const updatePatient = createAsyncThunk('listPatient/updatePatient', async (data) => {
     // console.log(data.userId)
     try {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
             updatePatientAPI + data.patientId, data
         )
         console.log(res)

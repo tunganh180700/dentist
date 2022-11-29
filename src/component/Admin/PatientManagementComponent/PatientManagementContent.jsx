@@ -47,7 +47,6 @@ const PatientManagementContent = () => {
         email: ""
     })
 
-    const statusPatient = useSelector(state => state.listPatient.statusPatient)
     let styleText = {}
 
     function changeColor(status) {
@@ -81,13 +80,14 @@ const PatientManagementContent = () => {
                     ...searchValue,
                     size: pageSize,
                     page: currentPage,
-                }))
+                }
+                ))
             }
         } catch (error) {
             console.log(error)
         }
         setLoading(false)
-    }, [currentPage, isAddPatient, isUpdatePatient])
+    }, [currentPage, isAddPatient, isUpdatePatient, isSearchPatient])
 
     useEffect(() => {
         if (isDeletePatient == true && totalElements % pageSize == 1) {
@@ -113,7 +113,8 @@ const PatientManagementContent = () => {
 
     const handleSearch = (e) => {
         setSearchValue(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
-        handleSearchDebounce(searchValue)
+        console.log(searchValue)
+        // setSearchValue({[e.target.name]: e.target.value})
     }
 
     useEffect(() => {
@@ -121,6 +122,11 @@ const PatientManagementContent = () => {
             handleSearchDebounce.cancel();
         };
     }, [handleSearchDebounce]);
+
+    useEffect(() => {
+        handleSearchDebounce(searchValue)
+        console.log(searchValue)
+    }, [searchValue])
 
     return (
         <>
