@@ -73,6 +73,9 @@ const listPatientSlice = createSlice({
             .addCase(searchPatient.fulfilled, (state, action) => {
                 state.listPatient = action.payload.content;
                 state.isSearchPatient = true
+                state.totalElements = action.payload.totalElements;
+                state.totalPage = action.payload.totalPages;
+                state.isSearchPatient = true;
             })
 
     }
@@ -89,16 +92,28 @@ export const fetchAllPatient = createAsyncThunk('listPatient/fetchAllPatient', a
     }
 })
 
+// export const searchPatient = createAsyncThunk('listPatient/searchPatient', async (paramSearch) => {
+//     try {
+//         // const formValue = {
+//         //     name: values.patientName,
+//         //     birthdate: values.birthdate,
+//         //     gender: values.gender,
+//         //     address: values.address,
+//         //     phone: values.phone,
+//         //     email: values.email,
+//         // }
+//         const res = await axiosInstance.get(searchPatientAPI, {
+//             params: paramSearch
+//         })
+//         console.log(res)
+//         return res.data
+//     } catch (error) {
+//         console.log(error)
+//     }
+// })
 export const searchPatient = createAsyncThunk('listPatient/searchPatient', async (paramSearch) => {
     try {
-        // const formValue = {
-        //     name: values.patientName,
-        //     birthdate: values.birthdate,
-        //     gender: values.gender,
-        //     address: values.address,
-        //     phone: values.phone,
-        //     email: values.email,
-        // }
+
         const res = await axiosInstance.get(searchPatientAPI, {
             params: paramSearch
         })
@@ -108,7 +123,6 @@ export const searchPatient = createAsyncThunk('listPatient/searchPatient', async
         console.log(error)
     }
 })
-
 
 
 export const addPatient = createAsyncThunk('listPatient/addPatient', async (values) => {
@@ -149,7 +163,7 @@ export const deletePatient = createAsyncThunk('listPatient/deletePatient', async
 export const updatePatient = createAsyncThunk('listPatient/updatePatient', async (data) => {
     // console.log(data.userId)
     try {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
             updatePatientAPI + data.patientId, data
         )
         console.log(res)

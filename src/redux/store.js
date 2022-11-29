@@ -4,6 +4,7 @@ import listAccountSlice from "./AccountSlice/listAccountSlice";
 import modalSlice from "./modalSlice";
 import choosenPatientSlice from "./PatienSlice/choosenPatientSlice";
 import listPatientSlice from "./PatienSlice/listPatientSlice";
+import listTimekeepingSlice from "./TimekeepingSlice/listTimekeepingSlice";
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
         modal: modalSlice,
         choosenAccount: choosenAccountSlice,
         listPatient: listPatientSlice,
-        choosenPatient: choosenPatientSlice
+        choosenPatient: choosenPatientSlice,
+        listTimekeeping: listTimekeepingSlice
     }
 })
 

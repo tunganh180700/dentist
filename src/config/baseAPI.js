@@ -18,4 +18,6 @@ export const listRoleAPI = `${baseUrl}/api/roles/get_list_roles`
 export const allPatientRecordAPI = `${baseUrl}/api/patient_record/get_list_record/`
 export const patientRecordAPI = `${baseUrl}/api/patient_record/`
 
+export const listTimekeepingAPI = `${baseUrl}/api/timekeeping/get_list_timekeeping`
+
 export const loginAPI = `${baseUrl}/api/login`

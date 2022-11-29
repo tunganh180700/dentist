@@ -75,6 +75,15 @@ const Sidebar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Quản lý hóa đơn" />
                 </ListItemButton>
+
+                <ListItemButton>
+                    <ListItemIcon>
+                        <DescriptionIcon />
+                    </ListItemIcon>
+                    <Link to={'/timekeeping'}>
+                        <ListItemText primary="Chấm công" />
+                    </Link>
+                </ListItemButton>
             </React.Fragment>
         </>
     )
