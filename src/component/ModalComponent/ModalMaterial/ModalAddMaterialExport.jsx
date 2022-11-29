@@ -19,6 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Label } from '@mui/icons-material';
+import axiosInstance from '../../../config/customAxios';
 
 const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
 
     const loadMaterial = async () => {
         try {
-            const res = await axios.get(listAllMaterialAPI)
+            const res = await axiosInstance.get(listAllMaterialAPI)
             setMaterialId(res.data[0].materialId)
             setMaterialIds(res.data)
             setMaterialPrice(res.data[0].price)
@@ -65,7 +66,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
 
     const loadPatient = async () => {
         try {
-            const res = await axios.get(listAllPatientAPI)
+            const res = await axiosInstance.get(listAllPatientAPI)
             setPatientId(res.data[0].patientId)
             setPatientIds(res.data)
 
@@ -101,7 +102,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const fetchMaterialExport = async (materialExportId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 getMaterialExportByIdAPI + materialExportId,
             )
             console.log(res.data)
@@ -126,7 +127,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const loadRecordByTreatmentId = async (patientId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 listPatientRecordByTreatmentIdAPI + patientId,
             )
             //  setPatientRecordId(res.data[0].patientId)

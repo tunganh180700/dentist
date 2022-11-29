@@ -4,6 +4,7 @@ import { listIncomeAPI} from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     listIncome: [],
@@ -67,7 +68,7 @@ const listIncomeSlice = createSlice({
 
 export const fetchAllIncome = createAsyncThunk('listIncome/fetchAllIncome', async (paramsSearch) => {
     try {
-        const res = await axios.get(listIncomeAPI, {
+        const res = await axiosInstance.get(listIncomeAPI, {
             params: paramsSearch,
         })
         console.log('data income: ', res.data);

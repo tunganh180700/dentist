@@ -4,6 +4,7 @@ import { listMaterialAPI, updateMaterialAPI, deleteMaterialAPI, addMaterialAPI }
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     listMaterial: [],
@@ -67,7 +68,7 @@ const listMaterialSlice = createSlice({
 
 export const fetchAllMaterial = createAsyncThunk('listMaterial/fetchAllMaterial', async (paramsSearch) => {
     try {
-        const res = await axios.get(listMaterialAPI, {
+        const res = await axiosInstance.get(listMaterialAPI, {
             params: paramsSearch,
         })
         return res.data
@@ -79,7 +80,7 @@ export const fetchAllMaterial = createAsyncThunk('listMaterial/fetchAllMaterial'
 export const updateMaterial = createAsyncThunk('listMaterial/updateMaterial', async (data) => {
     // console.log(data.userId)
     try {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
             updateMaterialAPI + data.materialId, data
         )
         console.log(res)
@@ -95,7 +96,7 @@ export const updateMaterial = createAsyncThunk('listMaterial/updateMaterial', as
 export const deleteMaterial = createAsyncThunk('listMaterial/deleteMaterial', async (materialId) => {
     console.log(materialId)
     try {
-        const res = await axios.delete(deleteMaterialAPI + materialId)
+        const res = await axiosInstance.delete(deleteMaterialAPI + materialId)
         toast.success(DELETE_SUCCESS, toastCss)
         return materialId
     } catch (error) {
@@ -113,7 +114,7 @@ export const addMaterial = createAsyncThunk('listMaterial/addMaterial', async (v
             price: values.price
         }
         console.log(values)
-        const res = await axios.post(addMaterialAPI, formValue)
+        const res = await axiosInstance.post(addMaterialAPI, formValue)
         toast.success("Thêm vật liệu thành công !!!!!", toastCss)
         console.log(res.data)
         return res.data

@@ -19,6 +19,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import moment from 'moment/moment';
 import { Label } from '@mui/icons-material';
+import axiosInstance from '../../../config/customAxios';
 
 const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -44,7 +45,7 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
 
     const loadMaterial = async () => {
         try {
-            const res = await axios.get(listAllMaterialAPI)
+            const res = await axiosInstance.get(listAllMaterialAPI)
 
 
             setMaterialId(res.data[0].materialId)

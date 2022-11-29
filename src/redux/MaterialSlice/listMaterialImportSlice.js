@@ -4,6 +4,7 @@ import { listMaterialImportAPI, updateMaterialImportAPI, deleteMaterialImportAPI
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     listMaterialImport: [],
@@ -67,7 +68,7 @@ const listMaterialImportSlice = createSlice({
 
 export const fetchAllMaterialImport = createAsyncThunk('listMaterialImport/fetchAllMaterialImport', async (paramsSearch) => {
     try {
-        const res = await axios.get(listMaterialImportAPI, {
+        const res = await axiosInstance.get(listMaterialImportAPI, {
             params: paramsSearch,
         })
         return res.data
@@ -79,7 +80,7 @@ export const fetchAllMaterialImport = createAsyncThunk('listMaterialImport/fetch
 export const updateMaterialImport = createAsyncThunk('listMaterialImport/updateMaterialImport', async (data) => {
 
     try {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
             updateMaterialImportAPI + data.materialImportId, data
         )
         console.log(res)
@@ -95,7 +96,7 @@ export const updateMaterialImport = createAsyncThunk('listMaterialImport/updateM
 export const deleteMaterialImport = createAsyncThunk('listMaterialImport/deleteMaterialImport', async (materialImportId) => {
     console.log(materialImportId)
     try {
-        const res = await axios.delete(deleteMaterialImportAPI + materialImportId)
+        const res = await axiosInstance.delete(deleteMaterialImportAPI + materialImportId)
         toast.success(DELETE_SUCCESS, toastCss)
         return materialImportId
     } catch (error) {
@@ -108,7 +109,7 @@ export const addMaterialImport = createAsyncThunk('listMaterialImport/addMateria
     try {
       
         console.log(values)
-        const res = await axios.post(addMaterialImportAPI, values)
+        const res = await axiosInstance.post(addMaterialImportAPI, values)
         toast.success("Thêm vật liệu thành công !!!!!", toastCss)
         console.log(res.data)
         return res.data

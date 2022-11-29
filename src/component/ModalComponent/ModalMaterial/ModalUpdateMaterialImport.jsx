@@ -15,6 +15,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import moment from 'moment/moment';
+import axiosInstance from '../../../config/customAxios';
 
 const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const dispatch = useDispatch();
@@ -55,7 +56,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const fetchMaterialImport = async (materialImportId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 getMaterialImportByIdAPI + materialImportId,
             )
             console.log(res.data)
@@ -82,7 +83,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     }, [materialId, formik.values.amount])
     const loadMaterial = async () => {
         try {
-            const res = await axios.get(listAllMaterialAPI)
+            const res = await axiosInstance.get(listAllMaterialAPI)
             setMaterialIds(res.data)
 
 

@@ -10,6 +10,7 @@ import * as yup from "yup";
 import axios from 'axios';
 import { updateMaterial } from '../../../redux/MaterialSlice/listMaterialSlice';
 import { getMaterialByIdAPI } from '../../../config/baseAPI';
+import axiosInstance from '../../../config/customAxios';
 
 
 const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -47,7 +48,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const fetchMaterial = async (materialId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 getMaterialByIdAPI + materialId,
             )
             console.log(res.data)
