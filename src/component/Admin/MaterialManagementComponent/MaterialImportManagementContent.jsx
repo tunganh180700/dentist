@@ -53,7 +53,7 @@ const MaterialImportManagementContent = () => {
             >
                 Quản lý vật liệu nhập khẩu
             </Typography>
-            <IconButton aria-label="add" onClick={() => {
+            <IconButton aria-label="add"   style={{borderRadius: '5%'}} onClick={() => {
                 setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới

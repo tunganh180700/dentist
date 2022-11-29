@@ -13,6 +13,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
 import StarBorder from '@mui/icons-material/StarBorder';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import { useState } from 'react';
 
 const Sidebar = () => {
@@ -128,6 +129,15 @@ const Sidebar = () => {
                     </ListItemIcon>
                     <Link to={'/serviceandcategory'}>
                         <ListItemText primary="Quản lý Dịch vụ" />
+                    </Link>
+                </ListItemButton>
+
+                <ListItemButton>
+                    <ListItemIcon>
+                        <PointOfSaleIcon />
+                    </ListItemIcon>
+                    <Link to={'/income'}>
+                        <ListItemText primary="Thu nhập" />
                     </Link>
                 </ListItemButton>
             </React.Fragment>

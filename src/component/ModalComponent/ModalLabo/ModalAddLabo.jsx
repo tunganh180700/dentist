@@ -31,6 +31,7 @@ const ModalAddLabo = ({ modalAddOpen, setModalAddOpen }) => {
         onSubmit: (values) => {
             dispatch(addLabo(values))
             setModalAddOpen(false)
+            formik.handleReset()
         }
     });
 

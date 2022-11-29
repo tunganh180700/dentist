@@ -94,6 +94,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
             console.log(values);
             dispatch(addMaterialExport(values))
             setModalAddOpen(false)
+            formik.handleReset()
         }
     });
 

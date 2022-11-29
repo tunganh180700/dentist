@@ -53,7 +53,7 @@ const MaterialManagementContent = () => {
             >
                 Quản lý vật liệu
             </Typography>
-            <IconButton aria-label="add" onClick={() => {
+            <IconButton aria-label="add"   style={{borderRadius: '5%'}} onClick={() => {
                 setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
@@ -61,7 +61,7 @@ const MaterialManagementContent = () => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>STT</TableCell>
+                       
                         <TableCell>Tên vật liệu</TableCell>
                         <TableCell>Đơn vị</TableCell>
                         <TableCell>Số lượng</TableCell>
@@ -74,7 +74,7 @@ const MaterialManagementContent = () => {
                 <TableBody>
                     {listMaterial.map((item, index) =>
                         <TableRow key={item.materialId}>
-                            <TableCell>{index + 1}</TableCell>
+                          
                             <TableCell>{item.materialName}</TableCell>
                             <TableCell>{item.unit}</TableCell>
                             <TableCell>{item.amount}</TableCell>

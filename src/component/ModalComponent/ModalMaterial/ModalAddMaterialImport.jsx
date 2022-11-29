@@ -75,6 +75,7 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
             console.log(values);
             dispatch(addMaterialImport(values))
             setModalAddOpen(false)
+            formik.handleReset()
         }
     });
 

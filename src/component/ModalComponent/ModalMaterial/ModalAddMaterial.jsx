@@ -35,6 +35,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
         onSubmit: (values) => {
             dispatch(addMaterial(values))
             setModalAddOpen(false)
+            formik.handleReset()
         }
     });
 

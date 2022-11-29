@@ -44,3 +44,6 @@ export const listAllPatientAPI = `${baseUrl}/api/patients/get_all_patients`
 
 export const listPatientRecordByTreatmentIdAPI = `${baseUrl}/api/patient_record/get_all_record/`
 
+export const listIncomeAPI = `${baseUrl}/api/income`
+
+

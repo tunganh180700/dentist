@@ -53,7 +53,7 @@ const LaboManagementContent = () => {
             >
                 Quản lý Labo
             </Typography>
-            <IconButton aria-label="add" onClick={() => {
+            <IconButton aria-label="add"  style={{borderRadius: '5%'}} onClick={() => {
                 setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
@@ -61,7 +61,7 @@ const LaboManagementContent = () => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>STT</TableCell>
+                       
                         <TableCell>Tên Labo</TableCell>
                         <TableCell>Phone</TableCell>
                         <TableCell>Tổng tiền</TableCell>
@@ -72,7 +72,7 @@ const LaboManagementContent = () => {
                 <TableBody>
                     {listLabo.map((item, index) =>
                         <TableRow key={item.laboId}>
-                            <TableCell>{index + 1}</TableCell>
+                           
                             <TableCell>{item.laboName}</TableCell>
                             <TableCell>{item.phone}</TableCell>
                             <TableCell>{item.totalMoney}</TableCell>
