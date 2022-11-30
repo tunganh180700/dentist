@@ -12,12 +12,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 
-import { fetchAllIncome,fetchAllNetIncome } from '../../../redux/IncomeSlice/listIncomeSlice';
+import { fetchAllIncome, fetchAllNetIncome } from '../../../redux/IncomeSlice/listIncomeSlice';
 
 const IncomeManagementContent = () => {
 
     const listIncome = useSelector(state => state.listIncome.listIncome)
     const listNetIncome = useSelector(state => state.listIncome.listNetIncome)
+    const totalIncome = useSelector(state => state.listIncome.totalIncome)
+    const totalNetIncome = useSelector(state => state.listIncome.totalNetIncome)
     const dispatch = useDispatch()
     const pageSize = useSelector(state => state.listIncome.pageSize)
     const totalPages = useSelector(state => state.listIncome.totalPage)
@@ -29,16 +31,16 @@ const IncomeManagementContent = () => {
 
 
     useEffect(() => {
-        dispatch(fetchAllIncome({            
+        dispatch(fetchAllIncome({
         },
         ));
-    },[])
+    }, [])
 
     useEffect(() => {
-        dispatch(fetchAllNetIncome({         
+        dispatch(fetchAllNetIncome({
         },
         ));
-    },[])
+    }, [])
 
     return (
         <>
@@ -61,14 +63,14 @@ const IncomeManagementContent = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {listIncome.incomeDetailDTOS.map((item, index) =>
+                    {listIncome.map((item, index) =>
                         <TableRow size='medium' >
                             <TableCell>{item.name}</TableCell>
                             <TableCell>{item.date}</TableCell>
                             <TableCell>{item.price}</TableCell>
                         </TableRow>
                     )}
-                    <TableCell colSpan={3} style={{ fontWeight: 'bold', fontSize: '20px', textAlign: 'end' }}>Tổng tiền : {listIncome.totalIncome}</TableCell>
+                    <TableCell colSpan={3} style={{ fontWeight: 'bold', fontSize: '20px', textAlign: 'end' }}>Tổng tiền : {totalIncome}</TableCell>
                 </TableBody>
             </Table>
 
@@ -82,14 +84,14 @@ const IncomeManagementContent = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {listNetIncome.incomeDetailDTOS.map((item, index) =>
+                    {listNetIncome.map((item, index) =>
                         <TableRow size='medium' >
                             <TableCell>{item.name}</TableCell>
                             <TableCell>{item.date}</TableCell>
                             <TableCell>{item.price}</TableCell>
                         </TableRow>
                     )}
-                    <TableCell colSpan={3} style={{ fontWeight: 'bold', fontSize: '20px', textAlign: 'end' }}>Tổng tiền : {listNetIncome.totalIncome}</TableCell>
+                    <TableCell colSpan={3} style={{ fontWeight: 'bold', fontSize: '20px', textAlign: 'end' }}>Tổng tiền : {totalNetIncome}</TableCell>
                 </TableBody>
             </Table>
 
