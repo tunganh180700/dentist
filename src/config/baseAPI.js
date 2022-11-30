@@ -53,6 +53,6 @@ export const patientRecordAPI = `${baseUrl}/api/patient_record/`
 export const listIncomeAPI = `${baseUrl}/api/income`
 export const loginAPI = `${baseUrl}/api/login`
 
-export const GET_LIST_TIMEKEEPING = `${baseUrl}/api/timekeeping/get_list_timekeeping?size=10`
+export const GET_LIST_TIMEKEEPING = `${baseUrl}/api/timekeeping/get_list_timekeeping?size=10&page=`
 export const CHECK_IN = `${baseUrl}/api/timekeeping/checkin`
 export const CHECK_OUT = `${baseUrl}/api/timekeeping/checkout`
