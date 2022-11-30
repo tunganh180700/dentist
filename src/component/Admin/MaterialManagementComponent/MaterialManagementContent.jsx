@@ -65,7 +65,7 @@ const MaterialManagementContent = () => {
                         <TableCell>Tên vật liệu</TableCell>
                         <TableCell>Đơn vị</TableCell>
                         <TableCell>Số lượng</TableCell>
-                        <TableCell>Đơn giá</TableCell>
+                        <TableCell>Giá tiền</TableCell>
                         <TableCell>Tổng tiền</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>

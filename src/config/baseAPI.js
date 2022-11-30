@@ -54,4 +54,24 @@ export const listAllPatientAPI = `${baseUrl}/api/patients/get_all_patients`
 
 export const listPatientRecordByTreatmentIdAPI = `${baseUrl}/api/patient_record/get_all_record/`
 
+
+
+export const listAllCategoryAPI = `${baseUrl}/api/categories/get_all_category_service`
+
+export const addCategoryAPI = `${baseUrl}/api/categories/`
+
+export const updateCategoryBySelectIdAPI = `${baseUrl}/api/categories/`
+
+
+export const listServiceByCategoryIdAPI = `${baseUrl}/api/categories/get_all_service_by_category_id/`
+
+export const deleteServiceAPI = `${baseUrl}/api/categories/delete_service/`
+
+export const addServiceAPI = `${baseUrl}/api/categories/add_service`
+
+export const updateServiceAPI = `${baseUrl}/api/categories/update_service/`
+
+
 export const listIncomeAPI = `${baseUrl}/api/income`
+
+export const listNetIncomeAPI = `${baseUrl}/api/income/net_income`

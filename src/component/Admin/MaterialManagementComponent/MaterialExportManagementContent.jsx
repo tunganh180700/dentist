@@ -51,7 +51,7 @@ const MaterialExportManagementContent = () => {
                 color="inherit"
                 noWrap
             >
-                Quản lý vật liệu xuất khẩu
+                Quản lý xuất vật liệu
             </Typography>
             <IconButton aria-label="add"   style={{borderRadius: '5%'}} onClick={() => {
                 setModalAddOpen(true)
@@ -63,7 +63,7 @@ const MaterialExportManagementContent = () => {
                     <TableRow>
                         <TableCell>Tên vật liệu</TableCell>
                         <TableCell>Số lượng</TableCell>
-                        <TableCell>Tổng tiền</TableCell>
+                        <TableCell>Đơn giá</TableCell>
                         <TableCell>Tên bệnh nhân</TableCell>
                         <TableCell>Date</TableCell>
                         <TableCell></TableCell>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import 'antd/dist/antd.css';
 import { Typography, TextField } from '@mui/material';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { addMaterialImport } from '../../../redux/MaterialSlice/listMaterialImportSlice';
@@ -10,15 +10,13 @@ import { validationDate } from '../../../config/validation';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { listMaterialAPI, listAllMaterialAPI } from '../../../config/baseAPI';
-import axios from 'axios';
+import { listAllMaterialAPI } from '../../../config/baseAPI';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import moment from 'moment/moment';
-import { Label } from '@mui/icons-material';
 import axiosInstance from '../../../config/customAxios';
 
 const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
@@ -162,8 +160,8 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     disabled
                     fullWidth
                     id="totalPrice"
-                    label="Total Price"
-                    name="totalPrice"
+                    label="Đơn giá"
+                    name="Đơn giá"
                     autoComplete="totalPrice"
                     value={materialPrice}
                     autoFocus

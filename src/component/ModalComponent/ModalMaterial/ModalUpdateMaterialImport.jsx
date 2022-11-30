@@ -7,7 +7,6 @@ import "./../style.css"
 import Typography from '@mui/material/Typography';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import axios from 'axios';
 import { updateMaterialImport } from '../../../redux/MaterialSlice/listMaterialImportSlice';
 import { getMaterialImportByIdAPI, listAllMaterialAPI } from '../../../config/baseAPI';
 import { validationDate } from '../../../config/validation';
@@ -161,7 +160,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         required
                         fullWidth
                         id="totalPrice"
-                        label="Tổng giá"
+                        label="Đơn giá"
                         name="totalPrice"
                         autoComplete="totalPrice"
                         value={materialPrice}

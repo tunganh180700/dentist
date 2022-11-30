@@ -99,7 +99,7 @@ const Sidebar = () => {
                                 <StarBorder />
                             </ListItemIcon>
                             <Link to={'/materialimport'}>
-                                <ListItemText primary="Vật liệu nhập khẩu" />
+                                <ListItemText primary="Nhập vật liệu" />
                             </Link>
                         </ListItemButton>
                         <ListItemButton sx={{ pl: 4 }}>
@@ -107,7 +107,7 @@ const Sidebar = () => {
                                 <StarBorder />
                             </ListItemIcon>
                             <Link to={'/materialexport'}>
-                                <ListItemText primary="Vật liệu xuất khẩu" />
+                                <ListItemText primary="Xuất vật liệu" />
                             </Link>
                         </ListItemButton>
                     </List>

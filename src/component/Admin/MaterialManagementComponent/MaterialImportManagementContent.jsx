@@ -51,7 +51,7 @@ const MaterialImportManagementContent = () => {
                 color="inherit"
                 noWrap
             >
-                Quản lý vật liệu nhập khẩu
+                Quản lý nhập vật liệu
             </Typography>
             <IconButton aria-label="add"   style={{borderRadius: '5%'}} onClick={() => {
                 setModalAddOpen(true)
@@ -65,7 +65,7 @@ const MaterialImportManagementContent = () => {
                         <TableCell>Tên cung cấp</TableCell>
                         <TableCell>Date</TableCell>
                         <TableCell>số lượng</TableCell>
-                        <TableCell>Tổng tiền</TableCell>
+                        <TableCell>Đơn giá</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>

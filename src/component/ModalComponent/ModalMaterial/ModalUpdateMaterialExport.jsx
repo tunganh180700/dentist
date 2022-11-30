@@ -6,20 +6,13 @@ import { TextField } from '@mui/material';
 import "./../style.css"
 import Typography from '@mui/material/Typography';
 import { useFormik } from "formik";
-import * as yup from "yup";
-import axios from 'axios';
 import { updateMaterialExport } from '../../../redux/MaterialSlice/listMaterialExportSlice';
 import { getMaterialExportByIdAPI, listAllMaterialAPI, listAllPatientAPI, listPatientRecordByTreatmentIdAPI } from '../../../config/baseAPI';
-import { validationDate } from '../../../config/validation';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import moment from 'moment/moment';
+import Select from '@mui/material/Select';
 import axiosInstance from '../../../config/customAxios';
 
 const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -244,7 +237,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         required
                         fullWidth
                         id="totalPrice"
-                        label="Tổng giá"
+                        label="Đơn giá"
                         name="totalPrice"
                         autoComplete="totalPrice"
                         value={materialPrice}
