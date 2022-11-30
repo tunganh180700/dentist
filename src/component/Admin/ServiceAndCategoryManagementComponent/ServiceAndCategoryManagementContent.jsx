@@ -42,6 +42,7 @@ const ServiceAndCategoryManagementContent = () => {
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
+    const [takeCategoryId, setTakeCategoryId] = useState();
     const id = useSelector(state => state.listCategory.id);
     const [loading, setLoading] = useState();
 
@@ -94,6 +95,10 @@ const ServiceAndCategoryManagementContent = () => {
         if (categoryServiceId > 0)
             loadServiceByCategoryId(categoryServiceId)
     }, [categoryServiceId])
+
+    useEffect(() => {
+        const category = categoryServiceIds?.filter(e =>  e.takeCategoryId === categoryServiceId)[0]
+    })
 
     // console.log('haha', listServiceAndCategory)
     return (

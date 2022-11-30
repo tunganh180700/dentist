@@ -25,9 +25,9 @@ const listIncomeSlice = createSlice({
         setListIncome: (state, action) => {
             state.listIncome = action.payload
         },
-        setListNetIncome: (state, action) => {
-            state.listNetIncome = action.payload
-        },
+        // setListNetIncome: (state, action) => {
+        //     state.listNetIncome = action.payload
+        // },
     },
     extraReducers: (builder) => {
         builder
@@ -36,15 +36,16 @@ const listIncomeSlice = createSlice({
             })
             .addCase(fetchAllIncome.fulfilled, (state, action) => {
                 state.listIncome = action.payload;
-                state.listNetIncome = action.payload;
+                // state.listNetIncome = action.payload;
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
                 state.totalPage = action.payload.totalPages;
                 state.message = action.payload.message
             })
-
     }
 })
+
+
 
 
 
@@ -61,21 +62,21 @@ export const fetchAllIncome = createAsyncThunk('listIncome/fetchAllIncome', asyn
     }
 })
 
-export const fetchAllNetIncome = createAsyncThunk('listNetIncome/fetchAllNetIncome', async (paramsSearch) => {
-    try {
-        const res = await axiosInstance.get(listNetIncomeAPI, {
-            params: paramsSearch,
-        })
-        console.log('data income: ', res.data.incomeDetailDTOS);
-        return res.data
+// export const fetchAllNetIncome = createAsyncThunk('listNetIncome/fetchAllNetIncome', async (paramsSearch) => {
+//     try {
+//         const res = await axiosInstance.get(listNetIncomeAPI, {
+//             params: paramsSearch,
+//         })
+//         console.log('data income: ', res.data.incomeDetailDTOS);
+//         return res.data
         
-    } catch (error) {
-        console.log(error)
-    }
-})
+//     } catch (error) {
+//         console.log(error)
+//     }
+// })
 
 export const { setListIncome } = listIncomeSlice.actions;
 
-export const { setListNetIncome } = listIncomeSlice.actions;
+// export const { setListNetIncome } = listIncomeSlice.actions;
 export default listIncomeSlice.reducer;
 

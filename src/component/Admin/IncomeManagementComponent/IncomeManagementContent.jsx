@@ -12,19 +12,19 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 
-import { fetchAllIncome,fetchAllNetIncome } from '../../../redux/IncomeSlice/listIncomeSlice';
+import { fetchAllIncome} from '../../../redux/IncomeSlice/listIncomeSlice';
 
 const IncomeManagementContent = () => {
 
-    const listIncome = useSelector(state => state.listIncome.listIncome)
-    const listNetIncome = useSelector(state => state.listIncome.listNetIncome)
+    const listIncome = useSelector(state => state.listIncome)
+    // const listNetIncome = useSelector(state => state.listIncome.listNetIncome)
     const dispatch = useDispatch()
     const pageSize = useSelector(state => state.listIncome.pageSize)
     const totalPages = useSelector(state => state.listIncome.totalPage)
     const [currentPage, setCurrentPage] = useState(0);
 
 
-    console.log('income: ', listNetIncome)
+    console.log('income: ', listIncome)
 
 
 
@@ -32,13 +32,13 @@ const IncomeManagementContent = () => {
         dispatch(fetchAllIncome({            
         },
         ));
-    },[])
+    })
 
-    useEffect(() => {
-        dispatch(fetchAllNetIncome({         
-        },
-        ));
-    },[])
+    // useEffect(() => {
+    //     dispatch(fetchAllNetIncome({         
+    //     },
+    //     ));
+    // },[])
 
     return (
         <>
@@ -71,7 +71,7 @@ const IncomeManagementContent = () => {
                     <TableCell colSpan={3} style={{ fontWeight: 'bold', fontSize: '20px', textAlign: 'end' }}>Tổng tiền : {listIncome.totalIncome}</TableCell>
                 </TableBody>
             </Table>
-
+{/* 
             <h2>Thực thu</h2>
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
@@ -91,7 +91,7 @@ const IncomeManagementContent = () => {
                     )}
                     <TableCell colSpan={3} style={{ fontWeight: 'bold', fontSize: '20px', textAlign: 'end' }}>Tổng tiền : {listNetIncome.totalIncome}</TableCell>
                 </TableBody>
-            </Table>
+            </Table> */}
 
 
         </>
