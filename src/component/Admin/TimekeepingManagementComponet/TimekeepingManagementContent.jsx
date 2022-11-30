@@ -1,11 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
 
 const TimekeepingManagementContent = () => {
-    const listTimekeeping = useSelector(state => state.listTimekeeping.listTimekeeping)
-
-    console.log(listTimekeeping)
+    const [listTimekeeping, setListTimekeeping] = useState([])
     return (
         <>
             <Typography

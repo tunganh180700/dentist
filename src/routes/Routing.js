@@ -7,11 +7,9 @@ import HomePage from "../component/HomeComponent/Home";
 import WaitingRoomManagement from "../component/Admin/WaitingRoomManagementComponent/WaitingRoomManagement";
 import PatientManagement from "../component/Admin/PatientManagementComponent/PatientManagement";
 import LaboManagement from "../component/Admin/LaboComponent/LaboManagement";
-import MaterialManagement from "../component/Admin/MaterialManagementComponent/MaterialManagement";
-import MaterialImportManagement from "../component/Admin/MaterialManagementComponent/MaterialImportManagement";
-import MaterialExportManagement from "../component/Admin/MaterialManagementComponent/MaterialExportManagement";
-import ServiceAndCategoryManagement from "../component/Admin/ServiceAndCategoryManagementComponent/ServiceAndCategoryManagement";
-import IncomeManagement from "../component/Admin/IncomeManagementComponent/IncomeManagement";
+import RecordManagement from "../component/Admin/RecordComponent/RecordManagement";
+import TimekeepingManagement from "../component/Admin/TimekeepingManagementComponet/TimekeepingManagement";
+
 
 const Routing = () => {
     return (
