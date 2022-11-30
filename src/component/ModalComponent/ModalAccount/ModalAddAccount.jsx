@@ -56,7 +56,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
             console.log(error)
         }
     }
-    
+
     useEffect(() => {
         loadRole();
     }, [])
@@ -79,13 +79,24 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+
+    const handleCancel = (e) => {
+        setModalAddOpen(false)
+        formik.values.fullName = ""
+        formik.values.password = ""
+        formik.values.phone = ""
+        formik.values.email = ""
+        formik.values.salary = ""
+        formik.handleReset()    
+    }
+
     return (
         <>
             <Modal
                 title="Thêm tài khoản"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
                 <TextField
                     margin="normal"
@@ -112,17 +123,6 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     value={formik.values.password}
                     type={"password"}
                     onChange={formik.handleChange}
-                />
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="username"
-                    disabled
-                    label="Tên đăng nhập"
-                    name="username"
-                    autoComplete="username"
-                    autoFocus
                 />
                 <TextField
                     margin="normal"

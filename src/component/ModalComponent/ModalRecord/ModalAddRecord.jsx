@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, MenuItem, Select, TextField } from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Modal } from "antd"
@@ -10,17 +10,28 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import axiosInstance from "../../../config/customAxios";
 import { useParams } from "react-router-dom";
-import { listTreatingServiceAPI } from "../../../config/baseAPI";
+import { addRecordAPI, listAllServiceAPI, listTreatingServiceAPI } from "../../../config/baseAPI";
 import { useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AddIcon from '@mui/icons-material/Add';
 import ClearIcon from '@mui/icons-material/Clear';
+import { toast } from "react-toastify";
+import { toastCss } from "../../../redux/toastCss";
+import * as yup from "yup";
+import { validationDate } from "../../../config/validation";
+import moment from "moment";
+import { useFormik } from "formik";
+import { useDispatch } from "react-redux";
+import { addRecord } from "../../../redux/RecordSlice/listRecordSlice";
 
 const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
+    const dispatch = useDispatch();
     const [value, setValue] = useState(null);
     const { id } = useParams()
     const [listTreatingService, setListTreatingService] = useState([])
 
+    const [serviceId, setServiceId] = useState();
+    const [serviceIds, setServiceIds] = useState([]);
     const [open, setOpen] = useState(false);
     const [disable, setDisable] = useState(true);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -28,6 +39,65 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [rows, setRows] = useState([
         { serviceName: "", price: "", discount: "", status: "" },
     ]);
+
+
+
+    // const validationSchema = yup.object({
+    //     reason: yup
+    //         .string('Enter your name')
+    //         .required('Your name is required'),
+    //     price: yup
+    //         .string("Enter your phone")
+    //         .required("Phone is required"),
+    //     discount: yup
+    //         .string("Enter your password")
+    //         .required("Password is required"),
+    //     status: yup
+    //         .string("Enter your email")
+    //         .required("Email is required"),
+    // });
+
+    const loadServiceOption = async () => {
+        try {
+            const res = await axiosInstance.get(listAllServiceAPI)
+            setServiceId(res.data[0].serviceId)
+            console.log(res.data)
+            setServiceIds(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        loadServiceOption();
+    }, [])
+
+    const formik = useFormik({
+        initialValues: {
+            reason: '',
+            diagnostic: "",
+            causal: "",
+            marrowRecord: "",
+            note: "",
+            treatment: ""
+        },
+        // validationSchema: validationSchema,
+        onSubmit: (values) => {
+            const addValue = {
+                id: id,
+                values: values
+            }
+            values.date = moment(value.$d).format(validationDate);
+            values.serviceId = serviceId;
+            dispatch(addRecord(addValue))
+            setModalAddOpen(false)
+            formik.handleReset()
+        }
+    });
+
+    const styleInput = {
+        width: '70%'
+    }
 
     const handleAdd = () => {
         setRows([
@@ -40,8 +110,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     };
 
     const handleEdit = (e) => {
-        // If edit mode is true setEdit will 
-        // set it to false and vice versa
         setEdit(!isEdit);
     };
 
@@ -76,6 +144,11 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         setShowConfirm(false);
     };
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+    }
+
+
     const getServiceTreating = async (id) => {
         try {
             const res = await axiosInstance.get(listTreatingServiceAPI + id)
@@ -96,8 +169,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                 title="Thêm hồ sơ"
                 open={modalAddOpen}
                 width="70%"
-                // onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onOk={formik.handleSubmit}
+                onCancel={handleCancel}
             >
                 <div className="container" style={{ display: "flex" }}>
                     <div className="form-input" style={{ width: "50%" }}>
@@ -109,9 +182,9 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             label="Lý do đến khám"
                             name="reason"
                             autoComplete="reason"
-                            // value={formik.values.patientName}
+                            value={formik.values.reason}
                             autoFocus
-                        // onChange={formik.handleChange}
+                            onChange={formik.handleChange}
                         />
                         <TextField
                             margin="normal"
@@ -121,9 +194,9 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             label="Chẩn đoán"
                             name="diagnostic"
                             autoComplete="diagnostic"
-                            // value={formik.values.patientName}
+                            value={formik.values.diagnostic}
                             autoFocus
-                        // onChange={formik.handleChange}
+                            onChange={formik.handleChange}
                         />
                         <TextField
                             margin="normal"
@@ -133,9 +206,9 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             label="Nguyên nhân"
                             name="causal"
                             autoComplete="causal"
-                            // value={formik.values.patientName}
+                            value={formik.values.causal}
                             autoFocus
-                        // onChange={formik.handleChange}
+                            onChange={formik.handleChange}
                         />
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
@@ -157,9 +230,9 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             label="Lưu ý về tủy"
                             name="marrowRecord"
                             autoComplete="marrowRecord"
-                            // value={formik.values.patientName}
+                            value={formik.values.marrowRecord}
                             autoFocus
-                        // onChange={formik.handleChange}
+                            onChange={formik.handleChange}
                         />
                         <TextField
                             margin="normal"
@@ -169,9 +242,21 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             label="Ghi chú"
                             name="note"
                             autoComplete="note"
-                            // value={formik.values.patientName}
+                            value={formik.values.note}
                             autoFocus
-                        // onChange={formik.handleChange}
+                            onChange={formik.handleChange}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="treatment"
+                            label="Điều trị"
+                            name="treatment"
+                            autoComplete="treatment"
+                            value={formik.values.treatment}
+                            autoFocus
+                            onChange={formik.handleChange}
                         />
                     </div>
                     <div className="table" style={{ marginLeft: "150px" }}>
@@ -179,33 +264,40 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
                                 <Button onClick={handleAdd}>
                                     <AddIcon onClick={handleAdd} />
-                                    ADD
+                                    Thêm dòng
                                 </Button>
                                 {rows.length !== 0 && (
                                     <div>
                                         {disable ? (
                                             <Button disabled align="right" onClick={handleSave}>
                                                 <AddIcon />
-                                                SAVE
+                                                Lưu
                                             </Button>
                                         ) : (
                                             <Button align="right" onClick={handleSave}>
                                                 <AddIcon />
-                                                SAVE
+                                                Lưu
                                             </Button>
                                         )}
                                     </div>
                                 )}
                             </div>
                         ) : (
-                            <div>
-                                <Button onClick={handleAdd}>
-                                    <AddIcon onClick={handleAdd} />
-                                    ADD
-                                </Button>
+                            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                {/* {disable ? (
+                                    <Button disabled align="right" onClick={handleAdd}>
+                                        <AddIcon disable onClick={handleAdd} />
+                                        Thêm dòng
+                                    </Button>
+                                ) : (
+                                    <Button align="right" onClick={handleAdd}>
+                                        <AddIcon />
+                                        Thêm dòng
+                                    </Button>
+                                )} */}
                                 <Button align="right" onClick={handleEdit}>
                                     <AddIcon />
-                                    EDIT
+                                    Thêm dòng
                                 </Button>
                             </div>
                         )}
@@ -235,7 +327,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                         <TableCell>{item.serviceName}</TableCell>
                                         <TableCell>{item.price}</TableCell>
                                         <TableCell>{item.discount}</TableCell>
-                                        <TableCell>{item.status}</TableCell>
+                                        <TableCell>{item.status ? "Đã xong" : "Đang chữa trị"}</TableCell>
                                         <TableCell></TableCell>
                                     </TableRow>
                                 ))}
@@ -245,34 +337,41 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                             {isEdit ? (
                                                 <>
                                                     <TableCell padding="none">
-                                                        <input
-                                                            value={row.serviceName}
-                                                            name="serviceName"
-                                                            onChange={(e) => handleInputChange(e, i)}
-                                                        />
+                                                        <select
+                                                            name="cars"
+                                                            id="cars"
+                                                            value={serviceId}
+                                                            style={styleInput}
+                                                            onChange={(e) => setServiceId(e.target.value)}>
+                                                            {serviceIds?.map(item => (
+                                                                <option key={item.serviceId} value={item.serviceId}>{item.serviceName}</option>
+                                                            ))}
+                                                        </select>
                                                     </TableCell>
                                                     <TableCell padding="none">
                                                         <input
                                                             value={row.price}
-                                                            name="lastname"
+                                                            name="price"
                                                             onChange={(e) => handleInputChange(e, i)}
+                                                            style={styleInput}
                                                         />
                                                     </TableCell>
                                                     <TableCell padding="none">
                                                         <input
                                                             value={row.discount}
-                                                            name="lastname"
+                                                            name="discount"
                                                             onChange={(e) => handleInputChange(e, i)}
+                                                            style={styleInput}
                                                         />
                                                     </TableCell>
                                                     <TableCell padding="none">
                                                         <input
                                                             value={row.status}
-                                                            name="lastname"
+                                                            name="status"
                                                             onChange={(e) => handleInputChange(e, i)}
+                                                            style={styleInput}
                                                         />
                                                     </TableCell>
-                                                    <TableCell></TableCell>
                                                 </>
                                             ) : (
                                                 <>

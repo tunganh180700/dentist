@@ -9,10 +9,14 @@ import axiosInstance from "../../../config/customAxios";
 import { allPatientRecordAPI } from "../../../config/baseAPI";
 import ModalAddRecord from "../../ModalComponent/ModalRecord/ModalAddRecord";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import ModalUpdateRecord from "../../ModalComponent/ModalRecord/ModalUpdateRecord";
+import { setUserId } from "../../../redux/modalSlice";
 
 const RecordManagementContent = () => {
+    const dispatch = useDispatch()
     const [modalAddOpen, setModalAddOpen] = useState(false);
+    const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const patientName = useSelector(state => state.choosenPatient.patientName)
 
     // console.log(patientName)
@@ -139,6 +143,9 @@ const RecordManagementContent = () => {
                         <TableCell>
                             <div className='attibute'>Ghi chú</div>
                         </TableCell>
+                        <TableCell>
+                            <div className='attibute'>Điều trị</div>
+                        </TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>
@@ -160,6 +167,7 @@ const RecordManagementContent = () => {
                             <TableCell>{el.date}</TableCell>
                             <TableCell>{el.marrowRecord}</TableCell>
                             <TableCell>{el.note}</TableCell>
+                            <TableCell>{el.treatment}</TableCell>
                             <TableCell>
                                 <Button>
                                     Dịch vụ
@@ -167,9 +175,8 @@ const RecordManagementContent = () => {
                             </TableCell>
                             <TableCell>
                                 <IconButton aria-label="edit" onClick={() => {
-                                    console.log(el.patientRecordId)
-                                    // setModalUpdateOpen(true)
-                                    // dispatch(setUserId(item.patientId))
+                                    setModalUpdateOpen(true)
+                                    dispatch(setUserId(el.patientRecordId))
                                 }}>
                                     <EditIcon />
                                 </IconButton>
@@ -189,6 +196,9 @@ const RecordManagementContent = () => {
             </Table>
             <div>
                 <ModalAddRecord modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+            </div>
+            <div>
+                <ModalUpdateRecord modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
             </div>
         </>
     )
