@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
-import { listIncomeAPI,listNetIncomeAPI} from "../../config/baseAPI"
+import { listIncomeAPI, listNetIncomeAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
@@ -14,6 +14,8 @@ const initState = {
     index: 0,
     pageSize: 3,
     totalPage: 0,
+    totalIncome: 0,
+    totalNetIncome: 0,
 
     message: ''
 }
@@ -35,8 +37,19 @@ const listIncomeSlice = createSlice({
                 state.status = true
             })
             .addCase(fetchAllIncome.fulfilled, (state, action) => {
-                state.listIncome = action.payload;
-                // state.listNetIncome = action.payload;
+                state.listIncome = action.payload.incomeDetailDTOS;
+                state.totalIncome = action.payload.totalIncome
+                state.status = false;
+                state.pageNumber = action.payload.pageNumber;
+                state.totalPage = action.payload.totalPages;
+                state.message = action.payload.message
+            })
+            .addCase(fetchAllNetIncome.pending, (state, action) => {
+                state.status = true
+            })
+            .addCase(fetchAllNetIncome.fulfilled, (state, action) => {
+                state.listNetIncome = action.payload.incomeDetailDTOS
+                state.totalNetIncome = action.payload.totalIncome
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
                 state.totalPage = action.payload.totalPages;
@@ -56,24 +69,24 @@ export const fetchAllIncome = createAsyncThunk('listIncome/fetchAllIncome', asyn
         })
         console.log('data income: ', res.data.incomeDetailDTOS);
         return res.data
-        
+
     } catch (error) {
         console.log(error)
     }
 })
 
-// export const fetchAllNetIncome = createAsyncThunk('listNetIncome/fetchAllNetIncome', async (paramsSearch) => {
-//     try {
-//         const res = await axiosInstance.get(listNetIncomeAPI, {
-//             params: paramsSearch,
-//         })
-//         console.log('data income: ', res.data.incomeDetailDTOS);
-//         return res.data
-        
-//     } catch (error) {
-//         console.log(error)
-//     }
-// })
+export const fetchAllNetIncome = createAsyncThunk('listIncome/fetchAllNetIncome', async (paramsSearch) => {
+    try {
+        const res = await axiosInstance.get(listNetIncomeAPI, {
+            params: paramsSearch,
+        })
+        console.log('data net income: ', res.data.incomeDetailDTOS);
+        return res.data
+
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 export const { setListIncome } = listIncomeSlice.actions;
 
