@@ -18,9 +18,11 @@ export const listRoleAPI = `${baseUrl}/api/roles/get_list_roles`
 export const allPatientRecordAPI = `${baseUrl}/api/patient_record/get_list_record/`
 export const patientRecordAPI = `${baseUrl}/api/patient_record/`
 export const addRecordAPI = `${baseUrl}/api/patient_record/`
+export const deleteRecordAPI = `${baseUrl}/api/patient_record/`
 
 
-export const listAllServiceAPI = `${baseUrl}/api/categories/get_all_category_service`
+export const listAllCategoryAPI = `${baseUrl}/api/categories/get_all_category_service`
 
 export const loginAPI = `${baseUrl}/api/login`
 export const listTreatingServiceAPI = `${baseUrl}/api/categories/get_treating_service/`
+export const listAllServiceAPI = `${baseUrl}/api/categories/get_all_service`

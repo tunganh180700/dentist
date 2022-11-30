@@ -12,7 +12,6 @@ const ModalUpdateRecord = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             <Modal
                 title="Thêm hồ sơ"
                 open={modalUpdateOpen}
-                width="70%"
                 // onOk={formik.handleSubmit}
                 onCancel={handleCancel}
             >
@@ -20,10 +19,34 @@ const ModalUpdateRecord = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     margin="normal"
                     required
                     fullWidth
-                    id="fullName"
-                    label="Họ và tên"
-                    name="fullName"
-                    autoComplete="fullName"
+                    id="reason"
+                    label="Lý do đến khám"
+                    name="reason"
+                    autoComplete="reason"
+                    // value={formik.values.fullName}
+                    autoFocus
+                    // onChange={formik.handleChange}
+                />
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="diagnostic"
+                    label="Chẩn đoán"
+                    name="diagnostic"
+                    autoComplete="diagnostic"
+                    // value={formik.values.fullName}
+                    autoFocus
+                    // onChange={formik.handleChange}
+                />
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="causal"
+                    label="Nguyên nhân"
+                    name="causal"
+                    autoComplete="causal"
                     // value={formik.values.fullName}
                     autoFocus
                     // onChange={formik.handleChange}

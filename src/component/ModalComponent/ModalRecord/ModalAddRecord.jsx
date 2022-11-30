@@ -23,6 +23,7 @@ import moment from "moment";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { addRecord } from "../../../redux/RecordSlice/listRecordSlice";
+import "./style.css"
 
 const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -32,6 +33,11 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
 
     const [serviceId, setServiceId] = useState();
     const [serviceIds, setServiceIds] = useState([]);
+
+    const [servicePrice, setServicePrice] = useState();
+    const [serviceDiscount, setServiceDiscount] = useState();
+    const [status, setStatus] = useState();
+
     const [open, setOpen] = useState(false);
     const [disable, setDisable] = useState(true);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -39,7 +45,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [rows, setRows] = useState([
         { serviceName: "", price: "", discount: "", status: "" },
     ]);
-
 
 
     // const validationSchema = yup.object({
@@ -61,8 +66,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         try {
             const res = await axiosInstance.get(listAllServiceAPI)
             setServiceId(res.data[0].serviceId)
-            console.log(res.data)
+            // console.log(serviceId)
             setServiceIds(res.data)
+            setServicePrice(res.data[0].price)
+            setServiceDiscount(res.data[0].discount)
         } catch (error) {
             console.log(error)
         }
@@ -79,7 +86,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
             causal: "",
             marrowRecord: "",
             note: "",
-            treatment: ""
+            treatment: "",
         },
         // validationSchema: validationSchema,
         onSubmit: (values) => {
@@ -87,8 +94,17 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                 id: id,
                 values: values
             }
+            console.log("aaa", values)
             values.date = moment(value.$d).format(validationDate);
-            values.serviceId = serviceId;
+            const serviceDTOs = {
+                serviceId: serviceId, serviceName: serviceId, price: servicePrice, discount: serviceDiscount, status: status
+            }
+            values.serviceDTOs = serviceDTOs
+            values.serviceDTOs.status = status
+            console.log("status", status)
+            console.log("hay", serviceDTOs)
+            console.log("pre", servicePrice)
+
             dispatch(addRecord(addValue))
             setModalAddOpen(false)
             formik.handleReset()
@@ -115,7 +131,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
 
     const handleSave = () => {
         setEdit(!isEdit);
-        setRows(rows);
+        setListTreatingService(rows);
         console.log("saved : ", rows);
         setDisable(true);
         setOpen(true);
@@ -149,6 +165,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     }
 
 
+
     const getServiceTreating = async (id) => {
         try {
             const res = await axiosInstance.get(listTreatingServiceAPI + id)
@@ -158,6 +175,13 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
             console.log(error)
         }
     }
+
+    useEffect(() => {
+        const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
+        const discount = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.discount
+        setServicePrice(price)
+        setServiceDiscount(discount)
+    }, [serviceId])
 
     useEffect(() => {
         getServiceTreating(id)
@@ -266,35 +290,9 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                     <AddIcon onClick={handleAdd} />
                                     Thêm dòng
                                 </Button>
-                                {rows.length !== 0 && (
-                                    <div>
-                                        {disable ? (
-                                            <Button disabled align="right" onClick={handleSave}>
-                                                <AddIcon />
-                                                Lưu
-                                            </Button>
-                                        ) : (
-                                            <Button align="right" onClick={handleSave}>
-                                                <AddIcon />
-                                                Lưu
-                                            </Button>
-                                        )}
-                                    </div>
-                                )}
                             </div>
                         ) : (
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                {/* {disable ? (
-                                    <Button disabled align="right" onClick={handleAdd}>
-                                        <AddIcon disable onClick={handleAdd} />
-                                        Thêm dòng
-                                    </Button>
-                                ) : (
-                                    <Button align="right" onClick={handleAdd}>
-                                        <AddIcon />
-                                        Thêm dòng
-                                    </Button>
-                                )} */}
                                 <Button align="right" onClick={handleEdit}>
                                     <AddIcon />
                                     Thêm dòng
@@ -304,7 +302,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                         <Table size="small" style={{ marginTop: "15px" }}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>
+                                    <TableCell style={{ width: "25%" }}>
                                         Dich vụ
                                     </TableCell>
                                     <TableCell>
@@ -327,78 +325,83 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                         <TableCell>{item.serviceName}</TableCell>
                                         <TableCell>{item.price}</TableCell>
                                         <TableCell>{item.discount}</TableCell>
-                                        <TableCell>{item.status ? "Đã xong" : "Đang chữa trị"}</TableCell>
+                                        <TableCell>{item.status ? "Đang chữa trị" : "Đã xong"}</TableCell>
                                         <TableCell></TableCell>
                                     </TableRow>
                                 ))}
-                                {rows.map((row, i) => {
+                                {rows?.map((i) => {
                                     return (
                                         <TableRow>
                                             {isEdit ? (
                                                 <>
                                                     <TableCell padding="none">
-                                                        <select
+                                                        {/* <select
                                                             name="cars"
                                                             id="cars"
                                                             value={serviceId}
-                                                            style={styleInput}
-                                                            onChange={(e) => setServiceId(e.target.value)}>
+                                                            style={{ styleInput, justifyContent: "center" }}
+                                                            onChange={(e) => setServiceId(e.target.value)}
+                                                        >
                                                             {serviceIds?.map(item => (
                                                                 <option key={item.serviceId} value={item.serviceId}>{item.serviceName}</option>
                                                             ))}
-                                                        </select>
+                                                        </select> */}
+                                                        <Box sx={{ minWidth: 120 }}>
+                                                            <FormControl fullWidth>
+                                                                <Select
+                                                                    labelId="permisstion"
+                                                                    id="permisstionSelect"
+                                                                    value={serviceId}
+                                                                    onChange={(e) => setServiceId(e.target.value)}
+                                                                >
+                                                                    {serviceIds?.map(item => (
+                                                                        <MenuItem key={item.serviceId} value={item.serviceId}>{item.serviceName}</MenuItem>
+                                                                    ))}
+                                                                </Select>
+                                                            </FormControl>
+                                                        </Box>
                                                     </TableCell>
                                                     <TableCell padding="none">
                                                         <input
-                                                            value={row.price}
-                                                            name="price"
-                                                            onChange={(e) => handleInputChange(e, i)}
-                                                            style={styleInput}
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell padding="none">
-                                                        <input
-                                                            value={row.discount}
-                                                            name="discount"
-                                                            onChange={(e) => handleInputChange(e, i)}
-                                                            style={styleInput}
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell padding="none">
-                                                        <input
-                                                            value={row.status}
+                                                            disabled
+                                                            value={servicePrice}
                                                             name="status"
                                                             onChange={(e) => handleInputChange(e, i)}
                                                             style={styleInput}
                                                         />
                                                     </TableCell>
+                                                    <TableCell padding="none">
+                                                        <input
+                                                            disabled
+                                                            value={serviceDiscount}
+                                                            name="status"
+                                                            onChange={(e) => handleInputChange(e, i)}
+                                                            style={styleInput}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell padding="none">
+                                                        <Box sx={{ minWidth: 120 }}>
+                                                            <FormControl fullWidth>
+                                                                <Select
+                                                                    labelId="status"
+                                                                    id="status"
+                                                                    value={status || ""}
+                                                                    onChange={(e) => setStatus(e.target.value)}
+                                                                >
+                                                                    <MenuItem value={1}>Đang chữa trị</MenuItem>
+                                                                    <MenuItem value={2}>Đã xong</MenuItem>
+                                                                </Select>
+                                                            </FormControl>
+                                                        </Box>
+                                                    </TableCell>
+                                                    <TableCell padding="none">
+                                                        <Button className="mr10" onClick={handleConfirm} >
+                                                            <ClearIcon />
+                                                        </Button>
+                                                    </TableCell>
                                                 </>
                                             ) : (
-                                                <>
-                                                    <TableCell component="th" scope="row">
-                                                        {row.serviceName}
-                                                    </TableCell>
-                                                    <TableCell component="th" scope="row">
-                                                        {row.price}
-                                                    </TableCell>
-                                                    <TableCell component="th" scope="row" align="center">
-                                                        {row.discount}
-                                                    </TableCell>
-                                                    <TableCell
-                                                        component="th"
-                                                        scope="row"
-                                                        align="center"
-                                                    >{row.status}</TableCell>
-                                                    <TableCell></TableCell>
-                                                </>
-                                            )}
-                                            {isEdit ? (
-                                                <Button className="mr10" onClick={handleConfirm} >
-                                                    <ClearIcon />
-                                                </Button>
-                                            ) : (
-                                                <div style={{ marginTop: "10px" }}></div>
-                                                // <TableCell></TableCell>
+                                                <></>
                                             )}
                                             {showConfirm && (
                                                 <div>

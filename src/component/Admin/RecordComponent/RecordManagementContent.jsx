@@ -12,11 +12,13 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useDispatch, useSelector } from "react-redux";
 import ModalUpdateRecord from "../../ModalComponent/ModalRecord/ModalUpdateRecord";
 import { setUserId } from "../../../redux/modalSlice";
+import ModalDeleteRecord from "../../ModalComponent/ModalRecord/ModalDeleteRecord";
 
 const RecordManagementContent = () => {
     const dispatch = useDispatch()
     const [modalAddOpen, setModalAddOpen] = useState(false);
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
+    const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const patientName = useSelector(state => state.choosenPatient.patientName)
 
     // console.log(patientName)
@@ -183,8 +185,8 @@ const RecordManagementContent = () => {
                             </TableCell>
                             <TableCell>
                                 <IconButton aria-label="delete" onClick={() => {
-                                    // setModalDeleteOpen(true)
-                                    // dispatch(setUserId(item.patientId))
+                                    setModalDeleteOpen(true)
+                                    dispatch(setUserId(el.patientRecordId))
                                 }}>
                                     <DeleteIcon />
                                 </IconButton>
@@ -199,6 +201,9 @@ const RecordManagementContent = () => {
             </div>
             <div>
                 <ModalUpdateRecord modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
+            </div>
+            <div>
+                <ModalDeleteRecord modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
             </div>
         </>
     )
