@@ -4,7 +4,6 @@ import moment from "moment";
 
 const TableTimeKeepingManagement = (props) => {
     const { listTimekeeping, role, currentPage } = props;
-    console.log(currentPage)
     const renderTime = (time) => {
         if (time === null) return ''
         return moment(time).format('DD / MM / YYYY, h:mm:ss a')

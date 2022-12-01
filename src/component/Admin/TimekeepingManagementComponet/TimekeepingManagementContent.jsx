@@ -18,8 +18,7 @@ const TimekeepingManagementContent = () => {
     const loadData = async () => {
         try {
             const res = await axiosInstance.get(GET_LIST_TIMEKEEPING + currentPage)
-            console.log(res)
-            const { checkinEnable, timekeepingDTOS, number, totalPages } = res.data
+            const { checkinEnable, timekeepingDTOS } = res.data
             setIsCheckin(checkinEnable)
             setListTimekeeping(timekeepingDTOS.content)
             setCurrentPage(timekeepingDTOS.number)
@@ -31,10 +30,10 @@ const TimekeepingManagementContent = () => {
     const checkInOut = async () => {
         setLoading(true)
         try {
-            const res = await axiosInstance.post(isCheckin ? CHECK_OUT : CHECK_IN)
-            setCount(prevCount => prevCount + 1)
+            const res = await axiosInstance.post(isCheckin ? CHECK_OUT : CHECK_IN )
+            if(res.status === 200) setCount(prevCount => prevCount + 1)
         } catch (error) {
-            if (isCheckin) toast.error('Chỉ có thể checkout sau 3 tiếng!', toastCss)
+            if (!isCheckin) toast.error('Chỉ có thể checkout sau 3 tiếng!', toastCss)
         }
         setLoading(false)
     }
