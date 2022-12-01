@@ -75,7 +75,7 @@ const MaterialExportManagementContent = () => {
                         <TableRow key={item.materialExportId}>
                             <TableCell>{item.materialName}</TableCell>
                             <TableCell>{item.amount}</TableCell>
-                            <TableCell>{item.totalPrice}</TableCell>
+                            <TableCell>{item.unitPrice}</TableCell>
                             <TableCell>{item.patientName}</TableCell>
                             <TableCell>{item.date}</TableCell>
                             <TableCell>

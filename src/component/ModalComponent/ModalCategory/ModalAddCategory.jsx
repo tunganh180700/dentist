@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { addCategory } from '../../../redux/ServiceAndCategorySlice/listCategorySlice';
 
-const ModalAddCategory = ({ modalAddOpen, setModalAddOpen }) => {
+const ModalAddCategory = ({ modalAddCategoryOpen, setModalAddCategoryOpen }) => {
     const dispatch = useDispatch();
     const [value, setValue] = useState(null);
 
@@ -24,7 +24,7 @@ const ModalAddCategory = ({ modalAddOpen, setModalAddOpen }) => {
         validationSchema: validationSchema,
         onSubmit: (values) => {
             dispatch(addCategory(values))
-            setModalAddOpen(false)
+            setModalAddCategoryOpen(false)
             formik.handleReset()
         }
     });
@@ -33,9 +33,9 @@ const ModalAddCategory = ({ modalAddOpen, setModalAddOpen }) => {
         <>
             <Modal
                 title="Thêm loại dịch vụ"
-                open={modalAddOpen}
+                open={modalAddCategoryOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={() => setModalAddCategoryOpen(false)}
             >
                 <TextField
                     margin="normal"

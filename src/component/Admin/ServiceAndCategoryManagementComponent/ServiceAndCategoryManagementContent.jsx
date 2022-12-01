@@ -45,7 +45,7 @@ const ServiceAndCategoryManagementContent = () => {
 
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
-    const [modalAddOpen, setModalAddOpen] = useState(false);
+    const [modalAddCategoryOpen, setModalAddCategoryOpen] = useState(false);
     const [modalAddServiceOpen, setModalAddServiceOpen] = useState(false);
     const [modalUpdateServiceOpen, setModalUpdateServiceOpen] = useState(false);
     const id = useSelector(state => state.listCategory.id);
@@ -129,7 +129,7 @@ const ServiceAndCategoryManagementContent = () => {
                         onChange={(e) => setCategoryServiceId(e.target.value)}
                     >
                         <div> <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
-                            setModalAddOpen(true)
+                            setModalAddCategoryOpen(true)
                         }}>
                             <AddIcon />Thêm loại dịch vụ
                         </IconButton>
@@ -206,7 +206,7 @@ const ServiceAndCategoryManagementContent = () => {
                 <ModalDeleteService modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
             </div>
             <div>
-                <ModalAddCategory modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+                <ModalAddCategory modalAddCategoryOpen={modalAddCategoryOpen} setModalAddCategoryOpen={setModalAddCategoryOpen} />
             </div>
 
             <div>

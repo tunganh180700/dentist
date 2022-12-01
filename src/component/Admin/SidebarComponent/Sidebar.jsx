@@ -14,6 +14,7 @@ import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
 import StarBorder from '@mui/icons-material/StarBorder';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import { useState } from 'react';
 
 const Sidebar = () => {
@@ -138,6 +139,15 @@ const Sidebar = () => {
                     </ListItemIcon>
                     <Link to={'/income'}>
                         <ListItemText primary="Thu nhập" />
+                    </Link>
+                </ListItemButton>
+
+                <ListItemButton>
+                    <ListItemIcon>
+                        <ReceiptLongIcon />
+                    </ListItemIcon>
+                    <Link to={'/bill'}>
+                        <ListItemText primary="Hoá đơn" />
                     </Link>
                 </ListItemButton>
             </React.Fragment>

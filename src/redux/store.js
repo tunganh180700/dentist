@@ -29,6 +29,9 @@ import listCategorySlice from "./ServiceAndCategorySlice/listCategorySlice";
 
 import choosenServiceSlice from "./ServiceAndCategorySlice/choosenServiceSlice";
 
+import listBillSlice from "./BillSlice/listBillSlice";
+import choosenBillSlice from "./BillSlice/choosenBillSlice";
+
 const store = configureStore({
     reducer: {
         listAccount: listAccountSlice,
@@ -53,6 +56,8 @@ const store = configureStore({
 
 
         listIncome: listIncomeSlice,
+        listBill: listBillSlice,
+        choosenBill: choosenBillSlice,
 
         listCategory: listCategorySlice,
         choosenService: choosenServiceSlice

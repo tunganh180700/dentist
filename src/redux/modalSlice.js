@@ -22,6 +22,7 @@ const initState = {
     isOpenDeleteMaterialExport: false,
     materialExportId: 0,
 
+    treatmentId: 0,
     
 
     // isOpenUpdateServiceAndCategory: false,
@@ -91,6 +92,9 @@ const modalSlice = createSlice({
         },
         setServicedId: (state,action) => {
             state.serviceId = action.payload
+        },
+        setTreatmentId: (state,action) => {
+            state.treatmentId = action.payload
         }
     }
 })
@@ -102,5 +106,7 @@ export const { setMaterialExportId } = modalSlice.actions;
 
 export const { setCategoryServicedId } = modalSlice.actions;
 export const { setServicedId } = modalSlice.actions;
+
+export const { setTreatmentId} = modalSlice.actions;
 
 export default modalSlice.reducer;

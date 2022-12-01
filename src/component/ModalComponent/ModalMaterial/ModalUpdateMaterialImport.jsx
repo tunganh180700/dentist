@@ -24,6 +24,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [materialIds, setMaterialIds] = useState([]);
     const [materialId, setMaterialId] = useState();
     const [materialPrice, setMaterialPrice] = useState();
+    const [unitPrice, setUnitPrice] = useState();
 
     const validationSchema = yup.object({
         materialName: yup
@@ -33,6 +34,9 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             .string('Enter supplyName')
             .required('Your supplyName is required'),
         amount: yup
+            .string('Enter amount')
+            .required('Your amount is required'),
+            amount: yup
             .string('Enter amount')
             .required('Your amount is required'),
 
@@ -46,7 +50,8 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         onSubmit: (values) => {
             values.date = moment(value.$d).format(validationDate);
             values.materialId = materialId;
-            values.totalPrice = materialPrice;
+            // values.totalPrice = materialPrice;
+            // values.unitPrice = unitPrice;
             dispatch(updateMaterialImport(values));
             setModalUpdateOpen(false);
         }
@@ -80,6 +85,11 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         const price = materialIds?.filter(e => e.materialId === materialId)[0]?.price * (formik.values.amount || 0)
         setMaterialPrice(price)
     }, [materialId, formik.values.amount])
+
+    useEffect(() => {
+        const unitprice = materialIds?.filter(e => e.materialId === materialId)[0]?.unitPrice 
+        setUnitPrice(unitprice)
+    }, [materialId])
     const loadMaterial = async () => {
         try {
             const res = await axiosInstance.get(listAllMaterialAPI)
@@ -159,16 +169,29 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         margin="normal"
                         required
                         fullWidth
-                        id="totalPrice"
+                        id="unitPrice"
                         label="Đơn giá"
+                        name="unitPrice"
+                        autoComplete="unitPrice"
+                        value={formik.values.unitPrice}
+                        autoFocus
+                        onChange={formik.handleChange}
+                    />
+
+                     {/* <TextField
+                        margin="normal"
+                        required
+                        disabled
+                        fullWidth
+                        id="totalPrice"
+                        label="Tổng tiền"
                         name="totalPrice"
                         autoComplete="totalPrice"
                         value={materialPrice}
                         autoFocus
                         onChange={formik.handleChange}
-                    />
-                    {formik.errors.totalPrice && <Typography style={{ color: 'red' }}>{formik.errors.totalPrice}</Typography>}
-                </>}
+                    /> */}
+                      </>}
 
             </Modal>
         </>

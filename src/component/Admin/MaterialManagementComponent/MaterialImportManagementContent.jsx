@@ -77,7 +77,7 @@ const MaterialImportManagementContent = () => {
                             <TableCell>{item.supplyName}</TableCell>
                             <TableCell>{item.date}</TableCell>
                             <TableCell>{item.amount}</TableCell>
-                            <TableCell>{item.totalPrice}</TableCell>
+                            <TableCell>{item.unitPrice}</TableCell>
                             <TableCell>
                                 <IconButton aria-label="edit" onClick={() => {
                                     setModalUpdateOpen(true)

@@ -73,4 +73,7 @@ export const updateServiceAPI = `${baseUrl}/api/categories/update_service/`
 
 export const listIncomeAPI = `${baseUrl}/api/income`
 
+export const listBillAPI = `${baseUrl}/api/bills/get_list_bills`
+export const getBillByIdAPI = `${baseUrl}/api/bills/`
+
 export const listNetIncomeAPI = `${baseUrl}/api/income/net_income`

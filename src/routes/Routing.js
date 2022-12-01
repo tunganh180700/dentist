@@ -13,6 +13,7 @@ import MaterialExportManagement from "../component/Admin/MaterialManagementCompo
 import ServiceAndCategoryManagement from "../component/Admin/ServiceAndCategoryManagementComponent/ServiceAndCategoryManagement";
 import IncomeManagement from "../component/Admin/IncomeManagementComponent/IncomeManagement";
 import RecordManagement from "../component/Admin/RecordComponent/RecordManagement";
+import BillManagement from "../component/Admin/BillManagementComponent/BillManagement";
 
 const Routing = () => {
     return (
@@ -32,6 +33,7 @@ const Routing = () => {
                 <Route path='/materialexport' element={<MaterialExportManagement />} />
                 <Route path='/serviceandcategory' element={<ServiceAndCategoryManagement />} />
                 <Route path='/income' element={<IncomeManagement />} />
+                <Route path='/bill' element={<BillManagement />} />
                 <Route path='/' element={<HomePage />} />
                 <Route path='*' element={<>404 Error</>} />
             </Routes>
