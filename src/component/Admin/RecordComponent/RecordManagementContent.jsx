@@ -13,12 +13,14 @@ import { useDispatch, useSelector } from "react-redux";
 import ModalUpdateRecord from "../../ModalComponent/ModalRecord/ModalUpdateRecord";
 import { setUserId } from "../../../redux/modalSlice";
 import ModalDeleteRecord from "../../ModalComponent/ModalRecord/ModalDeleteRecord";
+import ModalDetailService from "../../ModalComponent/ModalRecord/ModalDetailService";
 
 const RecordManagementContent = () => {
     const dispatch = useDispatch()
     const [modalAddOpen, setModalAddOpen] = useState(false);
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
+    const [modalDetailOpen, setModalDetailOpen] = useState(false);
     const patientName = useSelector(state => state.choosenPatient.patientName)
 
     // console.log(patientName)
@@ -27,7 +29,6 @@ const RecordManagementContent = () => {
     const getDetail = async (id) => {
         try {
             const res = await axiosInstance.get(allPatientRecordAPI + id)
-            console.log(res.data.content)
             setRecordList(res.data.content)
         } catch (error) {
             console.log(error)
@@ -171,7 +172,10 @@ const RecordManagementContent = () => {
                             <TableCell>{el.note}</TableCell>
                             <TableCell>{el.treatment}</TableCell>
                             <TableCell>
-                                <Button>
+                                <Button onClick={() => {
+                                    setModalDetailOpen(true)
+                                    dispatch(setUserId(el.patientRecordId))
+                                }}>
                                     Dịch vụ
                                 </Button>
                             </TableCell>
@@ -204,6 +208,9 @@ const RecordManagementContent = () => {
             </div>
             <div>
                 <ModalDeleteRecord modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
+            </div>
+            <div>
+                <ModalDetailService modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
             </div>
         </>
     )

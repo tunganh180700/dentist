@@ -19,6 +19,7 @@ export const allPatientRecordAPI = `${baseUrl}/api/patient_record/get_list_recor
 export const patientRecordAPI = `${baseUrl}/api/patient_record/`
 export const addRecordAPI = `${baseUrl}/api/patient_record/`
 export const deleteRecordAPI = `${baseUrl}/api/patient_record/`
+export const updateRecordAPI = `${baseUrl}/api/patient_record/`
 
 
 export const listAllCategoryAPI = `${baseUrl}/api/categories/get_all_category_service`

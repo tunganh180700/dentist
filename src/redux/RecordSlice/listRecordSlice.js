@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { toast } from "react-toastify"
-import { addRecordAPI, deleteRecordAPI } from "../../config/baseAPI"
-import { DELETE_FAIL, DELETE_SUCCESS } from "../../config/constant"
+import { addRecordAPI, deleteRecordAPI, updateRecordAPI } from "../../config/baseAPI"
+import { DELETE_FAIL, DELETE_SUCCESS, UPDATE_FAIL, UPDATE_SUCCESS } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 import { toastCss } from "../toastCss"
 
@@ -12,8 +12,8 @@ const initState = {
     pageSize: 10,
     totalPage: 0,
     totalElements: 0,
-    statusUpdatePatient: false,
-    isUpdatePatient: false,
+    statusUpdateRecord: false,
+    isUpdateRecord: false,
     statusDeleteRecord: false,
     isDeleteRecord: false,
     statusAddRecord: false,
@@ -46,6 +46,12 @@ const listRecordSlice = createSlice({
             .addCase(deleteRecord.fulfilled, (state, action) => {
                 state.isDeleteRecord = true
             })
+            .addCase(updateRecord.pending, (state, action) => {
+                state.statusUpdateRecord = true
+            })
+            .addCase(updateRecord.fulfilled, (state, action) => {
+                state.isUpdateRecord = true
+            })
 
     }
 
@@ -71,6 +77,22 @@ export const deleteRecord = createAsyncThunk('listRecord/deleteRecord', async (r
         return recordId
     } catch (error) {
         toast.error(DELETE_FAIL, toastCss)
+
+    }
+})
+
+export const updateRecord = createAsyncThunk('listRecord/updateRecord', async (data) => {
+    // console.log(data.userId)
+    try {
+        const res = await axiosInstance.put(
+            updateRecordAPI + data.recordId, data
+        )
+        console.log(res)
+        toast.success(UPDATE_SUCCESS, toastCss)
+        return res.data
+    } catch (error) {
+        console.log(error)
+        toast.error(UPDATE_FAIL, toastCss)
 
     }
 })

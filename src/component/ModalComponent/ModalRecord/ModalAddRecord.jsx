@@ -86,7 +86,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
             causal: "",
             marrowRecord: "",
             note: "",
-            treatment: "",
+            treatment: ""
         },
         // validationSchema: validationSchema,
         onSubmit: (values) => {
@@ -96,11 +96,20 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
             }
             console.log("aaa", values)
             values.date = moment(value.$d).format(validationDate);
-            const serviceDTOs = {
-                serviceId: serviceId, serviceName: serviceId, price: servicePrice, discount: serviceDiscount, status: status
+            const serviceDTOs = [{
+                serviceId: serviceId,
+                serviceName: serviceId,
+                price: servicePrice,
+                discount: serviceDiscount,
+                status: status,
+                isNew: 1
+            }]
+            if (listTreatingService.length === 0) {
+                values.serviceDTOS = serviceDTOs
+            } else {
+                values.serviceDTOS = serviceDTOs.concat(listTreatingService[0])
             }
-            values.serviceDTOs = serviceDTOs
-            values.serviceDTOs.status = status
+
             console.log("status", status)
             console.log("hay", serviceDTOs)
             console.log("pre", servicePrice)
@@ -127,14 +136,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
 
     const handleEdit = (e) => {
         setEdit(!isEdit);
-    };
-
-    const handleSave = () => {
-        setEdit(!isEdit);
-        setListTreatingService(rows);
-        console.log("saved : ", rows);
-        setDisable(true);
-        setOpen(true);
     };
 
     const handleInputChange = (e, index) => {
