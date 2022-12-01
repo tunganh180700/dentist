@@ -10,7 +10,6 @@ import { allPatientRecordAPI } from "../../../config/baseAPI";
 import ModalAddRecord from "../../ModalComponent/ModalRecord/ModalAddRecord";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useDispatch, useSelector } from "react-redux";
-import ModalUpdateRecord from "../../ModalComponent/ModalRecord/ModalUpdateRecord";
 import { setUserId } from "../../../redux/modalSlice";
 import ModalDeleteRecord from "../../ModalComponent/ModalRecord/ModalDeleteRecord";
 import ModalDetailService from "../../ModalComponent/ModalRecord/ModalDetailService";
@@ -18,7 +17,6 @@ import ModalDetailService from "../../ModalComponent/ModalRecord/ModalDetailServ
 const RecordManagementContent = () => {
     const dispatch = useDispatch()
     const [modalAddOpen, setModalAddOpen] = useState(false);
-    const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalDetailOpen, setModalDetailOpen] = useState(false);
     const patientName = useSelector(state => state.choosenPatient.patientName)
@@ -150,7 +148,6 @@ const RecordManagementContent = () => {
                             <div className='attibute'>Điều trị</div>
                         </TableCell>
                         <TableCell></TableCell>
-                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -180,14 +177,6 @@ const RecordManagementContent = () => {
                                 </Button>
                             </TableCell>
                             <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setUserId(el.patientRecordId))
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
                                 <IconButton aria-label="delete" onClick={() => {
                                     setModalDeleteOpen(true)
                                     dispatch(setUserId(el.patientRecordId))
@@ -202,9 +191,6 @@ const RecordManagementContent = () => {
             </Table>
             <div>
                 <ModalAddRecord modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
-            </div>
-            <div>
-                <ModalUpdateRecord modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
             </div>
             <div>
                 <ModalDeleteRecord modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />

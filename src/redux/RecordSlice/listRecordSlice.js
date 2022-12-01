@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { toast } from "react-toastify"
-import { addRecordAPI, deleteRecordAPI, updateRecordAPI } from "../../config/baseAPI"
+import { addRecordAPI, deleteRecordAPI, patientRecordAPI, updateRecordAPI } from "../../config/baseAPI"
 import { DELETE_FAIL, DELETE_SUCCESS, UPDATE_FAIL, UPDATE_SUCCESS } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 import { toastCss } from "../toastCss"
@@ -21,7 +21,9 @@ const initState = {
     statusSearchPatient: false,
     isSearchPatient: false,
     message: '',
-    statusPatient: 0
+    statusPatient: 0,
+    listService: [],
+    status: ''
 }
 
 const listRecordSlice = createSlice({
@@ -34,6 +36,13 @@ const listRecordSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(fetchRecord.pending, (state, action) => {
+                state.status = true
+            })
+            .addCase(fetchRecord.fulfilled, (state, action) => {
+                state.listRecord = action.payload
+                state.listService = action.payload.serviceDTOS
+            })
             .addCase(addRecord.pending, (state, action) => {
                 state.statusAddRecord = true
             })
@@ -96,5 +105,33 @@ export const updateRecord = createAsyncThunk('listRecord/updateRecord', async (d
 
     }
 })
+
+// const fetchRecord = async (recordId) => {
+//     try {
+//         const res = await axiosInstance.get(
+//             patientRecordAPI + recordId,
+//         )
+//         // console.log("list ser", res.data.serviceDTOS)
+//         setListRecord(res.data)
+//         setListService(res.data.serviceDTOS)
+//         console.log("list rec", listRecord)
+
+//         console.log("ser list", listService)
+//         // setGender(res.data.gender)
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
+
+export const fetchRecord = createAsyncThunk('listRecord/fetchRecord', async (patientRecordId) => {
+    try {
+        const res = await axiosInstance.get(patientRecordAPI + patientRecordId)
+        console.log("list", res.data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 export const { setListRecord } = listRecordSlice.actions;
 export default listRecordSlice.reducer;

@@ -21,7 +21,7 @@ import * as yup from "yup";
 import { validationDate } from "../../../config/validation";
 import moment from "moment";
 import { useFormik } from "formik";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addRecord } from "../../../redux/RecordSlice/listRecordSlice";
 import "./style.css"
 
@@ -34,6 +34,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [serviceId, setServiceId] = useState();
     const [serviceIds, setServiceIds] = useState([]);
 
+    const [newPrice, setNewPrice] = useState();
     const [servicePrice, setServicePrice] = useState();
     const [serviceDiscount, setServiceDiscount] = useState();
     const [status, setStatus] = useState();
@@ -42,6 +43,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [disable, setDisable] = useState(true);
     const [showConfirm, setShowConfirm] = useState(false);
     const [isEdit, setEdit] = useState(false);
+
+    const isAddRecord = useSelector(state => state.listRecord.isAddRecord)
     const [rows, setRows] = useState([
         { serviceName: "", price: "", discount: "", status: "" },
     ]);
@@ -107,7 +110,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
             if (listTreatingService.length === 0) {
                 values.serviceDTOS = serviceDTOs
             } else {
-                values.serviceDTOS = serviceDTOs.concat(listTreatingService[0])
+                values.serviceDTOS = serviceDTOs.concat(listTreatingService)
             }
 
             console.log("status", status)
@@ -177,16 +180,20 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         }
     }
 
+    // useEffect(() => {
+    //     const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
+    //     const discount = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.discount
+    //     setServicePrice(price)
+    //     setServiceDiscount(discount)
+    // }, [serviceId])
+
     useEffect(() => {
         const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
         const discount = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.discount
         setServicePrice(price)
         setServiceDiscount(discount)
-    }, [serviceId])
-
-    useEffect(() => {
         getServiceTreating(id)
-    }, [id])
+    }, [id, serviceId, isAddRecord])
 
     return (
         <>
@@ -326,7 +333,21 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                         <TableCell>{item.serviceName}</TableCell>
                                         <TableCell>{item.price}</TableCell>
                                         <TableCell>{item.discount}</TableCell>
-                                        <TableCell>{item.status ? "Đang chữa trị" : "Đã xong"}</TableCell>
+                                        <TableCell>
+                                            <Box sx={{ minWidth: 120 }}>
+                                                <FormControl fullWidth>
+                                                    <Select
+                                                        labelId="status"
+                                                        id="status"
+                                                        value={status || ""}
+                                                        onChange={(e) => setStatus(e.target.value)}
+                                                    >
+                                                        <MenuItem value={1}>Đang chữa trị</MenuItem>
+                                                        <MenuItem value={2}>Đã xong</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </Box>
+                                        </TableCell>
                                         <TableCell></TableCell>
                                     </TableRow>
                                 ))}

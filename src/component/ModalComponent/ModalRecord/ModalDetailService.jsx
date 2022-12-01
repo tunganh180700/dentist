@@ -3,46 +3,36 @@ import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
 import { Modal } from "antd"
 import e from "cors";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { listTreatingServiceAPI, patientRecordAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
+import { fetchRecord } from "../../../redux/RecordSlice/listRecordSlice";
 
 const ModalDetailService = ({ modalDetailOpen, setModalDetailOpen }) => {
 
+    const dispatch = useDispatch()
     const patientRecordId = useSelector(state => state.modal.userId);
-    const [listService, setListService] = useState([])
+    const listService = useSelector(state => state.listRecord.listService)
 
+
+    console.log(listService)
     const handleCancel = () => {
         setModalDetailOpen(false)
     }
 
-    const fetchRecord = async (recordId) => {
-        try {
-            const res = await axiosInstance.get(
-                patientRecordAPI + recordId,
-            )
-            // console.log("list ser", res.data.serviceDTOS)
-            setListService(res.data.serviceDTOS)
-            // setGender(res.data.gender)
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     useEffect(() => {
         if (patientRecordId > 0)
-            fetchRecord(patientRecordId)
+            dispatch(fetchRecord(patientRecordId))
 
-        console.log("ser list", listService)
-    }, [patientRecordId])
+    }, [patientRecordId, dispatch])
 
     return (
         <>
             <Modal
                 title="Dịch vụ"
                 open={modalDetailOpen}
-                // onOk={formik.handleSubmit}
                 onCancel={handleCancel}
             >
                 <Table size="small" style={{ marginTop: "15px" }}>
@@ -57,8 +47,8 @@ const ModalDetailService = ({ modalDetailOpen, setModalDetailOpen }) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {listService?.map(item => {
-                            <TableRow key={item.serviceId}>
+                        {listService?.map((item) => {
+                            return <TableRow key={item.serviceId}>
                                 <TableCell>{item.serviceName}</TableCell>
                                 <TableCell>{item.status}</TableCell>
                             </TableRow>
