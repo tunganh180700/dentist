@@ -36,9 +36,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         amount: yup
             .string('Enter amount')
             .required('Your amount is required'),
-            amount: yup
-            .string('Enter amount')
-            .required('Your amount is required'),
+
 
     });
 
