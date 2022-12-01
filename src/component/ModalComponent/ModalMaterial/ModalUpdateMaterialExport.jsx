@@ -23,6 +23,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [materialIds, setMaterialIds] = useState([]);
     const [materialId, setMaterialId] = useState();
     const [materialPrice, setMaterialPrice] = useState();
+    const [unitPrice, setUnitPrice] = useState();
 
     const [patientIds, setPatientIds] = useState([]);
     const [patientId, setPatientId] = useState();
