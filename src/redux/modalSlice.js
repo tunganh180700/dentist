@@ -83,7 +83,7 @@ const modalSlice = createSlice({
         setIsOpenDeleteCategory: (state, action) => {
             state.isOpenDeleteCategory = action.payload
         },
-        setCategoryServiceId: (state,action) => {
+        setCategoryServicedId: (state,action) => {
             state.categoryServiceId = action.payload
         },
         setIsOpenDeleteService: (state, action) => {
@@ -100,7 +100,7 @@ export const { setMaterialId } = modalSlice.actions;
 export const { setMaterialImportId } = modalSlice.actions;
 export const { setMaterialExportId } = modalSlice.actions;
 
-export const { setCategoryServiceId } = modalSlice.actions;
+export const { setCategoryServicedId } = modalSlice.actions;
 export const { setServicedId } = modalSlice.actions;
 
 export default modalSlice.reducer;

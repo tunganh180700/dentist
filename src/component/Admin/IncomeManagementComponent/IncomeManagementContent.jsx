@@ -16,8 +16,8 @@ import { fetchAllIncome, fetchAllNetIncome } from '../../../redux/IncomeSlice/li
 
 const IncomeManagementContent = () => {
 
-    const listIncome = useSelector(state => state.listIncome)
-    // const listNetIncome = useSelector(state => state.listIncome.listNetIncome)
+    const listIncome = useSelector(state => state.listIncome.listIncome)
+    const listNetIncome = useSelector(state => state.listIncome.listNetIncome)
     const totalIncome = useSelector(state => state.listIncome.totalIncome)
     const totalNetIncome = useSelector(state => state.listIncome.totalNetIncome)
     const dispatch = useDispatch()
@@ -73,7 +73,7 @@ const IncomeManagementContent = () => {
                     <TableCell colSpan={3} style={{ fontWeight: 'bold', fontSize: '20px', textAlign: 'end' }}>Tổng tiền : {totalIncome}</TableCell>
                 </TableBody>
             </Table>
-{/* 
+
             <h2>Thực thu</h2>
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
@@ -93,7 +93,7 @@ const IncomeManagementContent = () => {
                     )}
                     <TableCell colSpan={3} style={{ fontWeight: 'bold', fontSize: '20px', textAlign: 'end' }}>Tổng tiền : {totalNetIncome}</TableCell>
                 </TableBody>
-            </Table> */}
+            </Table>
 
 
         </>

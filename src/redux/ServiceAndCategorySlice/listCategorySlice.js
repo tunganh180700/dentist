@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { listAllCategoryAPI,addCategoryAPI,deleteServiceAPI,addServiceAPI,updateServiceAPI } from "../../config/baseAPI"
+import { listAllCategoryAPI, addCategoryAPI, deleteServiceAPI, addServiceAPI, updateServiceAPI, updateCategoryBySelectIdAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
@@ -23,6 +23,8 @@ const initState = {
     isAddService: false,
     statusDeleteService: false,
     isDeleteService: false,
+    statusUpdateService: false,
+    isUpdateService: false,
     listServiceDTO: [],
     message: '',
     id: 0
@@ -47,38 +49,44 @@ const listCategorySlice = createSlice({
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
                 state.totalPage = action.payload.totalPages;
-                // state.isUpdateCategory = false;
+                state.isUpdateCategory = false;
                 // state.isDeleteCategory = false;
                 state.isDeleteService = false;
                 state.isAddCategory = false;
                 state.isAddService = false;
+                state.isUpdateService = false;
                 state.message = action.payload.message
             })
-
-        // .addCase(updateCategory.pending, (state, action) => {
-        //     state.statusUpdateCategory = true
-        // })
-        // .addCase(updateCategory.fulfilled, (state, action) => {
-        //     state.isUpdateCategory = true
-        // })
-        .addCase(deleteService.pending, (state, action) => {
-            state.statusDeleteService = true
-        })
-        .addCase(deleteService.fulfilled, (state, action) => {
-            state.isDeleteService = true
-        })
-        .addCase(addCategory.pending, (state, action) => {
-            state.statusAddCategory = true
-        })
-        .addCase(addCategory.fulfilled, (state, action) => {
-            state.isAddCategory = true
-        })
-        .addCase(addService.pending, (state, action) => {
-            state.statusAddService = true
-        })
-        .addCase(addService.fulfilled, (state, action) => {
-            state.isAddService = true
-        })
+            .addCase(updateCategory.pending, (state, action) => {
+                state.statusUpdateCategory = true
+            })
+            .addCase(updateCategory.fulfilled, (state, action) => {
+                state.isUpdateCategory = true
+            })
+            .addCase(updateService.pending, (state, action) => {
+                state.statusUpdateService = true
+            })
+            .addCase(updateService.fulfilled, (state, action) => {
+                state.isUpdateService = true
+            })
+            .addCase(deleteService.pending, (state, action) => {
+                state.statusDeleteService = true
+            })
+            .addCase(deleteService.fulfilled, (state, action) => {
+                state.isDeleteService = true
+            })
+            .addCase(addCategory.pending, (state, action) => {
+                state.statusAddCategory = true
+            })
+            .addCase(addCategory.fulfilled, (state, action) => {
+                state.isAddCategory = true
+            })
+            .addCase(addService.pending, (state, action) => {
+                state.statusAddService = true
+            })
+            .addCase(addService.fulfilled, (state, action) => {
+                state.isAddService = true
+            })
     }
 })
 
@@ -87,10 +95,7 @@ export const fetchAllCategory = createAsyncThunk('listCategory/fetchAllCategory'
         const res = await axiosInstance.get(listAllCategoryAPI, {
             params: paramsSearch,
         })
-        console.log("du lieu check: ",res.data)
-
-        // console.log("ktra data", res.data);
-        // console.log("service: ", res.data[0].serviceDTOS);
+        console.log("du lieu check: ", res.data)
         return res.data
     } catch (error) {
         console.log(error)
@@ -99,21 +104,21 @@ export const fetchAllCategory = createAsyncThunk('listCategory/fetchAllCategory'
 
 
 
-// export const updateCategory = createAsyncThunk('listCategory/updateCategory', async (data) => {
-//     // console.log(data.userId)
-//     try {
-//         const res = await axios.put(
-//             updateCategoryAPI + data.CategoryId, data
-//         )
-//         console.log(res)
-//         toast.success(UPDATE_SUCCESS, toastCss)
-//         return res.data
-//     } catch (error) {
-//         console.log(error)
-//         toast.error(UPDATE_FAIL, toastCss)
+export const updateCategory = createAsyncThunk('listCategory/updateCategory', async (data) => {
+    // console.log(data.userId)
+    try {
+        const res = await axiosInstance.put(
+            updateCategoryBySelectIdAPI + data.categoryServiceId, data
+        )
+        console.log(res)
+        toast.success(UPDATE_SUCCESS, toastCss)
+        return res.data
+    } catch (error) {
+        console.log(error)
+        toast.error(UPDATE_FAIL, toastCss)
 
-//     }
-// })
+    }
+})
 
 export const updateService = createAsyncThunk('listCategory/updateService', async (data) => {
     // console.log(data.userId)
@@ -146,7 +151,7 @@ export const deleteService = createAsyncThunk('listCategory/deleteService', asyn
 
 export const addCategory = createAsyncThunk('listCategory/addCategory', async (values) => {
     try {
-        
+
         const res = await axiosInstance.post(addCategoryAPI, values)
         toast.success("Thêm loại dịch vụ thành công !!!!!", toastCss)
         console.log(res.data)
@@ -157,12 +162,12 @@ export const addCategory = createAsyncThunk('listCategory/addCategory', async (v
     }
 })
 
-export const addService= createAsyncThunk('listService/addService', async (values) => {
+export const addService = createAsyncThunk('listService/addService', async (values) => {
     try {
-        
+
         const res = await axiosInstance.post(addServiceAPI, values)
         toast.success("Thêm dịch vụ thành công !!!!!", toastCss)
-        console.log('asdasdas',res.data)
+        console.log('asdasdas', res.data)
         return res.data
     } catch (error) {
         console.log(error)

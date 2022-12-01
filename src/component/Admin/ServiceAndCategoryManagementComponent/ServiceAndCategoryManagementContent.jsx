@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Pagination, Typography, IconButton } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCategoryServiceId} from '../../../redux/modalSlice';
+import { setCategoryServicedId, setCategoryServiceId } from '../../../redux/modalSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -21,9 +21,12 @@ import axiosInstance from '../../../config/customAxios';
 import { fetchAllCategory } from '../../../redux/ServiceAndCategorySlice/listCategorySlice';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 // import ModalUpdateMaterialImport from '../../ModalComponent/ModalMaterial/ModalUpdateMaterialImport';
-import ModalDeleteService from '../../ModalComponent/ModalService/ModalDeleteService';
 import ModalAddCategory from '../../ModalComponent/ModalCategory/ModalAddCategory';
+import ModalUpdateCategory from '../../ModalComponent/ModalCategory/ModalUpdateCategory';
+
+import ModalDeleteService from '../../ModalComponent/ModalService/ModalDeleteService';
 import ModalAddService from '../../ModalComponent/ModalService/ModalAddService';
+import ModalUpdateService from '../../ModalComponent/ModalService/ModalUpdateService';
 import { setServicedId } from '../../../redux/modalSlice';
 
 const ServiceAndCategoryManagementContent = () => {
@@ -34,15 +37,17 @@ const ServiceAndCategoryManagementContent = () => {
     const totalPages = useSelector(state => state.totalPage)
     const [currentPage, setCurrentPage] = useState(0);
 
-    // const isUpdateMaterialImport = useSelector(state => state.listMaterialImport.isUpdateMaterialImport);
+    const isUpdateCategory = useSelector(state => state.listCategory.isUpdateCategory);
     const isDeleteService = useSelector(state => state.listCategory.isDeleteService);
     const isAddCategory = useSelector(state => state.listCategory.isAddCategory);
     const isAddService = useSelector(state => state.listCategory.isAddService);
+    const isUpdateService = useSelector(state => state.listCategory.isUpdateService);
 
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
-    const [takeCategoryId, setTakeCategoryId] = useState();
+    const [modalAddServiceOpen, setModalAddServiceOpen] = useState(false);
+    const [modalUpdateServiceOpen, setModalUpdateServiceOpen] = useState(false);
     const id = useSelector(state => state.listCategory.id);
     const [loading, setLoading] = useState();
 
@@ -52,6 +57,7 @@ const ServiceAndCategoryManagementContent = () => {
 
     const [serviceIds, setServiceIds] = useState([]);
     const [serviceId, setServiceId] = useState();
+    const [categoryId, setCategoryId] = useState();
     console.log('list: ', listCategory)
     useEffect(() => {
         dispatch(fetchAllCategory({
@@ -60,13 +66,16 @@ const ServiceAndCategoryManagementContent = () => {
         },
         ));
 
-    }, [currentPage, isAddCategory, isDeleteService, isAddService])
+    }, [currentPage, isAddCategory, isDeleteService, isAddService, isUpdateService, isUpdateCategory])
 
     const loadCategory = async () => {
         try {
             setCategoryServiceId(listCategory[0].id)
             setCategoryServiceIds(listCategory)
             console.log("checkCate", listCategory);
+
+            setCategoryId(listCategory[0].categoryServiceId)
+            console.log("cateId: ",listCategory[0].categoryServiceId)
 
         } catch (error) {
             console.log(error)
@@ -84,6 +93,7 @@ const ServiceAndCategoryManagementContent = () => {
                 listServiceByCategoryIdAPI + categoryServiceId,
             )
             setServiceId(res.data.categoryServiceId)
+           
             setServiceIds(res.data)
         } catch (error) {
             console.log(error)
@@ -96,9 +106,6 @@ const ServiceAndCategoryManagementContent = () => {
             loadServiceByCategoryId(categoryServiceId)
     }, [categoryServiceId])
 
-    useEffect(() => {
-        const category = categoryServiceIds?.filter(e =>  e.takeCategoryId === categoryServiceId)[0]
-    })
 
     // console.log('haha', listServiceAndCategory)
     return (
@@ -136,11 +143,14 @@ const ServiceAndCategoryManagementContent = () => {
             </Box>
                 <div>
                     <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
-                        setModalAddOpen(true)
+                        setModalAddServiceOpen(true)
                     }}>
                         <AddIcon />Thêm mới Dịch vụ
                     </IconButton>
-                    <IconButton aria-label="edit-service" style={{ borderRadius: '5%' }} >
+                    <IconButton aria-label="edit-service" style={{ borderRadius: '5%' }} onClick={() => {
+                        setModalUpdateOpen(true)
+                        dispatch(setCategoryServicedId(categoryId))
+                    }}>
                         <DesignServicesIcon />Cập nhật loại dịch vụ
                     </IconButton>
 
@@ -165,7 +175,10 @@ const ServiceAndCategoryManagementContent = () => {
                             <TableCell>{item.marketPrice}</TableCell>
                             <TableCell>{item.price}</TableCell>
                             <TableCell>
-                                <IconButton aria-label="edit" >
+                                <IconButton aria-label="edit" onClick={() => {
+                                    setModalUpdateServiceOpen(true)
+                                    dispatch(setServicedId(item.serviceId))
+                                }}>
                                     <EditIcon />
                                 </IconButton>
                             </TableCell>
@@ -182,9 +195,13 @@ const ServiceAndCategoryManagementContent = () => {
                 </TableBody>
             </Table>
 
-            {/* <div>
-                <ModalUpdateMaterialImport modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
-            </div> */}
+            <div>
+                <ModalUpdateCategory modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
+            </div>
+
+            <div>
+                <ModalUpdateService modalUpdateOpen={modalUpdateServiceOpen} setModalUpdateOpen={setModalUpdateServiceOpen} />
+            </div>
             <div>
                 <ModalDeleteService modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
             </div>
@@ -193,7 +210,7 @@ const ServiceAndCategoryManagementContent = () => {
             </div>
 
             <div>
-                <ModalAddService modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+                <ModalAddService  modalAddOpen={modalAddServiceOpen} setModalAddOpen={setModalAddServiceOpen} />
             </div>
 
         </>

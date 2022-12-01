@@ -7,7 +7,6 @@ import "./../style.css"
 import Typography from '@mui/material/Typography';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import axios from 'axios';
 import { updateMaterial } from '../../../redux/MaterialSlice/listMaterialSlice';
 import { getMaterialByIdAPI } from '../../../config/baseAPI';
 import axiosInstance from '../../../config/customAxios';
@@ -67,7 +66,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     return (
         <>
             <Modal
-                title="Thông tin vật liệu"
+                title="Cập nhật vật liệu"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
                 onCancel={() => setModalUpdateOpen(false)}

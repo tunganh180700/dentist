@@ -38,10 +38,10 @@ const choosenCategorySlice = createSlice({
             })
     }
 })
-export const fetchCategory = createAsyncThunk('categories/fetchCategory', async (CategoryId) => {
+export const fetchCategory = createAsyncThunk('categories/fetchCategory', async (categoryServiceId) => {
     try {
         const res = await axios.get(
-            getCategoryByIdAPI + CategoryId,
+            getCategoryByIdAPI + categoryServiceId,
         )
         console.log(res.data)
         return res.data
