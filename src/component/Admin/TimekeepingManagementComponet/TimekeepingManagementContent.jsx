@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Button, Pagination, Typography } from '@mui/material';
+import { Pagination, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { CHECK_IN, CHECK_OUT, GET_LIST_TIMEKEEPING } from '../../../config/baseAPI';
@@ -30,7 +30,7 @@ const TimekeepingManagementContent = () => {
     const checkInOut = async () => {
         setLoading(true)
         try {
-            const res = await axiosInstance.post(isCheckin ? CHECK_OUT : CHECK_IN )
+            const res = await axiosInstance.post(isCheckin ? CHECK_IN : CHECK_OUT )
             if(res.status === 200) setCount(prevCount => prevCount + 1)
         } catch (error) {
             if (!isCheckin) toast.error('Chỉ có thể checkout sau 3 tiếng!', toastCss)
