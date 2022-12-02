@@ -26,6 +26,14 @@ const Sidebar = () => {
     return (
         <>
             <React.Fragment>
+                <ListItemButton>
+                    <ListItemIcon>
+                        <MeetingRoomIcon />
+                    </ListItemIcon>
+                    <Link to={'/timekeeping'}>
+                        <ListItemText primary="Chấm công" />
+                    </Link>
+                </ListItemButton>
                 <ListItemButton onClick={handleClick}>
                     <ListItemIcon>
                         <CategoryIcon />
@@ -123,7 +131,7 @@ const Sidebar = () => {
                     </Link>
                 </ListItemButton>
 
-                
+
                 <ListItemButton>
                     <ListItemIcon>
                         <AccountCircleIcon />

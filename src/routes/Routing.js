@@ -7,6 +7,9 @@ import HomePage from "../component/HomeComponent/Home";
 import WaitingRoomManagement from "../component/Admin/WaitingRoomManagementComponent/WaitingRoomManagement";
 import PatientManagement from "../component/Admin/PatientManagementComponent/PatientManagement";
 import LaboManagement from "../component/Admin/LaboComponent/LaboManagement";
+
+import TimekeepingManagement from "../component/Admin/TimekeepingManagementComponet/TimekeepingManagement";
+
 import MaterialManagement from "../component/Admin/MaterialManagementComponent/MaterialManagement";
 import MaterialImportManagement from "../component/Admin/MaterialManagementComponent/MaterialImportManagement";
 import MaterialExportManagement from "../component/Admin/MaterialManagementComponent/MaterialExportManagement";
@@ -26,7 +29,7 @@ const Routing = () => {
                 <Route path='/labo' element={<LaboManagement />} />
                 <Route path='/meetingroom' element={<WaitingRoomManagement />} />
                 <Route path='/patient-management' element={<PatientManagement />} />
-                {/* <Route path='/timekeeping' element={<TimekeepingManagement />} /> */}
+                <Route path='/timekeeping' element={<TimekeepingManagement />} />
                 <Route path='/record/:id' element={<RecordManagement />} />
                 <Route path='/materialmanagement' element={<MaterialManagement />} />
                 <Route path='/materialimport' element={<MaterialImportManagement />} />

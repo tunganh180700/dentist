@@ -4,7 +4,6 @@ import listAccountSlice from "./AccountSlice/listAccountSlice";
 import modalSlice from "./modalSlice";
 import choosenPatientSlice from "./PatienSlice/choosenPatientSlice";
 import listPatientSlice from "./PatienSlice/listPatientSlice";
-import listTimekeepingSlice from "./TimekeepingSlice/listTimekeepingSlice";
 
 
 import choosenLaboSlice from "./LaboSlice/choosenLaboSlice";

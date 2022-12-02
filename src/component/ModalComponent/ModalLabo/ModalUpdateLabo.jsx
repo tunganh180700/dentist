@@ -7,10 +7,10 @@ import "./../style.css"
 import Typography from '@mui/material/Typography';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import axios from 'axios';
 import { regexPhone } from '../../../config/validation';
 import { updateLabo } from '../../../redux/LaboSlice/listLaboSlice';
 import { getLaboByIdAPI } from '../../../config/baseAPI';
+import axiosInstance from '../../../config/customAxios';
 
 
 const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -43,7 +43,7 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const fetchLabo = async (laboId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 getLaboByIdAPI + laboId,
             )
             console.log(res.data)

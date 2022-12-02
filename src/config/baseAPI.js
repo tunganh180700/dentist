@@ -15,12 +15,7 @@ export const searchPatientAPI = `${baseUrl}/api/patients/get_list_patients?`
 
 export const listRoleAPI = `${baseUrl}/api/roles/get_list_roles`
 
-export const allPatientRecordAPI = `${baseUrl}/api/patient_record/get_list_record/`
-export const patientRecordAPI = `${baseUrl}/api/patient_record/`
 
-export const listTimekeepingAPI = `${baseUrl}/api/timekeeping/get_list_timekeeping`
-
-export const loginAPI = `${baseUrl}/api/login`
 
 export const listLaboAPI = `${baseUrl}/api/labos/get_list_labos`
 export const getLaboByIdAPI = `${baseUrl}/api/labos/`
@@ -51,10 +46,15 @@ export const addMaterialExportAPI = `${baseUrl}/api/material_export/`
 export const deleteMaterialExportAPI = `${baseUrl}/api/material_export/`
 
 export const listAllPatientAPI = `${baseUrl}/api/patients/get_all_patients`
-
 export const listPatientRecordByTreatmentIdAPI = `${baseUrl}/api/patient_record/get_all_record/`
+export const allPatientRecordAPI = `${baseUrl}/api/patient_record/get_list_record/`
+export const patientRecordAPI = `${baseUrl}/api/patient_record/`
 
+export const loginAPI = `${baseUrl}/api/login`
 
+export const GET_LIST_TIMEKEEPING = `${baseUrl}/api/timekeeping/get_list_timekeeping?size=10&page=`
+export const CHECK_IN = `${baseUrl}/api/timekeeping/checkin`
+export const CHECK_OUT = `${baseUrl}/api/timekeeping/checkout`
 
 export const listAllCategoryAPI = `${baseUrl}/api/categories/get_all_category_service`
 
@@ -78,3 +78,4 @@ export const getBillByIdAPI = `${baseUrl}/api/bills/`
 
 export const listNetIncomeAPI = `${baseUrl}/api/income/net_income`
 export const listTotalSpendIncomeAPI = `${baseUrl}/api/income/total_spend`
+
