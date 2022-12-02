@@ -50,7 +50,7 @@ const ModalDetailService = ({ modalDetailOpen, setModalDetailOpen }) => {
                         {listService?.map((item) => {
                             return <TableRow key={item.serviceId}>
                                 <TableCell>{item.serviceName}</TableCell>
-                                <TableCell>{item.status}</TableCell>
+                                <TableCell>{item.status === 1 ? "Đã xong" : "Đang chữa trị"}</TableCell>
                             </TableRow>
                         })}
                     </TableBody>
