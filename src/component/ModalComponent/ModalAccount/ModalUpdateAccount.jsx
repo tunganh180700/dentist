@@ -125,7 +125,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.fullName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
+                    {formik.errors.fullName && formik.touched.fullName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -150,7 +150,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
+                    {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -163,7 +163,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
+                    {formik.errors.email && formik.touched.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Ngày sinh"
@@ -188,7 +188,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
+                    {formik.errors.salary && formik.touched.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
                     <Box sx={{ minWidth: 120 }}>
                         <FormControl fullWidth>
                             <InputLabel id="permisstion">Quyền hạn</InputLabel>

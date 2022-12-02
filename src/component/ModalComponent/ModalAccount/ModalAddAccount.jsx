@@ -25,6 +25,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
     const [value, setValue] = useState(null);
     const [roleIds, setRoleIds] = useState([]);
     const [roleId, setRoleId] = useState();
+    const [error, setError] = useState([])
 
     const validationSchema = yup.object({
         fullName: yup
@@ -46,6 +47,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
             .required('Salary is required')
     });
 
+
     const loadRole = async () => {
         try {
             const res = await axiosInstance.get(listRoleAPI)
@@ -56,7 +58,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
             console.log(error)
         }
     }
-    
+
     useEffect(() => {
         loadRole();
     }, [])
@@ -79,13 +81,34 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+
+        formik.values.fullName = ""
+        formik.errors.fullName = ""
+
+        formik.values.password = ""
+        formik.errors.password = ""
+
+        formik.values.phone = ""
+        formik.errors.phone = ""
+
+        formik.values.email = ""
+        formik.errors.email = ""
+
+        formik.values.salary = ""
+        formik.errors.salary = ""
+
+        setValue(null)
+    }
+
     return (
         <>
             <Modal
                 title="Thêm tài khoản"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
                 <TextField
                     margin="normal"
@@ -99,7 +122,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.fullName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
+                {formik.errors.fullName && formik.touched.fullName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -117,17 +140,6 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     margin="normal"
                     required
                     fullWidth
-                    id="username"
-                    disabled
-                    label="Tên đăng nhập"
-                    name="username"
-                    autoComplete="username"
-                    autoFocus
-                />
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
                     id="phonenumber"
                     label="Số điện thoại"
                     name="phone"
@@ -136,7 +148,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
+                {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -149,7 +161,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
+                {formik.errors.email && formik.touched.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Ngày sinh"
@@ -173,8 +185,9 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     value={formik.values.salary}
                     autoFocus
                     onChange={formik.handleChange}
+
                 />
-                {formik.errors.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
+                {formik.errors.salary && formik.touched.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl fullWidth>
                         <InputLabel id="permisstion">Quyền hạn</InputLabel>
