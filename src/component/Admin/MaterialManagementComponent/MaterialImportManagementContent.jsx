@@ -66,6 +66,7 @@ const MaterialImportManagementContent = () => {
                         <TableCell>Date</TableCell>
                         <TableCell>số lượng</TableCell>
                         <TableCell>Đơn giá</TableCell>
+                        <TableCell>Tổng giá</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>
@@ -78,6 +79,7 @@ const MaterialImportManagementContent = () => {
                             <TableCell>{item.date}</TableCell>
                             <TableCell>{item.amount}</TableCell>
                             <TableCell>{item.unitPrice}</TableCell>
+                            <TableCell>{item.amount * item.unitPrice}</TableCell>
                             <TableCell>
                                 <IconButton aria-label="edit" onClick={() => {
                                     setModalUpdateOpen(true)

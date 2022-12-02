@@ -24,6 +24,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [materialId, setMaterialId] = useState();
     const [materialPrice, setMaterialPrice] = useState();
     const [unitPrice, setUnitPrice] = useState();
+   
 
     const [patientIds, setPatientIds] = useState([]);
     const [patientId, setPatientId] = useState();
@@ -89,6 +90,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             values.materialId = materialId;
             values.patientId = patientId;
             values.totalPrice = materialPrice;
+            values.unitPrice = unitPrice;
             values.patientRecordId = patientRecordId;
             dispatch(updateMaterialExport(values));
             setModalUpdateOpen(false);
@@ -147,6 +149,15 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
         setMaterialPrice(price)
     }, [materialId, formik.values.amount])
+
+    useEffect(() => {
+        const unitPrice = materialIds?.filter(e => e.materialId === materialId)[0]?.price
+
+        setUnitPrice(unitPrice)
+    }, [materialId])
+
+
+
 
 
     return (
@@ -236,16 +247,31 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     <TextField
                         margin="normal"
                         required
+                        disabled
                         fullWidth
-                        id="totalPrice"
+                        id="unitPrice"
                         label="Đơn giá"
+                        name="unitPrice"
+                        autoComplete="unitPrice"
+                        value={unitPrice}
+                        autoFocus
+                        onChange={formik.handleChange}
+                    />
+                    {formik.errors.unitPrice && <Typography style={{ color: 'red' }}>{formik.errors.unitPrice}</Typography>}
+
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        disabled
+                        id="totalPrice"
+                        label="Tổng giá"
                         name="totalPrice"
                         autoComplete="totalPrice"
                         value={materialPrice}
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.totalPrice && <Typography style={{ color: 'red' }}>{formik.errors.totalPrice}</Typography>}
                 </>}
 
             </Modal>

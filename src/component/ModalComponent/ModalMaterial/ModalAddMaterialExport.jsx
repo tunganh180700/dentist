@@ -22,7 +22,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const [materialId, setMaterialId] = useState();
     const [materialPrice, setMaterialPrice] = useState();
     const [materialExportId, setMaterialExportId] = useState();
-
+    const [unitPrice, setUnitPrice] = useState();
 
     const [patientIds, setPatientIds] = useState([]);
     const [patientId, setPatientId] = useState();
@@ -84,6 +84,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
             values.materialId = materialId;
             values.patientId = patientId;
             values.totalPrice = materialPrice;
+            values.unitPrice = unitPrice;
             values.patientRecordId = patientRecordId;
             console.log(values);
             dispatch(addMaterialExport(values))
@@ -147,11 +148,15 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     }, [materialId, formik.values.amount])
 
 
+    useEffect(() => {
+        const unitPrice = materialIds?.filter(e => e.materialId === materialId)[0]?.price
 
+        setUnitPrice(unitPrice)
+    }, [materialId])
     return (
         <>
             <Modal
-                title="Thêm vật liệu nhập khẩu"
+                title="Thêm vật liệu xuất khẩu"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
                 onCancel={() => setModalAddOpen(false)}
@@ -230,14 +235,26 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
                     onChange={formik.handleChange}
                 />
                 {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
-
+                <TextField
+                    margin="normal"
+                    required
+                    disabled
+                    fullWidth
+                    id="unitPrice"
+                    label="Đơn giá"
+                    name="unitPrice"
+                    autoComplete="unitPrice"
+                    value={unitPrice}
+                    autoFocus
+                    onChange={formik.handleChange}
+                />
                 <TextField
                     margin="normal"
                     required
                     disabled
                     fullWidth
                     id="totalPrice"
-                    label="Đơn giá"
+                    label="Tổng giá"
                     name="totalPrice"
                     autoComplete="totalPrice"
                     value={materialPrice}

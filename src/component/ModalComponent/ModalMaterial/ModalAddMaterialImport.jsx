@@ -25,17 +25,20 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     const [materialIds, setMaterialIds] = useState([]);
     const [materialId, setMaterialId] = useState();
     const [materialPrice, setMaterialPrice] = useState();
-    
+
 
     // const [listMaterialPrice, setListMaterialPrice] = useState([]);
-   
+
     const validationSchema = yup.object({
         supplyName: yup
             .string('Enter supplyName')
-            .required('Your supplyName is required'),
+            .required('Kiểm tra và nhập lại hãng cung cấp'),
         amount: yup
             .string('Enter amount')
-            .required('Your amount is required'),
+            .required('Kiểm tra và nhập lại số lượng'),
+        unitPrice: yup
+            .string('Enter unitPrice')
+            .required('Kiểm tra và nhập lại đơn giá'),
 
     });
 
@@ -48,7 +51,7 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
 
             setMaterialId(res.data[0].materialId)
             setMaterialIds(res.data)
-            setMaterialPrice(res.data[0].price)
+            // setMaterialPrice(res.data[0].price)
 
 
         } catch (error) {
@@ -63,8 +66,9 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
 
     const formik = useFormik({
         initialValues: {
-            supplyName: "",
-            amount: "",
+            supplyName: '',
+            amount: '',
+            unitPrice: '',
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
@@ -79,12 +83,12 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     });
 
     useEffect(() => {
-        const price = materialIds?.filter(e => e.materialId === materialId)[0]?.price * (formik.values.amount || 0)
-       
-          setMaterialPrice(price)
-    },[materialId,formik.values.amount])
+        const price = (formik.values.unitPrice || 0) * (formik.values.amount || 0)
 
-    
+        setMaterialPrice(price)
+    }, [formik.values.unitPrice, formik.values.amount])
+
+
 
     return (
         <>
@@ -107,7 +111,7 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                         >
                             {materialIds?.map(item => (
                                 <MenuItem key={item.materialId} value={item.materialId}>{item.materialName}</MenuItem>
-                            
+
                             ))}
 
                         </Select>
@@ -120,7 +124,7 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     required
                     fullWidth
                     id="supplyName"
-                    label="Vật liệu cung cấp"
+                    label="Hãng cung cấp"
                     name="supplyName"
                     autoComplete="supplyName"
                     value={formik.values.supplyName}
@@ -147,12 +151,28 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     id="amount"
                     label="Số lương"
                     name="amount"
+
                     autoComplete="amount"
                     value={formik.values.amount}
                     autoFocus
                     onChange={formik.handleChange}
                 />
                 {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="unitPrice"
+                    label="Số lương"
+                    name="unitPrice"
+
+                    autoComplete="unitPrice"
+                    value={formik.values.unitPrice}
+                    autoFocus
+                    onChange={formik.handleChange}
+                />
+
+                {formik.errors.unitPrice && <Typography style={{ color: 'red' }}>{formik.errors.unitPrice}</Typography>}
 
                 <TextField
                     margin="normal"
@@ -160,8 +180,8 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     disabled
                     fullWidth
                     id="totalPrice"
-                    label="Đơn giá"
-                    name="Đơn giá"
+                    label="Tổng giá"
+                    name="Tổng giá"
                     autoComplete="totalPrice"
                     value={materialPrice}
                     autoFocus

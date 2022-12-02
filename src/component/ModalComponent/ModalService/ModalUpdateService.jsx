@@ -59,6 +59,7 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             const res = await axiosInstance.get(
                 getServiceByIdAPI + serviceId
             )
+            formik.setValues(res.data)
             setCategoryId(res.data.categoryServiceId)
             console.log('hihihaha:',res.data.categoryServiceId)
             console.log('dataService: ', res.data)
@@ -81,7 +82,7 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                 onOk={formik.handleSubmit}
                 onCancel={() => setModalUpdateOpen(false)}
             >
-                {/* {loading === false && <> */}
+                {loading === false && <>
 
                     <TextField
                         margin="normal"
@@ -156,7 +157,7 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     />
                     {formik.errors.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
 
-                {/* </>} */}
+                </>}
             </Modal>
         </>
     )
