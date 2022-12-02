@@ -12,14 +12,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 
-import { fetchAllIncome, fetchAllNetIncome } from '../../../redux/IncomeSlice/listIncomeSlice';
+import { fetchAllIncome, fetchAllNetIncome,fetchAllTotalSpendIncome } from '../../../redux/IncomeSlice/listIncomeSlice';
 
 const IncomeManagementContent = () => {
 
     const listIncome = useSelector(state => state.listIncome.listIncome)
     const listNetIncome = useSelector(state => state.listIncome.listNetIncome)
+    const listTotalSpendIncome = useSelector(state => state.listIncome.listTotalSpendIncome)
     const totalIncome = useSelector(state => state.listIncome.totalIncome)
     const totalNetIncome = useSelector(state => state.listIncome.totalNetIncome)
+    const totalSpendIncome = useSelector(state => state.listIncome.totalSpendIncome)
     const dispatch = useDispatch()
     const pageSize = useSelector(state => state.listIncome.pageSize)
     const totalPages = useSelector(state => state.listIncome.totalPage)
@@ -38,6 +40,11 @@ const IncomeManagementContent = () => {
 
     useEffect(() => {
         dispatch(fetchAllNetIncome({
+        },
+        ));
+    }, [])
+    useEffect(() => {
+        dispatch(fetchAllTotalSpendIncome({
         },
         ));
     }, [])
@@ -95,7 +102,26 @@ const IncomeManagementContent = () => {
                 </TableBody>
             </Table>
 
-
+            <h2>Tổng chi</h2>
+            <Table size="small" style={{ marginTop: "15px" }}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Nguồn thu nhập</TableCell>
+                        <TableCell>Ngày thu</TableCell>
+                        <TableCell>Số Tiền</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {listTotalSpendIncome.map((item, index) =>
+                        <TableRow size='medium' >
+                            <TableCell>{item.name}</TableCell>
+                            <TableCell>{item.date}</TableCell>
+                            <TableCell>{item.price}</TableCell>
+                        </TableRow>
+                    )}
+                    <TableCell colSpan={3} style={{ fontWeight: 'bold', fontSize: '20px', textAlign: 'end' }}>Tổng tiền : {totalSpendIncome}</TableCell>
+                </TableBody>
+            </Table>
         </>
     )
 }

@@ -19,7 +19,7 @@ import ModalDetailBill from '../../ModalComponent/ModalBill/ModalDetailBill'
 const BillManagementContent = () => {
 
     const listBill = useSelector(state => state.listBill.listBill)
-  
+
     const dispatch = useDispatch()
     const pageSize = useSelector(state => state.listBill.pageSize)
     const totalPages = useSelector(state => state.listBill.totalPage)
@@ -27,6 +27,7 @@ const BillManagementContent = () => {
 
     const [modalDetailOpen, setModalDetailOpen] = useState(false);
 
+    const [loading, setLoading] = useState();
 
     console.log('bill: ', listBill)
 
@@ -49,7 +50,7 @@ const BillManagementContent = () => {
                 Quản lý hóa đơn
             </Typography>
 
-            <h2>Doanh thu</h2>
+            {/* {loading === false && <> */}
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow >
@@ -64,30 +65,30 @@ const BillManagementContent = () => {
                 <TableBody>
                     {listBill.map((item, index) =>
                         <TableRow size='medium' key={item.treatmentId}>
-                             
+
                             <TableCell>{item.patientName}</TableCell>
                             <TableCell>{item.phone}</TableCell>
                             <TableCell>{item.totalPrice}</TableCell>
                             <TableCell>{item.totalDiscount}</TableCell>
                             <TableCell>{item.realCost}</TableCell>
                             <TableCell>
-                                    <IconButton aria-label="detail" onClick={() => {
-                                        setModalDetailOpen(true)
-                                        dispatch(setTreatmentId(item.treatmentId))
-                                    }}>
-                                        <RemoveRedEyeIcon />
-                                    </IconButton>
-                                </TableCell>
+                                <IconButton aria-label="detail" onClick={() => {
+                                    setModalDetailOpen(true)
+                                    dispatch(setTreatmentId(item.treatmentId))
+                                }}>
+                                    <RemoveRedEyeIcon />
+                                </IconButton>
+                            </TableCell>
                         </TableRow>
                     )}
-                     </TableBody>
+                </TableBody>
             </Table>
 
             <div>
                 <ModalDetailBill modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
             </div>
 
-
+            {/* </>}   */}
         </>
     )
 }

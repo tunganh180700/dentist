@@ -55,6 +55,7 @@ const ModalDetailBill = ({ modalDeltailOpen, setModalDetailOpen }) => {
             >
 
                 <Box sx={{ ...style }}>
+
                     <Table size="small" style={{ marginTop: "15px" }}>
                         <TableHead>
                             <TableRow >
@@ -65,7 +66,9 @@ const ModalDetailBill = ({ modalDeltailOpen, setModalDetailOpen }) => {
 
                             </TableRow>
                         </TableHead>
+                        {/* {loading === false && <> */}
                         <TableBody>
+
                             {listTreatmentServiceMapDTOList.map((item) =>
                                 <TableRow size='medium' key={item.treatmentServiceMapId}>
                                     <TableCell>{item.serviceName}</TableCell>
@@ -73,10 +76,18 @@ const ModalDetailBill = ({ modalDeltailOpen, setModalDetailOpen }) => {
                                     <TableCell>{item.discount}</TableCell>
                                 </TableRow>
                             )}
-                        </TableBody>
-                    </Table>
-                </Box>
 
+                        </TableBody>
+                        {/* </>} */}
+                    </Table>
+
+                    <Button
+                        onClick={() => setModalDetailOpen(false)}
+                        style={{ justifyContent: "center" }}
+                    >
+                        Đóng
+                    </Button>
+                </Box>
             </Modal>
         </>
     )
