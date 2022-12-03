@@ -61,13 +61,39 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+
+        formik.values.patientName = ""
+        formik.errors.patientName = ""
+
+        formik.values.phone = ""
+        formik.errors.phone = ""
+
+        formik.values.address = ""
+        formik.errors.address = ""
+
+        formik.values.email = ""
+        formik.errors.email = ""
+
+        formik.values.bodyPrehistory = ""
+        formik.errors.bodyPrehistory = ""
+
+        formik.values.teethPrehistory = ""
+        formik.errors.teethPrehistory = ""
+
+        setGender(false)
+        setValue(null)
+    }
+
+
     return (
         <>
             <Modal
                 title="Thêm tài khoản"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
                 <TextField
                     margin="normal"
@@ -115,8 +141,9 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                         name="row-radio-buttons-group"
                         style={{ marginRight: "30%" }}
                         onChange={(e) => setGender(e.target.value)}
+                        defaultValue={false}
                     >
-                        <FormControlLabel checked value={false} control={<Radio />} label="Nữ" />
+                        <FormControlLabel value={false} control={<Radio />} label="Nữ" />
                         <FormControlLabel value={true} control={<Radio />} label="Nam" />
                     </RadioGroup>
                 </FormControl>

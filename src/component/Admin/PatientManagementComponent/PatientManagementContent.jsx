@@ -87,15 +87,17 @@ const PatientManagementContent = () => {
             console.log(error)
         }
         setLoading(false)
-    }, [currentPage, isAddPatient, isUpdatePatient, isSearchPatient])
+    }, [currentPage, isAddPatient, isUpdatePatient, isSearchPatient, isDeletePatient])
 
     useEffect(() => {
         if (isDeletePatient == true && totalElements % pageSize == 1) {
             setCurrentPage(currentPage - 1)
+            dispatch(fetchAllPatient({
+                size: pageSize,
+                page: currentPage,
+            }))
         }
-        dispatch(fetchAllPatient())
     }, [isDeletePatient])
-
 
     const handleSearchDebounce = useRef(_.debounce(async (formValues) => {
         setLoading(true)
@@ -125,7 +127,6 @@ const PatientManagementContent = () => {
 
     useEffect(() => {
         handleSearchDebounce(searchValue)
-        console.log(searchValue)
     }, [searchValue])
 
     return (
@@ -284,7 +285,7 @@ const PatientManagementContent = () => {
             </>}
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
                 <Pagination
-                    count={totalPages}
+                    count={totalPages === 1 ? 0 : totalPages}
                     defaultPage={1}
                     onChange={(e, pageNumber) => {
                         setCurrentPage(pageNumber - 1)
