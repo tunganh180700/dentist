@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 import { getLaboByIdAPI } from "../../config/baseAPI"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     choosenLabo: {},
@@ -9,7 +10,8 @@ const initState = {
     statusDeleteLabo: false,
     laboName: '',
     phone: '',
-    totalMoney: ''
+    totalMoney: '',
+    specimensDTOS: []
 
 }
 const choosenLaboSlice = createSlice({
@@ -39,12 +41,13 @@ const choosenLaboSlice = createSlice({
                 state.laboName = action.payload.laboName;
                 state.phone = action.payload.phone;
                 state.totalMoney = action.payload.totalMoney;
+                state.specimensDTOS = action.payload.specimensDTOS;
             })
     }
 })
 export const fetchLabo = createAsyncThunk('labos/fetchLabo', async (laboId) => {
     try {
-        const res = await axios.get(
+        const res = await axiosInstance.get(
             getLaboByIdAPI + laboId,
         )
         console.log(res.data)

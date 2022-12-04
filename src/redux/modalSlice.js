@@ -25,8 +25,10 @@ const initState = {
     treatmentId: 0,
     
 
-    // isOpenUpdateServiceAndCategory: false,
-    // isOpenDeleteServiceAndCategory: false,
+    isOpenUpdateSpecimens: false,
+    isOpenDeleteSpecimens: false,
+
+
     isOpenUpdateCategory: false,
     isOpenDeleteCategory: false,
     categoryServiceId: 0,
@@ -89,6 +91,9 @@ const modalSlice = createSlice({
         },
         setIsOpenDeleteService: (state, action) => {
             state.isOpenDeleteService = action.payload
+        },
+        setIsOpenDeleteSpecimens: (state, action) => {
+            state.isOpenDeleteSpecimens = action.payload
         },
         setServicedId: (state,action) => {
             state.serviceId = action.payload

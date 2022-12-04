@@ -14,6 +14,8 @@ const initState = {
     index: 0,
     pageSize: 3,
     totalPage: 0,
+    statusUpdateBill: false,
+    isUpdateBill: false,
     message: ''
 }
 
@@ -38,17 +40,7 @@ const listBillSlice = createSlice({
                 state.totalPage = action.payload.totalPages;
                 state.message = action.payload.message
             })
-            // .addCase(fetchAllNetIncome.pending, (state, action) => {
-            //     state.status = true
-            // })
-            // .addCase(fetchAllNetIncome.fulfilled, (state, action) => {
-            //     state.listNetIncome = action.payload.incomeDetailDTOS
-            //     state.totalNetIncome = action.payload.totalIncome
-            //     state.status = false;
-            //     state.pageNumber = action.payload.pageNumber;
-            //     state.totalPage = action.payload.totalPages;
-            //     state.message = action.payload.message
-            // })
+            
     }
 })
 

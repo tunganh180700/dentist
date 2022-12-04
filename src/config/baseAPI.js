@@ -23,6 +23,11 @@ export const updateLaboAPI = `${baseUrl}/api/labos/`
 export const deleteLaboAPI = `${baseUrl}/api/labos/`
 export const addLaboAPI = `${baseUrl}/api/labos/`
 
+export const getSpecimensByIdAPI = `${baseUrl}/api/specimens/`
+export const addSpecimensAPI = `${baseUrl}/api/specimens/`
+export const updateSpecimensAPI = `${baseUrl}/api/specimens/`
+export const deleteSpecimensAPI = `${baseUrl}/api/specimens/`
+
 export const listMaterialAPI = `${baseUrl}/api/materials/get_list_materials`
 export const listAllMaterialAPI = `${baseUrl}/api/materials/get_all_material`
 export const getMaterialByIdAPI = `${baseUrl}/api/materials/`

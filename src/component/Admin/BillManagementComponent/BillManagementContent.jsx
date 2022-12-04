@@ -27,8 +27,6 @@ const BillManagementContent = () => {
 
     const [modalDetailOpen, setModalDetailOpen] = useState(false);
 
-    const [loading, setLoading] = useState();
-
     console.log('bill: ', listBill)
 
 
@@ -50,7 +48,6 @@ const BillManagementContent = () => {
                 Quản lý hóa đơn
             </Typography>
 
-            {/* {loading === false && <> */}
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow >
@@ -88,7 +85,7 @@ const BillManagementContent = () => {
                 <ModalDetailBill modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
             </div>
 
-            {/* </>}   */}
+           
         </>
     )
 }

@@ -11,12 +11,12 @@ import { setLaboId } from '../../../redux/modalSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
-
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { fetchAllLabo } from '../../../redux/LaboSlice/listLaboSlice';
 import ModalUpdateLabo from '../../ModalComponent/ModalLabo/ModalUpdateLabo';
 import ModalDeleteLabo from '../../ModalComponent/ModalLabo/ModalDeleteLabo';
 import ModalAddLabo from '../../ModalComponent/ModalLabo/ModalAddLabo';
-
+import ModalDetailLabo from '../../ModalComponent/ModalLabo/ModalDetailLabo';
 const LaboManagementContent = () => {
 
     const listLabo = useSelector(state => state.listLabo.listLabo)
@@ -32,6 +32,7 @@ const LaboManagementContent = () => {
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
+    const [modalDetailOpen, setModalDetailOpen] = useState(false);
 
 
 
@@ -67,6 +68,7 @@ const LaboManagementContent = () => {
                         <TableCell>Tổng tiền</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -76,6 +78,14 @@ const LaboManagementContent = () => {
                             <TableCell>{item.laboName}</TableCell>
                             <TableCell>{item.phone}</TableCell>
                             <TableCell>{item.totalMoney}</TableCell>
+                            <TableCell>
+                                <IconButton aria-label="detail" onClick={() => {
+                                    setModalDetailOpen(true)
+                                    dispatch(setLaboId(item.laboId))
+                                }}>
+                                    <RemoveRedEyeIcon />
+                                </IconButton>
+                            </TableCell>
                             <TableCell>
                                 <IconButton aria-label="edit" onClick={() => {
                                     setModalUpdateOpen(true)
@@ -113,6 +123,10 @@ const LaboManagementContent = () => {
             </div>
             <div>
                 <ModalAddLabo modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+            </div>
+
+            <div>
+                <ModalDetailLabo modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen}/>
             </div>
 
         </>
