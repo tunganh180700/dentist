@@ -10,7 +10,7 @@ const initState = {
     listPatient: [],
     pagination: [],
     index: 0,
-    pageSize: 9,
+    pageSize: 3,
     totalPage: 0,
     totalElements: 0,
     statusUpdatePatient: false,

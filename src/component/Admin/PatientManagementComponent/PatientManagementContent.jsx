@@ -127,7 +127,7 @@ const PatientManagementContent = () => {
 
     useEffect(() => {
         handleSearchDebounce(searchValue)
-    }, [searchValue])
+    }, [searchValue, isDeletePatient, isUpdatePatient, isAddPatient])
 
     return (
         <>
