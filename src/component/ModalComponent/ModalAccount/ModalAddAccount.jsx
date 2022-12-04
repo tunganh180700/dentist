@@ -167,6 +167,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                         label="Ngày sinh"
                         name="birthdate"
                         value={value}
+                        disableFuture={true}
                         onChange={(newValue) => {
                             setValue(newValue);
                             console.log(newValue)
