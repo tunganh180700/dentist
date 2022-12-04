@@ -18,7 +18,7 @@ import * as yup from "yup";
 import axios from 'axios';
 import moment from 'moment/moment';
 import { updateAccount } from '../../../redux/AccountSlice/listAccountSlice';
-import { regexEmail, regexPhone, validationDate } from '../../../config/validation';
+import { regexEmail, regexNumber, regexPhone, validationDate } from '../../../config/validation';
 import { getAccountByIdAPI, listRoleAPI } from '../../../config/baseAPI';
 import axiosInstance from '../../../config/customAxios';
 
@@ -45,6 +45,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             .required("Email is required"),
         salary: yup
             .string('Enter your salary')
+            .matches(regexNumber, "Only number")
             .required('Salary is required')
     });
 

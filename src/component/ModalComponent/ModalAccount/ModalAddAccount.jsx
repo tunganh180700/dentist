@@ -13,7 +13,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { regexEmail, regexPhone, validationDate } from '../../../config/validation';
+import { regexEmail, regexNumber, regexPhone, validationDate } from '../../../config/validation';
 import axios from 'axios';
 import { listRoleAPI } from '../../../config/baseAPI';
 import moment from 'moment/moment';
@@ -44,6 +44,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
             .required("Email is required"),
         salary: yup
             .string('Enter your salary')
+            .matches(regexNumber, "Only number")
             .required('Salary is required')
     });
 
@@ -186,7 +187,6 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     value={formik.values.salary}
                     autoFocus
                     onChange={formik.handleChange}
-
                 />
                 {formik.errors.salary && formik.touched.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
                 <Box sx={{ minWidth: 120 }}>

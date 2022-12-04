@@ -9,7 +9,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { updateMaterialImport } from '../../../redux/MaterialSlice/listMaterialImportSlice';
 import { getMaterialImportByIdAPI, listAllMaterialAPI } from '../../../config/baseAPI';
-import { validationDate } from '../../../config/validation';
+import { regexNumber, validationDate } from '../../../config/validation';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -35,6 +35,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             .required('Your supplyName is required'),
         amount: yup
             .string('Enter amount')
+            .matches(regexNumber, "Only number")
             .required('Your amount is required'),
 
 
@@ -65,7 +66,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             formik.setValues(res.data)
             console.log('id', res.data.materialId)
             setMaterialId(res.data.materialId)
-            console.log('here: ',res.data.materialId )
+            console.log('here: ', res.data.materialId)
             setValue(res.data.date)
         } catch (error) {
             console.log(error)
@@ -84,7 +85,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         setMaterialPrice(price)
     }, [formik.values.unitPrice, formik.values.amount])
 
-   
+
     const loadMaterial = async () => {
         try {
             const res = await axiosInstance.get(listAllMaterialAPI)
@@ -121,7 +122,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.materialName && <Typography style={{ color: 'red' }}>{formik.errors.materialName}</Typography>}
+                    {formik.errors.materialName && formik.touched.materialName && <Typography style={{ color: 'red' }}>{formik.errors.materialName}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -134,12 +135,13 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.supplyName && <Typography style={{ color: 'red' }}>{formik.errors.supplyName}</Typography>}
+                    {formik.errors.supplyName && formik.touched.supplyName && <Typography style={{ color: 'red' }}>{formik.errors.supplyName}</Typography>}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Date"
                             name="date"
                             value={value}
+                            disableFuture={true}
                             onChange={(newValue) => {
                                 setValue(newValue);
                                 console.log(newValue)
@@ -161,7 +163,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
+                    {formik.errors.amount && formik.touched.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -177,7 +179,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         onChange={formik.handleChange}
                     />
 
-                     <TextField
+                    <TextField
                         margin="normal"
                         required
                         disabled
@@ -192,7 +194,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                      </>}
+                </>}
 
             </Modal>
         </>

@@ -8,6 +8,7 @@ import * as yup from "yup";
 import axiosInstance from '../../../config/customAxios';
 import { updateService } from '../../../redux/ServiceAndCategorySlice/listCategorySlice';
 import { getServiceByIdAPI } from '../../../config/baseAPI';
+import { regexNumber } from '../../../config/validation';
 
 
 
@@ -28,9 +29,11 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             .required('Kiểm tra và nhập lại đơn vị'),
         marketPrice: yup
             .string('Nhập giá thị trường')
+            .matches(regexNumber, "Only number")
             .required('Kiểm tra và nhập giá thị trường'),
         price: yup
             .string('Nhập giá nha khoa Nguyễn Trần')
+            .matches(regexNumber, "Only number")
             .required('Kiểm tra và nhập lại giá nha khoa')
     });
 
@@ -61,7 +64,7 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             )
             formik.setValues(res.data)
             setCategoryId(res.data.categoryServiceId)
-            console.log('hihihaha:',res.data.categoryServiceId)
+            console.log('hihihaha:', res.data.categoryServiceId)
             console.log('dataService: ', res.data)
         } catch (error) {
             console.log(error)
@@ -95,7 +98,7 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoComplete="serviceName"
                         value={categoryServiceId}
                         autoFocus
-                       
+
                     />
                     <TextField
                         margin="normal"
@@ -109,7 +112,7 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.serviceName && <Typography style={{ color: 'red' }}>{formik.errors.serviceName}</Typography>}
+                    {formik.errors.serviceName && formik.touched.serviceName && <Typography style={{ color: 'red' }}>{formik.errors.serviceName}</Typography>}
 
                     <TextField
                         margin="normal"
@@ -123,7 +126,7 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.unit && <Typography style={{ color: 'red' }}>{formik.errors.unit}</Typography>}
+                    {formik.errors.unit && formik.touched.unit && <Typography style={{ color: 'red' }}>{formik.errors.unit}</Typography>}
 
                     <TextField
                         margin="normal"
@@ -139,7 +142,7 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.marketPrice && <Typography style={{ color: 'red' }}>{formik.errors.marketPrice}</Typography>}
+                    {formik.errors.marketPrice && formik.touched.marketPrice && <Typography style={{ color: 'red' }}>{formik.errors.marketPrice}</Typography>}
 
                     <TextField
                         margin="normal"
@@ -155,7 +158,7 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
+                    {formik.errors.price && formik.touched.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
 
                 </>}
             </Modal>

@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import 'antd/dist/antd.css';
 import { Typography, TextField } from '@mui/material';
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { addMaterialExport } from '../../../redux/MaterialSlice/listMaterialExportSlice';
-import { listAllMaterialAPI, listAllPatientAPI, getMaterialExportByIdAPI,listPatientRecordByTreatmentIdAPI } from '../../../config/baseAPI';
+import { listAllMaterialAPI, listAllPatientAPI, getMaterialExportByIdAPI, listPatientRecordByTreatmentIdAPI } from '../../../config/baseAPI';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import axiosInstance from '../../../config/customAxios';
+import { regexNumber } from '../../../config/validation';
 
 const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
 
         amount: yup
             .string('Enter amount')
+            .matches(regexNumber, "Only number")
             .required('Your amount is required')
 
     });
@@ -234,7 +236,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
+                {formik.errors.amount && formik.touched.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
                 <TextField
                     margin="normal"
                     required
