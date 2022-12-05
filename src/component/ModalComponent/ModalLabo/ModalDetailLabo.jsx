@@ -9,6 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import ModalDeleteSpecimens from '../../ModalComponent/ModalSpecimens/ModalDeleteSpecimens';
 import ModalUpdateSpecimens from '../../ModalComponent/ModalSpecimens/ModalUpdateSpecimens';
+import ModalAddSpecimens from '../../ModalComponent/ModalSpecimens/ModalAddSpecimens';
 
 import { fetchAllSpecimens } from "../../../redux/SpecimensSlice/listSpecimensSlice";
 import { setUserId } from '../../../redux/modalSlice';
@@ -23,9 +24,11 @@ const ModalDetailLabo = ({ modalDetailOpen, setModalDetailOpen }) => {
     const isUpdateLabo = useSelector(state => state.listLabo.isUpdateLabo);
     const isDeleteSpecimens = useSelector(state => state.listSpecimens.isDeleteSpecimens);
     const isUpdateSpecimens = useSelector(state => state.listSpecimens.isUpdateSpecimens);
+    const isAddSpecimens = useSelector(state => state.listSpecimens.isAddSpecimens);
 
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
+    const [modalAddOpen, setModalAddOpen] = useState(false);
     console.log("ket qua labo: ", specimensDTOS);
     useEffect(() => {
         setLoading(true)
@@ -42,12 +45,14 @@ const ModalDetailLabo = ({ modalDetailOpen, setModalDetailOpen }) => {
 
 
     useEffect(() => {
+        setLoading(true)
         dispatch(fetchAllSpecimens({
             // size: pageSize,
             // page: currentPage
         }, [laboId]
         ));
-    }, [isDeleteSpecimens,isUpdateSpecimens])
+        setLoading(false)
+    }, [isDeleteSpecimens, isUpdateSpecimens, isAddSpecimens])
 
     return (
         <>
@@ -64,7 +69,9 @@ const ModalDetailLabo = ({ modalDetailOpen, setModalDetailOpen }) => {
                 >
                     Thống kê Labo
                 </Typography>
-                <IconButton aria-label="add" style={{ borderRadius: '5%' }} >
+                <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
+                    setModalAddOpen(true)
+                }}>
                     <AddIcon /> Thêm mới
                 </IconButton>
                 {loading === false && <>
@@ -115,6 +122,9 @@ const ModalDetailLabo = ({ modalDetailOpen, setModalDetailOpen }) => {
                     </div>
                     <div>
                         <ModalUpdateSpecimens modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
+                    </div>
+                    <div>
+                        <ModalAddSpecimens modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
                     </div>
                 </>}
             </Modal>
