@@ -24,6 +24,7 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { addRecord } from "../../../redux/RecordSlice/listRecordSlice";
 import "./style.css"
+import _ from "lodash";
 
 const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [listTreatingService, setListTreatingService] = useState([])
 
     const [serviceId, setServiceId] = useState();
+    const [serviceName, setServiceName] = useState();
     const [serviceIds, setServiceIds] = useState([]);
 
     const [newPrice, setNewPrice] = useState();
@@ -46,7 +48,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
 
     const isAddRecord = useSelector(state => state.listRecord.isAddRecord)
     const [rows, setRows] = useState([
-        { serviceName: "", price: "", discount: "", status: "" },
+        { serviceId: "", serviceName: "", price: "", discount: "", status: "" },
     ]);
 
 
@@ -95,15 +97,18 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         onSubmit: (values) => {
             const addValue = {
                 id: id,
-                values: values
+                values: {
+                    ...values,
+                    serviceDTOS: rows
+                }
             }
             console.log("aaa", values)
             values.date = moment(value.$d).format(validationDate);
             const serviceDTOs = [{
                 serviceId: serviceId,
-                serviceName: serviceId,
+                serviceName: serviceName,
                 price: servicePrice,
-                discount: serviceDiscount ,
+                discount: serviceDiscount,
                 status: status,
                 isNew: 1
             }]
@@ -131,12 +136,12 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         setRows([
             ...rows,
             {
-                id: rows.length + 1, serviceName:"", price: "", discount: "", status: ""
+                id: rows.length + 1, serviceName: "", price: "", discount: "", status: ""
             },
         ]);
         setEdit(true);
     };
-    
+
 
     const handleEdit = (e) => {
         setEdit(!isEdit);
@@ -169,16 +174,18 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         setModalAddOpen(false)
     }
 
-    const setPriceForItem = (itemId, value) => {
-        rows.forEach((row) => {
-            if (row.serviceId === itemId) {
-                row.price = value
-            }
-            console.log("name", row.serviceName)
+    const handleServiceChange = (index, newsServiceId) => {
+        const serviceInfo = serviceIds.find((s) => s.serviceId === newsServiceId
+        )
+        setRows(prev => {
+            prev[index] = {...prev[index], ...serviceInfo}
+            return _.cloneDeep(prev)
         })
-    
-        console.log("item", itemId)
-        console.log("duc", rows)
+    }
+
+    const handleStatusForItem = (row, value) => {
+        console.log(value)
+        row.status = value;
     }
 
 
@@ -201,16 +208,18 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     //     setServiceDiscount(discount)
     // }, [serviceId])
 
-    useEffect(() => {
-        
-        // const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
-        
-            const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
-            setServicePrice(price)
-        getServiceTreating(id)
-        
-        
-    }, [id, serviceId, isAddRecord])
+    // useEffect(() => {
+
+    //     // const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
+
+    //     const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
+
+    //     setServicePrice(price)
+    //     getServiceTreating(id)
+
+
+    // }, [id, serviceId, isAddRecord])
+
 
     return (
         <>
@@ -368,11 +377,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                         <TableCell></TableCell>
                                     </TableRow>
                                 ))}
-                                {rows?.map((i) => {
+                                {rows?.map((i,index) => {
                                     return (
                                         <TableRow>
                                             {isEdit ? (
-                                                
                                                 <>
                                                     <TableCell padding="none">
                                                         {/* <select
@@ -391,11 +399,12 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                                                 <Select
                                                                     labelId="permisstion"
                                                                     id="permisstionSelect"
-                                                                    value={serviceId}
+                                                                    value={i.serviceId}
                                                                     onChange={(e) => {
                                                                         setServiceId(e.target.value)
-                                                                        setPriceForItem(serviceId, servicePrice)
+                                                                        handleServiceChange(index, e.target.value)
                                                                     }}
+                                                                    
                                                                 >
                                                                     {serviceIds?.map(item => (
                                                                         <MenuItem key={item.serviceId} value={item.serviceId}>{item.serviceName}</MenuItem>
@@ -406,7 +415,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                                     </TableCell>
                                                     <TableCell padding="none">
                                                         <input
-                                                        id={i.serviceId}
+                                                            id={i.serviceId}
                                                             disabled
                                                             value={i.price}
                                                             name="price"
@@ -429,7 +438,12 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                                                     labelId="status"
                                                                     id="status"
                                                                     value={i.status || ""}
-                                                                    onChange={(e) => setStatus(e.target.value)}
+                                                                    onChange={(e) => {
+                                                                        setRows((prev)=> {
+                                                                            prev[index].status=e.target.value;
+                                                                            return _.cloneDeep(prev)
+                                                                        })
+                                                                    }}
                                                                 >
                                                                     <MenuItem value={1}>Đang chữa trị</MenuItem>
                                                                     <MenuItem value={2}>Đã xong</MenuItem>
