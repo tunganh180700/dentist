@@ -125,7 +125,7 @@ export const addAccount = createAsyncThunk('listAccount/addAccount', async (valu
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error('Thêm mới thất bại :(', toastCss)
+        toast.error(error.response.data.message, toastCss)
     }
 })
 export const { setListAccount } = listAccountSlice.actions;

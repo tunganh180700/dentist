@@ -59,6 +59,7 @@ const ServiceAndCategoryManagementContent = () => {
     const [serviceId, setServiceId] = useState();
     const [categoryId, setCategoryId] = useState();
     console.log('list: ', listCategory)
+    
     useEffect(() => {
         dispatch(fetchAllCategory({
             size: pageSize,

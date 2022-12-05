@@ -79,6 +79,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
             dispatch(addAccount(values))
             setModalAddOpen(false)
             formik.handleReset()
+            // values.birthdate = ""
         }
     });
 
