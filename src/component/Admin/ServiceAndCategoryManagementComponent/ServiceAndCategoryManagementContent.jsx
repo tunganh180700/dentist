@@ -16,7 +16,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { listServiceByCategoryIdAPI } from '../../../config/baseAPI';
+import { listAllCategoryAPI, listServiceByCategoryIdAPI } from '../../../config/baseAPI';
 import axiosInstance from '../../../config/customAxios';
 import { fetchAllCategory } from '../../../redux/ServiceAndCategorySlice/listCategorySlice';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
@@ -58,35 +58,27 @@ const ServiceAndCategoryManagementContent = () => {
     const [serviceIds, setServiceIds] = useState([]);
     const [serviceId, setServiceId] = useState();
     const [categoryId, setCategoryId] = useState();
-    console.log('list: ', listCategory)
-    
-    useEffect(() => {
-        dispatch(fetchAllCategory({
-            size: pageSize,
-            page: currentPage,
-        },
-        ));
 
-    }, [currentPage, isAddCategory, isDeleteService, isAddService, isUpdateService, isUpdateCategory])
+    console.log('list: ', listCategory)
+
 
     const loadCategory = async () => {
         setLoading(true)
         try {
-            setCategoryServiceId(listCategory[0].id)
-            setCategoryServiceIds(listCategory)
-            console.log("checkCate", listCategory);
-
+            const res = await axiosInstance.get(listAllCategoryAPI)
+            console.log("du lieu check: ", res.data)
+            setCategoryServiceId(res.data[0].categoryServiceId)
+            setCategoryServiceIds(res.data)
             setCategoryId(listCategory[0].categoryServiceId)
-            console.log("cateId: ", listCategory[0].categoryServiceId)
-
         } catch (error) {
             console.log(error)
         }
         setLoading(false)
     }
+
     useEffect(() => {
         loadCategory();
-    }, [])
+    }, [isAddCategory])
 
 
     const loadServiceByCategoryId = async (categoryServiceId) => {
@@ -107,7 +99,7 @@ const ServiceAndCategoryManagementContent = () => {
     useEffect(() => {
         if (categoryServiceId > 0)
             loadServiceByCategoryId(categoryServiceId)
-    }, [categoryServiceId])
+    }, [categoryServiceId, isAddService, isDeleteService, isUpdateService, isUpdateCategory])
 
 
     // console.log('haha', listServiceAndCategory)
