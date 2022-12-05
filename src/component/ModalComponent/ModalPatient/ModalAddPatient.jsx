@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import 'antd/dist/antd.css';
-import { Typography, TextField } from '@mui/material';
+import { Typography, TextField, TextareaAutosize } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -36,8 +36,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
             .required("Phone is required"),
         email: yup
             .string("Enter your email")
-            .matches(regexEmail, "Invalid email")
-            .required("Email is required"),
+            .matches(regexEmail, "Invalid email"),
         address: yup
             .string("Enter your address")
             .required("Address is required"),
@@ -62,13 +61,39 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+
+        formik.values.patientName = ""
+        formik.errors.patientName = ""
+
+        formik.values.phone = ""
+        formik.errors.phone = ""
+
+        formik.values.address = ""
+        formik.errors.address = ""
+
+        formik.values.email = ""
+        formik.errors.email = ""
+
+        formik.values.bodyPrehistory = ""
+        formik.errors.bodyPrehistory = ""
+
+        formik.values.teethPrehistory = ""
+        formik.errors.teethPrehistory = ""
+
+        setGender(false)
+        setValue(null)
+    }
+
+
     return (
         <>
             <Modal
                 title="Thêm tài khoản"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
                 <TextField
                     margin="normal"
@@ -82,12 +107,13 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.patientName && <Typography style={{ color: 'red' }}>{formik.errors.patientName}</Typography>}
+                {formik.errors.patientName && formik.touched.patientName && <Typography style={{ color: 'red' }}>{formik.errors.patientName}</Typography>}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Ngày sinh"
                         name="birthdate"
                         value={value}
+                        disableFuture={true}
                         onChange={(newValue) => {
                             setValue(newValue);
                             console.log(newValue)
@@ -107,7 +133,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
+                {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
                 <FormControl style={{ display: 'flex' }}>
                     <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginRight: "80%" }}>Gender</FormLabel>
                     <RadioGroup
@@ -116,6 +142,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                         name="row-radio-buttons-group"
                         style={{ marginRight: "30%" }}
                         onChange={(e) => setGender(e.target.value)}
+                        defaultValue={false}
                     >
                         <FormControlLabel value={false} control={<Radio />} label="Nữ" />
                         <FormControlLabel value={true} control={<Radio />} label="Nam" />
@@ -133,10 +160,9 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.address && <Typography style={{ color: 'red' }}>{formik.errors.address}</Typography>}
+                {formik.errors.address && formik.touched.address && <Typography style={{ color: 'red' }}>{formik.errors.address}</Typography>}
                 <TextField
                     margin="normal"
-                    required
                     fullWidth
                     id="email"
                     label="Email"
@@ -146,7 +172,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.email && <Typography style={{ color: 'red' }}>{formik.errors.email}</Typography>}
+                {formik.errors.email && formik.touched.email && <Typography style={{ color: 'red' }}>{formik.errors.email}</Typography>}
                 <TextField
                     margin="normal"
                     fullWidth
@@ -155,8 +181,11 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     name="bodyPrehistory"
                     autoComplete="bodyPrehistory"
                     value={formik.values.bodyPrehistory}
+                    multiline
+                    rows={5}
                     autoFocus
                     onChange={formik.handleChange}
+                    variant="outlined"
                 />
                 <TextField
                     margin="normal"
@@ -166,9 +195,13 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     name="teethPrehistory"
                     autoComplete="teethPrehistory"
                     value={formik.values.teethPrehistory}
+                    multiline
+                    rows={5}
+                    variant="outlined"
                     autoFocus
                     onChange={formik.handleChange}
                 />
+
             </Modal>
         </>
     )

@@ -12,7 +12,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import {listAllCategoryAPI } from '../../../config/baseAPI';
+import { listAllCategoryAPI } from '../../../config/baseAPI';
+import { regexNumber } from '../../../config/validation';
 
 
 const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
@@ -32,9 +33,11 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
             .required('Kiểm tra và nhập lại đơn vị'),
         marketPrice: yup
             .string('Nhập giá thị trường')
+            .matches(regexNumber, "Only number")
             .required('Kiểm tra và nhập giá thị trường'),
         price: yup
             .string('Nhập giá nha khoa Nguyễn Trần')
+            .matches(regexNumber, "Only number")
             .required('Kiểm tra và nhập lại giá nha khoa')
     });
 
@@ -112,7 +115,7 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.serviceName && <Typography style={{ color: 'red' }}>{formik.errors.serviceName}</Typography>}
+                {formik.errors.serviceName && formik.touched.serviceName && <Typography style={{ color: 'red' }}>{formik.errors.serviceName}</Typography>}
 
                 <TextField
                     margin="normal"
@@ -126,7 +129,7 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.unit && <Typography style={{ color: 'red' }}>{formik.errors.unit}</Typography>}
+                {formik.errors.unit && formik.touched.unit && <Typography style={{ color: 'red' }}>{formik.errors.unit}</Typography>}
 
                 <TextField
                     margin="normal"
@@ -142,7 +145,7 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.marketPrice && <Typography style={{ color: 'red' }}>{formik.errors.marketPrice}</Typography>}
+                {formik.errors.marketPrice && formik.touched.marketPrice && <Typography style={{ color: 'red' }}>{formik.errors.marketPrice}</Typography>}
 
                 <TextField
                     margin="normal"
@@ -158,7 +161,7 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
+                {formik.errors.price && formik.touched.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
 
 
             </Modal>

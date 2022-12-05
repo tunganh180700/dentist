@@ -24,7 +24,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [materialId, setMaterialId] = useState();
     const [materialPrice, setMaterialPrice] = useState();
     const [unitPrice, setUnitPrice] = useState();
-   
+
 
     const [patientIds, setPatientIds] = useState([]);
     const [patientId, setPatientId] = useState();
@@ -243,7 +243,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
+                    {formik.errors.amount && formik.touched.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -257,7 +257,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.unitPrice && <Typography style={{ color: 'red' }}>{formik.errors.unitPrice}</Typography>}
+                    {formik.errors.unitPrice && formik.touched.unitPrice && <Typography style={{ color: 'red' }}>{formik.errors.unitPrice}</Typography>}
 
                     <TextField
                         margin="normal"

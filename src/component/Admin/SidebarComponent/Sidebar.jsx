@@ -30,8 +30,9 @@ const Sidebar = () => {
                     <ListItemIcon>
                         <MeetingRoomIcon />
                     </ListItemIcon>
+
                     <Link to={'/timekeeping'}>
-                        <ListItemText primary="Chấm công" />
+                        <ListItemText style={{ color: "black" }} primary='Chấm công' />
                     </Link>
                 </ListItemButton>
                 <ListItemButton onClick={handleClick}>
@@ -47,8 +48,9 @@ const Sidebar = () => {
                             <ListItemIcon>
                                 <StarBorder />
                             </ListItemIcon>
+
                             <Link to={'/patient-management'}>
-                                <ListItemText primary="Bệnh nhân" />
+                                <ListItemText style={{ color: "black" }} primary=' Bệnh nhân' />
                             </Link>
                         </ListItemButton>
                     </List>
@@ -58,8 +60,9 @@ const Sidebar = () => {
                     <ListItemIcon>
                         <MeetingRoomIcon />
                     </ListItemIcon>
+
                     <Link to={'/meetingroom'}>
-                        <ListItemText primary="Quản lý phòng chờ" />
+                        <ListItemText style={{ color: "black" }} primary='Quản lý phòng chờ' />
                     </Link>
                 </ListItemButton>
 
@@ -74,8 +77,9 @@ const Sidebar = () => {
                     <ListItemIcon>
                         <AccountCircleIcon />
                     </ListItemIcon>
+
                     <Link to={'/accmanagement'}>
-                        <ListItemText primary="Quản lý tài khoản" />
+                        <ListItemText style={{ color: "black" }} primary='Quản lý tài khoản' />
                     </Link>
                 </ListItemButton>
 
@@ -99,24 +103,27 @@ const Sidebar = () => {
                             <ListItemIcon>
                                 <StarBorder />
                             </ListItemIcon>
+
                             <Link to={'/materialmanagement'}>
-                                <ListItemText primary="Vật liệu" />
+                                <ListItemText style={{ color: "black" }} primary='Vật liệu' />
                             </Link>
                         </ListItemButton>
                         <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
                                 <StarBorder />
                             </ListItemIcon>
+
                             <Link to={'/materialimport'}>
-                                <ListItemText primary="Nhập vật liệu" />
+                                <ListItemText style={{ color: "black" }} primary='Nhập vật liệu' />
                             </Link>
                         </ListItemButton>
                         <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
                                 <StarBorder />
                             </ListItemIcon>
+
                             <Link to={'/materialexport'}>
-                                <ListItemText primary="Xuất vật liệu" />
+                                <ListItemText style={{ color: "black" }} primary='Xuất vật liệu' />
                             </Link>
                         </ListItemButton>
                     </List>
@@ -126,8 +133,9 @@ const Sidebar = () => {
                     <ListItemIcon>
                         <AccountCircleIcon />
                     </ListItemIcon>
+
                     <Link to={'/labo'}>
-                        <ListItemText primary="Quản lý Labo" />
+                        <ListItemText style={{ color: "black" }} primary=' Quản lý Labo' />
                     </Link>
                 </ListItemButton>
 
@@ -137,7 +145,7 @@ const Sidebar = () => {
                         <AccountCircleIcon />
                     </ListItemIcon>
                     <Link to={'/serviceandcategory'}>
-                        <ListItemText primary="Quản lý Dịch vụ" />
+                        <ListItemText style={{ color: "black" }} primary='Quản lý Dịch vụ' />
                     </Link>
                 </ListItemButton>
 
@@ -146,7 +154,7 @@ const Sidebar = () => {
                         <PointOfSaleIcon />
                     </ListItemIcon>
                     <Link to={'/income'}>
-                        <ListItemText primary="Thu nhập" />
+                        <ListItemText style={{ color: "black" }} primary='Thu nhập' />
                     </Link>
                 </ListItemButton>
 
@@ -155,7 +163,7 @@ const Sidebar = () => {
                         <ReceiptLongIcon />
                     </ListItemIcon>
                     <Link to={'/bill'}>
-                        <ListItemText primary="Hoá đơn" />
+                        <ListItemText style={{ color: "black" }} primary='Hoá đơn' />
                     </Link>
                 </ListItemButton>
             </React.Fragment>

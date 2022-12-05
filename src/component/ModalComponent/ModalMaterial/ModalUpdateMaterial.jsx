@@ -10,6 +10,7 @@ import * as yup from "yup";
 import { updateMaterial } from '../../../redux/MaterialSlice/listMaterialSlice';
 import { getMaterialByIdAPI } from '../../../config/baseAPI';
 import axiosInstance from '../../../config/customAxios';
+import { regexNumber } from '../../../config/validation';
 
 
 const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -27,9 +28,11 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             .required('Your unit is required'),
         amount: yup
             .string('Enter amount')
+            .matches(regexNumber, "Only number")
             .required('Your amount is required'),
         price: yup
             .string('Enter price')
+            .matches(regexNumber, "Only number")
             .required('Your price is required')
     });
 
@@ -84,7 +87,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.materialName && <Typography style={{ color: 'red' }}>{formik.errors.materialName}</Typography>}
+                    {formik.errors.materialName && formik.touched.materialName && <Typography style={{ color: 'red' }}>{formik.errors.materialName}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -97,7 +100,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.unit && <Typography style={{ color: 'red' }}>{formik.errors.unit}</Typography>}
+                    {formik.errors.unit && formik.touched.unit && <Typography style={{ color: 'red' }}>{formik.errors.unit}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -110,7 +113,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}           
+                    {formik.errors.amount && formik.touched.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -123,7 +126,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
+                    {formik.errors.price && formik.touched.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
                 </>}
 
             </Modal>

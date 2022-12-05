@@ -18,7 +18,7 @@ import * as yup from "yup";
 import axios from 'axios';
 import moment from 'moment/moment';
 import { updateAccount } from '../../../redux/AccountSlice/listAccountSlice';
-import { regexEmail, regexPhone, validationDate } from '../../../config/validation';
+import { regexEmail, regexNumber, regexPhone, validationDate } from '../../../config/validation';
 import { getAccountByIdAPI, listRoleAPI } from '../../../config/baseAPI';
 import axiosInstance from '../../../config/customAxios';
 
@@ -45,6 +45,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             .required("Email is required"),
         salary: yup
             .string('Enter your salary')
+            .matches(regexNumber, "Only number")
             .required('Salary is required')
     });
 
@@ -125,7 +126,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.fullName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
+                    {formik.errors.fullName && formik.touched.fullName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -150,7 +151,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
+                    {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -163,12 +164,13 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
+                    {formik.errors.email && formik.touched.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Ngày sinh"
                             name="birthdate"
                             value={value}
+                            disableFuture={true}
                             onChange={(newValue) => {
                                 setValue(newValue);
                                 console.log(newValue)
@@ -188,7 +190,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
+                    {formik.errors.salary && formik.touched.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
                     <Box sx={{ minWidth: 120 }}>
                         <FormControl fullWidth>
                             <InputLabel id="permisstion">Quyền hạn</InputLabel>

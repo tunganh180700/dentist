@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { addMaterialImport } from '../../../redux/MaterialSlice/listMaterialImportSlice';
-import { validationDate } from '../../../config/validation';
+import { regexNumber, validationDate } from '../../../config/validation';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -35,9 +35,11 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
             .required('Kiểm tra và nhập lại hãng cung cấp'),
         amount: yup
             .string('Enter amount')
+            .matches(regexNumber, "Only number")
             .required('Kiểm tra và nhập lại số lượng'),
         unitPrice: yup
             .string('Enter unitPrice')
+            .matches(regexNumber, "Only number")
             .required('Kiểm tra và nhập lại đơn giá'),
 
     });
@@ -131,7 +133,7 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.supplyName && <Typography style={{ color: 'red' }}>{formik.errors.supplyName}</Typography>}
+                {formik.errors.supplyName && formik.touched.supplyName && <Typography style={{ color: 'red' }}>{formik.errors.supplyName}</Typography>}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Date"
@@ -157,7 +159,7 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
+                {formik.errors.amount && formik.touched.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -172,7 +174,7 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     onChange={formik.handleChange}
                 />
 
-                {formik.errors.unitPrice && <Typography style={{ color: 'red' }}>{formik.errors.unitPrice}</Typography>}
+                {formik.errors.unitPrice && formik.touched.unitPrice && <Typography style={{ color: 'red' }}>{formik.errors.unitPrice}</Typography>}
 
                 <TextField
                     margin="normal"
