@@ -3,3 +3,5 @@ export const regexPhone = /^(0|84)(2(0[3-9]|1[0-6|8|9]|2[0-2|5-9]|3[2-9]|4[0-9]|
 export const validationDate = 'YYYY-MM-DD'
 
 export const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+
+export const regexNumber = /(?=.*?\d)^\$?(([1-9]\d{0,2}(,\d{3})*)|\d+)?(\.\d{1,2})?$/

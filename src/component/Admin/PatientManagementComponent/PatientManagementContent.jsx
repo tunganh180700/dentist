@@ -47,7 +47,6 @@ const PatientManagementContent = () => {
         email: ""
     })
 
-    const statusPatient = useSelector(state => state.listPatient.statusPatient)
     let styleText = {}
 
     function changeColor(status) {
@@ -70,7 +69,7 @@ const PatientManagementContent = () => {
     useEffect(() => {
         setLoading(true)
         try {
-            if (searchValue.name === '') {
+            if (searchValue.name === '' && searchValue.birthdate === '' && searchValue.phone === '' && searchValue.address === '' && searchValue.email === '') {
                 dispatch(fetchAllPatient({
                     size: pageSize,
                     page: currentPage,
@@ -81,26 +80,29 @@ const PatientManagementContent = () => {
                     ...searchValue,
                     size: pageSize,
                     page: currentPage,
-                }))
+                }
+                ))
             }
         } catch (error) {
             console.log(error)
         }
         setLoading(false)
-    }, [currentPage, isAddPatient, isUpdatePatient])
+    }, [currentPage, isAddPatient, isUpdatePatient, isSearchPatient, isDeletePatient])
 
     useEffect(() => {
         if (isDeletePatient == true && totalElements % pageSize == 1) {
             setCurrentPage(currentPage - 1)
+            dispatch(fetchAllPatient({
+                size: pageSize,
+                page: currentPage,
+            }))
         }
-        dispatch(fetchAllPatient())
     }, [isDeletePatient])
-
 
     const handleSearchDebounce = useRef(_.debounce(async (formValues) => {
         setLoading(true)
         try {
-            await dispatch(searchPatient({
+            dispatch(searchPatient({
                 ...formValues,
                 size: pageSize,
                 page: currentPage,
@@ -113,7 +115,8 @@ const PatientManagementContent = () => {
 
     const handleSearch = (e) => {
         setSearchValue(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
-        handleSearchDebounce(searchValue)
+        console.log(searchValue)
+        // setSearchValue({[e.target.name]: e.target.value})
     }
 
     useEffect(() => {
@@ -121,6 +124,10 @@ const PatientManagementContent = () => {
             handleSearchDebounce.cancel();
         };
     }, [handleSearchDebounce]);
+
+    useEffect(() => {
+        handleSearchDebounce(searchValue)
+    }, [searchValue, isDeletePatient, isUpdatePatient, isAddPatient])
 
     return (
         <>
@@ -278,7 +285,7 @@ const PatientManagementContent = () => {
             </>}
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
                 <Pagination
-                    count={totalPages}
+                    count={totalPages === 1 ? 0 : totalPages}
                     defaultPage={1}
                     onChange={(e, pageNumber) => {
                         setCurrentPage(pageNumber - 1)
