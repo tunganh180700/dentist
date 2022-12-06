@@ -53,9 +53,9 @@ const BillManagementContent = () => {
                     <TableRow >
                         <TableCell>Tên bệnh nhân</TableCell>
                         <TableCell>Số điện thoại</TableCell>
-                        <TableCell>Tổng tiền thu</TableCell>
+                        <TableCell>Giá gốc</TableCell>
                         <TableCell>Giảm giá</TableCell>
-                        <TableCell>Tiền đã trả</TableCell>
+                        <TableCell>Tổng tiền</TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>

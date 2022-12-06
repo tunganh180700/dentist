@@ -48,7 +48,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
 
     const isAddRecord = useSelector(state => state.listRecord.isAddRecord)
     const [rows, setRows] = useState([
-        { serviceId: "", serviceName: "", price: "", discount: "", status: "", isNew: 1}
+        {}
     ]);
 
 
@@ -105,16 +105,19 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                 isNew: 1
             }]
             if (listTreatingService.length === 0) {
-                values.serviceDTOS = serviceDTOs
+                values.serviceDTOS = rows
+            } else if (rows.length === 0) {
+                values.serviceDTOS = listTreatingService
             } else {
-                values.serviceDTOS = serviceDTOs.concat(listTreatingService)
+                values.serviceDTOS = rows.concat(listTreatingService)
             }
             const addValue = {
                 id: id,
-                values: {
-                    ...values,
-                    serviceDTOS: rows
-                }
+                values: values
+                // {
+                //     ...values,
+                //     serviceDTOS: rows
+                // }
             }
             console.log("aaa", values)
             
@@ -137,7 +140,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         setRows([
             ...rows,
             {
-                id: rows.length + 1, serviceName: "", price: "", discount: "", status: "", isNew: 1
+                id: rows.length + 1, serviceName: "", price: "", discount: "", status: ""
             },
         ]);
         setEdit(true);
@@ -181,7 +184,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         setRows(prev => {
             prev[index] = {...prev[index], ...serviceInfo}
             prev[index].isNew = 1
-            prev[index].discount = 1
             return _.cloneDeep(prev)
         })
     }
@@ -357,7 +359,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {listTreatingService?.map(item => (
+                                {listTreatingService?.map((item, index) => (
                                     <TableRow key={item.serviceId}>
                                         <TableCell>{item.serviceName}</TableCell>
                                         <TableCell>{item.price}</TableCell>
@@ -369,7 +371,13 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                                         labelId="status"
                                                         id="status"
                                                         value={item.status || ""}
-                                                        onChange={(e) => setStatus(e.target.value)}
+                                                        onChange={(e) => 
+                                                            setListTreatingService((prev)=> {
+                                                                prev[index].status=e.target.value;
+                                                                return _.cloneDeep(prev)
+                                                            })
+                                                            // setStatus(e.target.value)
+                                                        }
                                                     >
                                                         <MenuItem value={1}>Đang chữa trị</MenuItem>
                                                         <MenuItem value={2}>Đã xong</MenuItem>
@@ -433,7 +441,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                                             onChange={(e) => 
                                                                 // setServiceDiscount(e.target.value)
                                                                 setRows((prev)=> {
-                                                                    prev[index].discount=i.serviceDiscount;
+                                                                    prev[index].discount=e.target.value;
                                                                     return _.cloneDeep(prev)
                                                                 })
                                                             }

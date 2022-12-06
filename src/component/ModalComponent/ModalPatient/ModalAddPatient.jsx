@@ -82,6 +82,13 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
         setValue(null)
     }
 
+    useEffect(() => {
+
+        setGender(false)
+
+
+    })
+
 
     return (
         <>
