@@ -56,7 +56,7 @@ const Sidebar = () => {
                     </List>
                 </Collapse>
 
-                <ListItemButton disabled>
+                <ListItemButton>
                     <ListItemIcon>
                         <MeetingRoomIcon />
                     </ListItemIcon>

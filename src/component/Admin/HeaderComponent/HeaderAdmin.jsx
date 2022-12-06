@@ -30,7 +30,7 @@ const HeaderAdmin = ({ title }) => {
                     variant="h6"
                     noWrap
                 >
-                    <a href='/' style={{ color: "inherit", textDecoration: "none", }}>Quay lại trang web</a>
+                    <a href='/login' style={{ color: "white", textDecoration: "none", }}>Đăng xuất</a>
                 </Typography>
             </div>
         </>

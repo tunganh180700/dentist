@@ -47,22 +47,6 @@ const WaitingRoomManagementContent = () => {
                             </div>
                         </TableCell>
                         <TableCell>
-                            <div className='attibute'>MSKH</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="searchRoom"
-                                    label="Tìm kiếm"
-                                    name="searchRoom"
-                                    autoComplete="searchRoom"
-                                    // value={fullName}
-                                    autoFocus
-                                // onChange={handleChange}
-                                />
-                            </div>
-                        </TableCell>
-                        <TableCell>
                             <div className='attibute'>Trạng thái</div>
                             <div style={{ width: "160px" }}>
                                 <TextField
@@ -84,7 +68,6 @@ const WaitingRoomManagementContent = () => {
                 </TableHead>
                 <TableBody>
                     <TableRow>
-                        <TableCell></TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
