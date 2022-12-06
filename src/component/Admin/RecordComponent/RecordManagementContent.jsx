@@ -1,20 +1,32 @@
-import { Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material"
+import { Button, IconButton, ListItemButton, ListItemIcon, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material"
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../config/customAxios";
 import { allPatientRecordAPI } from "../../../config/baseAPI";
+import ModalAddRecord from "../../ModalComponent/ModalRecord/ModalAddRecord";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { useDispatch, useSelector } from "react-redux";
+import { setUserId } from "../../../redux/modalSlice";
+import ModalDeleteRecord from "../../ModalComponent/ModalRecord/ModalDeleteRecord";
+import ModalDetailService from "../../ModalComponent/ModalRecord/ModalDetailService";
 
 const RecordManagementContent = () => {
+    const dispatch = useDispatch()
+    const [modalAddOpen, setModalAddOpen] = useState(false);
+    const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
+    const [modalDetailOpen, setModalDetailOpen] = useState(false);
+    const patientName = useSelector(state => state.choosenPatient.patientName)
+
+    // console.log(patientName)
     const { id } = useParams()
     const [recordList, setRecordList] = useState([])
     const getDetail = async (id) => {
         try {
             const res = await axiosInstance.get(allPatientRecordAPI + id)
-            console.log(res.data.content)
             setRecordList(res.data.content)
         } catch (error) {
             console.log(error)
@@ -33,12 +45,17 @@ const RecordManagementContent = () => {
                 noWrap
                 fontWeight="bold"
             >
-                Hồ sơ bệnh án của ...
+                Hồ sơ bệnh án của {patientName}
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
-                // setModalAddOpen(true)
+                setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
+            </IconButton>
+            <IconButton aria-label="back" style={{ borderRadius: "20%", marginRight: "83%" }}>
+                <Link to={'/patient-management'}>
+                    <ArrowBackIosNewIcon />
+                </Link>
             </IconButton>
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
@@ -127,7 +144,9 @@ const RecordManagementContent = () => {
                         <TableCell>
                             <div className='attibute'>Ghi chú</div>
                         </TableCell>
-                        <TableCell></TableCell>
+                        <TableCell>
+                            <div className='attibute'>Điều trị</div>
+                        </TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
@@ -148,24 +167,19 @@ const RecordManagementContent = () => {
                             <TableCell>{el.date}</TableCell>
                             <TableCell>{el.marrowRecord}</TableCell>
                             <TableCell>{el.note}</TableCell>
+                            <TableCell>{el.treatment}</TableCell>
                             <TableCell>
-                                <Button>
+                                <Button onClick={() => {
+                                    setModalDetailOpen(true)
+                                    dispatch(setUserId(el.patientRecordId))
+                                }}>
                                     Dịch vụ
                                 </Button>
                             </TableCell>
                             <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    console.log(el.patientRecordId)
-                                    // setModalUpdateOpen(true)
-                                    // dispatch(setUserId(item.patientId))
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
                                 <IconButton aria-label="delete" onClick={() => {
-                                    // setModalDeleteOpen(true)
-                                    // dispatch(setUserId(item.patientId))
+                                    setModalDeleteOpen(true)
+                                    dispatch(setUserId(el.patientRecordId))
                                 }}>
                                     <DeleteIcon />
                                 </IconButton>
@@ -175,6 +189,15 @@ const RecordManagementContent = () => {
                     ))}
                 </TableBody>
             </Table>
+            <div>
+                <ModalAddRecord modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+            </div>
+            <div>
+                <ModalDeleteRecord modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
+            </div>
+            <div>
+                <ModalDetailService modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
+            </div>
         </>
     )
 }

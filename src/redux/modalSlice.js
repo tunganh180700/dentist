@@ -4,6 +4,7 @@ const initState = {
     isOpenUpdateUser: false,
     isOpenDeleteAccount: false,
     isOpenDeletePatient: false,
+    isOpenDeleteRecord: false,
     userId: 0,
 
     isOpenUpdateLabo: false,
@@ -50,6 +51,9 @@ const modalSlice = createSlice({
         },
         setIsOpenDeletePatient: (state, action) => {
             state.isOpenDeletePatient = action.payload
+        },
+        setIsOpenDeleteRecord: (state, action) => {
+            state.isOpenDeleteRecord = action.payload
         },
         setUserId: (state, action) => {
             state.userId = action.payload

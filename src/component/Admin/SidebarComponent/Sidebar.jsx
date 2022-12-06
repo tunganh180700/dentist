@@ -56,7 +56,7 @@ const Sidebar = () => {
                     </List>
                 </Collapse>
 
-                <ListItemButton>
+                <ListItemButton disabled>
                     <ListItemIcon>
                         <MeetingRoomIcon />
                     </ListItemIcon>
@@ -66,7 +66,7 @@ const Sidebar = () => {
                     </Link>
                 </ListItemButton>
 
-                <ListItemButton>
+                <ListItemButton disabled>
                     <ListItemIcon>
                         <PaidIcon />
                     </ListItemIcon>
@@ -81,13 +81,6 @@ const Sidebar = () => {
                     <Link to={'/accmanagement'}>
                         <ListItemText style={{ color: "black" }} primary='Quản lý tài khoản' />
                     </Link>
-                </ListItemButton>
-
-                <ListItemButton>
-                    <ListItemIcon>
-                        <DescriptionIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Quản lý hóa đơn" />
                 </ListItemButton>
 
                 <ListItemButton onClick={handleClick}>
