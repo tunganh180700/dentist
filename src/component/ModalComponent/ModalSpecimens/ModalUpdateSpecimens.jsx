@@ -38,7 +38,7 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [patientRecordId, setPatientRecordId] = useState();
 
     const validationSchema = yup.object({
-        specimensName: yup
+        specimenName: yup
             .string('Enter amount')
             .required('Your amount is required'),
 
@@ -92,12 +92,12 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             const res = await axiosInstance.get(
                 getSpecimensByIdAPI + specimenId,
             )
-            console.log(res.data)
+            // console.log(res.data)
             formik.setValues(res.data)
-            console.log('id', res.data.specimenName)
+            // console.log('id', res.data.specimenName)
             setPatientRecordId(res.data.patientRecordId)
             // setMaterialId(res.data.materialId)
-            console.log('day roi: ', res.data.patientRecordId)
+            // console.log('day roi: ', res.data.patientRecordId)
             setReceiveDate(res.data.receiveDate)
             setDeliveryDate(res.data.deliveryDate)
             setValue(res.data.dateRecord)

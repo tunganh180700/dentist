@@ -36,7 +36,6 @@ const listSpecimensSlice = createSlice({
             })
             .addCase(fetchAllSpecimens.fulfilled, (state, action) => {
                 state.listSpecimens = action.payload;
-                state.status = false;
                 state.isUpdateSpecimens = false;
                 state.isDeleteSpecimens = false;
                 state.isAddSpecimens = false;
@@ -63,7 +62,7 @@ const listSpecimensSlice = createSlice({
 })
 
 
-export const fetchAllSpecimens = createAsyncThunk('listSpecimens/fetchAllSpecimens', async (paramsSearch, laboId) => {
+export const fetchAllSpecimens = createAsyncThunk('listSpecimens/fetchAllSpecimens', async ({ paramsSearch, laboId }) => {
     try {
         const res = await axiosInstance.get(getLaboByIdAPI + laboId, {
             params: paramsSearch,

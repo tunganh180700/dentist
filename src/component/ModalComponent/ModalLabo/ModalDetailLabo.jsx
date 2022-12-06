@@ -29,6 +29,10 @@ const ModalDetailLabo = ({ modalDetailOpen, setModalDetailOpen }) => {
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
+    const detailLabo = {
+        laboId: laboId,
+    }
+
     console.log("ket qua labo: ", specimensDTOS);
     useEffect(() => {
         setLoading(true)
@@ -41,24 +45,22 @@ const ModalDetailLabo = ({ modalDetailOpen, setModalDetailOpen }) => {
             console.log(error)
         }
         setLoading(false)
-    }, [laboId, isUpdateLabo])
+    }, [laboId, isUpdateLabo, isAddSpecimens, isUpdateSpecimens])
 
 
-    useEffect(() => {
-        setLoading(true)
-        dispatch(fetchAllSpecimens({
-            // size: pageSize,
-            // page: currentPage
-        }, [laboId]
-        ));
-        setLoading(false)
-    }, [isDeleteSpecimens, isUpdateSpecimens, isAddSpecimens])
+    // useEffect(() => {
+    //     setLoading(true)
+    //     dispatch(fetchAllSpecimens(detailLabo));
+    //     setLoading(false)
+    // }, [isDeleteSpecimens, isUpdateSpecimens, isAddSpecimens])
 
     return (
         <>
             <Modal
                 open={modalDetailOpen}
-                onCancel={() => setModalDetailOpen(false)}>
+                onOk={() => setModalDetailOpen(false)}
+                onCancel={() => setModalDetailOpen(false)}
+            >
                 <Typography
                     component="h1"
                     variant="h5"

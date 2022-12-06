@@ -26,6 +26,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
     const [value, setValue] = useState(null);
     const [loading, setLoading] = useState();
     const specimenId = useSelector(state => state.modal.userId);
+    const laboId = useSelector(state => state.modal.laboId);
 
     const [patientIds, setPatientIds] = useState([]);
     const [patientId, setPatientId] = useState();
@@ -37,7 +38,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
     const [deliveryDate, setDeliveryDate] = useState(null);
 
     const validationSchema = yup.object({
-        specimensName: yup
+        specimenName: yup
             .string('Enter amount')
             .required('Your amount is required'),
 
@@ -79,38 +80,44 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
             values.receiveDate = moment(receiveDate.$d).format(validationDate);
             values.deliveryDate = moment(deliveryDate.$d).format(validationDate);
             values.patientId = patientId;
-
+            values.laboId = laboId;
             values.patientRecordId = patientRecordId;
             dispatch(addSpecimens(values));
             setModalAddOpen(false);
         }
     })
 
-    const fetchSpecimens = async (specimenId) => {
-        setLoading(true)
-        try {
-            const res = await axiosInstance.get(
-                getSpecimensByIdAPI + specimenId,
-            )
-            console.log(res.data)
-            formik.setValues(res.data)
-            console.log('id', res.data.specimenName)
-            setPatientRecordId(res.data.patientRecordId)
-            // setMaterialId(res.data.materialId)
-            console.log('day roi: ', res.data.patientRecordId)
-            setReceiveDate(res.data.receiveDate)
-            setDeliveryDate(res.data.deliveryDate)
-            setValue(res.data.dateRecord)
-        } catch (error) {
-            console.log(error)
-        }
-        setLoading(false)
-    }
+    // useEffect(() => {
+    //     setLoading(true)
+    //     dispatch(fetchAllSpecimens(detailLabo));
+    //     setLoading(false)
+    // }, [isDeleteSpecimens, isUpdateSpecimens, isAddSpecimens])
 
-    useEffect(() => {
-        if (specimenId > 0)
-            fetchSpecimens(specimenId)
-    }, [specimenId])
+    // const fetchSpecimens = async (specimenId) => {
+    //     setLoading(true)
+    //     try {
+    //         const res = await axiosInstance.get(
+    //             getSpecimensByIdAPI + specimenId,
+    //         )
+    //         console.log(res.data)
+    //         formik.setValues(res.data)
+    //         console.log('id', res.data.specimenName)
+    //         setPatientRecordId(res.data.patientRecordId)
+    //         // setMaterialId(res.data.materialId)
+    //         console.log('day roi: ', res.data.patientRecordId)
+    //         setReceiveDate(res.data.receiveDate)
+    //         setDeliveryDate(res.data.deliveryDate)
+    //         setValue(res.data.dateRecord)
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    //     setLoading(false)
+    // }
+
+    // useEffect(() => {
+    //     if (specimenId > 0)
+    //         fetchSpecimens(specimenId)
+    // }, [specimenId])
 
     const loadRecordByTreatmentId = async (patientId) => {
         setLoading(true)
@@ -137,7 +144,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
     return (
         <>
             <Modal
-                title="Cập nhật mẫu thử nghiệm"
+                title="Theem mẫu thử nghiệm"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
                 onCancel={() => setModalAddOpen(false)}
@@ -156,7 +163,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.specimenName && <Typography style={{ color: 'red' }}>{formik.errors.specimenName}</Typography>}
+                    {formik.errors.specimenName && formik.touched.specimenName && < Typography style={{ color: 'red' }}>{formik.errors.specimenName}</Typography>}
 
 
                     <Box sx={{ minWidth: 120 }}>
@@ -211,7 +218,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
+                    {formik.errors.amount && formik.touched.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -224,7 +231,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.unitPrice && <Typography style={{ color: 'red' }}>{formik.errors.unitPrice}</Typography>}
+                    {formik.errors.unitPrice && formik.touched.unitPrice && <Typography style={{ color: 'red' }}>{formik.errors.unitPrice}</Typography>}
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
