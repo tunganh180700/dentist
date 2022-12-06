@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import 'antd/dist/antd.css';
 import { Typography, TextField } from '@mui/material';
-import { useDispatch,useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import Box from '@mui/material/Box';
@@ -12,8 +12,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import axiosInstance from '../../../config/customAxios';
 import { addSpecimens } from '../../../redux/SpecimensSlice/listSpecimensSlice';
-import {  listAllPatientAPI, getSpecimensByIdAPI,listPatientRecordByTreatmentIdAPI } from '../../../config/baseAPI';
-import { validationDate } from '../../../config/validation';
+import { listAllPatientAPI, getSpecimensByIdAPI, listPatientRecordByTreatmentIdAPI } from '../../../config/baseAPI';
+import { regexNumber, validationDate } from '../../../config/validation';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -21,12 +21,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import moment from 'moment/moment';
 
 
-const ModalAddSpecimens = ({modalAddOpen, setModalAddOpen}) => {
+const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
     const [value, setValue] = useState(null);
     const [loading, setLoading] = useState();
     const specimenId = useSelector(state => state.modal.userId);
-   
+
     const [patientIds, setPatientIds] = useState([]);
     const [patientId, setPatientId] = useState();
 
@@ -43,9 +43,11 @@ const ModalAddSpecimens = ({modalAddOpen, setModalAddOpen}) => {
 
         amount: yup
             .string('Enter amount')
+            .matches(regexNumber, "Only number or positive number")
             .required('Your amount is required'),
         unitPrice: yup
             .string('Enter amount')
+            .matches(regexNumber, "Only number or positive number")
             .required('Your amount is required'),
 
     });

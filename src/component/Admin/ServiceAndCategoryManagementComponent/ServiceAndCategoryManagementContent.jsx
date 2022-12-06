@@ -78,7 +78,7 @@ const ServiceAndCategoryManagementContent = () => {
 
     useEffect(() => {
         loadCategory();
-    }, [isAddCategory])
+    }, [isAddCategory, isUpdateCategory])
 
 
     const loadServiceByCategoryId = async (categoryServiceId) => {
@@ -99,7 +99,7 @@ const ServiceAndCategoryManagementContent = () => {
     useEffect(() => {
         if (categoryServiceId > 0)
             loadServiceByCategoryId(categoryServiceId)
-    }, [categoryServiceId, isAddService, isDeleteService, isUpdateService, isUpdateCategory])
+    }, [categoryServiceId, isAddService, isDeleteService, isUpdateService])
 
 
     // console.log('haha', listServiceAndCategory)
@@ -146,7 +146,7 @@ const ServiceAndCategoryManagementContent = () => {
                         </IconButton>
                         <IconButton aria-label="edit-service" style={{ borderRadius: '5%' }} onClick={() => {
                             setModalUpdateOpen(true)
-                            dispatch(setCategoryServicedId(categoryId))
+                            dispatch(setCategoryServicedId(categoryServiceId))
                         }}>
                             <DesignServicesIcon />Cập nhật loại dịch vụ
                         </IconButton>

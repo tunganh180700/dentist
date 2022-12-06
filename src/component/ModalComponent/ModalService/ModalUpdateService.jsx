@@ -29,11 +29,11 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             .required('Kiểm tra và nhập lại đơn vị'),
         marketPrice: yup
             .string('Nhập giá thị trường')
-            .matches(regexNumber, "Only number")
+            .matches(regexNumber, "Only number or positive number")
             .required('Kiểm tra và nhập giá thị trường'),
         price: yup
             .string('Nhập giá nha khoa Nguyễn Trần')
-            .matches(regexNumber, "Only number")
+            .matches(regexNumber, "Only number or positive number")
             .required('Kiểm tra và nhập lại giá nha khoa')
     });
 

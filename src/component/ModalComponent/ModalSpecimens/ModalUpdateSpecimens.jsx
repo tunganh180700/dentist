@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import axiosInstance from '../../../config/customAxios';
-import { validationDate } from '../../../config/validation';
+import { regexNumber, validationDate } from '../../../config/validation';
 import * as yup from "yup";
 import moment from 'moment/moment';
 
@@ -44,9 +44,11 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
         amount: yup
             .string('Enter amount')
+            .matches(regexNumber, "Only number or positive number")
             .required('Your amount is required'),
         unitPrice: yup
             .string('Enter amount')
+            .matches(regexNumber, "Only number or positive number")
             .required('Your amount is required'),
 
     });

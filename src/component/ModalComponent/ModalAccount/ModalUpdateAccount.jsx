@@ -45,7 +45,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             .required("Email is required"),
         salary: yup
             .string('Enter your salary')
-            .matches(regexNumber, "Only number")
+            .matches(regexNumber, "Only number or positive number")
             .required('Salary is required')
     });
 

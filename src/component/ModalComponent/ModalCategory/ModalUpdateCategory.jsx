@@ -28,6 +28,7 @@ const ModalUpdateCategory = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         validationSchema: validationSchema,
         onSubmit: (values) => {
             dispatch(updateCategory(values))
+            console.log(values.categoryServiceName)
             setModalUpdateOpen(false)
 
         }
