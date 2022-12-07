@@ -112,22 +112,9 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                 return Object.keys(a).length !== 0;
             })
             values.serviceDTOS = listA.concat(listB)
-
-            // if (listTreatingService.length === 0) {
-            //     values.serviceDTOS = rows
-            // } else if (!rows || !rows.length ) {
-            //     values.serviceDTOS = listTreatingService
-            // } else {
-            //     console.log("heloo", rows)
-            //     values.serviceDTOS = rows.concat(listTreatingService)
-            // }
             const addValue = {
                 id: id,
                 values: values
-                // {
-                //     ...values,
-                //     serviceDTOS: rows
-                // }
             }
             console.log("aaa", values)
             
