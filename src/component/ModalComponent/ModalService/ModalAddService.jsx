@@ -74,16 +74,34 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+
+        formik.errors.serviceName = ""
+        formik.touched.serviceName = ""
+
+        formik.errors.unit = ""
+        formik.touched.unit = ""
+
+        formik.errors.marketPrice = ""
+        formik.touched.marketPrice = ""
+
+        formik.errors.price = ""
+        formik.touched.price = ""
+
+        formik.resetForm()
+    }
+
     return (
         <>
             <Modal
                 title="Thêm loại dịch vụ"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
 
-                <Box sx={{ maxWidth: 250, minWidth: 250 }}>
+                <Box sx={{ p: 5 }}>
                     <FormControl fullWidth>
                         <InputLabel id="material">Category</InputLabel>
 

@@ -101,6 +101,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
         formik.errors.salary = ""
 
         setValue(null)
+        formik.resetForm()
     }
 
     return (

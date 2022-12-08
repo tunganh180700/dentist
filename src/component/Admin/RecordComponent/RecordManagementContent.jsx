@@ -1,4 +1,4 @@
-import { Button, IconButton, ListItemButton, ListItemIcon, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material"
+import { Button, IconButton, ListItemButton, ListItemIcon, Pagination, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material"
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -16,17 +16,28 @@ import ModalDetailService from "../../ModalComponent/ModalRecord/ModalDetailServ
 
 const RecordManagementContent = () => {
     const dispatch = useDispatch()
+
+    const pageSize = useSelector(state => state.listRecord.pageSize)
+    const [totalPages, setTotalPages] = useState(0)
+    const [currentPage, setCurrentPage] = useState(0);
+
     const [modalAddOpen, setModalAddOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalDetailOpen, setModalDetailOpen] = useState(false);
     const patientName = useSelector(state => state.choosenPatient.patientName)
 
-    // console.log(patientName)
+    console.log("pagezise.", totalPages)
     const { id } = useParams()
     const [recordList, setRecordList] = useState([])
     const getDetail = async (id) => {
         try {
-            const res = await axiosInstance.get(allPatientRecordAPI + id)
+            const res = await axiosInstance.get(allPatientRecordAPI + id, {
+                params: {
+                    size: pageSize,
+                    page: currentPage,
+                }
+            })
+            setTotalPages(res.data.totalPages)
             setRecordList(res.data.content)
         } catch (error) {
             console.log(error)
@@ -34,7 +45,7 @@ const RecordManagementContent = () => {
     }
     useEffect(() => {
         getDetail(id)
-    }, [id])
+    }, [id, currentPage, pageSize])
 
     return (
         <>
@@ -63,83 +74,18 @@ const RecordManagementContent = () => {
                         <TableCell></TableCell>
                         <TableCell>
                             <div className='attibute'>Lý do đến khám</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="search"
-                                    label="Tìm kiếm"
-                                    name="search"
-                                    autoComplete="search"
-                                    // value={searchInputName}
-                                    autoFocus
-                                // onChange={handleSearchName}
-                                />
-                            </div>
                         </TableCell>
                         <TableCell>
                             <div className='attibute'>Chẩn đoán</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="search"
-                                    label="Tìm kiếm"
-                                    name="search"
-                                    autoComplete="search"
-                                    // value={searchInputBirthdate}
-                                    autoFocus
-                                // onChange={handleSearchBirthDate}
-                                />
-                            </div>
                         </TableCell>
                         <TableCell>
                             <div className='attibute'>Nguyên nhân</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="search"
-                                    label="Tìm kiếm"
-                                    name="search"
-                                    autoComplete="search"
-                                    // value={searchInputPhone}
-                                    autoFocus
-                                // onChange={handleSearchPhone}
-                                />
-                            </div>
                         </TableCell>
                         <TableCell>
                             <div className='attibute'>Ngày khám</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="search"
-                                    label="Tìm kiếm"
-                                    name="search"
-                                    autoComplete="search"
-                                    // value={searchInputAddress}
-                                    autoFocus
-                                // onChange={handleSearchAddress}
-                                />
-                            </div>
                         </TableCell>
                         <TableCell>
                             <div className='attibute'>Lưu ý về tủy</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="searchRoom"
-                                    label="Tìm kiếm"
-                                    name="searchRoom"
-                                    autoComplete="searchRoom"
-                                    // value={searchInputEmail}
-                                    autoFocus
-                                // onChange={handleSearchEmail}
-                                />
-                            </div>
                         </TableCell>
                         <TableCell>
                             <div className='attibute'>Ghi chú</div>
@@ -189,6 +135,15 @@ const RecordManagementContent = () => {
                     ))}
                 </TableBody>
             </Table>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
+                <Pagination
+                    count={totalPages === 1 ? 0 : totalPages}
+                    defaultPage={1}
+                    onChange={(e, pageNumber) => {
+                        setCurrentPage(pageNumber - 1)
+                    }}
+                />
+            </div>
             <div>
                 <ModalAddRecord modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
             </div>

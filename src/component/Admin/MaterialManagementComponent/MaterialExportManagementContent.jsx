@@ -82,7 +82,6 @@ const MaterialExportManagementContent = () => {
                                 <IconButton aria-label="edit" onClick={() => {
                                     setModalUpdateOpen(true)
                                     dispatch(setMaterialExportId(item.materialExportId))
-                                    console.log('id',item.materialExportId)
                                 }}>
                                     <EditIcon />
                                 </IconButton>
@@ -91,7 +90,6 @@ const MaterialExportManagementContent = () => {
                                 <IconButton aria-label="delete" onClick={() => {
                                     setModalDeleteOpen(true)
                                     dispatch(setMaterialExportId(item.materialExportId))
-                                    console.log('id22',item.materialExportId)
                                 }}>
                                     <DeleteIcon />
                                 </IconButton>

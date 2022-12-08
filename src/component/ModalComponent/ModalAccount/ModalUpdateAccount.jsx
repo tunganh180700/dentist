@@ -88,7 +88,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     useEffect(() => {
         if (userId > 0)
             fetchAccount(userId)
-    }, [userId])
+    }, [userId, roleId])
 
     const loadRole = async () => {
         try {

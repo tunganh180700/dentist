@@ -35,13 +35,26 @@ const ModalAddLabo = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+
+        formik.errors.laboName = ""
+        formik.touched.laboName = ""
+
+        formik.errors.phone = ""
+        formik.touched.phone = ""
+
+        formik.resetForm()
+
+    }
+
     return (
         <>
             <Modal
                 title="Thêm Labo"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
                 <TextField
                     margin="normal"
@@ -52,24 +65,24 @@ const ModalAddLabo = ({ modalAddOpen, setModalAddOpen }) => {
                     name="laboName"
                     autoComplete="laboName"
                     value={formik.values.laboName}
-                  
+
                     onChange={formik.handleChange}
                 />
-                {formik.errors.laboName && <Typography style={{ color: 'red' }}>{formik.errors.laboName}</Typography>}
+                {formik.errors.laboName && formik.touched.laboName && <Typography style={{ color: 'red' }}>{formik.errors.laboName}</Typography>}
                 <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="phone"
-                        label="Số điện thoại"
-                        name="phone"
-                        autoComplete="phone"
-                        value={formik.values.phone}
-                       
-                        onChange={formik.handleChange}
-                    />
-                    {formik.errors.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
- 
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="phone"
+                    label="Số điện thoại"
+                    name="phone"
+                    autoComplete="phone"
+                    value={formik.values.phone}
+
+                    onChange={formik.handleChange}
+                />
+                {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
+
 
             </Modal>
         </>

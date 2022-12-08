@@ -80,6 +80,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
 
         setGender(false)
         setValue(null)
+        formik.resetForm()
     }
 
     useEffect(() => {

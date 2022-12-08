@@ -30,7 +30,6 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
         initialValues: {
             materialName: '',
             unit: "",
-
             price: '',
         },
         validationSchema: validationSchema,
@@ -41,13 +40,28 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+        formik.errors.materialName = ""
+        formik.touched.materialName = ""
+
+        formik.errors.unit = ""
+        formik.touched.unit = ""
+
+        formik.errors.price = ""
+        formik.touched.price = ""
+
+        formik.resetForm()
+
+    }
+
     return (
         <>
             <Modal
                 title="Thêm vật liệu"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
                 <TextField
                     margin="normal"
@@ -61,7 +75,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.materialName && formik.touched.materialName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
+                {formik.errors.materialName && formik.touched.materialName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.materialName}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -75,6 +89,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
                     type={"unit"}
                     onChange={formik.handleChange}
                 />
+                {formik.errors.unit && formik.touched.unit && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.unit}</Typography>}
                 {/* <TextField
                     margin="normal"
                     required
@@ -100,7 +115,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.price && formik.touched.price && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
+                {formik.errors.price && formik.touched.price && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.price}</Typography>}
 
             </Modal>
         </>

@@ -9,7 +9,7 @@ const initState = {
     listRecord: [],
     pagination: [],
     index: 0,
-    pageSize: 10,
+    pageSize: 3,
     totalPage: 0,
     totalElements: 0,
     statusUpdateRecord: false,
@@ -42,6 +42,7 @@ const listRecordSlice = createSlice({
             .addCase(fetchRecord.fulfilled, (state, action) => {
                 state.listRecord = action.payload
                 state.listService = action.payload.serviceDTOS
+                state.totalPage = action.payload.totalPages
             })
             .addCase(addRecord.pending, (state, action) => {
                 state.statusAddRecord = true
@@ -123,9 +124,11 @@ export const updateRecord = createAsyncThunk('listRecord/updateRecord', async (d
 //     }
 // }
 
-export const fetchRecord = createAsyncThunk('listRecord/fetchRecord', async (patientRecordId) => {
+export const fetchRecord = createAsyncThunk('listRecord/fetchRecord', async ({ patientRecordId, paramSearch }) => {
     try {
-        const res = await axiosInstance.get(patientRecordAPI + patientRecordId)
+        const res = await axiosInstance.get(patientRecordAPI + patientRecordId, {
+            params: paramSearch
+        })
         console.log("list", res.data)
         return res.data
     } catch (error) {

@@ -29,13 +29,20 @@ const ModalAddCategory = ({ modalAddCategoryOpen, setModalAddCategoryOpen }) => 
         }
     });
 
+    const handleCancel = () => {
+        setModalAddCategoryOpen(false)
+
+        formik.errors.categoryServiceName = ""
+        formik.touched.categoryServiceName = ""
+    }
+
     return (
         <>
             <Modal
                 title="Thêm loại dịch vụ"
                 open={modalAddCategoryOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddCategoryOpen(false)}
+                onCancel={handleCancel}
             >
                 <TextField
                     margin="normal"
@@ -49,8 +56,8 @@ const ModalAddCategory = ({ modalAddCategoryOpen, setModalAddCategoryOpen }) => 
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.categoryServiceName && <Typography style={{ color: 'red' }}>{formik.errors.categoryServiceName}</Typography>}
-              
+                {formik.errors.categoryServiceName && formik.touched.categoryServiceName && <Typography style={{ color: 'red' }}>{formik.errors.categoryServiceName}</Typography>}
+
 
             </Modal>
         </>

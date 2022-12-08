@@ -69,7 +69,7 @@ const PatientManagementContent = () => {
     useEffect(() => {
         setLoading(true)
         try {
-            if (searchValue.name === '' && searchValue.birthdate === '' && searchValue.phone === '' && searchValue.address === '' && searchValue.email === '') {
+            if (searchValue === '') {
                 dispatch(fetchAllPatient({
                     size: pageSize,
                     page: currentPage,
@@ -87,7 +87,7 @@ const PatientManagementContent = () => {
             console.log(error)
         }
         setLoading(false)
-    }, [currentPage, isAddPatient, isUpdatePatient, isSearchPatient])
+    }, [currentPage, isAddPatient, isUpdatePatient])
 
     useEffect(() => {
         if (isDeletePatient == true && totalElements % pageSize == 1) {
@@ -101,11 +101,13 @@ const PatientManagementContent = () => {
 
     const handleSearchDebounce = useRef(_.debounce(async (formValues) => {
         setLoading(true)
+        setCurrentPage(0)
         try {
+
             dispatch(searchPatient({
                 ...formValues,
                 size: pageSize,
-                page: currentPage,
+                page: 0,
             }))
         } catch (error) {
             console.log(error)
@@ -284,13 +286,15 @@ const PatientManagementContent = () => {
                 </Table>
             </>}
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
-                <Pagination
-                    count={totalPages === 1 ? 0 : totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
             <div>
                 <ModalAddPatient modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />

@@ -84,6 +84,21 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+
+        formik.errors.supplyName = ""
+        formik.touched.supplyName = ""
+
+        formik.errors.amount = ""
+        formik.touched.amount = ""
+
+        formik.errors.unitPrice = ""
+        formik.touched.unitPrice = ""
+
+        formik.resetForm()
+    }
+
     useEffect(() => {
         const price = (formik.values.unitPrice || 0) * (formik.values.amount || 0)
 
@@ -98,7 +113,7 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 title="Thêm vật liệu nhập khẩu"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
 
                 <Box sx={{ minWidth: 120 }}>

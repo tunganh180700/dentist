@@ -5,8 +5,6 @@ import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 
-
-
 const initState = {
     listBill: [],
     pagination: [],
@@ -43,11 +41,6 @@ const listBillSlice = createSlice({
             
     }
 })
-
-
-
-
-
 export const fetchAllBill = createAsyncThunk('listBill/fetchAllBill', async (paramsSearch) => {
     try {
         const res = await axiosInstance.get(listBillAPI, {

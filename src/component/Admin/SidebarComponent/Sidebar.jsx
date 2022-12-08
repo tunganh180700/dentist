@@ -35,32 +35,20 @@ const Sidebar = () => {
                         <ListItemText style={{ color: "black" }} primary='Chấm công' />
                     </Link>
                 </ListItemButton>
-                <ListItemButton onClick={handleClick}>
+                <ListItemButton>
                     <ListItemIcon>
-                        <CategoryIcon />
+                        <StarBorder />
                     </ListItemIcon>
-                    <ListItemText primary="Quản lý danh mục" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                                <StarBorder />
-                            </ListItemIcon>
 
-                            <Link to={'/patient-management'}>
-                                <ListItemText style={{ color: "black" }} primary=' Bệnh nhân' />
-                            </Link>
-                        </ListItemButton>
-                    </List>
-                </Collapse>
+                    <Link to={'/patient-management'}>
+                        <ListItemText style={{ color: "black" }} primary=' Bệnh nhân' />
+                    </Link>
+                </ListItemButton>
 
                 <ListItemButton>
                     <ListItemIcon>
                         <MeetingRoomIcon />
                     </ListItemIcon>
-
                     <Link to={'/meetingroom'}>
                         <ListItemText style={{ color: "black" }} primary='Quản lý phòng chờ' />
                     </Link>

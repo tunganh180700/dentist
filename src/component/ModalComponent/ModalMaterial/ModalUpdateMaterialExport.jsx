@@ -14,17 +14,20 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import axiosInstance from '../../../config/customAxios';
+import moment from 'moment';
+import { validationDate } from '../../../config/validation';
+import { set, values } from 'lodash';
 
 const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const dispatch = useDispatch();
     const materialExportId = useSelector(state => state.modal.materialExportId);
+
     const [loading, setLoading] = useState();
     const [value, setValue] = useState(null);
     const [materialIds, setMaterialIds] = useState([]);
     const [materialId, setMaterialId] = useState();
     const [materialPrice, setMaterialPrice] = useState();
     const [unitPrice, setUnitPrice] = useState();
-
 
     const [patientIds, setPatientIds] = useState([]);
     const [patientId, setPatientId] = useState();
@@ -47,6 +50,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     //         .required('Your patient is required')
     // });
     const loadMaterial = async () => {
+        setLoading(true)
         try {
             const res = await axiosInstance.get(listAllMaterialAPI)
             setMaterialId(res.data[0].materialId)
@@ -58,12 +62,15 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         } catch (error) {
             console.log(error)
         }
+        setLoading(false)
     }
+
     useEffect(() => {
         loadMaterial();
     }, [])
 
     const loadPatient = async () => {
+        setLoading(true)
         try {
             const res = await axiosInstance.get(listAllPatientAPI)
             setPatientId(res.data[0].patientId)
@@ -74,6 +81,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         } catch (error) {
             console.log(error)
         }
+        setLoading(false)
     }
     useEffect(() => {
         loadPatient();
@@ -82,11 +90,11 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
     const formik = useFormik({
         initialValues: {
-
+            materialId: materialId
         },
         // validationSchema: validationSchema,
         onSubmit: (values) => {
-            // values.date = moment(value.$d).format(validationDate);
+            values.date = moment(value.$d).format(validationDate);
             values.materialId = materialId;
             values.patientId = patientId;
             values.totalPrice = materialPrice;
@@ -94,7 +102,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             values.patientRecordId = patientRecordId;
             dispatch(updateMaterialExport(values));
             setModalUpdateOpen(false);
-        }
+        },
     })
 
     const fetchMaterialExport = async (materialExportId) => {
@@ -106,6 +114,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             console.log(res.data)
             formik.setValues(res.data)
             console.log('id', res.data.materialId)
+            // setAmount(res.data.amount)
             setPatientRecordId(res.data.patientRecordId)
             // setMaterialId(res.data.materialId)
             console.log('day roi: ', res.data.patientRecordId)
@@ -142,7 +151,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     useEffect(() => {
         if (patientId > 0)
             loadRecordByTreatmentId(patientId)
-    }, [patientId])
+    }, [patientId, modalUpdateOpen])
 
     useEffect(() => {
         const price = materialIds?.filter(e => e.materialId === materialId)[0]?.price * (formik.values.amount || 0)
@@ -152,13 +161,21 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
     useEffect(() => {
         const unitPrice = materialIds?.filter(e => e.materialId === materialId)[0]?.price
-
         setUnitPrice(unitPrice)
     }, [materialId])
 
 
-
-
+    const handleCancel = async () => {
+        // formik.values.amount = oldMaterial.amount
+        // const res = await axiosInstance.get(
+        //     getMaterialExportByIdAPI + materialExportId,
+        // )
+        // setMaterialId(res.data.materialId)
+        // setPatientId(res.data.patientId)
+        // setPatientRecordId(res.data.patientRecordId)
+        // formik.values.amount = res.data.amount
+        setModalUpdateOpen(false)
+    }
 
     return (
         <>
@@ -166,7 +183,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                 title="Thông tin vật liệu nhập khẩu"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalUpdateOpen(false)}
+                onCancel={handleCancel}
             >
                 {loading === false && <>
 
@@ -190,7 +207,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         </FormControl>
                     </Box>
 
-                    <Box sx={{ minWidth: 120 }}>
+                    <Box fullWidth>
                         <FormControl fullWidth>
                             <InputLabel id="patient">Bệnh nhân</InputLabel>
                             <Select

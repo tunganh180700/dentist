@@ -155,13 +155,21 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
 
         setUnitPrice(unitPrice)
     }, [materialId])
+
+    const handleCancel = () => {
+        setModalAddOpen(false)
+
+        formik.errors.amount = ""
+        formik.touched.amount = ""
+        formik.resetForm()
+    }
     return (
         <>
             <Modal
                 title="Thêm vật liệu xuất khẩu"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
 
                 <Box sx={{ minWidth: 120 }}>

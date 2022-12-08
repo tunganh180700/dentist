@@ -12,6 +12,9 @@ import AddIcon from '@mui/icons-material/Add';
 import "./style.css"
 
 const WaitingRoomManagementContent = () => {
+
+    
+
     return (
         <>
             <Typography

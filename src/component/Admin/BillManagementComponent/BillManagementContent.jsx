@@ -27,15 +27,15 @@ const BillManagementContent = () => {
 
     const [modalDetailOpen, setModalDetailOpen] = useState(false);
 
-    console.log('bill: ', listBill)
-
-
+    console.log('bill: ', totalPages)
 
     useEffect(() => {
         dispatch(fetchAllBill({
+            size: pageSize,
+            page: currentPage
         },
         ));
-    }, [])
+    }, [currentPage])
 
     return (
         <>
@@ -80,12 +80,20 @@ const BillManagementContent = () => {
                     )}
                 </TableBody>
             </Table>
-
+            <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
+                <Pagination
+                    count={totalPages === 1 ? 0 : totalPages}
+                    defaultPage={1}
+                    onChange={(e, pageNumber) => {
+                        setCurrentPage(pageNumber - 1)
+                    }}
+                />
+            </div>
             <div>
                 <ModalDetailBill modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
             </div>
 
-           
+
         </>
     )
 }
