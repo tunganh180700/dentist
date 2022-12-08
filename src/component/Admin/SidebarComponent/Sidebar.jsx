@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -19,9 +19,15 @@ import { useState } from 'react';
 
 const Sidebar = () => {
     const [open, setOpen] = useState(true);
+    const [role, setRole] = useState(null);
     const handleClick = () => {
         setOpen(!open);
     };
+
+    useEffect(() => {
+        const role = localStorage.getItem('role');
+        setRole(role);
+    }, []);
 
     return (
         <>
@@ -35,15 +41,17 @@ const Sidebar = () => {
                         <ListItemText style={{ color: "black" }} primary='Chấm công' />
                     </Link>
                 </ListItemButton>
-                <ListItemButton>
-                    <ListItemIcon>
-                        <StarBorder />
-                    </ListItemIcon>
-
-                    <Link to={'/patient-management'}>
-                        <ListItemText style={{ color: "black" }} primary=' Bệnh nhân' />
-                    </Link>
-                </ListItemButton>
+                {
+                    role === 'Receptionist' ?
+                        (<></>)
+                        :
+                        (<ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <StarBorder />
+                            </ListItemIcon><Link to={'/patient-management'}>
+                                <ListItemText style={{ color: "black" }} primary=' Bệnh nhân' />
+                            </Link></ListItemButton>)
+                }
 
                 <ListItemButton>
                     <ListItemIcon>

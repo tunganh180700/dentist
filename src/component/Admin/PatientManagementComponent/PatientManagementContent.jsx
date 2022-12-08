@@ -19,7 +19,8 @@ import "./style.css";
 import _ from "lodash";
 import ModalDetailPatient from '../../ModalComponent/ModalPatient/ModalDetailPatient';
 import { Link } from 'react-router-dom';
-
+import axiosInstance from "../../../config/customAxios";
+import { ToastContainer, toast } from 'react-toastify';
 
 const PatientManagementContent = () => {
     const dispatch = useDispatch();
@@ -129,10 +130,21 @@ const PatientManagementContent = () => {
 
     useEffect(() => {
         handleSearchDebounce(searchValue)
-    }, [searchValue, isDeletePatient, isUpdatePatient, isAddPatient])
+    }, [searchValue, isDeletePatient, isUpdatePatient, isAddPatient]);
+
+    const addWaitingPatient = (patientId) => {
+            try {
+                axiosInstance.post('http://localhost:8080/api/patients/' + patientId + '/waiting_room');
+                toast('Thêm bệnh nhân đang chờ thành công');
+            } catch (error) {
+                toast('Thêm bệnh nhân đang chờ không thành công');
+                console.log('error = ', error);
+            }
+    }
 
     return (
         <>
+            <ToastContainer />
             <Typography
                 component="h1"
                 variant="h5"
@@ -278,6 +290,13 @@ const PatientManagementContent = () => {
                                         dispatch(setUserId(item.patientId))
                                     }}>
                                         <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell style={styleText}>
+                                    <IconButton aria-label="add" onClick={() => {
+                                        addWaitingPatient(item.patientId)
+                                    }}>
+                                        <AddIcon />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
