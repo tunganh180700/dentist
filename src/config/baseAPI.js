@@ -83,6 +83,9 @@ export const listIncomeAPI = `${baseUrl}/api/income?month=11`
 
 export const listBillAPI = `${baseUrl}/api/bills/get_list_bills`
 export const getBillByIdAPI = `${baseUrl}/api/bills/`
+export const getListReceiptsByIdAPI = `${baseUrl}/api/receipts/get_list_receipts_by_treatment/`
+export const getNewReceiptByIdAPI = `${baseUrl}/api/receipts/new_receipts/`
+export const addNewReceiptByIdAPI = `${baseUrl}/api/receipts/`
 
 export const listNetIncomeAPI = `${baseUrl}/api/income/net_income`
 export const listTotalSpendIncomeAPI = `${baseUrl}/api/income/total_spend`

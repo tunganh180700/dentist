@@ -10,7 +10,7 @@ const initState = {
     pagination: [],
     status: false,
     index: 0,
-    pageSize: 3,
+    pageSize: 10,
     totalPage: 0,
     statusUpdateBill: false,
     isUpdateBill: false,
@@ -32,13 +32,14 @@ const listBillSlice = createSlice({
                 state.status = true
             })
             .addCase(fetchAllBill.fulfilled, (state, action) => {
-                state.listBill = action.payload.content;              
+                state.listBill = action.payload.content;
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
+                state.pageSize = action.payload.pageSize;
                 state.totalPage = action.payload.totalPages;
                 state.message = action.payload.message
             })
-            
+
     }
 })
 export const fetchAllBill = createAsyncThunk('listBill/fetchAllBill', async (paramsSearch) => {

@@ -15,6 +15,9 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { fetchAllBill } from '../../../redux/BillSlice/listBillSlice';
 import { setTreatmentId } from '../../../redux/modalSlice';
 import ModalDetailBill from '../../ModalComponent/ModalBill/ModalDetailBill'
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import ModalListReceipt from '../../ModalComponent/ModalBill/ModalListReceipt'
+
 
 const BillManagementContent = () => {
 
@@ -26,9 +29,11 @@ const BillManagementContent = () => {
     const [currentPage, setCurrentPage] = useState(0);
 
     const [modalDetailOpen, setModalDetailOpen] = useState(false);
+    const [modalReceiptOpen, setModalReceiptOpen] = useState(false);
 
-    console.log('bill: ', totalPages)
-
+    console.log('bill: ', listBill)
+    console.log('page: ', totalPages)
+    //dung roi, total pages trong api dang co 1 thoi
     useEffect(() => {
         dispatch(fetchAllBill({
             size: pageSize,
@@ -57,6 +62,7 @@ const BillManagementContent = () => {
                         <TableCell>Giảm giá</TableCell>
                         <TableCell>Tổng tiền</TableCell>
                         <TableCell></TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -68,6 +74,14 @@ const BillManagementContent = () => {
                             <TableCell>{item.totalPrice}</TableCell>
                             <TableCell>{item.totalDiscount}</TableCell>
                             <TableCell>{item.realCost}</TableCell>
+                            <TableCell>
+                                <IconButton aria-label="receipt-list" onClick={() => {
+                                    setModalReceiptOpen(true)
+                                    dispatch(setTreatmentId(item.treatmentId))
+                                }}>
+                                    <ReceiptIcon />
+                                </IconButton>
+                            </TableCell>
                             <TableCell>
                                 <IconButton aria-label="detail" onClick={() => {
                                     setModalDetailOpen(true)
@@ -91,6 +105,10 @@ const BillManagementContent = () => {
             </div>
             <div>
                 <ModalDetailBill modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
+            </div>
+
+            <div>
+                <ModalListReceipt modalReceiptOpen={modalReceiptOpen} setModalReceiptOpen={setModalReceiptOpen} />
             </div>
 
 

@@ -6,6 +6,8 @@ const initState = {
     choosenBill: {},
     status: false,
     statusBill: false,
+    patientName: '',
+    patientId: '',
     treatmentServiceMapDTOList: []
 }
 
@@ -24,6 +26,9 @@ const choosenBillSlice = createSlice({
             })
             .addCase(fetchBill.fulfilled, (state, action) => {
                 state.choosenBill = action.payload;
+                state.patientName = action.payload.patientName;
+                state.patientId = action.payload.patientId;
+                
                 state.treatmentServiceMapDTOList =action.payload.treatmentServiceMapDTOList
                 state.status = false
             })

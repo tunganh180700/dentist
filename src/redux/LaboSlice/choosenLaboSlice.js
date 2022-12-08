@@ -50,7 +50,7 @@ export const fetchLabo = createAsyncThunk('labos/fetchLabo', async (laboId) => {
         const res = await axiosInstance.get(
             getLaboByIdAPI + laboId,
         )
-        console.log(res.data)
+        console.log("sadsad",res.data)
         return res.data
     } catch (error) {
         console.log(error)
