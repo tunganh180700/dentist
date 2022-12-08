@@ -17,7 +17,7 @@ const ModalDetailBill = ({ modalDetailOpen, setModalDetailOpen }) => {
         setLoading(true)
         try {
             if (treatmentId > 0) {
-                dispatch(fetchBill)
+                dispatch(fetchBill(treatmentId))
             }
         } catch (error) {
             console.log(error)
@@ -52,7 +52,8 @@ const ModalDetailBill = ({ modalDetailOpen, setModalDetailOpen }) => {
                         </TableHead>
                         <TableBody>
                             {treatmentServiceMapDTOList.map((item) =>
-                                <TableRow key={item.serviceName}>
+                                <TableRow key={item.treatmentId}>
+                                    <TableCell>{item.serviceName}</TableCell>
                                     <TableCell>{item.currentPrice}</TableCell>
                                     <TableCell>{item.discount}</TableCell>
                                 </TableRow>
