@@ -22,7 +22,7 @@ const ModalDetailLabo = ({ modalDetailOpen, setModalDetailOpen }) => {
     const dispatch = useDispatch();
 
     const isUpdateLabo = useSelector(state => state.listLabo.isUpdateLabo);
-    const isDeleteSpecimens = useSelector(state => state.listSpecimens.isDeleteSpecimens);
+    const isDeleteSpecimens = useSelector(state => state.choosenSpecimens.isDeleteSpecimens);
     const isUpdateSpecimens = useSelector(state => state.listSpecimens.isUpdateSpecimens);
     const isAddSpecimens = useSelector(state => state.listSpecimens.isAddSpecimens);
 
@@ -45,7 +45,7 @@ const ModalDetailLabo = ({ modalDetailOpen, setModalDetailOpen }) => {
             console.log(error)
         }
         setLoading(false)
-    }, [laboId, isUpdateLabo, isAddSpecimens, isUpdateSpecimens])
+    }, [laboId, isUpdateLabo, isAddSpecimens, isUpdateSpecimens, isDeleteSpecimens])
 
 
     // useEffect(() => {

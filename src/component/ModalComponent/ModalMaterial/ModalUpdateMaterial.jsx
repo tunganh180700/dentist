@@ -18,6 +18,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const materialId = useSelector(state => state.modal.materialId);
     const [loading, setLoading] = useState();
     const [value, setValue] = useState(null);
+    const [oldData, setOldData] = useState()
 
     const validationSchema = yup.object({
         materialName: yup
@@ -55,6 +56,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             )
             console.log(res.data)
             formik.setValues(res.data)
+            setOldData(res.data)
         } catch (error) {
             console.log(error)
         }
@@ -66,13 +68,34 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             fetchMaterial(materialId)
     }, [materialId])
 
+
+    const handleCancel = () => {
+        formik.values.materialName = oldData.materialName
+        formik.values.unit = oldData.unit
+        formik.values.amount = oldData.amount
+        formik.values.price = oldData.price
+
+        formik.errors.materialName = ""
+        formik.touched.materialName = ""
+
+        formik.errors.unit = ""
+        formik.touched.unit = ""
+
+        formik.errors.amount = ""
+        formik.touched.amount = ""
+
+        formik.errors.price = ""
+        formik.touched.price     = ""
+        setModalUpdateOpen(false)
+    }
+
     return (
         <>
             <Modal
                 title="Cập nhật vật liệu"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalUpdateOpen(false)}
+                onCancel={handleCancel}
             >
                 {loading === false && <>
                     <TextField

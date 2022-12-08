@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import 'antd/dist/antd.css';
 import { Modal } from 'antd';
-import { TextField } from '@mui/material';
+import { TextField, useStepContext } from '@mui/material';
 import "./../style.css"
 import Typography from '@mui/material/Typography';
 import { useFormik } from "formik";
@@ -18,6 +18,8 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const laboId = useSelector(state => state.modal.laboId);
     const [loading, setLoading] = useState();
     const [value, setValue] = useState(null);
+
+    const [oldData, setOldData] = useState()
 
     const validationSchema = yup.object({
         laboName: yup
@@ -48,6 +50,7 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             )
             console.log(res.data)
             formik.setValues(res.data)
+            setOldData(res.data)
         } catch (error) {
             console.log(error)
         }
@@ -59,13 +62,26 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             fetchLabo(laboId)
     }, [laboId])
 
+    const handleCancel = () => {
+        formik.values.laboName = oldData.laboName
+        formik.values.phone = oldData.phone
+
+        formik.errors.laboName = ""
+        formik.touched.laboName = ""
+
+        formik.errors.phone = ""
+        formik.touched.phone = ""
+
+        setModalUpdateOpen(false)
+    }
+
     return (
         <>
             <Modal
                 title="Thông tin Labo"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalUpdateOpen(false)}
+                onCancel={handleCancel}
             >
                 {loading === false && <>
                     <TextField
@@ -80,7 +96,7 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.laboName && <Typography style={{ color: 'red' }}>{formik.errors.laboName}</Typography>}
+                    {formik.errors.laboName && formik.touched.laboName && <Typography style={{ color: 'red' }}>{formik.errors.laboName}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -93,7 +109,7 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
+                    {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
 
 
                 </>}

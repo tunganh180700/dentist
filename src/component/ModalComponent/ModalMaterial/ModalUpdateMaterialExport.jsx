@@ -15,8 +15,9 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import axiosInstance from '../../../config/customAxios';
 import moment from 'moment';
-import { validationDate } from '../../../config/validation';
+import { regexNumber, validationDate } from '../../../config/validation';
 import { set, values } from 'lodash';
+import * as yup from "yup";
 
 const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const dispatch = useDispatch();
@@ -29,6 +30,8 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [materialPrice, setMaterialPrice] = useState();
     const [unitPrice, setUnitPrice] = useState();
 
+    const [oldData, setOldData] = useState();
+
     const [patientIds, setPatientIds] = useState([]);
     const [patientId, setPatientId] = useState();
 
@@ -37,18 +40,19 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
 
 
-    // const validationSchema = yup.object({
-    //     materialName: yup
-    //         .string('Enter material name')
-    //         .required('Your material name is required'),
+    const validationSchema = yup.object({
+        // materialName: yup
+        //     .string('Enter material name')
+        //     .required('Your material name is required'),
 
-    //     amount: yup
-    //         .string('Enter amount')
-    //         .required('Your amount is required'),
-    //     patient: yup
-    //         .string('Enter patient')
-    //         .required('Your patient is required')
-    // });
+        amount: yup
+            .string('Enter amount')
+            .matches(regexNumber, "Only number or positive number")
+            .required('Your amount is required'),
+        // patient: yup
+        //     .string('Enter patient')
+        //     .required('Your patient is required')
+    });
     const loadMaterial = async () => {
         setLoading(true)
         try {
@@ -92,7 +96,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         initialValues: {
             materialId: materialId
         },
-        // validationSchema: validationSchema,
+        validationSchema: validationSchema,
         onSubmit: (values) => {
             values.date = moment(value.$d).format(validationDate);
             values.materialId = materialId;
@@ -114,7 +118,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             console.log(res.data)
             formik.setValues(res.data)
             console.log('id', res.data.materialId)
-            // setAmount(res.data.amount)
+            setOldData(res.data)
             setPatientRecordId(res.data.patientRecordId)
             // setMaterialId(res.data.materialId)
             console.log('day roi: ', res.data.patientRecordId)
@@ -166,7 +170,10 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
 
     const handleCancel = async () => {
-        // formik.values.amount = oldMaterial.amount
+        formik.values.amount = oldData.amount
+
+        formik.errors.amount = ""
+        formik.touched.amount = ""
         // const res = await axiosInstance.get(
         //     getMaterialExportByIdAPI + materialExportId,
         // )

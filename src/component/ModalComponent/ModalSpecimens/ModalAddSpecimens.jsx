@@ -38,18 +38,18 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
     const [deliveryDate, setDeliveryDate] = useState(null);
 
     const validationSchema = yup.object({
-        specimenName: yup
-            .string('Enter amount')
-            .required('Your amount is required'),
+        // specimenName: yup
+        //     .string('Enter specimenName')
+        //     .required('Your specimenName is required'),
 
-        amount: yup
-            .string('Enter amount')
-            .matches(regexNumber, "Only number or positive number")
-            .required('Your amount is required'),
-        unitPrice: yup
-            .string('Enter amount')
-            .matches(regexNumber, "Only number or positive number")
-            .required('Your amount is required'),
+        // amount: yup
+        //     .string('Enter amount')
+        //     .matches(regexNumber, "Only number or positive number")
+        //     .required('Your amount is required'),
+        // unitPrice: yup
+        //     .string('Enter unitPrice')
+        //     .matches(regexNumber, "Only number or positive number")
+        //     .required('Your unitPrice is required'),
 
     });
 
@@ -71,7 +71,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
 
     const formik = useFormik({
         initialValues: {
-            specimensName: "",
+            specimenName: "",
             amount: "",
             unitPrice: "",
         },
@@ -84,6 +84,9 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
             values.patientRecordId = patientRecordId;
             dispatch(addSpecimens(values));
             setModalAddOpen(false);
+            formik.handleReset()
+            setReceiveDate(null)
+            setDeliveryDate(null)
         }
     })
 
@@ -128,8 +131,6 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
             //  setPatientRecordId(res.data[0].patientId)
             setPatientRecordId(res.data[0].patientRecordId)
             setPatientRecordIds(res.data)
-
-
         } catch (error) {
             console.log(error)
         }

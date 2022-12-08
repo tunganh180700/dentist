@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Modal } from 'antd';
 import './../style.css';
-import { deleteSpecimens } from '../../../redux/SpecimensSlice/listSpecimensSlice';
+import { deleteSpecimens } from '../../../redux/SpecimensSlice/choosenSpecimensSlice';
 import { fetchSpecimens } from '../../../redux/SpecimensSlice/choosenSpecimensSlice';
 
 const ModalDeleteSpecimens = ({ modalDeleteOpen, setModalDeleteOpen }) => {

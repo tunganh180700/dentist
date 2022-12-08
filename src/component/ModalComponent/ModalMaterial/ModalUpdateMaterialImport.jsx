@@ -24,6 +24,8 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [materialIds, setMaterialIds] = useState([]);
     const [materialId, setMaterialId] = useState();
     const [materialPrice, setMaterialPrice] = useState();
+
+    const [oldData, setOldData] = useState()
     // const [unitPrice, setUnitPrice] = useState();
 
     const validationSchema = yup.object({
@@ -68,6 +70,7 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             setMaterialId(res.data.materialId)
             console.log('here: ', res.data.materialId)
             setValue(res.data.date)
+            setOldData(res.data)
         } catch (error) {
             console.log(error)
         }
@@ -100,13 +103,24 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         loadMaterial();
     }, [])
 
+    const handleCancel = () => {
+        formik.values.supplyName = oldData.supplyName
+        setValue(oldData.date)
+        formik.values.amount = oldData.amount
+        formik.values.unitPrice = oldData.unitPrice
+
+        formik.errors.supplyName = ""
+        formik.touched.supplyName = ""
+        setModalUpdateOpen(false)
+    }
+
     return (
         <>
             <Modal
                 title="Thông tin vật liệu nhập khẩu"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalUpdateOpen(false)}
+                onCancel={handleCancel}
             >
                 {loading === false && <>
                     <TextField
@@ -178,7 +192,6 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-
                     <TextField
                         margin="normal"
                         required

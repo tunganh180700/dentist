@@ -15,8 +15,8 @@ const initState = {
     totalPage: 0,
     statusUpdateSpecimens: false,
     isUpdateSpecimens: false,
-    statusDeleteSpecimens: false,
-    isDeleteSpecimens: false,
+    // statusDeleteSpecimens: false,
+    // isDeleteSpecimens: false,
     statusAddSpecimens: false,
     isAddSpecimens: false,
 }
@@ -46,12 +46,12 @@ const listSpecimensSlice = createSlice({
             .addCase(updateSpecimens.fulfilled, (state, action) => {
                 state.isUpdateSpecimens = true
             })
-            .addCase(deleteSpecimens.pending, (state, action) => {
-                state.statusDeleteSpecimens = true
-            })
-            .addCase(deleteSpecimens.fulfilled, (state, action) => {
-                state.isDeleteSpecimens = true
-            })
+            // .addCase(deleteSpecimens.pending, (state, action) => {
+            //     state.statusDeleteSpecimens = true
+            // })
+            // .addCase(deleteSpecimens.fulfilled, (state, action) => {
+            //     state.isDeleteSpecimens = true
+            // })
             .addCase(addSpecimens.pending, (state, action) => {
                 state.statusAddSpecimens = true
             })
@@ -90,17 +90,17 @@ export const updateSpecimens = createAsyncThunk('listSpecimens/updateSpecimens',
 })
 
 
-export const deleteSpecimens = createAsyncThunk('listSpecimens/deleteSpecimens', async (specimenId) => {
-    console.log('sss', specimenId)
-    try {
-        const res = await axiosInstance.delete(deleteSpecimensAPI + specimenId)
-        toast.success(DELETE_SUCCESS, toastCss)
-        return specimenId
-    } catch (error) {
-        toast.error(DELETE_FAIL, toastCss)
+// export const deleteSpecimens = createAsyncThunk('listSpecimens/deleteSpecimens', async (specimenId) => {
+//     console.log('sss', specimenId)
+//     try {
+//         const res = await axiosInstance.delete(deleteSpecimensAPI + specimenId)
+//         toast.success(DELETE_SUCCESS, toastCss)
+//         return specimenId
+//     } catch (error) {
+//         toast.error(DELETE_FAIL, toastCss)
 
-    }
-})
+//     }
+// })
 
 export const addSpecimens = createAsyncThunk('listSpecimens/addSpecimens', async (values) => {
     try {

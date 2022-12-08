@@ -31,6 +31,8 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [roleIds, setRoleIds] = useState([]);
     const [roleId, setRoleId] = useState();
 
+    const [oldData, setOldData] = useState();
+
     const validationSchema = yup.object({
         fullName: yup
             .string('Enter your name')
@@ -77,6 +79,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             )
             console.log(res.data)
             formik.setValues(res.data)
+            setOldData(res.data)
             setRoleId(res.data.roleId)
             setValue(res.data.birthdate)
         } catch (error) {
@@ -88,7 +91,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     useEffect(() => {
         if (userId > 0)
             fetchAccount(userId)
-    }, [userId, roleId])
+    }, [userId])
 
     const loadRole = async () => {
         try {
@@ -105,13 +108,23 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     }, [])
 
 
+    const handleCancel = () => {
+        formik.values.salary = oldData.salary
+        formik.values.fullName = oldData.fullName
+        formik.values.phone = oldData.phone
+        formik.values.email = oldData.email
+        setValue(oldData.birthdate)
+        setRoleId(oldData.roleId)
+        setModalUpdateOpen(false)
+    }
+
     return (
         <>
             <Modal
                 title="Thông tin nhân viên"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalUpdateOpen(false)}
+                onCancel={handleCancel}
             >
                 {loading === false && <>
                     <TextField

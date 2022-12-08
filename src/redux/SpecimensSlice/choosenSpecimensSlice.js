@@ -1,19 +1,23 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { getSpecimensByIdAPI } from "../../config/baseAPI"
+import { toast } from "react-toastify"
+import { deleteSpecimensAPI, getSpecimensByIdAPI } from "../../config/baseAPI"
+import { DELETE_FAIL, DELETE_SUCCESS } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
+import { toastCss } from "../toastCss"
 
 const initState = {
     choosenSpecimens: {},
     status: false,
     statusSpecimens: false,
-    statusDeletespecimens: false,
     specimensName: '',
     patientName: '',
     amount: '',
     unitPrice: '',
     receiveDate: '',
     deliveryDate: '',
-    dateRecord: ''
+    dateRecord: '',
+    statusDeleteSpecimens: false,
+    isDeleteSpecimens: false,
 
 }
 const choosenSpecimensSlice = createSlice({
@@ -60,6 +64,12 @@ const choosenSpecimensSlice = createSlice({
                 state.deliveryDate = action.payload.deliveryDate;
                 state.dateRecord = action.payload.date;
             })
+            .addCase(deleteSpecimens.pending, (state, action) => {
+                state.statusDeleteSpecimens = true
+            })
+            .addCase(deleteSpecimens.fulfilled, (state, action) => {
+                state.isDeleteSpecimens = true
+            })
     }
 })
 export const fetchSpecimens = createAsyncThunk('specimens/fetchSpecimens', async (specimenId) => {
@@ -73,6 +83,18 @@ export const fetchSpecimens = createAsyncThunk('specimens/fetchSpecimens', async
         console.log(error)
     }
 })
-export const { setChoosenSpecimens, setSpecimensName, setPatientName, setAmount,setUnitPrice,setReceiveDate,setDeliveryDate,setDateRecord, setMessage} = choosenSpecimensSlice.actions;
+
+export const deleteSpecimens = createAsyncThunk('listSpecimens/deleteSpecimens', async (specimenId) => {
+    console.log('sss', specimenId)
+    try {
+        const res = await axiosInstance.delete(deleteSpecimensAPI + specimenId)
+        toast.success(DELETE_SUCCESS, toastCss)
+        return specimenId
+    } catch (error) {
+        toast.error(DELETE_FAIL, toastCss)
+
+    }
+})
+export const { setChoosenSpecimens, setSpecimensName, setPatientName, setAmount, setUnitPrice, setReceiveDate, setDeliveryDate, setDateRecord, setMessage } = choosenSpecimensSlice.actions;
 export default choosenSpecimensSlice.reducer;
 

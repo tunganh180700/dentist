@@ -18,6 +18,8 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const serviceId = useSelector(state => state.modal.serviceId);
     const [categoryServiceId, setCategoryId] = useState();
 
+    const [oldData, setOldData] = useState();
+
     const [value, setValue] = useState(null);
 
     const validationSchema = yup.object({
