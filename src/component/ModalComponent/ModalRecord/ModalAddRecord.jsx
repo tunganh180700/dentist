@@ -54,17 +54,17 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
 
     const validationSchema = yup.object({
         reason: yup
-            .string('Nhập lý do đến khám')
-            .required('Đề nghị nhập lý do đến khám'),
-        diagnostic: yup
-            .string('Nhập chẩn đoán')
-            .required('Đề nghị nhập lý do đến khám'),
-        causal: yup
-            .string('Nhập nguyên nhân')
-            .required('Đề nghị nhập nguyên nhân'),
-        treatment: yup
-            .string('Điều trị')
-            .required('Đề nghị nhập cách điều trị'),
+            .string('Enter your name')
+            .required('Your name is required'),
+        price: yup
+            .string("Enter your phone")
+            .required("Phone is required"),
+        discount: yup
+            .string("Enter your password")
+            .required("Password is required"),
+        status: yup
+            .string("Enter your email")
+            .required("Email is required"),
     });
 
     const loadServiceOption = async () => {
@@ -93,7 +93,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
             note: "",
             treatment: ""
         },
-        validationSchema: validationSchema,
+        // validationSchema: validationSchema,
         onSubmit: (values) => {
             values.date = moment(value.$d).format(validationDate);
             const serviceDTOs = [{
@@ -117,7 +117,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                 values: values
             }
             console.log("aaa", values)
-
+            
 
             console.log("ser list", values.date)
             console.log("hay", serviceDTOs)
@@ -173,35 +173,13 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
 
     const handleCancel = () => {
         setModalAddOpen(false)
-
-
-        formik.values.reason = ""
-        formik.errors.reason = ""
-
-        formik.values.diagnostic = ""
-        formik.errors.diagnostic = ""
-
-        formik.values.causal = ""
-        formik.errors.causal = ""
-
-        formik.values.marrowRecord = ""
-        formik.errors.marrowRecord = ""
-
-        formik.values.note = ""
-        formik.errors.note = ""
-
-        formik.values.treatment = ""
-        formik.errors.treatment = ""
-
-        formik.resetForm()
-
     }
 
     const handleServiceChange = (index, newsServiceId) => {
         const serviceInfo = serviceIds.find((s) => s.serviceId === newsServiceId
         )
         setRows(prev => {
-            prev[index] = { ...prev[index], ...serviceInfo }
+            prev[index] = {...prev[index], ...serviceInfo}
             prev[index].isNew = 1
             return _.cloneDeep(prev)
         })
@@ -268,7 +246,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             autoFocus
                             onChange={formik.handleChange}
                         />
-                        {formik.errors.reason && formik.touched.reason && <Typography style={{ color: 'red' }}>{formik.errors.reason}</Typography>}
                         <TextField
                             margin="normal"
                             required
@@ -281,7 +258,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             autoFocus
                             onChange={formik.handleChange}
                         />
-                        {formik.errors.diagnostic && formik.touched.diagnostic && <Typography style={{ color: 'red' }}>{formik.errors.diagnostic}</Typography>}
                         <TextField
                             margin="normal"
                             required
@@ -294,7 +270,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             autoFocus
                             onChange={formik.handleChange}
                         />
-                        {formik.errors.causal && formik.touched.causal && <Typography style={{ color: 'red' }}>{formik.errors.causal}</Typography>}
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 label="Ngày sinh"
@@ -309,6 +284,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                         </LocalizationProvider>
                         <TextField
                             margin="normal"
+                            required
                             fullWidth
                             id="marrowRecord"
                             label="Lưu ý về tủy"
@@ -320,6 +296,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                         />
                         <TextField
                             margin="normal"
+                            required
                             fullWidth
                             id="note"
                             label="Ghi chú"
@@ -341,7 +318,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             autoFocus
                             onChange={formik.handleChange}
                         />
-                        {formik.errors.treatment && formik.touched.treatment && <Typography style={{ color: 'red' }}>{formik.errors.treatment}</Typography>}
                     </div>
                     <div className="table" style={{ marginLeft: "150px" }}>
                         {isEdit ? (
@@ -392,9 +368,9 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                                         labelId="status"
                                                         id="status"
                                                         value={item.status || ""}
-                                                        onChange={(e) =>
-                                                            setListTreatingService((prev) => {
-                                                                prev[index].status = e.target.value;
+                                                        onChange={(e) => 
+                                                            setListTreatingService((prev)=> {
+                                                                prev[index].status=e.target.value;
                                                                 return _.cloneDeep(prev)
                                                             })
                                                             // setStatus(e.target.value)
@@ -459,10 +435,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                                         <input
                                                             value={i.serviceDiscount}
                                                             name="discount"
-                                                            onChange={(e) =>
+                                                            onChange={(e) => 
                                                                 // setServiceDiscount(e.target.value)
-                                                                setRows((prev) => {
-                                                                    prev[index].discount = e.target.value;
+                                                                setRows((prev)=> {
+                                                                    prev[index].discount=e.target.value;
                                                                     return _.cloneDeep(prev)
                                                                 })
                                                             }
@@ -477,8 +453,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                                                     id="status"
                                                                     value={i.status || ""}
                                                                     onChange={(e) => {
-                                                                        setRows((prev) => {
-                                                                            prev[index].status = e.target.value;
+                                                                        setRows((prev)=> {
+                                                                            prev[index].status=e.target.value;
                                                                             return _.cloneDeep(prev)
                                                                         })
                                                                     }}
