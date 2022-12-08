@@ -38,6 +38,7 @@ const Routing = () => {
                 <Route path='/income' element={<IncomeManagement />} />
                 <Route path='/bill' element={<BillManagement />} />
                 <Route path='/' element={<HomePage />} />
+                <Route path='/forgot-password' element={<ForgotPassword />} />
                 <Route path='*' element={<>404 Error</>} />
             </Routes>
         </Router>
