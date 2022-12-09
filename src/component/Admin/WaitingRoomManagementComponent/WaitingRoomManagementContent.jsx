@@ -25,6 +25,8 @@ const WaitingRoomManagementContent = () => {
     const totalElements = useSelector(state => state.listWaiting.totalElements)
     const [modalConfirmWaitingOpen, setModalConfirmWaitingOpen] = useState(false);
     const [role, setRole] = useState(null);
+    const [u, setU] = useState(true);
+
 
     const loadWaitingList = () => {
         dispatch(fetchAllWaiting({
@@ -63,14 +65,19 @@ const WaitingRoomManagementContent = () => {
         loadWaitingList();
     }, [currentPage])
 
-    const updateWaiting = (waitingId) => {
-        try {
-            axiosInstance.post(updateWaitingAPI + waitingId);
-            loadWaitingList();
-            toast("Gọi bệnh nhân thành công");
-        } catch (error) {
-            toast("Gọi bệnh nhân không thành công");
-        }
+    // useEffect(() => {
+    
+    // }, [u])
+
+    const updateWaiting = async (id) => {
+        axiosInstance.post(updateWaitingAPI + id)
+            .then(res => {
+                loadWaitingList();
+                toast("Gọi bệnh nhân thành công");
+            })
+            .catch(err => {
+                toast("Gọi bệnh nhân không thành công");
+            });
     }
 
     const getStatusStr = (status) => {

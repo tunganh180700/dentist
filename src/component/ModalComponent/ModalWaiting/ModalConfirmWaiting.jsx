@@ -42,14 +42,15 @@ const ModalConfirmWaiting = ({ modalConfirmWaitingOpen, setModalConfirmWaitingOp
     }, [])
     // }, [currentPage])
 
-    const confirmWaiting = (waitingId,isAttend) => {
-        try {
-            axiosInstance.post(confirmWaitingAPI + waitingId + '?isAttend=' + isAttend);
-            loadConfirmWatingList();
-            toast("Xác nhận khám thành công");
-        } catch (error) {
-            toast("Xác nhận khám không thành công");
-        }
+    const confirmWaiting = async (waitingId, isAttend) => {
+        axiosInstance.post(confirmWaitingAPI + waitingId + '?isAttend=' + isAttend)
+            .then(res => {
+                loadConfirmWatingList();
+                toast("Xác nhận khám thành công");
+            })
+            .catch(err => {
+                toast("Xác nhận khám không thành công");
+            });
     }
 
     return (
@@ -62,20 +63,20 @@ const ModalConfirmWaiting = ({ modalConfirmWaitingOpen, setModalConfirmWaitingOp
                 <Box sx={{ ...style }}>
                     <Table size="small" style={{ marginTop: "15px" }}>
                         <TableBody>
-                        <TableRow>Danh sách bệnh nhận đến lượt khám</TableRow>
+                            <TableRow>Danh sách bệnh nhận đến lượt khám</TableRow>
                             {listConfirmWaiting.map((item) =>
                                 <TableRow key={item.waitingRoomId}>
                                     <TableCell>Bệnh nhân {item.patientName}</TableCell>
                                     <TableCell>
                                         <IconButton aria-label="edit" onClick={() => {
-                                           confirmWaiting(item.waitingRoomId,1)
+                                            confirmWaiting(item.waitingRoomId, 1)
                                         }}>
                                             Có khám
                                         </IconButton>
                                     </TableCell>
                                     <TableCell>
                                         <IconButton aria-label="edit" onClick={() => {
-                                            confirmWaiting(item.waitingRoomId,0)
+                                            confirmWaiting(item.waitingRoomId, 0)
                                         }}>
                                             Không khám
                                         </IconButton>
