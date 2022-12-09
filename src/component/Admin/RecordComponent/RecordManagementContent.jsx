@@ -26,6 +26,9 @@ const RecordManagementContent = () => {
     const [modalDetailOpen, setModalDetailOpen] = useState(false);
     const patientName = useSelector(state => state.choosenPatient.patientName)
 
+    const isAddRecord = useSelector(state => state.listRecord.isAddRecord)
+    const isDeleteRecord = useSelector(state => state.listRecord.isDeleteRecord)
+
     console.log("pagezise.", totalPages)
     const { id } = useParams()
     const [recordList, setRecordList] = useState([])
@@ -45,7 +48,7 @@ const RecordManagementContent = () => {
     }
     useEffect(() => {
         getDetail(id)
-    }, [id, currentPage, pageSize])
+    }, [id, currentPage, pageSize, isAddRecord, isDeleteRecord])
 
     return (
         <>
@@ -136,13 +139,15 @@ const RecordManagementContent = () => {
                 </TableBody>
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
-                <Pagination
-                    count={totalPages === 1 ? 0 : totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
             <div>
                 <ModalAddRecord modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />

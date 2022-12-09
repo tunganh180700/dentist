@@ -30,8 +30,8 @@ const TimekeepingManagementContent = () => {
     const checkInOut = async () => {
         setLoading(true)
         try {
-            const res = await axiosInstance.post(isCheckin ? CHECK_IN : CHECK_OUT )
-            if(res.status === 200) setCount(prevCount => prevCount + 1)
+            const res = await axiosInstance.post(isCheckin ? CHECK_IN : CHECK_OUT)
+            if (res.status === 200) setCount(prevCount => prevCount + 1)
         } catch (error) {
             if (!isCheckin) toast.error('Chỉ có thể checkout sau 3 tiếng!', toastCss)
         }
@@ -58,13 +58,15 @@ const TimekeepingManagementContent = () => {
             </div>
             <TableTimeKeepingManagement listTimekeeping={listTimekeeping} role={role} currentPage={currentPage} />
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
-                <Pagination
-                    count={totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
         </>
     )
