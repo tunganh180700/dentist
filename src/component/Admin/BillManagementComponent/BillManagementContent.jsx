@@ -95,13 +95,15 @@ const BillManagementContent = () => {
                 </TableBody>
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
-                <Pagination
-                    count={totalPages === 1 ? 0 : totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
             <div>
                 <ModalDetailBill modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />

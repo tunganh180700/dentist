@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Pagination, Typography, IconButton } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { setMaterialExportId} from '../../../redux/modalSlice';
+import { setMaterialExportId } from '../../../redux/modalSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -41,7 +41,7 @@ const MaterialExportManagementContent = () => {
             page: currentPage
         },
         ));
-    }, [currentPage,isUpdateMaterialExport, isDeleteMaterialExport,isAddMaterialExport])
+    }, [currentPage, isUpdateMaterialExport, isDeleteMaterialExport, isAddMaterialExport])
 
     return (
         <>
@@ -53,7 +53,7 @@ const MaterialExportManagementContent = () => {
             >
                 Quản lý xuất vật liệu
             </Typography>
-            <IconButton aria-label="add"   style={{borderRadius: '5%'}} onClick={() => {
+            <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
                 setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
@@ -71,7 +71,7 @@ const MaterialExportManagementContent = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                {listMaterialExport.map((item, index) =>
+                    {listMaterialExport.map((item, index) =>
                         <TableRow key={item.materialExportId}>
                             <TableCell>{item.materialName}</TableCell>
                             <TableCell>{item.amount}</TableCell>
@@ -95,17 +95,19 @@ const MaterialExportManagementContent = () => {
                                 </IconButton>
                             </TableCell>
                         </TableRow>
-   )}
+                    )}
                 </TableBody>
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Pagination
-                    count={totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
             <div>
                 <ModalUpdateMaterialExport modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />

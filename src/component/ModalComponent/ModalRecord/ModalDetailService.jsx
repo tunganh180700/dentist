@@ -16,7 +16,7 @@ const ModalDetailService = ({ modalDetailOpen, setModalDetailOpen }) => {
     const listService = useSelector(state => state.listRecord.listService)
 
 
-    console.log(listService)
+    console.log(patientRecordId)
     const handleCancel = () => {
         setModalDetailOpen(false)
     }
@@ -26,7 +26,7 @@ const ModalDetailService = ({ modalDetailOpen, setModalDetailOpen }) => {
         if (patientRecordId > 0)
             dispatch(fetchRecord(patientRecordId))
 
-    }, [patientRecordId, dispatch])
+    }, [patientRecordId])
 
     return (
         <>
