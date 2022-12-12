@@ -14,12 +14,13 @@ const ModalAddLabo = ({ modalAddOpen, setModalAddOpen }) => {
 
     const validationSchema = yup.object({
         laboName: yup
-            .string('Enter labo name')
-            .required('Your material name is required'),
+            .string('Nhập Labo')
+            .max(250, 'Labo không thể quá 250 ký tự.')
+            .required('Labo là bắt buộc.'),
         phone: yup
-            .string("Enter your phone")
-            .matches(regexPhone, "Invalid Phone")
-            .required("Phone is required")
+            .string("Nhập số điện thoại")
+            .matches(regexPhone, "Số điện thoại không được nhập chữ, kí tự, bắt buộc phải 10 số bắt đầu là 03, 05, 07 08, 09.")
+            .required("Số điện thoại là bắt buộc."),
     });
 
     const formik = useFormik({

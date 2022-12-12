@@ -13,6 +13,7 @@ import { fetchNewReceipt } from "../../../redux/ReceiptSlice/choosenNewReceiptSl
 import { addNewReceipt } from '../../../redux/ReceiptSlice/listReceiptSlice';
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { regexNumber } from "../../../config/validation";
 
 const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
     const [loading, setLoading] = useState();
@@ -20,17 +21,17 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
     const patientName = useSelector(state => state.choosenBill.patientName)
     const debit = useSelector(state => state.choosenNewReceipt.debit)
     const patientId = useSelector(state => state.choosenBill.patientId)
-    
+
     const newServices = useSelector(state => state.choosenNewReceipt.newServices)
-    
+
     const dispatch = useDispatch();
 
     const validationSchema = yup.object({
 
         payment: yup
-            .string('Enter amount')
-            .matches("Only number")
-            .required('Nhập lại payment')
+            .string('Nhập đơn giá')
+            .matches(regexNumber, "Đơn giá không được nhập chữ, kí tự, số âm.")
+            .required('Đơn giá là bắt buộc.')
 
     });
 
@@ -40,27 +41,27 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
             if (treatmentId > 0) {
                 dispatch(fetchBill(treatmentId))
                 dispatch(fetchNewReceipt(treatmentId))
-                
+
             }
         } catch (error) {
             console.log(error)
         }
         setLoading(false)
-    }, [treatmentId,fetchBill])
+    }, [treatmentId, fetchBill])
 
     const formik = useFormik({
         initialValues: {
             payment: "",
         },
-        // validationSchema: validationSchema,
+        validationSchema: validationSchema,
         onSubmit: (values) => {
             const addValue = {
                 patientId: patientId,
                 values: values
 
             }
-          
-            console.log("hien thi values",values.patientId);
+
+            console.log("hien thi values", values.patientId);
             dispatch(addNewReceipt(addValue))
             setModalAddReceiptOpen(false)
             formik.handleReset()
@@ -71,7 +72,7 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
         <>
             <Modal
                 title="Thêm Receipt"
-                style={{fontWeight:'bold'}}
+                style={{ fontWeight: 'bold' }}
                 open={modalAddReceiptOpen}
                 onOk={formik.handleSubmit}
                 onCancel={() => setModalAddReceiptOpen(false)}
@@ -91,16 +92,16 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
                     component="h1"
                     color="inherit"
                     noWrap
-                   
+
                 >
                     Nợ cũ: {debit}
                 </Typography>
 
                 <TableHead >
                     <TableRow >
-                        <TableCell style={{fontWeight:'bold'}}>Dịch vụ mới </TableCell>
-                        <TableCell style={{fontWeight:'bold'}}>Giá tiền</TableCell>
-                        <TableCell style={{fontWeight:'bold'}}>Giảm giá</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Dịch vụ mới </TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Giá tiền</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Giảm giá</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -121,11 +122,11 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
                     label="Tiền thanh toán"
                     name="payment"
                     autoComplete="payment"
-                    value= {formik.values.payment}
+                    value={formik.values.payment}
                     autoFocus
                     onChange={formik.handleChange}
                 />
-
+                {formik.errors.payment && formik.touched.payment && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.payment}</Typography>}
 
             </Modal>
         </>

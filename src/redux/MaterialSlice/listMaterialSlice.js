@@ -3,7 +3,7 @@ import axios from "axios"
 import { listMaterialAPI, updateMaterialAPI, deleteMaterialAPI, addMaterialAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
-import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, DELETE_FAIL_MATERIAL } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 
 const initState = {
@@ -100,7 +100,7 @@ export const deleteMaterial = createAsyncThunk('listMaterial/deleteMaterial', as
         toast.success(DELETE_SUCCESS, toastCss)
         return materialId
     } catch (error) {
-        toast.error(DELETE_FAIL, toastCss)
+        toast.error(DELETE_FAIL_MATERIAL, toastCss)
 
     }
 })

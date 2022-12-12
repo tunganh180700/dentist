@@ -19,14 +19,6 @@ const HeaderAdmin = ({ title }) => {
                 </div>
                 <Typography
                     component="h1"
-                    variant="h4"
-                    color="inherit"
-                    noWrap
-                >
-                    {title}
-                </Typography>
-                <Typography
-                    component="h1"
                     variant="h6"
                     noWrap
                 >

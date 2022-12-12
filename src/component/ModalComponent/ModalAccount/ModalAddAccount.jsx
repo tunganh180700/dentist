@@ -13,7 +13,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { regexEmail, regexNumber, regexPhone, regexPositiveNumber, validationDate } from '../../../config/validation';
+import { regexEmail, regexNumber, regexPassword, regexPhone, regexPositiveNumber, validationDate } from '../../../config/validation';
 import axios from 'axios';
 import { listRoleAPI } from '../../../config/baseAPI';
 import moment from 'moment/moment';
@@ -29,23 +29,24 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
 
     const validationSchema = yup.object({
         fullName: yup
-            .string('Enter your name')
-            .required('Your name is required'),
+            .string('Nhập họ tên')
+            .required('Họ tên là bắt buộc.'),
         phone: yup
-            .string("Enter your phone")
-            .matches(regexPhone, "Invalid Phone")
-            .required("Phone is required"),
+            .string("Nhập số điện thoại")
+            .matches(regexPhone, "Số điện thoại không được nhập chữ, kí tự, bắt buộc phải 10 số bắt đầu là 03, 05, 07 08, 09.")
+            .required("Số điện thoại là bắt buộc."),
         password: yup
             .string("Enter your password")
-            .required("Password is required"),
+            .matches(regexPassword, "Mật khẩu phải là từ 6 đến 32 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.")
+            .required("Trường mật khẩu là bắt buộc."),
         email: yup
-            .string("Enter your email")
-            .matches(regexEmail, "Invalid email")
-            .required("Email is required"),
+            .string("Nhập email")
+            .matches(regexEmail, "Email không đúng với định dạng.")
+            .required("Trường email là bắt buộc."),
         salary: yup
-            .string('Enter your salary')
-            .matches(regexNumber, "Only number or positive number")
-            .required('Salary is required')
+            .string('Nhập số lương')
+            .matches(regexNumber, "Lương không được nhập chữ, kí tự, số âm.")
+            .required('Lương là bắt buộc.')
     });
 
 
@@ -107,7 +108,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
     return (
         <>
             <Modal
-                title="Thêm tài khoản"
+                title="Thêm Tài Khoản"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
                 onCancel={handleCancel}
@@ -130,7 +131,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     required
                     fullWidth
                     id="password"
-                    label="Mat khau"
+                    label="Mật khẩu"
                     name="password"
                     autoComplete="password"
                     autoFocus
@@ -138,6 +139,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     type={"password"}
                     onChange={formik.handleChange}
                 />
+                 {formik.errors.password && formik.touched.password && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.password}</Typography>}
                 <TextField
                     margin="normal"
                     required

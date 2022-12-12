@@ -59,8 +59,9 @@ const AccountManagementContent = () => {
                 variant="h5"
                 color="inherit"
                 noWrap
+                fontWeight="bold"
             >
-                Quản lý tài khoản
+                Danh Sách Tài Khoản
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
                 setModalAddOpen(true)
@@ -70,12 +71,12 @@ const AccountManagementContent = () => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Họ tên</TableCell>
-                        <TableCell>Tên đăng nhập</TableCell>
-                        <TableCell>Số điện thoại</TableCell>
-                        <TableCell>Email</TableCell>
-                        <TableCell>Ngày sinh</TableCell>
-                        <TableCell>Quyền hạn</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Họ tên</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên đăng nhập</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Số điện thoại</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Email</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Ngày sinh</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Quyền hạn</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>

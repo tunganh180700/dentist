@@ -25,18 +25,21 @@ const ModalUpdateService = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const validationSchema = yup.object({
         serviceName: yup
             .string('Nhập loại dịch vụ')
-            .required('Kiểm tra và nhập lại tên loại dịch vụ'),
+            .max(250, 'Service không thể quá 250 ký tự.')
+            .required('Service là bắt buộc.'),
         unit: yup
             .string('Nhập đơn vị')
-            .required('Kiểm tra và nhập lại đơn vị'),
+            .max(50, 'Đơn vị không thể quá 50 ký tự.')
+            .matches(regexNumber, 'Đơn vị không được nhập chữ, kí tự, số âm.')
+            .required('Đơn vị là bắt buộc.'),
         marketPrice: yup
-            .string('Nhập giá thị trường')
-            .matches(regexNumber, "Only number or positive number")
-            .required('Kiểm tra và nhập giá thị trường'),
+            .string('Nhập đơn giá')
+            .matches(regexNumber, "Đơn giá không được nhập chữ, kí tự, số âm.")
+            .required('Đơn giá là bắt buộc.'),
         price: yup
-            .string('Nhập giá nha khoa Nguyễn Trần')
-            .matches(regexNumber, "Only number or positive number")
-            .required('Kiểm tra và nhập lại giá nha khoa')
+            .string('Nhập đơn giá')
+            .matches(regexNumber, "Đơn giá không được nhập chữ, kí tự, số âm.")
+            .required('Đơn giá là bắt buộc.')
     });
 
 

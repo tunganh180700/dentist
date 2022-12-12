@@ -17,11 +17,11 @@ const TableTimeKeepingManagement = (props) => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>STT</TableCell>
-                        {role === 'Admin' && <TableCell>Tên</TableCell>}
-                        <TableCell>Thời gian check-in</TableCell>
-                        <TableCell>Thời gian check-out</TableCell>
-                        <TableCell>Trạng thái</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>STT</TableCell>
+                        {role === 'Admin' && <TableCell style={{ fontWeight: 'bold' }}>Tên</TableCell>}
+                        <TableCell style={{ fontWeight: 'bold' }}>Thời gian check-in</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Thời gian check-out</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

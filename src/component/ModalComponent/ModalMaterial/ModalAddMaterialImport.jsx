@@ -31,16 +31,17 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
 
     const validationSchema = yup.object({
         supplyName: yup
-            .string('Enter supplyName')
-            .required('Kiểm tra và nhập lại hãng cung cấp'),
+            .string('Nhập đơn vị cung cấp')
+            .max(250, 'Đơn vị cung cấp không thể quá 250 ký tự.')
+            .required('Đơn vị cung cấp là bắt buộc.'),
         amount: yup
-            .string('Enter amount')
-            .matches(regexNumber, "Only number")
-            .required('Kiểm tra và nhập lại số lượng'),
+            .string('Nhập số lượng')
+            .matches(regexNumber, "Số lượng không được nhập chữ, kí tự, số âm.")
+            .required('Số lượng là bắt buộc.'),
         unitPrice: yup
-            .string('Enter unitPrice')
-            .matches(regexNumber, "Only number")
-            .required('Kiểm tra và nhập lại đơn giá'),
+            .string('Nhập đơn giá')
+            .matches(regexNumber, "Đơn giá không được nhập chữ, kí tự, số âm.")
+            .required('Đơn giá là bắt buộc.')
 
     });
 
@@ -110,7 +111,7 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     return (
         <>
             <Modal
-                title="Thêm vật liệu nhập khẩu"
+                title="Thêm Vật Liệu Nhập Khẩu"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
                 onCancel={handleCancel}

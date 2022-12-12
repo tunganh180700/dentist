@@ -13,8 +13,9 @@ const ModalAddCategory = ({ modalAddCategoryOpen, setModalAddCategoryOpen }) => 
 
     const validationSchema = yup.object({
         categoryServiceName: yup
-            .string('Enter Category name')
-            .required('Hãy nhập tên loại dịch vụ')
+            .string('Nhập category')
+            .max(250, 'Category không thể quá 250 ký tự.')
+            .required('Category là bắt buộc.')
     });
 
     const formik = useFormik({

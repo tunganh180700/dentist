@@ -39,6 +39,14 @@ const PatientManagementContent = () => {
     const isSearchPatient = useSelector(state => state.listPatient.isSearchPatient);
     const [loading, setLoading] = useState(false)
 
+    const [role, setRole] = useState(null);
+
+    useEffect(() => {
+        const role = localStorage.getItem('role');
+        setRole(role);
+    }, []);
+
+
     const [searchValue, setSearchValue] = useState({
         name: "",
         birthdate: "",
@@ -140,13 +148,19 @@ const PatientManagementContent = () => {
                 noWrap
                 fontWeight="bold"
             >
-                Quản lý bệnh nhân
+                Danh Sách Bệnh Nhân
             </Typography>
-            <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
-                setModalAddOpen(true)
-            }}>
-                <AddIcon /> Thêm mới
-            </IconButton>
+            {
+                role === 'Doctor' || role === 'Nurse' ?
+                    (<></>)
+                    : (
+                        <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
+                            setModalAddOpen(true)
+                        }}>
+                            <AddIcon /> Thêm mới
+                        </IconButton>
+                    )
+            }
             {loading === false && <>
                 <Table size="small" style={{ marginTop: "15px" }}>
                     <TableHead>

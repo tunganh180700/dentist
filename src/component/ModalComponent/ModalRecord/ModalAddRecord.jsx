@@ -28,7 +28,7 @@ import _ from "lodash";
 
 const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(new Date());
     const { id } = useParams()
     const [listTreatingService, setListTreatingService] = useState([])
 
@@ -54,23 +54,28 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
 
     const validationSchema = yup.object({
         reason: yup
-            .string('Enter your reason')
-            .required('Your reason is required'),
+            .string('Nhập lý do đến khám')
+            .max(250, "Lý do đến khám không được quá 250 ký tự.")
+            .required('Lý do đến khám là bắt buộc'),
         diagnostic: yup
-            .string('Enter your diagnostic')
-            .required('Your diagnostic is required'),
+            .string('Nhập chẩn đoán')
+            .required('Chẩn đoán là bắt buộc.'),
         causal: yup
-            .string('Enter your causal')
-            .required('Your causal is required'),
+            .string('Nhập nguyên nhân')
+            .max(250, "Nguyên nhân không được quá 250 ký tự.")
+            .required('Nguyên nhân là bắt buộc.'),
         marrowRecord: yup
-            .string('Enter your marrowRecord')
-            .required('Your marrowRecord is required'),
+            .string('Nhập lưu ý về tủy')
+            .max(250, "Lưu ý về tuỷ không được quá 250 ký tự.")
+            .required('Lưu ý về tuỷ là bắt buộc.'),
         note: yup
-            .string('Enter your note')
-            .required('Your note is required'),
+            .string('Nhập ghi chú')
+            .max(250, "Ghi chú không được quá 250 ký tự.")
+            .required('Ghi chú là bắt buộc.'),
         treatment: yup
-            .string('Enter your treatment')
-            .required('Your treatment is required'),
+            .string('Nhập điều trị')
+            .max(250, "Điều trị không được quá 250 ký tự.")
+            .required('Điều trị là bắt buộc.'),
         // discount: yup
         //     .string("Enter your discount")
         //     .matches(regexNumber, "Only number or positive number")
@@ -260,7 +265,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     return (
         <>
             <Modal
-                title="Thêm hồ sơ"
+                title="Thêm Hồ Sơ"
                 open={modalAddOpen}
                 width="70%"
                 onOk={formik.handleSubmit}
@@ -309,9 +314,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                         {formik.errors.causal && formik.touched.causal && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.causal}</Typography>}
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                                label="Ngày sinh"
+                                label="Ngày khám"
                                 name="birthdate"
                                 value={value}
+                                disablePast={true}
                                 onChange={(newValue) => {
                                     setValue(newValue);
                                     console.log(newValue)

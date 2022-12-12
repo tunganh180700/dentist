@@ -59,7 +59,7 @@ const RecordManagementContent = () => {
                 noWrap
                 fontWeight="bold"
             >
-                Hồ sơ bệnh án của {patientName}
+                Hồ Sơ Bệnh Án Của {patientName}
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
                 setModalAddOpen(true)

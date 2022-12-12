@@ -50,8 +50,9 @@ const MaterialImportManagementContent = () => {
                 variant="h5"
                 color="inherit"
                 noWrap
+                fontWeight='bold'
             >
-                Quản lý nhập vật liệu
+                Quản Lý Nhập Vật Liệu
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
                 setModalAddOpen(true)
@@ -61,12 +62,12 @@ const MaterialImportManagementContent = () => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Tên vật liệu</TableCell>
-                        <TableCell>Tên cung cấp</TableCell>
-                        <TableCell>Date</TableCell>
-                        <TableCell>số lượng</TableCell>
-                        <TableCell>Đơn giá</TableCell>
-                        <TableCell>Tổng giá</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên vật liệu</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên cung cấp</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Date</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>số lượng</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Đơn giá</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tổng giá</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>

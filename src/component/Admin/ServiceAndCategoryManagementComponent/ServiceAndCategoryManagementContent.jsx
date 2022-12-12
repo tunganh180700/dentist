@@ -110,8 +110,9 @@ const ServiceAndCategoryManagementContent = () => {
                 variant="h5"
                 color="inherit"
                 noWrap
+                fontWeight="bold"
             >
-                Quản lý bảng giá dịch vụ nha khoa
+                Bảng Giá Dịch Vụ Nha Khoa
             </Typography>
             {loading === false && <>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -158,16 +159,16 @@ const ServiceAndCategoryManagementContent = () => {
                 <Table size="small" style={{ marginTop: "15px", textAlign: 'center' }}>
                     <TableHead>
                         <TableRow >
-                            <TableCell>Dịch vụ</TableCell>
-                            <TableCell>Đơn vị</TableCell>
-                            <TableCell>Giá trên thị trường</TableCell>
-                            <TableCell>Giá tại nha khoa Nguyễn Trần</TableCell>
+                            <TableCell style={{ fontWeight: 'bold' }}>Dịch vụ</TableCell>
+                            <TableCell style={{ fontWeight: 'bold' }}>Đơn vị</TableCell>
+                            <TableCell style={{ fontWeight: 'bold' }}>Giá trên thị trường</TableCell>
+                            <TableCell style={{ fontWeight: 'bold' }}>Giá tại nha khoa Nguyễn Trần</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody size="medium">
                         {serviceIds?.map((item, index) =>
                             <TableRow style={{ textAlign: 'center' }} key={item.serviceId} size="medium">
-                                <TableCell size="medium" style={{ fontWeight: 'bold', fontSize: '18px' }}>{item.serviceName}</TableCell>
+                                <TableCell size="medium">{item.serviceName}</TableCell>
                                 <TableCell>{item.unit}</TableCell>
                                 <TableCell>{item.marketPrice}</TableCell>
                                 <TableCell>{item.price}</TableCell>

@@ -49,9 +49,10 @@ const TimekeepingManagementContent = () => {
                 component="h1"
                 variant="h5"
                 color="inherit"
+                fontWeight="bold"
                 noWrap
             >
-                Chấm công
+                Danh Sách Chấm Công
             </Typography>
             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                 {role !== 'Admin' && <LoadingButton type='primary' onClick={handleOnClick} loading={loading}>Check {isCheckin ? "in" : "out"}</LoadingButton>}

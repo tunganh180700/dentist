@@ -12,7 +12,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
-import { regexEmail, regexPhone, validationDate } from '../../../config/validation';
+import { regexEmail, regexName, regexPhone, validationDate } from '../../../config/validation';
 import { useFormik } from 'formik';
 import moment from 'moment';
 import { addPatient } from '../../../redux/PatienSlice/listPatientSlice';
@@ -24,18 +24,20 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
 
     const validationSchema = yup.object({
         patientName: yup
-            .string('Enter your name')
-            .required('Your name is required'),
+            .string('Nhập họ tên')
+            .matches(regexName, 'Họ và tên không được nhập số hoặc kí tự đặc biệt, nhập từ 8 đến 32 ký tự.')
+            .required('Họ tên là bắt buộc.'),
         phone: yup
-            .string("Enter your phone")
-            .matches(regexPhone, "Invalid Phone")
-            .required("Phone is required"),
+            .string("Nhập số điện thoại")
+            .matches(regexPhone, "Số điện thoại không được nhập chữ, kí tự, bắt buộc phải 10 số bắt đầu là 03, 05, 07 08, 09.")
+            .required("Số điện thoại là bắt buộc."),
         email: yup
-            .string("Enter your email")
-            .matches(regexEmail, "Invalid email"),
+            .string("Nhập email")
+            .matches(regexEmail, "Email không đúng với định dạng."),
         address: yup
-            .string("Enter your address")
-            .required("Address is required"),
+            .string("Nhập địa chỉ")
+            .max(255, "Địa chỉ không thể quá 255 kí tự.")
+            .required("Địa chỉ là bắt buộc."),
     });
 
     const formik = useFormik({
@@ -94,7 +96,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
     return (
         <>
             <Modal
-                title="Thêm tài khoản"
+                title="Thêm Bệnh Nhân"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
                 onCancel={handleCancel}
@@ -111,7 +113,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.patientName && formik.touched.patientName && <Typography style={{ color: 'red' }}>{formik.errors.patientName}</Typography>}
+                {formik.errors.patientName && formik.touched.patientName && <Typography style={{ color: 'red', fontSize: '15px' }}>{formik.errors.patientName}</Typography>}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Ngày sinh"
@@ -137,7 +139,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
+                {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red', fontSize: '15px' }}>{formik.errors.phone}</Typography>}
                 <FormControl style={{ display: 'flex' }}>
                     <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginRight: "80%" }}>Gender</FormLabel>
                     <RadioGroup
@@ -164,7 +166,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.address && formik.touched.address && <Typography style={{ color: 'red' }}>{formik.errors.address}</Typography>}
+                {formik.errors.address && formik.touched.address && <Typography style={{ color: 'red', fontSize: '15px' }}>{formik.errors.address}</Typography>}
                 <TextField
                     margin="normal"
                     fullWidth
@@ -176,7 +178,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.email && formik.touched.email && <Typography style={{ color: 'red' }}>{formik.errors.email}</Typography>}
+                {formik.errors.email && formik.touched.email && <Typography style={{ color: 'red', fontSize: '15px' }}>{formik.errors.email}</Typography>}
                 <TextField
                     margin="normal"
                     fullWidth

@@ -35,9 +35,9 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const validationSchema = yup.object({
 
         amount: yup
-            .string('Enter amount')
-            .matches(regexNumber, "Only number")
-            .required('Your amount is required')
+            .string('Nhập số lượng')
+            .matches(regexNumber, "Số lượng không được nhập chữ, kí tự, số âm.")
+            .required('Số lượng là bắt buộc.'),
 
     });
 

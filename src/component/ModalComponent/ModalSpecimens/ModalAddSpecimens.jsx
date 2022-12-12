@@ -145,7 +145,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
     return (
         <>
             <Modal
-                title="Theem mẫu thử nghiệm"
+                title="Thêm mẫu thử nghiệm"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
                 onCancel={() => setModalAddOpen(false)}

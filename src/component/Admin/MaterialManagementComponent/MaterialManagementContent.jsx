@@ -50,8 +50,9 @@ const MaterialManagementContent = () => {
                 variant="h5"
                 color="inherit"
                 noWrap
+                fontWeight='bold'
             >
-                Quản lý vật liệu
+                Danh Sách Vật Liệu
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
                 setModalAddOpen(true)
@@ -62,11 +63,11 @@ const MaterialManagementContent = () => {
                 <TableHead>
                     <TableRow>
 
-                        <TableCell>Tên vật liệu</TableCell>
-                        <TableCell>Đơn vị</TableCell>
-                        <TableCell>Số lượng</TableCell>
-                        <TableCell>Giá tiền</TableCell>
-                        <TableCell>Tổng tiền</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên vật liệu</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Đơn vị</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Số lượng</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Giá tiền</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tổng tiền</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
-import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, ADD_FAIL_RECEIPT, ADD_SUCCESS_RECEIPT } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 import { getListReceiptsByIdAPI, addNewReceiptByIdAPI } from "../../config/baseAPI"
 
@@ -51,24 +51,24 @@ const listReceiptsSlice = createSlice({
 export const fetchAllReceipts = createAsyncThunk('listReceipts/fetchAllReceipts', async (treatmentId) => {
     try {
         const res = await axiosInstance.get(getListReceiptsByIdAPI + treatmentId)
-        console.log("receipt here:",res.data)
+        console.log("receipt here:", res.data)
         return res.data
     } catch (error) {
         console.log(error)
     }
 })
 
-export const addNewReceipt = createAsyncThunk('listReceipts/addNewReceipt', async ({patientId,values}) => {
+export const addNewReceipt = createAsyncThunk('listReceipts/addNewReceipt', async ({ patientId, values }) => {
     try {
-       
+
         console.log(values)
         const res = await axiosInstance.post(addNewReceiptByIdAPI + patientId, values)
-        toast.success("Thêm phiếu thu thành công !!!!!", toastCss)
+        toast.success(ADD_SUCCESS_RECEIPT, toastCss)
         console.log(res.data)
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error('Thêm mới thất bại :(', toastCss)
+        toast.error(ADD_FAIL_RECEIPT, toastCss)
     }
 })
 

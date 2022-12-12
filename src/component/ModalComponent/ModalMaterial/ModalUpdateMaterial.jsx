@@ -22,19 +22,21 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
     const validationSchema = yup.object({
         materialName: yup
-            .string('Enter material name')
-            .required('Your material name is required'),
+            .string('Nhập tên vật liệu')
+            .max(255, 'Vật liệu không thể quá 255 ký tự.')
+            .required('Vật liệu là bắt buộc.'),
         unit: yup
-            .string('Enter unit')
-            .required('Your unit is required'),
+            .string('Nhập đơn vị')
+            .max(45, 'Đơn vị không thể quá 45 ký tự.')
+            .required('Đơn vị là bắt buộc.'),
         amount: yup
-            .string('Enter amount')
-            .matches(regexNumber, "Only number")
-            .required('Your amount is required'),
+            .string('Nhập số lượng')
+            .matches(regexNumber, "Số lượng không được nhập chữ, kí tự, số âm.")
+            .required('Số lượng là bắt buộc.'),
         price: yup
-            .string('Enter price')
-            .matches(regexNumber, "Only number")
-            .required('Your price is required')
+            .string('Nhập đơn giá')
+            .matches(regexNumber, "Đơn giá không được nhập chữ, kí tự, số âm.")
+            .required('Đơn giá là bắt buộc.')
     });
 
     const formik = useFormik({
@@ -85,14 +87,14 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         formik.touched.amount = ""
 
         formik.errors.price = ""
-        formik.touched.price     = ""
+        formik.touched.price = ""
         setModalUpdateOpen(false)
     }
 
     return (
         <>
             <Modal
-                title="Cập nhật vật liệu"
+                title="Cập Nhật Vật Liệu"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
                 onCancel={handleCancel}

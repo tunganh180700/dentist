@@ -49,18 +49,19 @@ const BillManagementContent = () => {
                 variant="h5"
                 color="inherit"
                 noWrap
+                fontWeight="bold"
             >
-                Quản lý hóa đơn
+                Danh Sách Hóa Đơn
             </Typography>
 
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow >
-                        <TableCell>Tên bệnh nhân</TableCell>
-                        <TableCell>Số điện thoại</TableCell>
-                        <TableCell>Giá gốc</TableCell>
-                        <TableCell>Giảm giá</TableCell>
-                        <TableCell>Tổng tiền</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên bệnh nhân</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Số điện thoại</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Giá gốc</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Giảm giá</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tổng tiền</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>

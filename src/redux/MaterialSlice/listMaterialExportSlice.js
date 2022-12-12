@@ -3,7 +3,7 @@ import axios from "axios"
 import { listMaterialExportAPI,updateMaterialExportAPI, addMaterialExportAPI, deleteMaterialExportAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
-import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, DELETE_FAIL_EXPORT_MATERIAL, UPDATE_FAIL_EXPORT_MATERIAL } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 
 const initState = {
@@ -88,7 +88,7 @@ export const updateMaterialExport = createAsyncThunk('listMaterialExport/updateM
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error(UPDATE_FAIL, toastCss)
+        toast.error(UPDATE_FAIL_EXPORT_MATERIAL, toastCss)
 
     }
 })
@@ -100,7 +100,7 @@ export const deleteMaterialExport = createAsyncThunk('listMaterialExport/deleteM
         toast.success(DELETE_SUCCESS, toastCss)
         return materialExportId
     } catch (error) {
-        toast.error(DELETE_FAIL, toastCss)
+        toast.error(DELETE_FAIL_EXPORT_MATERIAL, toastCss)
 
     }
 })

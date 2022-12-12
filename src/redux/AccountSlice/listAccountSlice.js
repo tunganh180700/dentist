@@ -3,7 +3,7 @@ import axios from "axios"
 import { listUserAPI, updateAccountAPI, deleteAccountAPI, addAccountAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
-import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, ADD_FAIL_ACCOUNT } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 
 const initState = {
@@ -90,7 +90,7 @@ export const updateAccount = createAsyncThunk('listAccount/updateAccount', async
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error(UPDATE_FAIL, toastCss)
+        toast.error(ADD_FAIL_ACCOUNT, toastCss)
 
     }
 })
@@ -125,7 +125,7 @@ export const addAccount = createAsyncThunk('listAccount/addAccount', async (valu
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error(error.response.data.message, toastCss)
+        toast.error(ADD_FAIL_ACCOUNT, toastCss)
     }
 })
 export const { setListAccount } = listAccountSlice.actions;

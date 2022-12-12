@@ -50,8 +50,9 @@ const MaterialExportManagementContent = () => {
                 variant="h5"
                 color="inherit"
                 noWrap
+                fontWeight='bold'
             >
-                Quản lý xuất vật liệu
+                Quản Lý Xuất Vật Liệu
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
                 setModalAddOpen(true)
@@ -61,11 +62,11 @@ const MaterialExportManagementContent = () => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Tên vật liệu</TableCell>
-                        <TableCell>Số lượng</TableCell>
-                        <TableCell>Đơn giá</TableCell>
-                        <TableCell>Tên bệnh nhân</TableCell>
-                        <TableCell>Date</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên vật liệu</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Số lượng</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Đơn giá</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên bệnh nhân</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Date</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>

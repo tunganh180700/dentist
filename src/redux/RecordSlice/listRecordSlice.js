@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { toast } from "react-toastify"
 import { addRecordAPI, deleteRecordAPI, patientRecordAPI, updateRecordAPI } from "../../config/baseAPI"
-import { DELETE_FAIL, DELETE_SUCCESS, UPDATE_FAIL, UPDATE_SUCCESS } from "../../config/constant"
+import { DELETE_FAIL, DELETE_FAIL_RECORD, DELETE_SUCCESS, UPDATE_FAIL, UPDATE_SUCCESS } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 import { toastCss } from "../toastCss"
 
@@ -86,7 +86,7 @@ export const deleteRecord = createAsyncThunk('listRecord/deleteRecord', async (r
         toast.success(DELETE_SUCCESS, toastCss)
         return recordId
     } catch (error) {
-        toast.error(DELETE_FAIL, toastCss)
+        toast.error(DELETE_FAIL_RECORD, toastCss)
 
     }
 })

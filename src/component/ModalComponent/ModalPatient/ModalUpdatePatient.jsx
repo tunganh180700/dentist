@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { getPatientByIdAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
-import { regexEmail, regexPhone, validationDate } from "../../../config/validation";
+import { regexEmail, regexName, regexPhone, validationDate } from "../../../config/validation";
 import { updatePatient } from "../../../redux/PatienSlice/listPatientSlice";
 
 const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -25,19 +25,20 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
     const validationSchema = yup.object({
         patientName: yup
-            .string('Enter your name')
-            .required('Your name is required'),
+            .string('Nhập họ tên')
+            .matches(regexName, 'Họ và tên không được nhập số hoặc kí tự đặc biệt')
+            .required('Họ tên là bắt buộc.'),
         phone: yup
-            .string("Enter your phone")
-            .matches(regexPhone, "Invalid Phone")
-            .required("Phone is required"),
+            .string("Nhập số điện thoại")
+            .matches(regexPhone, "Số điện thoại không được nhập chữ, kí tự, bắt buộc phải 10 số bắt đầu là 03, 05, 07 08, 09.")
+            .required("Số điện thoại là bắt buộc."),
         email: yup
-            .string("Enter your email")
-            .matches(regexEmail, "Invalid email")
-            .required("Email is required"),
+            .string("Nhập email")
+            .matches(regexEmail, "Email không đúng với định dạng."),
         address: yup
-            .string("Enter your address")
-            .required("Address is required"),
+            .string("Nhập địa chỉ")
+            .max(255, "Địa chỉ không thể quá 255 kí tự.")
+            .required("Địa chỉ là bắt buộc."),
     });
 
     const formik = useFormik({
@@ -89,7 +90,7 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     return (
         <>
             <Modal
-                title="Chỉnh sửa tài khoản"
+                title="Chỉnh Sửa Bệnh Nhân"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
                 onCancel={handleCancel}

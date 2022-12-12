@@ -51,8 +51,9 @@ const LaboManagementContent = () => {
                 variant="h5"
                 color="inherit"
                 noWrap
+                fontWeight="bold"
             >
-                Quản lý Labo
+                Quản Lý Labo
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
                 setModalAddOpen(true)
@@ -63,9 +64,9 @@ const LaboManagementContent = () => {
                 <TableHead>
                     <TableRow>
 
-                        <TableCell>Tên Labo</TableCell>
-                        <TableCell>Phone</TableCell>
-                        <TableCell>Tổng tiền</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên Labo</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Phone</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tổng tiền</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
