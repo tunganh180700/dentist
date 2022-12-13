@@ -56,7 +56,7 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
         validationSchema: validationSchema,
         onSubmit: (values) => {
             const addValue = {
-                patientId: patientId,
+                treatmentId: treatmentId,
                 values: values
 
             }

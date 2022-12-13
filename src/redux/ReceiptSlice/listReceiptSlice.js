@@ -58,11 +58,11 @@ export const fetchAllReceipts = createAsyncThunk('listReceipts/fetchAllReceipts'
     }
 })
 
-export const addNewReceipt = createAsyncThunk('listReceipts/addNewReceipt', async ({ patientId, values }) => {
+export const addNewReceipt = createAsyncThunk('listReceipts/addNewReceipt', async ({ treatmentId, values }) => {
     try {
 
         console.log(values)
-        const res = await axiosInstance.post(addNewReceiptByIdAPI + patientId, values)
+        const res = await axiosInstance.post(addNewReceiptByIdAPI + treatmentId, values)
         toast.success(ADD_SUCCESS_RECEIPT, toastCss)
         console.log(res.data)
         return res.data
