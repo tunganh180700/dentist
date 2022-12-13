@@ -17,6 +17,7 @@ import ServiceAndCategoryManagement from "../component/Admin/ServiceAndCategoryM
 import IncomeManagement from "../component/Admin/IncomeManagementComponent/IncomeManagement";
 import RecordManagement from "../component/Admin/RecordComponent/RecordManagement";
 import BillManagement from "../component/Admin/BillManagementComponent/BillManagement";
+import ProfileManagement from "../component/Admin/ProfileManagementComponent/ProfileManagement";
 
 const Routing = () => {
     return (
@@ -39,6 +40,7 @@ const Routing = () => {
                 <Route path='/bill' element={<BillManagement />} />
                 <Route path='/' element={<HomePage />} />
                 <Route path='/forgot-password' element={<ForgotPassword />} />
+                <Route path='/profile' element={<ProfileManagement />} />
                 <Route path='*' element={<>404 Error</>} />
             </Routes>
         </Router>

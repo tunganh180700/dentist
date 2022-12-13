@@ -59,6 +59,8 @@ export const deleteRecordAPI = `${baseUrl}/api/patient_record/`
 export const updateRecordAPI = `${baseUrl}/api/patient_record/`
 
 export const loginAPI = `${baseUrl}/api/login`
+export const forgotPassword = `${baseUrl}/api/forgot_password?username=`
+export const profileAPI = `${baseUrl}/api/users/get_profile`
 
 export const GET_LIST_TIMEKEEPING = `${baseUrl}/api/timekeeping/get_list_timekeeping?size=10&page=`
 export const CHECK_IN = `${baseUrl}/api/timekeeping/checkin`
