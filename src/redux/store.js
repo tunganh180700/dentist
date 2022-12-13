@@ -36,6 +36,8 @@ import choosenSpecimensSlice from "./SpecimensSlice/choosenSpecimensSlice";
 import listRecordSlice from "./RecordSlice/listRecordSlice";
 import listReceiptSlice from "./ReceiptSlice/listReceiptSlice";
 import choosenNewReceiptSlice from "./ReceiptSlice/choosenNewReceiptSlice";
+import listWaitingSlice from "./WaitingSlice/listWaitingSlice";
+import listConfirmWaitingSlice from "./WaitingSlice/listConfirmWaitingSlice";
 
 
 const store = configureStore({
@@ -73,6 +75,9 @@ const store = configureStore({
 
         listReceipts: listReceiptSlice,
         choosenNewReceipt: choosenNewReceiptSlice,
+
+        listWaiting: listWaitingSlice,
+        listConfirmWaiting: listConfirmWaitingSlice,
 
     }
 })

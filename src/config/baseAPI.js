@@ -93,3 +93,8 @@ export const listTotalSpendIncomeAPI = `${baseUrl}/api/income/total_spend`
 
 export const listTreatingServiceAPI = `${baseUrl}/api/categories/get_treating_service/`
 export const listAllServiceAPI = `${baseUrl}/api/categories/get_all_service`
+
+export const listWaitingAPI = `${baseUrl}/api/waiting_room/get-list-waiting`
+export const listConfirmWaitingAPI = `${baseUrl}/api/waiting_room/get_list_confirm`
+export const updateWaitingAPI = `${baseUrl}/api/waiting_room/call-patient/`
+export const confirmWaitingAPI = `${baseUrl}/api/waiting_room/confirm-customer/`

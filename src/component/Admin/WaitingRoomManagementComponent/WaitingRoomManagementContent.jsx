@@ -6,17 +6,95 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Pagination, Typography, IconButton, TextField } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
 import "./style.css"
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllWaiting } from '../../../redux/WaitingSlice/listWaitingSlice';
+import moment from 'moment';
+import { updateWaitingAPI, listConfirmWaitingAPI } from "../../../config/baseAPI";
+import axiosInstance from "../../../config/customAxios";
+import ModalConfirmWaiting from '../../ModalComponent/ModalWaiting/ModalConfirmWaiting';
+import { ToastContainer, toast } from 'react-toastify';
 
 const WaitingRoomManagementContent = () => {
 
+    const listWaiting = useSelector(state => state.listWaiting.listWaiting)
+    const dispatch = useDispatch()
+    const pageSize = useSelector(state => state.listWaiting.pageSize)
+    const totalPages = useSelector(state => state.listWaiting.totalPage)
+    const [currentPage, setCurrentPage] = useState(0);
+    const totalElements = useSelector(state => state.listWaiting.totalElements)
+    const [modalConfirmWaitingOpen, setModalConfirmWaitingOpen] = useState(false);
+    const [role, setRole] = useState(null);
+    const [u, setU] = useState(true);
+
+
+    const loadWaitingList = () => {
+        dispatch(fetchAllWaiting({
+            size: pageSize,
+            page: currentPage
+        },
+        ));
+    }
+
+    const checkExistConfirmWaiting = async () => {
+        try {
+            const res = await axiosInstance.get(listConfirmWaitingAPI);
+            if (res.data.length > 0) {
+                setModalConfirmWaitingOpen(true);
+            }
+            else {
+                setModalConfirmWaitingOpen(false);
+            }
+        } catch (error) {
+            setModalConfirmWaitingOpen(false);
+        }
+    }
+
+    useEffect(() => {
+        const role = localStorage.getItem('role');
+        if (role === 'Receptionist') {
+            checkExistConfirmWaiting();
+        }
+        else {
+            setModalConfirmWaitingOpen(false);
+        }
+        setRole(role);
+    }, [])
+
+    useEffect(() => {
+        loadWaitingList();
+    }, [currentPage])
+
+    // useEffect(() => {
     
+    // }, [u])
+
+    const updateWaiting = async (id) => {
+        axiosInstance.post(updateWaitingAPI + id)
+            .then(res => {
+                loadWaitingList();
+                toast("Gọi bệnh nhân thành công");
+            })
+            .catch(err => {
+                toast("Gọi bệnh nhân không thành công");
+            });
+    }
+
+    const getStatusStr = (status) => {
+        if (status == 1) {
+            return 'Đang chữa';
+        }
+        if (status == 2) {
+            return 'Đang chờ';
+        }
+        else {
+            return 'Đến lượt';
+        }
+    }
 
     return (
         <>
+            <ToastContainer />
             <Typography
                 component="h1"
                 variant="h5"
@@ -26,85 +104,49 @@ const WaitingRoomManagementContent = () => {
             >
                 QUẢN LÝ PHÒNG CHỜ
             </Typography>
-            <IconButton aria-label="add">
-                <AddIcon /> Thêm mới
-            </IconButton>
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell><div className='attibute'>STT</div></TableCell>
-                        <TableCell>
-                            <div className='attibute'>Tên khách hàng</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="searchRoom"
-                                    label="Tìm kiếm"
-                                    name="searchRoom"
-                                    autoComplete="searchRoom"
-                                    // value={fullName}
-                                    autoFocus
-                                // onChange={handleChange}
-                                />
-                            </div>
-                        </TableCell>
-                        <TableCell>
-                            <div className='attibute'>Trạng thái</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="searchRoom"
-                                    label="Tìm kiếm"
-                                    name="searchRoom"
-                                    autoComplete="searchRoom"
-                                    // value={fullName}
-                                    autoFocus
-                                // onChange={handleChange}
-                                />
-                            </div>
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
+                        <TableCell>Bệnh nhân</TableCell>
+                        <TableCell>Ngày</TableCell>
+                        <TableCell>Trạng thái</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>
-                            <IconButton aria-label="edit"
-                            // onClick={() => {
-                            //     setModalUpdateOpen(true)
-                            // }}
-                            >
-                                <EditIcon />
-                            </IconButton>
-                        </TableCell>
-                        <TableCell>
-                            <IconButton aria-label="delete">
-                                <DeleteIcon />
-                            </IconButton>
-                        </TableCell>
-                    </TableRow>
+                    {listWaiting?.map((item) =>
+                        <TableRow key={item.waitingRoomId}>
+                            <TableCell>{item.patientName}</TableCell>
+                            <TableCell>{moment(item.date).format("DD/MM/YYYY")}</TableCell>
+                            <TableCell>{getStatusStr(item.status)}</TableCell>
+                            {
+                                role === null || role === 'Receptionist' || item.status === 1 ?
+                                    <></>
+                                    :
+                                    <TableCell>
+                                        <IconButton aria-label="edit" onClick={() => {
+                                            updateWaiting(item.waitingRoomId)
+                                        }}>
+                                            Gọi
+                                        </IconButton>
+                                    </TableCell>
+                            }
+
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table >
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Pagination
-                    count={3}
+                    count={totalPages}
                     defaultPage={1}
-                // onChange={(e, pageNumber) => {
-                //     setCurrentPage(pageNumber - 1)
-                // }}
+                    onChange={(e, pageNumber) => {
+                        setCurrentPage(pageNumber - 1)
+                    }}
                 />
             </div>
-            {/* <div>
-
-                <ModalUpdateAccount modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
-            </div> */}
-
+            <div>
+                <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} />
+            </div>
         </>
     )
 }
