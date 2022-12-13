@@ -20,7 +20,8 @@ const initState = {
     isDeleteAccount: false,
     statusAddAccount: false,
     isAddAccount: false,
-    message: ''
+    message: '',
+    fullName: ''
 }
 
 const listAccountSlice = createSlice({
@@ -30,6 +31,9 @@ const listAccountSlice = createSlice({
         setListAccount: (state, action) => {
             state.listAccount = action.payload
         },
+        setFullName: (state, action) => {
+            state.fullName = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -128,5 +132,5 @@ export const addAccount = createAsyncThunk('listAccount/addAccount', async (valu
         toast.error(error.response.data.message, toastCss)
     }
 })
-export const { setListAccount } = listAccountSlice.actions;
+export const { setListAccount, setFullName } = listAccountSlice.actions;
 export default listAccountSlice.reducer;
