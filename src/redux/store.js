@@ -39,6 +39,11 @@ import choosenNewReceiptSlice from "./ReceiptSlice/choosenNewReceiptSlice";
 import listWaitingSlice from "./WaitingSlice/listWaitingSlice";
 import listConfirmWaitingSlice from "./WaitingSlice/listConfirmWaitingSlice";
 
+import listSpecimenSlice from "./SpecimenSlice/listSpecimenSlice";
+import choosenSpecimenSlice from "./SpecimenSlice/choosenSpecimenSlice";
+
+
+
 
 const store = configureStore({
     reducer: {
@@ -79,6 +84,8 @@ const store = configureStore({
         listWaiting: listWaitingSlice,
         listConfirmWaiting: listConfirmWaitingSlice,
 
+        listSpecimen: listSpecimenSlice,
+        choosenSpecimen: choosenSpecimenSlice,
     }
 })
 

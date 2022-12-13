@@ -98,3 +98,17 @@ export const listWaitingAPI = `${baseUrl}/api/waiting_room/get-list-waiting`
 export const listConfirmWaitingAPI = `${baseUrl}/api/waiting_room/get_list_confirm`
 export const updateWaitingAPI = `${baseUrl}/api/waiting_room/call-patient/`
 export const confirmWaitingAPI = `${baseUrl}/api/waiting_room/confirm-customer/`
+
+export const listSpecimenAPI = `${baseUrl}/api/specimens/get_list_speciemns`
+//------ thừa----
+export const addSpecimenAPI = `${baseUrl}/api/specimens/get_list_speciemns`
+export const updateSpecimenAPI = `${baseUrl}/api/specimens/get_list_speciemns`
+export const deleteSpecimenAPI = `${baseUrl}/api/specimens/get_list_speciemns`
+//--------------
+export const searchSpecimenAPI = `${baseUrl}/api/specimens/get_list_speciemns`
+export const getSpecimenByIdAPI = `${baseUrl}/api/specimens/`
+export const reportSpecimenAPI = `${baseUrl}/api/specimens/report_specimen/`
+export const useSpecimenAPI = `${baseUrl}/api/specimens/use_specimen/`
+
+export const getAllLaboAPI = `${baseUrl}/api/labos/get_all_labo`
+

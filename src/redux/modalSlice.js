@@ -37,6 +37,11 @@ const initState = {
     isOpenUpdateService: false,
     isOpenDeleteService: false,
     serviceId: 0,
+
+    specimenId: 0,
+    isOpenUpdateSpecimen:false,
+    isOpenDeleteSpecimen:false,
+
 }
 
 const modalSlice = createSlice({
@@ -104,6 +109,12 @@ const modalSlice = createSlice({
         },
         setTreatmentId: (state,action) => {
             state.treatmentId = action.payload
+        },
+        setSpecimenId: (state,action) => {
+            state.specimenId = action.payload
+        },
+        setIsOpenDeleteSpecimen: (state, action) => {
+            state.isOpenDeleteSpecimen = action.payload
         }
     }
 })
@@ -117,5 +128,8 @@ export const { setCategoryServicedId } = modalSlice.actions;
 export const { setServicedId } = modalSlice.actions;
 
 export const { setTreatmentId} = modalSlice.actions;
+
+export const { setSpecimenId} = modalSlice.actions;
+
 
 export default modalSlice.reducer;

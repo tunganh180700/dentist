@@ -3,7 +3,7 @@ import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
-import { addSpecimensAPI, updateSpecimensAPI, deleteSpecimensAPI, getLaboByIdAPI } from "../../config/baseAPI"
+import { addSpecimensAPI, updateSpecimensAPI, deleteSpecimensAPI, getLaboByIdAPI, reportSpecimenAPI } from "../../config/baseAPI"
 
 
 const initState = {
@@ -105,17 +105,30 @@ export const updateSpecimens = createAsyncThunk('listSpecimens/updateSpecimens',
 export const addSpecimens = createAsyncThunk('listSpecimens/addSpecimens', async (values) => {
     try {
 
-        console.log(values)
+        console.log('body=',values);
         const res = await axiosInstance.post(addSpecimensAPI, values)
-        toast.success("Thêm vật liệu thành công !!!!!", toastCss)
+        toast.success("Thêm thành công !!!!!", toastCss)
         console.log(res.data)
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error('Thêm mới thất bại :(', toastCss)
+        toast.error('Thêm thất bại :(', toastCss)
     }
 })
 
+export const reportSpecimen = createAsyncThunk('listSpecimens/reportSpecimen', async (specimenId,values) => {
+    try {
+
+        console.log('body=',values);
+        const res = await axiosInstance.post(reportSpecimenAPI+specimenId, values)
+        toast.success("Báo cáo thành công !!!!!", toastCss)
+        console.log(res.data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+        toast.error('Báo cáo thất bại :(', toastCss)
+    }
+})
 
 export const { setListSpecimens } = listSpecimensSlice.actions;
 export default listSpecimensSlice.reducer;

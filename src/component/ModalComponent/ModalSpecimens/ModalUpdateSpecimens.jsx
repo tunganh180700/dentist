@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import 'antd/dist/antd.css';
 import { Modal } from 'antd';
-import { TextField } from '@mui/material';
+import { TextField, Button } from '@mui/material';
 import "./../style.css"
 import Typography from '@mui/material/Typography';
 import { useFormik } from "formik";
-import { updateSpecimens } from '../../../redux/SpecimensSlice/listSpecimensSlice';
-import { getSpecimensByIdAPI, listAllPatientAPI, listPatientRecordByTreatmentIdAPI } from '../../../config/baseAPI';
+import { updateSpecimen } from '../../../redux/SpecimenSlice/listSpecimenSlice';
+import { getSpecimensByIdAPI, listAllPatientAPI, listPatientRecordByTreatmentIdAPI, getAllLaboAPI, listTreatingServiceAPI, useSpecimenAPI } from '../../../config/baseAPI';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -21,21 +21,33 @@ import moment from 'moment/moment';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import ModalReportSpecimen from './ModalReportSpecimen';
+import { toast } from 'react-toastify';
 
 
 const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const dispatch = useDispatch();
-    const specimenId = useSelector(state => state.modal.userId);
+    const specimenId = useSelector(state => state.modal.specimenId);
     const [loading, setLoading] = useState();
-    const [receiveDate, setReceiveDate] = useState(null);
-    const [deliveryDate, setDeliveryDate] = useState(null);
-    const [value, setValue] = useState(null);
-
     const [patientIds, setPatientIds] = useState([]);
     const [patientId, setPatientId] = useState();
 
     const [patientRecordIds, setPatientRecordIds] = useState([]);
     const [patientRecordId, setPatientRecordId] = useState();
+
+    const [receiveDate, setReceiveDate] = useState(null);
+    const [deliveryDate, setDeliveryDate] = useState(null);
+
+    const [serviceId, setServiceId] = useState(null);
+    const [services, setServices] = useState([]);
+    const [labos, setLabos] = useState([]);
+    const [laboId, setLaboId] = useState(null);
+
+    const [buttonUseEnable, setButtonUseEnable] = useState(false);
+    const [buttonReportEnable, setButtonReportEnable] = useState(false);
+    const [reportOpen, setReportOpen] = useState(false);
+
+    const [statusStr, setStatusStr] = useState('');
 
     const validationSchema = yup.object({
         specimenName: yup
@@ -56,32 +68,46 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const loadPatient = async () => {
         try {
             const res = await axiosInstance.get(listAllPatientAPI)
-            setPatientId(res.data[0].patientId)
+            console.log('patient = ', res.data)
             setPatientIds(res.data)
-
-            console.log('patient', res.data)
-
+            setPatientId(res.data[0].patientId)
         } catch (error) {
             console.log(error)
         }
     }
+
+    const loadLabos = async () => {
+        try {
+            const res = await axiosInstance.get(getAllLaboAPI)
+            console.log('labos = ', res.data)
+            setLabos(res.data);
+            setLaboId(res.data[0].laboId);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         loadPatient();
+        loadLabos();
     }, [])
 
 
     const formik = useFormik({
         initialValues: {
-
+            specimenName: "",
+            amount: "",
+            unitPrice: "",
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
             values.receiveDate = moment(receiveDate.$d).format(validationDate);
             values.deliveryDate = moment(deliveryDate.$d).format(validationDate);
             values.patientId = patientId;
-
+            values.laboId = laboId;
             values.patientRecordId = patientRecordId;
-            dispatch(updateSpecimens(values));
+            values.serviceId = serviceId;
+            dispatch(updateSpecimen(values));
             setModalUpdateOpen(false);
         }
     })
@@ -92,15 +118,14 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             const res = await axiosInstance.get(
                 getSpecimensByIdAPI + specimenId,
             )
-            // console.log(res.data)
+            console.log('spec = ', res.data);
             formik.setValues(res.data)
-            // console.log('id', res.data.specimenName)
+            setPatientId(res.data.patientId)
             setPatientRecordId(res.data.patientRecordId)
-            // setMaterialId(res.data.materialId)
-            // console.log('day roi: ', res.data.patientRecordId)
+            setServiceId(res.data.serviceId)
+            setLaboId(res.data.laboId)
             setReceiveDate(res.data.receiveDate)
             setDeliveryDate(res.data.deliveryDate)
-            setValue(res.data.dateRecord)
         } catch (error) {
             console.log(error)
         }
@@ -118,11 +143,26 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             const res = await axiosInstance.get(
                 listPatientRecordByTreatmentIdAPI + patientId,
             )
-            //  setPatientRecordId(res.data[0].patientId)
-            setPatientRecordId(res.data[0].patientRecordId)
             setPatientRecordIds(res.data)
+            setPatientRecordId(res.data[0].patientRecordId)
+        } catch (error) {
+            console.log(error)
+        }
+        setLoading(false)
+    }
 
-
+    const loadServiceByPatientId = async (patientId) => {
+        console.log('s-patientid = ',patientId);
+        setLoading(true)
+        console.log('s-patientid after loading= ',patientId);
+        try {
+            console.log('s-patientid res = ',patientId);
+            const res = await axiosInstance.get(
+                listTreatingServiceAPI + patientId,
+            )
+            console.log('services = ',res.data);
+            setServices(res.data)
+            setServiceId(res.data[0].serviceId)
         } catch (error) {
             console.log(error)
         }
@@ -130,9 +170,37 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     }
 
     useEffect(() => {
-        if (patientId > 0)
+        if (patientId > 0) {
             loadRecordByTreatmentId(patientId)
+            loadServiceByPatientId(patientId)
+        }
     }, [patientId])
+
+    useEffect(() => {
+        if (receiveDate === null && deliveryDate === null) {
+            setStatusStr('Chuẩn bị mẫu vật');
+        }
+        else if (receiveDate !== null && deliveryDate === null) {
+            setStatusStr('Labo nhận mẫu');
+        }
+        else if (receiveDate !== null && deliveryDate !== null) {
+            setStatusStr('Labo giao mẫu');
+        }
+        else {
+            setStatusStr('Trạng thái');
+        }
+    }, [receiveDate, deliveryDate])
+
+    const useSpecimen = async () => {
+        try {
+            const res = await axiosInstance.post(useSpecimenAPI+specimenId);
+            console.log('use = ',res);
+            toast('Cập nhật sử dụng mẫu vật thành công');
+        } catch (error) {
+            console.log(error);
+            toast('Cập nhật sử dụng mẫu vật không thành công');
+        }
+    }
 
     return (
         <>
@@ -142,8 +210,17 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                 onOk={formik.handleSubmit}
                 onCancel={() => setModalUpdateOpen(false)}
             >
-                {loading === false && <>
-
+                {/* {loading === false && <> */}
+                    {buttonReportEnable ?
+                        <><Button style={{ color: 'red' }} onClick={()=>{setReportOpen(true)}}>Mẫu lỗi, bàn giao lại cho labo</Button></>
+                        :
+                        <></>
+                    }
+                    {buttonUseEnable ?
+                        <><Button style={{ color: 'green' }} onClick={useSpecimen}>Sử dụng</Button></>
+                        :
+                        <></>
+                    }
                     <TextField
                         margin="normal"
                         required
@@ -158,7 +235,6 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                     />
                     {formik.errors.specimenName && <Typography style={{ color: 'red' }}>{formik.errors.specimenName}</Typography>}
 
-
                     <Box sx={{ minWidth: 120 }}>
                         <FormControl fullWidth>
                             <InputLabel id="patient">Bệnh nhân</InputLabel>
@@ -171,11 +247,8 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                             >
                                 {patientIds?.map(item => (
                                     <MenuItem key={item.patientId} value={item.patientId}>{item.patientName}</MenuItem>
-
                                 ))}
-
                             </Select>
-
                         </FormControl>
                     </Box>
 
@@ -191,11 +264,8 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                             >
                                 {patientRecordIds?.map(item => (
                                     <MenuItem key={item.patientRecordId} value={item.patientRecordId}>{item.date}</MenuItem>
-
                                 ))}
-
                             </Select>
-
                         </FormControl>
                     </Box>
 
@@ -233,7 +303,6 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                             value={receiveDate}
                             onChange={(newValue) => {
                                 setReceiveDate(newValue);
-                                console.log(newValue)
                             }}
                             renderInput={(params) => <TextField {...params} />}
                         />
@@ -246,14 +315,58 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                             value={deliveryDate}
                             onChange={(newValue) => {
                                 setDeliveryDate(newValue);
-                                console.log(newValue)
                             }}
                             renderInput={(params) => <TextField {...params} />}
                         />
                     </LocalizationProvider>
-                </>}
 
+                    <Box sx={{ minWidth: 120 }}>
+                        <FormControl fullWidth>
+                            <InputLabel id="service">Dịch vụ</InputLabel>
+                            <Select
+                                labelId="service"
+                                id="serviceSelect"
+                                label="Dịch vụ"
+                                value={serviceId}
+                                onChange={(e) => setServiceId(e.target.value)}
+                            >
+                                {services?.map(item => (
+                                    <MenuItem key={item.serviceId} value={item.serviceId}>{item.serviceName}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    <Box sx={{ minWidth: 120 }}>
+                        <FormControl fullWidth>
+                            <InputLabel id="labo">Labo</InputLabel>
+                            <Select
+                                labelId="labo"
+                                id="laboSelect"
+                                label="Labo"
+                                value={laboId}
+                                onChange={(e) => setLaboId(e.target.value)}
+                            >
+                                {labos?.map(item => (
+                                    <MenuItem key={item.laboId} value={item.laboId}>{item.laboName}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    <TextField
+                        margin="normal"
+                        fullWidth
+                        label="Trạng thái"
+                        value={statusStr}
+                        autoFocus
+                        disabled={true}
+                    />
+                {/* </>} */}
             </Modal>
+            <div>
+                <ModalReportSpecimen reportOpen={reportOpen} setReportOpen={setReportOpen} />
+            </div>
         </>
     )
 }
