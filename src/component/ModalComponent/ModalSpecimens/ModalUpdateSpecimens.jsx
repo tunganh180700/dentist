@@ -152,17 +152,15 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     }
 
     const loadServiceByPatientId = async (patientId) => {
-        console.log('s-patientid = ',patientId);
         setLoading(true)
-        console.log('s-patientid after loading= ',patientId);
         try {
-            console.log('s-patientid res = ',patientId);
-            const res = await axiosInstance.get(
+            await axiosInstance.get(
                 listTreatingServiceAPI + patientId,
-            )
-            console.log('services = ',res.data);
-            setServices(res.data)
-            setServiceId(res.data[0].serviceId)
+            ).then(res => {
+                console.log('services = ', res.data);
+                setServices(res.data);
+                setServiceId(res.data[0].serviceId);
+            })
         } catch (error) {
             console.log(error)
         }
@@ -193,8 +191,8 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
     const useSpecimen = async () => {
         try {
-            const res = await axiosInstance.post(useSpecimenAPI+specimenId);
-            console.log('use = ',res);
+            const res = await axiosInstance.post(useSpecimenAPI + specimenId);
+            console.log('use = ', res);
             toast('Cập nhật sử dụng mẫu vật thành công');
         } catch (error) {
             console.log(error);
@@ -211,157 +209,157 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                 onCancel={() => setModalUpdateOpen(false)}
             >
                 {/* {loading === false && <> */}
-                    {buttonReportEnable ?
-                        <><Button style={{ color: 'red' }} onClick={()=>{setReportOpen(true)}}>Mẫu lỗi, bàn giao lại cho labo</Button></>
-                        :
-                        <></>
-                    }
-                    {buttonUseEnable ?
-                        <><Button style={{ color: 'green' }} onClick={useSpecimen}>Sử dụng</Button></>
-                        :
-                        <></>
-                    }
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="specimenName"
-                        label="Mẫu thử nghiệm"
-                        name="specimenName"
-                        autoComplete="specimenName"
-                        value={formik.values.specimenName}
-                        autoFocus
-                        onChange={formik.handleChange}
+                {buttonReportEnable ?
+                    <><Button style={{ color: 'red' }} onClick={() => { setReportOpen(true) }}>Mẫu lỗi, bàn giao lại cho labo</Button></>
+                    :
+                    <></>
+                }
+                {buttonUseEnable ?
+                    <><Button style={{ color: 'green' }} onClick={useSpecimen}>Sử dụng</Button></>
+                    :
+                    <></>
+                }
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="specimenName"
+                    label="Mẫu thử nghiệm"
+                    name="specimenName"
+                    autoComplete="specimenName"
+                    value={formik.values.specimenName}
+                    autoFocus
+                    onChange={formik.handleChange}
+                />
+                {formik.errors.specimenName && <Typography style={{ color: 'red' }}>{formik.errors.specimenName}</Typography>}
+
+                <Box sx={{ minWidth: 120 }}>
+                    <FormControl fullWidth>
+                        <InputLabel id="patient">Bệnh nhân</InputLabel>
+                        <Select
+                            labelId="patient"
+                            id="patientSelect"
+                            label="Bệnh nhân"
+                            value={patientId}
+                            onChange={(e) => setPatientId(e.target.value)}
+                        >
+                            {patientIds?.map(item => (
+                                <MenuItem key={item.patientId} value={item.patientId}>{item.patientName}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+
+                <Box sx={{ minWidth: 120 }}>
+                    <FormControl fullWidth>
+                        <InputLabel id="patientrecord">Date record</InputLabel>
+                        <Select
+                            labelId="patientrecord"
+                            id="patientrecordSelect"
+                            label="Date record"
+                            value={patientRecordId}
+                            onChange={(e) => setPatientRecordId(e.target.value)}
+                        >
+                            {patientRecordIds?.map(item => (
+                                <MenuItem key={item.patientRecordId} value={item.patientRecordId}>{item.date}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="amount"
+                    label="Số lượng"
+                    name="amount"
+                    autoComplete="amount"
+                    value={formik.values.amount}
+                    autoFocus
+                    onChange={formik.handleChange}
+                />
+                {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="unitPrice"
+                    label="Đơn giá"
+                    name="unitPrice"
+                    autoComplete="unitPrice"
+                    value={formik.values.unitPrice}
+                    autoFocus
+                    onChange={formik.handleChange}
+                />
+                {formik.errors.unitPrice && <Typography style={{ color: 'red' }}>{formik.errors.unitPrice}</Typography>}
+
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        label="Ngày nhận"
+                        name="receiveDate"
+                        value={receiveDate}
+                        onChange={(newValue) => {
+                            setReceiveDate(newValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
                     />
-                    {formik.errors.specimenName && <Typography style={{ color: 'red' }}>{formik.errors.specimenName}</Typography>}
+                </LocalizationProvider>
 
-                    <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                            <InputLabel id="patient">Bệnh nhân</InputLabel>
-                            <Select
-                                labelId="patient"
-                                id="patientSelect"
-                                label="Bệnh nhân"
-                                value={patientId}
-                                onChange={(e) => setPatientId(e.target.value)}
-                            >
-                                {patientIds?.map(item => (
-                                    <MenuItem key={item.patientId} value={item.patientId}>{item.patientName}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-
-                    <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                            <InputLabel id="patientrecord">Date record</InputLabel>
-                            <Select
-                                labelId="patientrecord"
-                                id="patientrecordSelect"
-                                label="Date record"
-                                value={patientRecordId}
-                                onChange={(e) => setPatientRecordId(e.target.value)}
-                            >
-                                {patientRecordIds?.map(item => (
-                                    <MenuItem key={item.patientRecordId} value={item.patientRecordId}>{item.date}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="amount"
-                        label="Số lượng"
-                        name="amount"
-                        autoComplete="amount"
-                        value={formik.values.amount}
-                        autoFocus
-                        onChange={formik.handleChange}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        label="Ngày giao"
+                        name="birthdate"
+                        value={deliveryDate}
+                        onChange={(newValue) => {
+                            setDeliveryDate(newValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
                     />
-                    {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="unitPrice"
-                        label="Đơn giá"
-                        name="unitPrice"
-                        autoComplete="unitPrice"
-                        value={formik.values.unitPrice}
-                        autoFocus
-                        onChange={formik.handleChange}
-                    />
-                    {formik.errors.unitPrice && <Typography style={{ color: 'red' }}>{formik.errors.unitPrice}</Typography>}
+                </LocalizationProvider>
 
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                            label="Ngày nhận"
-                            name="receiveDate"
-                            value={receiveDate}
-                            onChange={(newValue) => {
-                                setReceiveDate(newValue);
-                            }}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </LocalizationProvider>
+                <Box sx={{ minWidth: 120 }}>
+                    <FormControl fullWidth>
+                        <InputLabel id="service">Dịch vụ</InputLabel>
+                        <Select
+                            labelId="service"
+                            id="serviceSelect"
+                            label="Dịch vụ"
+                            value={serviceId}
+                            onChange={(e) => setServiceId(e.target.value)}
+                        >
+                            {services?.map(item => (
+                                <MenuItem key={item.serviceId} value={item.serviceId}>{item.serviceName}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
 
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                            label="Ngày giao"
-                            name="birthdate"
-                            value={deliveryDate}
-                            onChange={(newValue) => {
-                                setDeliveryDate(newValue);
-                            }}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </LocalizationProvider>
+                <Box sx={{ minWidth: 120 }}>
+                    <FormControl fullWidth>
+                        <InputLabel id="labo">Labo</InputLabel>
+                        <Select
+                            labelId="labo"
+                            id="laboSelect"
+                            label="Labo"
+                            value={laboId}
+                            onChange={(e) => setLaboId(e.target.value)}
+                        >
+                            {labos?.map(item => (
+                                <MenuItem key={item.laboId} value={item.laboId}>{item.laboName}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
 
-                    <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                            <InputLabel id="service">Dịch vụ</InputLabel>
-                            <Select
-                                labelId="service"
-                                id="serviceSelect"
-                                label="Dịch vụ"
-                                value={serviceId}
-                                onChange={(e) => setServiceId(e.target.value)}
-                            >
-                                {services?.map(item => (
-                                    <MenuItem key={item.serviceId} value={item.serviceId}>{item.serviceName}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-
-                    <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                            <InputLabel id="labo">Labo</InputLabel>
-                            <Select
-                                labelId="labo"
-                                id="laboSelect"
-                                label="Labo"
-                                value={laboId}
-                                onChange={(e) => setLaboId(e.target.value)}
-                            >
-                                {labos?.map(item => (
-                                    <MenuItem key={item.laboId} value={item.laboId}>{item.laboName}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Trạng thái"
-                        value={statusStr}
-                        autoFocus
-                        disabled={true}
-                    />
+                <TextField
+                    margin="normal"
+                    fullWidth
+                    label="Trạng thái"
+                    value={statusStr}
+                    autoFocus
+                    disabled={true}
+                />
                 {/* </>} */}
             </Modal>
             <div>

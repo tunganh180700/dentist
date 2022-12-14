@@ -271,6 +271,17 @@ const SpecimenManagementContent = () => {
                             </TableCell>
                             <TableCell>
                                 <div className='attibute'>Bệnh nhân</div>
+                                <div style={{ width: "160px" }}>
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        label="Tìm kiếm"
+                                        name="patientName"
+                                        value={searchValue.patientName}
+                                        autoFocus
+                                        onChange={handleSearch}
+                                    />
+                                </div>
                             </TableCell>
                             <TableCell>
                                 <div className='attibute'>Trạng thái</div>
