@@ -58,6 +58,7 @@ const ModalDetailLabo = ({ modalDetailOpen, setModalDetailOpen }) => {
         <>
             <Modal
                 open={modalDetailOpen}
+                width="70%"
                 onOk={() => setModalDetailOpen(false)}
                 onCancel={() => setModalDetailOpen(false)}
             >
