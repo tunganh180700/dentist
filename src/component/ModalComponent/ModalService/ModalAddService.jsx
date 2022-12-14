@@ -80,17 +80,17 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
     const handleCancel = () => {
         setModalAddOpen(false)
 
-        formik.errors.serviceName = ""
-        formik.touched.serviceName = ""
+        // formik.errors.serviceName = ""
+        // formik.touched.serviceName = ""
 
-        formik.errors.unit = ""
-        formik.touched.unit = ""
+        // formik.errors.unit = ""
+        // formik.touched.unit = ""
 
-        formik.errors.marketPrice = ""
-        formik.touched.marketPrice = ""
+        // formik.errors.marketPrice = ""
+        // formik.touched.marketPrice = ""
 
-        formik.errors.price = ""
-        formik.touched.price = ""
+        // formik.errors.price = ""
+        // formik.touched.price = ""
 
         formik.resetForm()
     }

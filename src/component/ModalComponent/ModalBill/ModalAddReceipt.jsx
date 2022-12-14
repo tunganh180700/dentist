@@ -68,6 +68,24 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
         }
     });
 
+    const handleCancel = () => {
+        setModalAddReceiptOpen(false)
+
+        // formik.errors.serviceName = ""
+        // formik.touched.serviceName = ""
+
+        // formik.errors.unit = ""
+        // formik.touched.unit = ""
+
+        // formik.errors.marketPrice = ""
+        // formik.touched.marketPrice = ""
+
+        // formik.errors.price = ""
+        // formik.touched.price = ""
+
+        formik.resetForm()
+    }
+
     return (
         <>
             <Modal
@@ -75,7 +93,7 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
                 style={{ fontWeight: 'bold' }}
                 open={modalAddReceiptOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddReceiptOpen(false)}
+                onCancel={handleCancel}
             >
 
                 <Typography

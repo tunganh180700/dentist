@@ -39,11 +39,11 @@ const ModalAddLabo = ({ modalAddOpen, setModalAddOpen }) => {
     const handleCancel = () => {
         setModalAddOpen(false)
 
-        formik.errors.laboName = ""
-        formik.touched.laboName = ""
+        // formik.errors.laboName = ""
+        // formik.touched.laboName = ""
 
-        formik.errors.phone = ""
-        formik.touched.phone = ""
+        // formik.errors.phone = ""
+        // formik.touched.phone = ""
 
         formik.resetForm()
 
