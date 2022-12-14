@@ -92,10 +92,15 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
             amount: "",
             unitPrice: "",
         },
-        validationSchema: validationSchema,
+        // validationSchema: validationSchema,
         onSubmit: (values) => {
-            values.receiveDate = moment(receiveDate.$d).format(validationDate);
+            console.log('value = ', values);
+            if(receiveDate!==null){
+                values.receiveDate = moment(receiveDate.$d).format(validationDate);
+            }
+            if(deliveryDate!==null){
             values.deliveryDate = moment(deliveryDate.$d).format(validationDate);
+            }
             values.patientId = patientId;
             values.laboId = laboId;
             values.patientRecordId = patientRecordId;
