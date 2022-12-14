@@ -150,8 +150,7 @@ const Sidebar = () => {
 
                 {
                     role === 'Admin' || role === 'Doctor' || role === 'Nurse' ||  role === 'LeaderNurse' ?
-                        (<></>)
-                        : (
+                        (
                             <ListItemButton onClick={handleClick}>
                                 <ListItemIcon>
                                     <CategoryIcon />
@@ -161,6 +160,8 @@ const Sidebar = () => {
                                 </Link>
                             </ListItemButton>
                         )
+                        :
+                        (<></>)
                 }
 
                 {
