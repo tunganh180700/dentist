@@ -96,7 +96,7 @@ const PatientManagementContent = () => {
             console.log(error)
         }
         setLoading(false)
-    }, [currentPage, isAddPatient, isUpdatePatient])
+    }, [currentPage, isUpdatePatient])
 
     useEffect(() => {
         if (isDeletePatient == true && totalElements % pageSize == 1) {
