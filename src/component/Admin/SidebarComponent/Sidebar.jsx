@@ -147,6 +147,22 @@ const Sidebar = () => {
                             </Collapse>
                         )
                 }
+
+                {
+                    role === 'Admin' || role === 'Doctor' || role === 'Nurse' ||  role === 'LeaderNurse' ?
+                        (<></>)
+                        : (
+                            <ListItemButton onClick={handleClick}>
+                                <ListItemIcon>
+                                    <CategoryIcon />
+                                </ListItemIcon>
+                                <Link to={'/specimen'}>
+                                    <ListItemText style={{ color: "black" }} primary=' Vật mẫu' />
+                                </Link>
+                            </ListItemButton>
+                        )
+                }
+
                 {
                     role === 'Doctor' || role === 'Receptionist' || role === 'Nurse' ?
                         (<></>)
