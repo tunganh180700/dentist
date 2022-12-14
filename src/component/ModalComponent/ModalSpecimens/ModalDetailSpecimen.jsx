@@ -101,11 +101,11 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
                 >
                     Thống kê mẫu vật
                 </Typography>
-                <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
+                {/* <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
                     setModalAddOpen(true)
                 }}>
                     <AddIcon /> Thêm mới
-                </IconButton>
+                </IconButton> */}
                 {loading === false && <>
                     <Table>
                         <TableHead>

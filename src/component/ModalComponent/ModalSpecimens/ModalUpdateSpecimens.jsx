@@ -130,6 +130,8 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             setLaboId(res.data.laboId)
             setReceiveDate(res.data.receiveDate)
             setDeliveryDate(res.data.deliveryDate)
+            setButtonReportEnable(res.data.buttonReportEnable)
+            setButtonUseEnable(res.data.buttonUseEnable)
         } catch (error) {
             console.log(error)
         }
