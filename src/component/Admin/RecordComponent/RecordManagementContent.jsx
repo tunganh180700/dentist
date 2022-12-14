@@ -96,6 +96,9 @@ const RecordManagementContent = () => {
                         <TableCell>
                             <div className='attibute'>Điều trị</div>
                         </TableCell>
+                        <TableCell>
+                            <div className='attibute'>Đơn thuốc</div>
+                        </TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
@@ -117,6 +120,7 @@ const RecordManagementContent = () => {
                             <TableCell>{el.marrowRecord}</TableCell>
                             <TableCell>{el.note}</TableCell>
                             <TableCell>{el.treatment}</TableCell>
+                            <TableCell>{el.prescription}</TableCell>
                             <TableCell>
                                 <Button onClick={() => {
                                     setModalDetailOpen(true)
