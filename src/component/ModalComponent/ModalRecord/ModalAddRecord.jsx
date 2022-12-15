@@ -1,4 +1,18 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, MenuItem, Select, TextField, Typography } from "@mui/material"
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    FormControl,
+    IconButton,
+    MenuItem,
+    Select,
+    TextField,
+    Typography
+} from "@mui/material"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Modal } from "antd"
@@ -22,6 +36,7 @@ import { regexNumber, validationDate } from "../../../config/validation";
 import moment from "moment";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
+import ModalExportMaterial  from './ModalExportMaterial'
 import { addRecord } from "../../../redux/RecordSlice/listRecordSlice";
 import "./style.css"
 import _ from "lodash";
@@ -35,6 +50,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [serviceId, setServiceId] = useState();
     const [serviceName, setServiceName] = useState();
     const [serviceIds, setServiceIds] = useState([]);
+    const [showModalExportMaterial, setShowModalExportMaterial] = useState(false);
 
     const [newPrice, setNewPrice] = useState();
     const [servicePrice, setServicePrice] = useState();
@@ -51,6 +67,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         {}
     ]);
 
+    const [materialExportDTOS, setMaterialExportDTOS] = useState([]);
 
     const validationSchema = yup.object({
         reason: yup
@@ -102,6 +119,11 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         loadServiceOption();
     }, [])
 
+    const handleExportMaterial = (material) => {
+        setMaterialExportDTOS(material)
+        setShowModalExportMaterial(false)
+    }
+
     const formik = useFormik({
         initialValues: {
             reason: '',
@@ -130,17 +152,11 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                 return Object.keys(a).length !== 0;
             })
             values.serviceDTOS = listA.concat(listB)
+            values.materialExportDTOS = materialExportDTOS
             const addValue = {
                 id: id,
                 values: values
             }
-            console.log("aaa", values)
-
-
-            console.log("ser list", values.date)
-            console.log("hay", serviceDTOs)
-            console.log("pre", servicePrice)
-
             dispatch(addRecord(addValue))
             setModalAddOpen(false)
             formik.handleReset()
@@ -215,8 +231,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     }
 
     const handleServiceChange = (index, newsServiceId) => {
-        const serviceInfo = serviceIds.find((s) => s.serviceId === newsServiceId
-        )
+        const serviceInfo = serviceIds.find((s) => s.serviceId === newsServiceId)
         setRows(prev => {
             prev[index] = { ...prev[index], ...serviceInfo }
             prev[index].isNew = 1
@@ -366,21 +381,21 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                         {formik.errors.treatment && formik.touched.treatment && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.treatment}</Typography>}
                     </div>
                     <div className="table" style={{ marginLeft: "150px" }}>
-                        {isEdit ? (
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Button onClick={handleAdd}>
-                                    <AddIcon onClick={handleAdd} />
-                                    Thêm dòng
-                                </Button>
-                            </div>
-                        ) : (
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Button align="right" onClick={handleEdit}>
-                                    <AddIcon />
-                                    Thêm dòng
-                                </Button>
-                            </div>
-                        )}
+                        <div>
+                            <Button align="right" onClick={isEdit ? handleAdd : handleEdit}>
+                                <AddIcon />Thêm dòng
+                            </Button>
+                            <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
+                                console.log(true)
+                            }}>
+                                Thêm mẫu vật
+                            </IconButton>
+                            <IconButton aria-label="add" style={{ fontSize: 'larger', borderRadius: '5%' }} onClick={() => {
+                                setShowModalExportMaterial(true);
+                            }}>
+                                Bán sản phẩm
+                            </IconButton>
+                        </div>
                         <Table size="small" style={{ marginTop: "15px" }}>
                             <TableHead>
                                 <TableRow>
@@ -560,9 +575,13 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                 })}
                             </TableBody>
                         </Table>
-
                     </div>
                 </div>
+                <ModalExportMaterial
+                    showModalExportMaterial={showModalExportMaterial}
+                    setShowModalExportMaterial={setShowModalExportMaterial}
+                    exportMaterial={handleExportMaterial}
+                />
             </Modal>
         </>
     )

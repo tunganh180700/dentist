@@ -111,4 +111,3 @@ export const reportSpecimenAPI = `${baseUrl}/api/specimens/report_specimen/`
 export const useSpecimenAPI = `${baseUrl}/api/specimens/use_specimen/`
 
 export const getAllLaboAPI = `${baseUrl}/api/labos/get_all_labo`
-
