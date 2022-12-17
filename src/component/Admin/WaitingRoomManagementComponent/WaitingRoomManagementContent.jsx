@@ -14,8 +14,11 @@ import { updateWaitingAPI, listConfirmWaitingAPI } from "../../../config/baseAPI
 import axiosInstance from "../../../config/customAxios";
 import ModalConfirmWaiting from '../../ModalComponent/ModalWaiting/ModalConfirmWaiting';
 import { ToastContainer, toast } from 'react-toastify';
+import SockJsClient from 'react-stomp';
 
 const WaitingRoomManagementContent = () => {
+
+    const SOCKET_URL = 'http://localhost:80/waiting-room/';
 
     const listWaiting = useSelector(state => state.listWaiting.listWaiting)
     const dispatch = useDispatch()
@@ -34,6 +37,10 @@ const WaitingRoomManagementContent = () => {
             page: currentPage
         },
         ));
+    }
+
+    const onConnected = () => {
+        console.log("Connected!!")
     }
 
     const checkExistConfirmWaiting = async () => {
@@ -104,6 +111,14 @@ const WaitingRoomManagementContent = () => {
             >
                 QUẢN LÝ PHÒNG CHỜ
             </Typography>
+            <SockJsClient
+                url={SOCKET_URL}
+                topics={['/topic/group']}
+                onConnect={onConnected}
+                onDisconnect={() => console.log("Disconnected!")}
+                onMessage={msg => console.log(msg)}
+                debug={false}
+            />
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
