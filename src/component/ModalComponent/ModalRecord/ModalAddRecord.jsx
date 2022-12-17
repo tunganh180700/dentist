@@ -37,6 +37,7 @@ import moment from "moment";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import ModalExportMaterial  from './ModalExportMaterial'
+import ModalSpecimen from "./ModalSpecimen";
 import { addRecord } from "../../../redux/RecordSlice/listRecordSlice";
 import "./style.css"
 import _ from "lodash";
@@ -51,6 +52,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [serviceName, setServiceName] = useState();
     const [serviceIds, setServiceIds] = useState([]);
     const [showModalExportMaterial, setShowModalExportMaterial] = useState(false);
+    const [showModalSpecimen, setShowModalSpecimen] = useState(false);
+
 
     const [newPrice, setNewPrice] = useState();
     const [servicePrice, setServicePrice] = useState();
@@ -66,8 +69,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [rows, setRows] = useState([
         {}
     ]);
+    const [serviceDTOS, setServiceDTOS] = useState([]);
 
     const [materialExportDTOS, setMaterialExportDTOS] = useState([]);
+    const [specimenDTOS, setSpecimenDTOS] = useState([]);
 
     const validationSchema = yup.object({
         reason: yup
@@ -119,9 +124,19 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         loadServiceOption();
     }, [])
 
+    useEffect(() => {
+        setServiceDTOS(formatToDTOS(listTreatingService, rows))
+    }, [rows, listTreatingService])
+
+
     const handleExportMaterial = (material) => {
         setMaterialExportDTOS(material)
-        setShowModalExportMaterial(false)
+        // setShowModalExportMaterial(false)
+    }
+
+    const handleSpecimen = (specimen) => {
+        setSpecimenDTOS(specimen)
+        // setShowModalSpecimen(false)
     }
 
     const formik = useFormik({
@@ -136,14 +151,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         validationSchema: validationSchema,
         onSubmit: (values) => {
             values.date = moment(value.$d).format(validationDate);
-            const serviceDTOs = [{
-                serviceId: serviceId,
-                serviceName: serviceName,
-                price: servicePrice,
-                discount: serviceDiscount,
-                status: status,
-                isNew: 1
-            }]
+        
 
             const listA = listTreatingService.filter(a => {
                 return Object.keys(a).length !== 0;
@@ -162,6 +170,18 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
             formik.handleReset()
         }
     });
+
+    const formatToDTOS = (listTreatingService, rows) => {
+        const listA = listTreatingService.filter(a => {
+            return Object.keys(a).length !== 0;
+        })
+        const listB = rows.filter(a => {
+            return Object.keys(a).length !== 0;
+        })
+
+        return listA.concat(listB)
+    }
+
 
     const styleInput = {
         width: '70%'
@@ -386,7 +406,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                 <AddIcon />Thêm dòng
                             </Button>
                             <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
-                                console.log(true)
+                                setShowModalSpecimen(true)
                             }}>
                                 Thêm mẫu vật
                             </IconButton>
@@ -581,6 +601,12 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                     showModalExportMaterial={showModalExportMaterial}
                     setShowModalExportMaterial={setShowModalExportMaterial}
                     exportMaterial={handleExportMaterial}
+                />
+                <ModalSpecimen
+                    showModalSpecimen={showModalSpecimen}
+                    setShowModalSpecimen={setShowModalSpecimen}
+                    specimens={handleSpecimen}
+                    serviceDTOS={serviceDTOS}
                 />
             </Modal>
         </>
