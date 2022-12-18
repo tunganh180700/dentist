@@ -24,7 +24,7 @@ const style = {
     p: 4,
 };
 
-const ModalConfirmWaiting = ({ modalConfirmWaitingOpen, setModalConfirmWaitingOpen }) => {
+const ModalConfirmWaiting = ({ modalConfirmWaitingOpen, setModalConfirmWaitingOpen, triggerGetList }) => {
 
     const dispatch = useDispatch();
     const listConfirmWaiting = useSelector(state => state.listConfirmWaiting.listConfirmWaiting);
@@ -38,8 +38,9 @@ const ModalConfirmWaiting = ({ modalConfirmWaitingOpen, setModalConfirmWaitingOp
     }
 
     useEffect(() => {
+        console.log("aa")
         loadConfirmWatingList();
-    }, [])
+    }, [triggerGetList])
     // }, [currentPage])
 
     const confirmWaiting = async (waitingId, isAttend) => {

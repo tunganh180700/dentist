@@ -18,7 +18,7 @@ import SockJsClient from 'react-stomp';
 
 const WaitingRoomManagementContent = () => {
 
-    const SOCKET_URL = 'http://localhost:80/waiting-room/';
+    const SOCKET_URL = 'http://localhost:8080/waiting-room/';
 
     const listWaiting = useSelector(state => state.listWaiting.listWaiting)
     const dispatch = useDispatch()
@@ -29,6 +29,7 @@ const WaitingRoomManagementContent = () => {
     const [modalConfirmWaitingOpen, setModalConfirmWaitingOpen] = useState(false);
     const [role, setRole] = useState(null);
     const [u, setU] = useState(true);
+    const [triggerGetList, setTriggerGetList] = useState(true);
 
 
     const loadWaitingList = () => {
@@ -99,6 +100,14 @@ const WaitingRoomManagementContent = () => {
         }
     }
 
+    const handlePopupConfirm = () => {
+        if (role === null || role === 'Receptionist' ) {
+            setTriggerGetList((prev) => !prev)
+            setModalConfirmWaitingOpen(true);
+            
+        }
+    }
+
     return (
         <>
             <ToastContainer />
@@ -116,7 +125,7 @@ const WaitingRoomManagementContent = () => {
                 topics={['/topic/group']}
                 onConnect={onConnected}
                 onDisconnect={() => console.log("Disconnected!")}
-                onMessage={msg => console.log(msg)}
+                onMessage={handlePopupConfirm}
                 debug={false}
             />
             <Table size="small" style={{ marginTop: "15px" }}>
@@ -160,7 +169,7 @@ const WaitingRoomManagementContent = () => {
                 />
             </div>
             <div>
-                <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} />
+                <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} triggerGetList={triggerGetList}  />
             </div>
         </>
     )
