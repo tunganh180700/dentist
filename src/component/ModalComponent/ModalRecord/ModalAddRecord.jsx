@@ -107,6 +107,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         // status: yup
         //     .string("Enter your email")
         //     .required("Email is required"),
+        prescription: yup
+            .string('Nhập đơn thuốc')
+            .max(250, "Đơn thuốc không được quá 250 ký tự.")
+            .required('Đơn thuốc là bắt buộc.'),
     });
 
     const loadServiceOption = async () => {
@@ -146,7 +150,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
             causal: "",
             marrowRecord: "",
             note: "",
-            treatment: ""
+            treatment: "",
+            prescription: ''
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
@@ -400,6 +405,20 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             onChange={formik.handleChange}
                         />
                         {formik.errors.treatment && formik.touched.treatment && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.treatment}</Typography>}
+                        <TextField
+                            margin="normal"
+                            fullWidth
+                            id="prescription"
+                            label="Tiền sử răng miệng"
+                            name="prescription"
+                            autoComplete="prescription"
+                            value={formik.values.prescription}
+                            multiline
+                            rows={5}
+                            variant="outlined"
+                            autoFocus
+                            onChange={formik.handleChange}
+                        />
                     </div>
                     <div className="table" style={{ marginLeft: "150px" }}>
                         <div>

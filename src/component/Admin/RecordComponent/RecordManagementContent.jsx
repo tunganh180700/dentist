@@ -96,47 +96,66 @@ const RecordManagementContent = () => {
                         <TableCell>
                             <div className='attibute'>Điều trị</div>
                         </TableCell>
+                        <TableCell>
+                            <div className='attibute'>Đơn thuốc</div>
+                        </TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {recordList?.map(el => (
-                        <TableRow key={el.patientRecordId}>
-                            <TableCell>
-                                <IconButton aria-label="detail" onClick={() => {
-                                    // setModalDetailOpen(true)
-                                    // dispatch(setUserId(item.patientId))
-                                }}>
-                                    <RemoveRedEyeIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>{el.reason}</TableCell>
-                            <TableCell>{el.diagnostic}</TableCell>
-                            <TableCell>{el.causal}</TableCell>
-                            <TableCell>{el.date}</TableCell>
-                            <TableCell>{el.marrowRecord}</TableCell>
-                            <TableCell>{el.note}</TableCell>
-                            <TableCell>{el.treatment}</TableCell>
-                            <TableCell>
-                                <Button onClick={() => {
-                                    setModalDetailOpen(true)
-                                    dispatch(setUserId(el.patientRecordId))
-                                }}>
-                                    Dịch vụ
-                                </Button>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setUserId(el.patientRecordId))
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
+                {totalPages === 0 ? (
+                    <>
+                        <Typography
+                            component="h1"
+                            variant="h5"
+                            color="inherit"
+                            noWrap
+                            textAlign="center"
+                        >
+                            Không có hồ sơ nào
+                        </Typography>
+                    </>
+                ) : (
+                    <TableBody>
+                        {recordList?.map(el => (
+                            <TableRow key={el.patientRecordId}>
+                                <TableCell>
+                                    <IconButton aria-label="detail" onClick={() => {
+                                        // setModalDetailOpen(true)
+                                        // dispatch(setUserId(item.patientId))
+                                    }}>
+                                        <RemoveRedEyeIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell>{el.reason}</TableCell>
+                                <TableCell>{el.diagnostic}</TableCell>
+                                <TableCell>{el.causal}</TableCell>
+                                <TableCell>{el.date}</TableCell>
+                                <TableCell>{el.marrowRecord}</TableCell>
+                                <TableCell>{el.note}</TableCell>
+                                <TableCell>{el.treatment}</TableCell>
+                                <TableCell>{el.prescription}</TableCell>
+                                <TableCell>
+                                    <Button onClick={() => {
+                                        setModalDetailOpen(true)
+                                        dispatch(setUserId(el.patientRecordId))
+                                    }}>
+                                        Dịch vụ
+                                    </Button>
+                                </TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="delete" onClick={() => {
+                                        setModalDeleteOpen(true)
+                                        dispatch(setUserId(el.patientRecordId))
+                                    }}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
 
-                    ))}
-                </TableBody>
+                        ))}
+                    </TableBody>
+                )
+                }
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
                 {totalPages > 1 ?
