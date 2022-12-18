@@ -52,6 +52,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [serviceName, setServiceName] = useState();
     const [serviceIds, setServiceIds] = useState([]);
     const [showModalExportMaterial, setShowModalExportMaterial] = useState(0);
+    const [modalExportOpen, setModalExportOpen] = useState(false);
     const [showModalSpecimen, setShowModalSpecimen] = useState(false);
 
 
@@ -409,8 +410,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                 Thêm mẫu vật
                             </IconButton>
                             <IconButton aria-label="add" style={{ fontSize: 'larger', borderRadius: '5%' }} onClick={() => {
-
-                                setShowModalExportMaterial(prev => {prev++ ;console.log(prev)});
+                                setModalExportOpen(true)
                             }}>
                                 Bán sản phẩm
                             </IconButton>
@@ -597,6 +597,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                     </div>
                 </div>
                 <ModalExportMaterial
+                    modalExportOpen={modalExportOpen}
+                    setModalExportOpen={setModalExportOpen}
                     showModalExportMaterial={showModalExportMaterial}
                     exportMaterial={handleExportMaterial}
                     materialExportDTOS = {materialExportDTOS}
