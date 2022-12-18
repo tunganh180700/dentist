@@ -19,10 +19,11 @@ import {listAllMaterialAPI} from "../../../config/baseAPI";
 import _ from "lodash";
 import ClearIcon from "@mui/icons-material/Clear";
 
-    const ModalExportMaterial = ({ showModalExportMaterial, exportMaterial }) => {
+    const ModalExportMaterial = ({ showModalExportMaterial, exportMaterial, materialExportDTOS }) => {
     const dispatch = useDispatch();
     const [material, setMaterial] = useState([])
     const [materialExport, setMaterialExport] = useState([])
+    const [show, setShow] = useState(false)
 
     const getMaterials = async () => {
         try {
@@ -37,14 +38,25 @@ import ClearIcon from "@mui/icons-material/Clear";
         getMaterials();
     }, [dispatch]);
 
+    useEffect(() => {
+        console.log(showModalExportMaterial)
+        if (showModalExportMaterial > 0) {
+            setMaterial(materialExportDTOS)
+            setShow(true);
+        }
+        
+    }, [showModalExportMaterial]);
+
+
     return (
         <>
             <Modal
                 okText={'Lưu'}
                 title="Bán sản phẩm"
-                open={showModalExportMaterial}
+                open={show}
                 width="50%"
-                onOk={exportMaterial(materialExport)}
+                onOk={() => {setShow(false);exportMaterial(materialExport)}}
+                onCancel={() => setShow(false)}
             >
                 <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
                     setMaterialExport((prev) => [...prev, {materialId: null, amount: null, unitPrice: null, total: null}])

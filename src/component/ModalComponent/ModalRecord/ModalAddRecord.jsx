@@ -51,7 +51,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [serviceId, setServiceId] = useState();
     const [serviceName, setServiceName] = useState();
     const [serviceIds, setServiceIds] = useState([]);
-    const [showModalExportMaterial, setShowModalExportMaterial] = useState(false);
+    const [showModalExportMaterial, setShowModalExportMaterial] = useState(0);
     const [showModalSpecimen, setShowModalSpecimen] = useState(false);
 
 
@@ -131,12 +131,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
 
     const handleExportMaterial = (material) => {
         setMaterialExportDTOS(material)
-        // setShowModalExportMaterial(false)
     }
 
     const handleSpecimen = (specimen) => {
         setSpecimenDTOS(specimen)
-        // setShowModalSpecimen(false)
     }
 
     const formik = useFormik({
@@ -411,7 +409,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                 Thêm mẫu vật
                             </IconButton>
                             <IconButton aria-label="add" style={{ fontSize: 'larger', borderRadius: '5%' }} onClick={() => {
-                                setShowModalExportMaterial(true);
+
+                                setShowModalExportMaterial(prev => {prev++ ;console.log(prev)});
                             }}>
                                 Bán sản phẩm
                             </IconButton>
@@ -599,8 +598,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                 </div>
                 <ModalExportMaterial
                     showModalExportMaterial={showModalExportMaterial}
-                    setShowModalExportMaterial={setShowModalExportMaterial}
                     exportMaterial={handleExportMaterial}
+                    materialExportDTOS = {materialExportDTOS}
                 />
                 <ModalSpecimen
                     showModalSpecimen={showModalSpecimen}

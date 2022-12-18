@@ -45,6 +45,7 @@ import ClearIcon from "@mui/icons-material/Clear";
                 open={showModalSpecimen}
                 width="50%"
                 onOk={specimens(specimen)}
+                onCancel={specimens(false)}
             >
                 <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
                     setSpecimen((prev) => [...prev, {specimenName: null, amount: null, unitPrice: null, laboId: null, serviceId: null}])
