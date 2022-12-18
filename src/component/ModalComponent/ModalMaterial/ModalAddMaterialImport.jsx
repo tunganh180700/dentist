@@ -88,14 +88,14 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     const handleCancel = () => {
         setModalAddOpen(false)
 
-        formik.errors.supplyName = ""
-        formik.touched.supplyName = ""
+        // formik.errors.supplyName = ""
+        // formik.touched.supplyName = ""
 
-        formik.errors.amount = ""
-        formik.touched.amount = ""
+        // formik.errors.amount = ""
+        // formik.touched.amount = ""
 
-        formik.errors.unitPrice = ""
-        formik.touched.unitPrice = ""
+        // formik.errors.unitPrice = ""
+        // formik.touched.unitPrice = ""
 
         formik.resetForm()
     }

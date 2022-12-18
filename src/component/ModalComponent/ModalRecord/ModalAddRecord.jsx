@@ -197,23 +197,23 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const handleCancel = () => {
         setModalAddOpen(false)
 
-        formik.values.reason = ""
-        formik.errors.reason = ""
+        // formik.values.reason = ""
+        // formik.errors.reason = ""
 
-        formik.values.causal = ""
-        formik.errors.causal = ""
+        // formik.values.causal = ""
+        // formik.errors.causal = ""
 
-        formik.values.diagnostic = ""
-        formik.errors.diagnostic = ""
+        // formik.values.diagnostic = ""
+        // formik.errors.diagnostic = ""
 
-        formik.values.marrowRecord = ""
-        formik.errors.marrowRecord = ""
+        // formik.values.marrowRecord = ""
+        // formik.errors.marrowRecord = ""
 
-        formik.values.note = ""
-        formik.errors.note = ""
+        // formik.values.note = ""
+        // formik.errors.note = ""
 
-        formik.values.treatment = ""
-        formik.errors.treatment = ""
+        // formik.values.treatment = ""
+        // formik.errors.treatment = ""
 
         setValue(null)
         formik.resetForm()

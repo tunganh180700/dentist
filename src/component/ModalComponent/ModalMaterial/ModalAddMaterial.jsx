@@ -42,19 +42,19 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
-    const handleCancel = () => {
+    const handleCancelCustom = () => {
         setModalAddOpen(false)
-        formik.errors.materialName = ""
-        formik.touched.materialName = ""
+        // formik.errors.materialName = ""
+        // formik.touched.materialName = ""
 
-        formik.errors.unit = ""
-        formik.touched.unit = ""
+        // formik.errors.unit = ""
+        // formik.touched.unit = ""
 
-        formik.errors.price = ""
-        formik.touched.price = ""
+        // formik.errors.price = ""
+        // formik.touched.price = ""
 
         formik.resetForm()
-
+       
     }
 
     return (
@@ -63,7 +63,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
                 title="Thêm Vật Liệu"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={handleCancel}
+                onCancel={handleCancelCustom}
             >
                 <TextField
                     margin="normal"

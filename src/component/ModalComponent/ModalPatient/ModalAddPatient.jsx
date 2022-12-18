@@ -62,23 +62,23 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
     const handleCancel = () => {
         setModalAddOpen(false)
 
-        formik.values.patientName = ""
-        formik.errors.patientName = ""
+        // formik.values.patientName = ""
+        // formik.errors.patientName = ""
 
-        formik.values.phone = ""
-        formik.errors.phone = ""
+        // formik.values.phone = ""
+        // formik.errors.phone = ""
 
-        formik.values.address = ""
-        formik.errors.address = ""
+        // formik.values.address = ""
+        // formik.errors.address = ""
 
-        formik.values.email = ""
-        formik.errors.email = ""
+        // formik.values.email = ""
+        // formik.errors.email = ""
 
-        formik.values.bodyPrehistory = ""
-        formik.errors.bodyPrehistory = ""
+        // formik.values.bodyPrehistory = ""
+        // formik.errors.bodyPrehistory = ""
 
-        formik.values.teethPrehistory = ""
-        formik.errors.teethPrehistory = ""
+        // formik.values.teethPrehistory = ""
+        // formik.errors.teethPrehistory = ""
 
         setGender(false)
         setValue(null)

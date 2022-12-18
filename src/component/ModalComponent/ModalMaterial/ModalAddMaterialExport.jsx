@@ -159,8 +159,8 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const handleCancel = () => {
         setModalAddOpen(false)
 
-        formik.errors.amount = ""
-        formik.touched.amount = ""
+        // formik.errors.amount = ""
+        // formik.touched.amount = ""
         formik.resetForm()
     }
     return (

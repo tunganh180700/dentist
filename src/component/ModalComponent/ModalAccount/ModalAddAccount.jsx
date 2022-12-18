@@ -86,20 +86,20 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
     const handleCancel = () => {
         setModalAddOpen(false)
 
-        formik.values.fullName = ""
-        formik.errors.fullName = ""
+        // formik.values.fullName = ""
+        // formik.errors.fullName = ""
 
-        formik.values.password = ""
-        formik.errors.password = ""
+        // formik.values.password = ""
+        // formik.errors.password = ""
 
-        formik.values.phone = ""
-        formik.errors.phone = ""
+        // formik.values.phone = ""
+        // formik.errors.phone = ""
 
-        formik.values.email = ""
-        formik.errors.email = ""
+        // formik.values.email = ""
+        // formik.errors.email = ""
 
-        formik.values.salary = ""
-        formik.errors.salary = ""
+        // formik.values.salary = ""
+        // formik.errors.salary = ""
 
         setValue(null)
         formik.resetForm()

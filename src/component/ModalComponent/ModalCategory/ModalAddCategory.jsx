@@ -33,8 +33,9 @@ const ModalAddCategory = ({ modalAddCategoryOpen, setModalAddCategoryOpen }) => 
     const handleCancel = () => {
         setModalAddCategoryOpen(false)
 
-        formik.errors.categoryServiceName = ""
-        formik.touched.categoryServiceName = ""
+        // formik.errors.categoryServiceName = ""
+        // formik.touched.categoryServiceName = ""
+        formik.resetForm()
     }
 
     return (
