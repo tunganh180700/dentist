@@ -137,22 +137,22 @@ const SpecimenManagementContent = () => {
     }, [searchValue, isDeleteSpecimen, isUpdateSpecimen, isAddSpecimen]);
 
     const getStatusStr = (status) => {
-        if(status === 1){
+        if (status === 1) {
             return 'Chuẩn bị mẫu vật'
         }
-        else if(status === 2){
+        else if (status === 2) {
             return 'Labo nhận mẫu'
         }
-        else if(status === 3){
+        else if (status === 3) {
             return 'Labo giao mẫu'
         }
-        else if(status === 4){
+        else if (status === 4) {
             return 'Bệnh nhân đã sử dụng'
         }
-        else if(status === 5){
+        else if (status === 5) {
             return 'Mẫu lỗi gửi lại cho labo'
         }
-        else{
+        else {
             return 'Hoàn thành'
         }
     }
@@ -290,45 +290,60 @@ const SpecimenManagementContent = () => {
                             {/* <TableCell></TableCell> */}
                         </TableRow>
                     </TableHead>
-                    <TableBody>
-                        {listSpecimen.map((item) =>
-                            <TableRow key={item.specimenId}>
-                                <TableCell style={styleText}>
-                                    <IconButton aria-label="detail" onClick={() => {
-                                        setModalDetailOpen(true)
-                                        dispatch(setSpecimenId(item.specimenId))
-                                    }}>
-                                        <RemoveRedEyeIcon />
-                                    </IconButton>
-                                </TableCell>
-                                <TableCell style={styleText}>{item.specimenName}</TableCell>
-                                <TableCell style={styleText}>{item.receiveDate?moment(item.receiveDate).format("DD/MM/YYYY"):''}</TableCell>
-                                <TableCell style={styleText}>{item.usedDate?moment(item.usedDate).format("DD/MM/YYYY"):''}</TableCell>
-                                <TableCell style={styleText}>{item.deliveryDate?moment(item.deliveryDate).format("DD/MM/YYYY"):''}</TableCell>
-                                <TableCell style={styleText}>{item.amount}</TableCell>
-                                <TableCell style={styleText}>{item.unitPrice}</TableCell>
-                                <TableCell style={styleText}>{item.serviceName}</TableCell>
-                                <TableCell style={styleText}>{item.laboName}</TableCell>
-                                <TableCell style={styleText}>{item.patientName}</TableCell>
-                                <TableCell style={styleText}>{getStatusStr(item.status)}</TableCell>
-                                <TableCell style={styleText}>
-                                    <IconButton aria-label="edit" onClick={() => {
-                                        setModalUpdateOpen(true)
-                                        dispatch(setSpecimenId(item.specimenId))
-                                    }}>
-                                        <EditIcon />
-                                    </IconButton>
-                                </TableCell>
-                                {/* <TableCell style={styleText}>
+                    {totalPages === 0 ? (
+                        <>
+                            <Typography
+                                component="h1"
+                                variant="h5"
+                                color="inherit"
+                                noWrap
+                                textAlign="center"
+                            >
+                                Không có mẫu vật nào
+                            </Typography>
+                        </>
+                    ) : (
+                        <TableBody>
+                            {listSpecimen.map((item) =>
+                                <TableRow key={item.specimenId}>
+                                    <TableCell style={styleText}>
+                                        <IconButton aria-label="detail" onClick={() => {
+                                            setModalDetailOpen(true)
+                                            dispatch(setSpecimenId(item.specimenId))
+                                        }}>
+                                            <RemoveRedEyeIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell style={styleText}>{item.specimenName}</TableCell>
+                                    <TableCell style={styleText}>{item.receiveDate ? moment(item.receiveDate).format("DD/MM/YYYY") : ''}</TableCell>
+                                    <TableCell style={styleText}>{item.usedDate ? moment(item.usedDate).format("DD/MM/YYYY") : ''}</TableCell>
+                                    <TableCell style={styleText}>{item.deliveryDate ? moment(item.deliveryDate).format("DD/MM/YYYY") : ''}</TableCell>
+                                    <TableCell style={styleText}>{item.amount}</TableCell>
+                                    <TableCell style={styleText}>{item.unitPrice}</TableCell>
+                                    <TableCell style={styleText}>{item.serviceName}</TableCell>
+                                    <TableCell style={styleText}>{item.laboName}</TableCell>
+                                    <TableCell style={styleText}>{item.patientName}</TableCell>
+                                    <TableCell style={styleText}>{getStatusStr(item.status)}</TableCell>
+                                    <TableCell style={styleText}>
+                                        <IconButton aria-label="edit" onClick={() => {
+                                            setModalUpdateOpen(true)
+                                            dispatch(setSpecimenId(item.specimenId))
+                                        }}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                    {/* <TableCell style={styleText}>
                                     <IconButton aria-label="delete" onClick={() => {
                                         
                                     }}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </TableCell> */}
-                            </TableRow>
-                        )}
-                    </TableBody>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    )
+                    }
                 </Table>
             </>}
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>

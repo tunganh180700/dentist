@@ -72,34 +72,49 @@ const MaterialImportManagementContent = () => {
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {listMaterialImport.map((item, index) =>
-                        <TableRow key={item.materialImportId}>
-                            <TableCell>{item.materialName}</TableCell>
-                            <TableCell>{item.supplyName}</TableCell>
-                            <TableCell>{item.date}</TableCell>
-                            <TableCell>{item.amount}</TableCell>
-                            <TableCell>{item.unitPrice}</TableCell>
-                            <TableCell>{item.amount * item.unitPrice}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setMaterialImportId(item.materialImportId))
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setMaterialImportId(item.materialImportId))
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
+                {totalPages === 0 ? (
+                    <>
+                        <Typography
+                            component="h1"
+                            variant="h5"
+                            color="inherit"
+                            noWrap
+                            textAlign="center"
+                        >
+                            Không có vật liệu nào
+                        </Typography>
+                    </>
+                ) : (
+                    <TableBody>
+                        {listMaterialImport.map((item, index) =>
+                            <TableRow key={item.materialImportId}>
+                                <TableCell>{item.materialName}</TableCell>
+                                <TableCell>{item.supplyName}</TableCell>
+                                <TableCell>{item.date}</TableCell>
+                                <TableCell>{item.amount}</TableCell>
+                                <TableCell>{item.unitPrice}</TableCell>
+                                <TableCell>{item.amount * item.unitPrice}</TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="edit" onClick={() => {
+                                        setModalUpdateOpen(true)
+                                        dispatch(setMaterialImportId(item.materialImportId))
+                                    }}>
+                                        <EditIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="delete" onClick={() => {
+                                        setModalDeleteOpen(true)
+                                        dispatch(setMaterialImportId(item.materialImportId))
+                                    }}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                )
+                }
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 {totalPages > 1 ?
