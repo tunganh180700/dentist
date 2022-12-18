@@ -19,7 +19,7 @@ import {getAllLaboAPI} from "../../../config/baseAPI";
 import _ from "lodash";
 import ClearIcon from "@mui/icons-material/Clear";
 
-    const ModalSpecimen = ({ showModalSpecimen, specimens, serviceDTOS}) => {
+    const ModalSpecimen = ({modalSpecimenOpen, setModalSpecimenOpen, showModalSpecimen, specimens,specimenDTOS, serviceDTOS}) => {
     const dispatch = useDispatch();
     const [labo, setLabo] = useState([])
     const [specimen, setSpecimen] = useState([])
@@ -35,17 +35,18 @@ import ClearIcon from "@mui/icons-material/Clear";
 
     useEffect(() => {
         getLabos();
-    }, [dispatch]);
+        setSpecimen(specimenDTOS)
+    }, [modalSpecimenOpen]);
 
     return (
         <>
             <Modal
                 okText={'Lưu'}
                 title="Tạo mẫu vật"
-                open={showModalSpecimen}
+                open={modalSpecimenOpen}
                 width="50%"
-                onOk={specimens(specimen)}
-                onCancel={specimens(false)}
+                onOk={() => {setModalSpecimenOpen(false);specimens(specimen) }}
+                onCancel={() => setModalSpecimenOpen(false)}
             >
                 <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
                     setSpecimen((prev) => [...prev, {specimenName: null, amount: null, unitPrice: null, laboId: null, serviceId: null}])
@@ -122,6 +123,7 @@ import ClearIcon from "@mui/icons-material/Clear";
                                             value={specimen?.laboId}
                                             onChange={(e) => {
                                                 const m = labo.find((l) => l.laboId === e.target.value)
+                                                console.log("e", e.target.value)
                                                 setSpecimen(prev => {
                                                     prev[index] = { ...prev[index], laboId: m?.laboId }
                                                     return _.cloneDeep(prev)
@@ -130,7 +132,7 @@ import ClearIcon from "@mui/icons-material/Clear";
                                             }
                                         >
                                             {labo?.map(item => (
-                                                <MenuItem key={item.laboId} value={item.materialId}>{item.laboName}</MenuItem>
+                                                <MenuItem key={item.laboId} value={item.laboId}>{item.laboName}</MenuItem>
                                             ))}
                                         </Select>
                                 </TableCell>

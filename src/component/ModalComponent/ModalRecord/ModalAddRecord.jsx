@@ -53,7 +53,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
     const [serviceIds, setServiceIds] = useState([]);
     const [showModalExportMaterial, setShowModalExportMaterial] = useState(0);
     const [modalExportOpen, setModalExportOpen] = useState(false);
-    const [showModalSpecimen, setShowModalSpecimen] = useState(false);
+    const [showModalSpecimen, setShowModalSpecimen] = useState(0);
+    const [modalSpecimenOpen, setModalSpecimenOpen] = useState(false);
 
 
     const [newPrice, setNewPrice] = useState();
@@ -160,6 +161,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
             })
             values.serviceDTOS = listA.concat(listB)
             values.materialExportDTOS = materialExportDTOS
+            values.specimensDTOS = specimenDTOS
             const addValue = {
                 id: id,
                 values: values
@@ -405,7 +407,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                                 <AddIcon />Thêm dòng
                             </Button>
                             <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
-                                setShowModalSpecimen(true)
+                                setModalSpecimenOpen(true)
                             }}>
                                 Thêm mẫu vật
                             </IconButton>
@@ -604,10 +606,13 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                     materialExportDTOS = {materialExportDTOS}
                 />
                 <ModalSpecimen
+                    modalSpecimenOpen={modalSpecimenOpen}
+                    setModalSpecimenOpen={setModalSpecimenOpen}
                     showModalSpecimen={showModalSpecimen}
-                    setShowModalSpecimen={setShowModalSpecimen}
                     specimens={handleSpecimen}
+                    specimenDTOS={specimenDTOS}
                     serviceDTOS={serviceDTOS}
+                
                 />
             </Modal>
         </>
