@@ -42,6 +42,8 @@ import listConfirmWaitingSlice from "./WaitingSlice/listConfirmWaitingSlice";
 import listSpecimenSlice from "./SpecimenSlice/listSpecimenSlice";
 import choosenSpecimenSlice from "./SpecimenSlice/choosenSpecimenSlice";
 
+import listScheduleSlice from "./ScheduleSlice/listScheduleSlice";
+
 
 
 
@@ -86,6 +88,8 @@ const store = configureStore({
 
         listSpecimen: listSpecimenSlice,
         choosenSpecimen: choosenSpecimenSlice,
+
+        listSchedule: listScheduleSlice,
     }
 })
 

@@ -112,3 +112,10 @@ export const useSpecimenAPI = `${baseUrl}/api/specimens/use_specimen/`
 
 export const getAllLaboAPI = `${baseUrl}/api/labos/get_all_labo`
 
+
+export const getListScheduleAPI = `${baseUrl}/api/schedule/get_list_schedule`
+export const getScheduleByIdAPI = `${baseUrl}/api/schedule/`
+export const addScheduleAPI = `${baseUrl}/api/schedule`
+export const updateScheduleAPI = `${baseUrl}/api/schedule/`
+
+
