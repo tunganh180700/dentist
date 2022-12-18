@@ -19,7 +19,7 @@ import {listAllMaterialAPI} from "../../../config/baseAPI";
 import _ from "lodash";
 import ClearIcon from "@mui/icons-material/Clear";
 
-    const ModalExportMaterial = ({ modalExportOpen, setModalExportOpen, showModalExportMaterial, exportMaterial, materialExportDTOS }) => {
+    const ModalExportMaterial = ({ modalExportOpen, setModalExportOpen, exportMaterial, materialExportDTOS }) => {
     const dispatch = useDispatch();
     const [material, setMaterial] = useState([])
     const [materialExport, setMaterialExport] = useState([])
@@ -34,11 +34,9 @@ import ClearIcon from "@mui/icons-material/Clear";
     }
 
     useEffect(() => {
-        getMaterials();
-    }, [dispatch]);
-
-    useEffect(() => {
-        setMaterial(materialExportDTOS)
+        console.log('1', materialExportDTOS)
+        getMaterials()
+        setMaterialExport(materialExportDTOS)
     }, [modalExportOpen]);
 
     return (
