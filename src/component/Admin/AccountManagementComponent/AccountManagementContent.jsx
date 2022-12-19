@@ -81,34 +81,52 @@ const AccountManagementContent = () => {
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {listAccount.map((item) =>
-                        <TableRow key={item.userId}>
-                            <TableCell>{item.fullName}</TableCell>
-                            <TableCell>{item.userName}</TableCell>
-                            <TableCell>{item.phone}</TableCell>
-                            <TableCell>{item.email}</TableCell>
-                            <TableCell>{item.birthdate}</TableCell>
-                            <TableCell>{item.roleName}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setUserId(item.userId))
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setUserId(item.userId))
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
+                {totalPages === 0 ?
+                    (
+                        <>
+                            <Typography
+                                component="h1"
+                                variant="h5"
+                                color="inherit"
+                                noWrap
+                                textAlign="center"
+                            >
+                                Không có toàn khoản nào
+                            </Typography>
+                        </>
+                    ) : (
+                        <>
+                            <TableBody>
+                                {listAccount.map((item) =>
+                                    <TableRow key={item.userId}>
+                                        <TableCell>{item.fullName}</TableCell>
+                                        <TableCell>{item.userName}</TableCell>
+                                        <TableCell>{item.phone}</TableCell>
+                                        <TableCell>{item.email}</TableCell>
+                                        <TableCell>{item.birthdate}</TableCell>
+                                        <TableCell>{item.roleName}</TableCell>
+                                        <TableCell>
+                                            <IconButton aria-label="edit" onClick={() => {
+                                                setModalUpdateOpen(true)
+                                                dispatch(setUserId(item.userId))
+                                            }}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                        <TableCell>
+                                            <IconButton aria-label="delete" onClick={() => {
+                                                setModalDeleteOpen(true)
+                                                dispatch(setUserId(item.userId))
+                                            }}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </>
+                    )
+                }
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
                 {totalPages > 1 ?

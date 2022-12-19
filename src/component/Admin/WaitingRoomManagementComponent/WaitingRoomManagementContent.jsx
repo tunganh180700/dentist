@@ -66,7 +66,7 @@ const WaitingRoomManagementContent = () => {
     }, [currentPage])
 
     // useEffect(() => {
-    
+
     // }, [u])
 
     const updateWaiting = async (id) => {
@@ -104,6 +104,7 @@ const WaitingRoomManagementContent = () => {
             >
                 QUẢN LÝ PHÒNG CHỜ
             </Typography>
+
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
@@ -112,41 +113,65 @@ const WaitingRoomManagementContent = () => {
                         <TableCell>Trạng thái</TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {listWaiting?.map((item) =>
-                        <TableRow key={item.waitingRoomId}>
-                            <TableCell>{item.patientName}</TableCell>
-                            <TableCell>{moment(item.date).format("DD/MM/YYYY")}</TableCell>
-                            <TableCell>{getStatusStr(item.status)}</TableCell>
-                            {
-                                role === null || role === 'Receptionist' || item.status === 1 ?
-                                    <></>
-                                    :
-                                    <TableCell>
-                                        <IconButton aria-label="edit" onClick={() => {
-                                            updateWaiting(item.waitingRoomId)
-                                        }}>
-                                            Gọi
-                                        </IconButton>
-                                    </TableCell>
-                            }
+                {totalPages === 0 ?
+                    (
+                        <>
+                            <Typography
+                                component="h1"
+                                variant="h5"
+                                color="inherit"
+                                noWrap
+                                textAlign="center"
+                            >
+                                Không có ai ở phòng chờ
+                            </Typography>
+                        </>
+                    )
+                    :
+                    (
+                        <>
+                            <TableBody>
+                                {listWaiting?.map((item) =>
+                                    <TableRow key={item.waitingRoomId}>
+                                        <TableCell>{item.patientName}</TableCell>
+                                        <TableCell>{moment(item.date).format("DD/MM/YYYY")}</TableCell>
+                                        <TableCell>{getStatusStr(item.status)}</TableCell>
+                                        {
+                                            role === null || role === 'Receptionist' || item.status === 1 ?
+                                                <></>
+                                                :
+                                                <TableCell>
+                                                    <IconButton aria-label="edit" onClick={() => {
+                                                        updateWaiting(item.waitingRoomId)
+                                                    }}>
+                                                        Gọi
+                                                    </IconButton>
+                                                </TableCell>
+                                        }
 
-                        </TableRow>
-                    )}
-                </TableBody>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </>
+                    )
+                }
             </Table >
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Pagination
-                    count={totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
             <div>
                 <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} />
             </div>
+
+
         </>
     )
 }

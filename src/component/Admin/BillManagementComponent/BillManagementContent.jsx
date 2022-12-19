@@ -66,34 +66,47 @@ const BillManagementContent = () => {
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {listBill.map((item, index) =>
-                        <TableRow size='medium' key={item.treatmentId}>
-
-                            <TableCell>{item.patientName}</TableCell>
-                            <TableCell>{item.phone}</TableCell>
-                            <TableCell>{item.totalPrice}</TableCell>
-                            <TableCell>{item.totalDiscount}</TableCell>
-                            <TableCell>{item.realCost}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="receipt-list" onClick={() => {
-                                    setModalReceiptOpen(true)
-                                    dispatch(setTreatmentId(item.treatmentId))
-                                }}>
-                                    <ReceiptIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="detail" onClick={() => {
-                                    setModalDetailOpen(true)
-                                    dispatch(setTreatmentId(item.treatmentId))
-                                }}>
-                                    <RemoveRedEyeIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
+                {totalPages === 0 ?
+                    (
+                        <Typography
+                            component="h1"
+                            variant="h5"
+                            color="inherit"
+                            noWrap
+                            textAlign="center"
+                        >
+                            Không có đơn giá nào
+                        </Typography>
+                    ) : (
+                        <TableBody>
+                            {listBill.map((item, index) =>
+                                <TableRow size='medium' key={item.treatmentId}>
+                                    <TableCell>{item.patientName}</TableCell>
+                                    <TableCell>{item.phone}</TableCell>
+                                    <TableCell>{item.totalPrice}</TableCell>
+                                    <TableCell>{item.totalDiscount}</TableCell>
+                                    <TableCell>{item.realCost}</TableCell>
+                                    <TableCell>
+                                        <IconButton aria-label="receipt-list" onClick={() => {
+                                            setModalReceiptOpen(true)
+                                            dispatch(setTreatmentId(item.treatmentId))
+                                        }}>
+                                            <ReceiptIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell>
+                                        <IconButton aria-label="detail" onClick={() => {
+                                            setModalDetailOpen(true)
+                                            dispatch(setTreatmentId(item.treatmentId))
+                                        }}>
+                                            <RemoveRedEyeIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    )
+                }
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
                 {totalPages > 1 ?
