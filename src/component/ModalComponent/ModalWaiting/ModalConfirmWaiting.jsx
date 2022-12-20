@@ -38,13 +38,12 @@ const ModalConfirmWaiting = ({ modalConfirmWaitingOpen, setModalConfirmWaitingOp
     }
 
     useEffect(() => {
-        console.log("aa")
         loadConfirmWatingList();
     }, [triggerGetList])
     // }, [currentPage])
 
     const confirmWaiting = async (waitingId, isAttend) => {
-        axiosInstance.post(confirmWaitingAPI + waitingId + '?isAttend=' + isAttend)
+        await axiosInstance.post(confirmWaitingAPI + waitingId + '?isAttend=' + isAttend)
             .then(res => {
                 loadConfirmWatingList();
                 toast("Xác nhận khám thành công");

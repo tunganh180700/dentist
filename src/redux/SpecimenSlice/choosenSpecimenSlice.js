@@ -17,7 +17,10 @@ const initState = {
     specimenStatus: 0,
     serviceName: '',
     laboName: '',
-    patientName: ''
+    patientName: '',
+    buttonUseEnable: false,
+    buttonReportEnable: false
+
 }
 const choosenSpecimenSlice = createSlice({
     name: 'choosenSpecimen',
@@ -44,6 +47,8 @@ const choosenSpecimenSlice = createSlice({
                 state.serviceName = action.payload.serviceName;
                 state.laboName = action.payload.laboName;
                 state.patientName = action.payload.patientName;
+                state.buttonReportEnable = action.payload.buttonReportEnable;
+                state.buttonUseEnable = action.payload.buttonUseEnable;
                 state.status = false
             })
     }

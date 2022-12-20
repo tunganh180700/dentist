@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { listWaitingAPI } from "../../config/baseAPI"
+import { listWaitingAPI, deleteWaitingAPI,callWaitingAPI } from "../../config/baseAPI"
 import axiosInstance from "../../config/customAxios"
+import { toast } from "react-toastify"
 
 const initState = {
     listWaiting: [],
@@ -10,7 +11,11 @@ const initState = {
     pageSize: 3,
     totalPage: 0,
     totalElements: 0,
-    message: ''
+    message: '',
+    statusDeleteWaiting: false,
+    isDeleteWaiting: false,
+    statusCallWaiting: false,
+    isCallWaiting: false
 }
 
 const listWaitingSlice = createSlice({
@@ -34,6 +39,18 @@ const listWaitingSlice = createSlice({
                 state.totalElements = action.payload.totalElements;
                 state.message = action.payload.message
             })
+            .addCase(deleteWaiting.pending, (state, action) => {
+                state.statusDeleteWaiting = true
+            })
+            .addCase(deleteWaiting.fulfilled, (state, action) => {
+                state.isDeleteWaiting = true
+            })
+            .addCase(callWaiting.pending, (state, action) => {
+                state.statusCallWaiting = true
+            })
+            .addCase(callWaiting.fulfilled, (state, action) => {
+                state.isCallWaiting = true
+            })
     }
 })
 
@@ -42,9 +59,29 @@ export const fetchAllWaiting = createAsyncThunk('listWaiting/fetchAllWaiting', a
         const res = await axiosInstance.get(listWaitingAPI, {
             params: paramsSearch,
         })
+        console.log('waiting data = ', res.data);
         return res.data
     } catch (error) {
         console.log(error)
+    }
+})
+
+export const callWaiting = createAsyncThunk('listWaiting/callWaiting', async (id) => {
+    axiosInstance.post(callWaitingAPI + id)
+        .then(res => {
+            toast("Gọi bệnh nhân thành công");
+        })
+        .catch(err => {
+            toast("Gọi bệnh nhân không thành công");
+        });
+})
+
+export const deleteWaiting = createAsyncThunk('listWaiting/deleteWaiting', async (id) => {
+    try {
+        const res = await axiosInstance.delete(deleteWaitingAPI + id);
+        toast("Xóa thành công");
+    } catch (error) {
+        toast("Xóa không thành công");
     }
 })
 

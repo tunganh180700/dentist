@@ -16,6 +16,7 @@ import { fetchAllMaterialImport } from '../../../redux/MaterialSlice/listMateria
 import ModalUpdateMaterialImport from '../../ModalComponent/ModalMaterial/ModalUpdateMaterialImport';
 import ModalDeleteMaterialImport from '../../ModalComponent/ModalMaterial/ModalDeleteMaterialImport';
 import ModalAddMaterialImport from '../../ModalComponent/ModalMaterial/ModalAddMaterialImport';
+import ModalAddListMaterialImport from '../../ModalComponent/ModalMaterial/ModalAddListMaterialImport';
 
 const MaterialImportManagementContent = () => {
 
@@ -32,6 +33,7 @@ const MaterialImportManagementContent = () => {
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
+    const [modalAddListOpen, setModalAddListOpen] = useState(false);
 
 
 
@@ -55,7 +57,8 @@ const MaterialImportManagementContent = () => {
                 Quản Lý Nhập Vật Liệu
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
-                setModalAddOpen(true)
+                // setModalAddOpen(true)
+                setModalAddListOpen(true)
             }}>
                 <AddIcon /> Thêm mới
             </IconButton>
@@ -133,8 +136,11 @@ const MaterialImportManagementContent = () => {
             <div>
                 <ModalDeleteMaterialImport modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
             </div>
-            <div>
+            {/* <div>
                 <ModalAddMaterialImport modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+            </div> */}
+            <div>
+                <ModalAddListMaterialImport modalAddOpen={modalAddListOpen} setModalAddOpen={setModalAddListOpen} />
             </div>
 
         </>

@@ -41,6 +41,7 @@ export const getMaterialImportByIdAPI = `${baseUrl}/api/material_imports/`
 export const updateMaterialImportAPI = `${baseUrl}/api/material_imports/`
 export const deleteMaterialImportAPI = `${baseUrl}/api/material_imports/`
 export const addMaterialImportAPI = `${baseUrl}/api/material_imports/`
+export const addListMaterialImportAPI = `${baseUrl}/api/materials_imports/add_list_import/`
 
 export const listServiceAndCategoryAPI = `${baseUrl}/api/categories/get_list_service`
 
@@ -96,7 +97,8 @@ export const listAllServiceAPI = `${baseUrl}/api/categories/get_all_service`
 
 export const listWaitingAPI = `${baseUrl}/api/waiting_room/get-list-waiting`
 export const listConfirmWaitingAPI = `${baseUrl}/api/waiting_room/get_list_confirm`
-export const updateWaitingAPI = `${baseUrl}/api/waiting_room/call-patient/`
+export const deleteWaitingAPI = `${baseUrl}/api/waiting_room/`
+export const callWaitingAPI = `${baseUrl}/api/waiting_room/call-patient/`
 export const confirmWaitingAPI = `${baseUrl}/api/waiting_room/confirm-customer/`
 
 export const listSpecimenAPI = `${baseUrl}/api/specimens/get_list_speciemns`
