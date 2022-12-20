@@ -150,7 +150,7 @@ const ModalSpecimen = ({ modalSpecimenOpen, setModalSpecimenOpen, showModalSpeci
                                             }
                                             }
                                         >
-                                            {serviceDTOS?.map(item => (
+                                            {serviceDTOS?.filter(i => i.status === 1).map(item => (
                                                 <MenuItem key={item.serviceId} value={item.serviceId}>{item.serviceName}</MenuItem>
                                             ))}
                                         </Select>
