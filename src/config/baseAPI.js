@@ -41,7 +41,7 @@ export const getMaterialImportByIdAPI = `${baseUrl}/api/material_imports/`
 export const updateMaterialImportAPI = `${baseUrl}/api/material_imports/`
 export const deleteMaterialImportAPI = `${baseUrl}/api/material_imports/`
 export const addMaterialImportAPI = `${baseUrl}/api/material_imports/`
-export const addListMaterialImportAPI = `${baseUrl}/api/materials_imports/add_list_import/`
+export const addListMaterialImportAPI = `${baseUrl}/api/material_imports/add_list_import`
 
 export const listServiceAndCategoryAPI = `${baseUrl}/api/categories/get_list_service`
 

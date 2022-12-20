@@ -23,6 +23,7 @@ import { addListMaterialImportAPI } from '../../../config/baseAPI';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { toastCss } from '../../../redux/toastCss';
+import { Formik } from 'formik';
 
 const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -88,33 +89,12 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
         try {
             const res = await axiosInstance.post(addListMaterialImportAPI, materialExport)
             console.log("res", res)
+            toast.success("thêm thành công", toastCss)
             
         } catch (error) {
             toast.error("thêm lỗi", toastCss)
         }
     }
-
-    // const handleCancel = () => {
-    //     setModalAddOpen(false)
-
-    //     // formik.errors.supplyName = ""
-    //     // formik.touched.supplyName = ""
-
-    //     // formik.errors.amount = ""
-    //     // formik.touched.amount = ""
-
-    //     // formik.errors.unitPrice = ""
-    //     // formik.touched.unitPrice = ""
-
-    //     formik.resetForm()
-    // }
-
-    // useEffect(() => {
-    //     const price = (formik.values.unitPrice || 0) * (formik.values.amount || 0)
-
-    //     setMaterialPrice(price)
-    // }, [formik.values.unitPrice, formik.values.amount])
-
 
 
     return (
@@ -123,8 +103,9 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 okText={'Lưu'}
                 title="Bán sản phẩm"
                 open={modalAddOpen}
-                width="50%"
-                onOk={() => {setModalAddOpen(false);dispatch(handleAddList())}}
+                width="87%"
+
+                onOk={() => {setModalAddOpen(false);handleAddList()}}
                 onCancel={() => setModalAddOpen(false)}
             >
                 <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
@@ -135,7 +116,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell style={{ width: "25%" }}>
+                        <TableCell style={{ width: "15%" }}>
                             Tên sản phẩm
                         </TableCell>
                         <TableCell>
@@ -158,7 +139,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     {
                         materialExport?.map((materialExport, index) => (
                             <TableRow key={index}>
-                                <TableCell padding="none">
+                                <TableCell style={{paddingTop: '1.5rem'}}>
                                 <Select
                                             id="materialId"
                                             value={materialExport?.materialId}
