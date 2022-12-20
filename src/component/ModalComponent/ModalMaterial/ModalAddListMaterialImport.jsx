@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import 'antd/dist/antd.css';
 import { Typography, TextField } from '@mui/material';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { useFormik } from "formik";
 import { listAllMaterialAPI } from '../../../config/baseAPI';
 import MenuItem from '@mui/material/MenuItem';
@@ -24,6 +24,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { toastCss } from '../../../redux/toastCss';
 import { Formik } from 'formik';
+import { addListMaterialImport } from '../../../redux/MaterialSlice/listMaterialImportSlice';
 
 const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -85,18 +86,26 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     //     }
     // });
 
-    const handleAddList = async () => {
-        try {
-            const res = await axiosInstance.post(addListMaterialImportAPI, materialExport)
-            console.log("res", res)
-            toast.success("thêm thành công", toastCss)
-            setMaterialExport.bind(null)
-            
-        } catch (error) {
-            toast.error("thêm lỗi", toastCss)
-        }
+    // const handleAddList = async () => {
+    //     try {
+    //         const res = await axiosInstance.post(addListMaterialImportAPI, materialExport)
+    //         console.log("res", res)
+    //         toast.success("thêm thành công", toastCss)
+
+    //     } catch (error) {
+    //         toast.error("thêm lỗi", toastCss)
+    //     }
+    // }
+    const handleOk = () => {
+        setModalAddOpen(false)
+        dispatch(addListMaterialImport(materialExport))
+        setMaterialExport([])
     }
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+        setMaterialExport([])
+    }
 
     return (
         <>
@@ -105,42 +114,42 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 title="Bán sản phẩm"
                 open={modalAddOpen}
                 width="87%"
-                onOk={() => {setModalAddOpen(false);dispatch(handleAddList())}}
-                onCancel={() => setModalAddOpen(false)}
+                onOk={handleOk}
+                onCancel={handleCancel}
             >
                 <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
-                    setMaterialExport((prev) => [...prev, {materialId: null,supplyName: null, amount: null, unitPrice: null, total: null}])
+                    setMaterialExport((prev) => [...prev, { materialId: null, supplyName: null, amount: null, unitPrice: null, total: null }])
                 }}>
                     Thêm mới
                 </IconButton>
-            <Table size="small" style={{ marginTop: "15px" }}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell style={{ width: "15%" }}>
-                            Tên sản phẩm
-                        </TableCell>
-                        <TableCell>
-                            Hãng cung cấp
-                        </TableCell>
-                        <TableCell>
-                            Số lương
-                        </TableCell>
-                        <TableCell>
-                            Đơn Giá
-                        </TableCell>
-                        <TableCell>
-                            Tổng giá
-                        </TableCell>
-                        <TableCell>
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        materialExport?.map((materialExport, index) => (
-                            <TableRow key={index}>
-                                <TableCell style={{paddingTop: '1.5rem'}}>
-                                <Select
+                <Table size="small" style={{ marginTop: "15px" }}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell style={{ width: "15%" }}>
+                                Tên sản phẩm
+                            </TableCell>
+                            <TableCell>
+                                Hãng cung cấp
+                            </TableCell>
+                            <TableCell>
+                                Số lương
+                            </TableCell>
+                            <TableCell>
+                                Đơn Giá
+                            </TableCell>
+                            <TableCell>
+                                Tổng giá
+                            </TableCell>
+                            <TableCell>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            materialExport?.map((materialExport, index) => (
+                                <TableRow key={index}>
+                                    <TableCell style={{ paddingTop: '1.5rem' }}>
+                                        <Select
                                             id="materialId"
                                             value={materialExport?.materialId}
                                             onChange={(e) => {
@@ -155,75 +164,77 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                                                 <MenuItem key={item.materialId} value={item.materialId}>{item.materialName}</MenuItem>
                                             ))}
                                         </Select>
-                                </TableCell>
-                                <TableCell padding="none">
-                                    <input
-                                        value={materialExport.supplyName}
-                                        name="supplyName"
-                                        onChange={(e) =>
-                                            setMaterialExport((prev) => {
-                                                prev[index].supplyName = e.target.value
-                                                return _.cloneDeep(prev)
-                                            })
-                                        }
-                                    />
-                                </TableCell>
-                                <TableCell padding="none">
-                                    <input
-                                        value={materialExport.amount}
-                                        name="amount"
-                                        type={"number"}
-                                        onChange={(e) =>
-                                            setMaterialExport((prev) => {
-                                                prev[index].amount = e.target.value
-                                                prev[index].total = (e.target.value) * (prev[index].unitPrice)
-                                                return _.cloneDeep(prev)
-                                            })
-                                        }
-                                    />
-                                </TableCell>
-                                <TableCell padding="none">
-                                    <input
-                                        value={materialExport.unitPrice}
-                                        name="unitPrice"
-                                        onChange={(e) =>
-                                            setMaterialExport((prev) => {
-                                                prev[index].unitPrice = e.target.value;
-                                                prev[index].total = (e.target.value) * (prev[index].amount)
-                                                return _.cloneDeep(prev)
-                                            })
-                                        }
-                                    />
-                                </TableCell>
-                                <TableCell padding="none">
-                                    <input
-                                        value={materialExport.total}
-                                        name="total"
-                                        onChange={(e) =>
-                                            setMaterialExport((prev) => {
-                                                
-                                                return _.cloneDeep(prev)
-                                            })
-                                        }
-                                        disabled={true}
-                                    />
-                                </TableCell>
-                                <TableCell padding="none">
-                                    <Button className="mr10" onClick={
-                                        () => {setMaterialExport((prev) => {
-                                            prev.splice(index, 1)
-                                            return _.cloneDeep(prev)
-                                        })}
-                                    } >
-                                        <ClearIcon />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                        <input
+                                            value={materialExport.supplyName}
+                                            name="supplyName"
+                                            onChange={(e) =>
+                                                setMaterialExport((prev) => {
+                                                    prev[index].supplyName = e.target.value
+                                                    return _.cloneDeep(prev)
+                                                })
+                                            }
+                                        />
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                        <input
+                                            value={materialExport.amount}
+                                            name="amount"
+                                            type={"number"}
+                                            onChange={(e) =>
+                                                setMaterialExport((prev) => {
+                                                    prev[index].amount = e.target.value
+                                                    prev[index].total = (e.target.value) * (prev[index].unitPrice)
+                                                    return _.cloneDeep(prev)
+                                                })
+                                            }
+                                        />
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                        <input
+                                            value={materialExport.unitPrice}
+                                            name="unitPrice"
+                                            onChange={(e) =>
+                                                setMaterialExport((prev) => {
+                                                    prev[index].unitPrice = e.target.value;
+                                                    prev[index].total = (e.target.value) * (prev[index].amount)
+                                                    return _.cloneDeep(prev)
+                                                })
+                                            }
+                                        />
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                        <input
+                                            value={materialExport.total}
+                                            name="total"
+                                            onChange={(e) =>
+                                                setMaterialExport((prev) => {
+
+                                                    return _.cloneDeep(prev)
+                                                })
+                                            }
+                                            disabled={true}
+                                        />
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                        <Button className="mr10" onClick={
+                                            () => {
+                                                setMaterialExport((prev) => {
+                                                    prev.splice(index, 1)
+                                                    return _.cloneDeep(prev)
+                                                })
+                                            }
+                                        } >
+                                            <ClearIcon />
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
                             )
-                        )
-                    }
-                </TableBody>
-            </Table>
+                            )
+                        }
+                    </TableBody>
+                </Table>
             </Modal>
         </>
     )

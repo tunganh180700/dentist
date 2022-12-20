@@ -29,6 +29,7 @@ const MaterialImportManagementContent = () => {
     const isUpdateMaterialImport = useSelector(state => state.listMaterialImport.isUpdateMaterialImport);
     const isDeleteMaterialImport = useSelector(state => state.listMaterialImport.isDeleteMaterialImport);
     const isAddMaterialImport = useSelector(state => state.listMaterialImport.isAddMaterialImport);
+    const isAddListMaterialImport = useSelector(state => state.listMaterialImport.isAddListMaterialImport);
 
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
@@ -43,7 +44,7 @@ const MaterialImportManagementContent = () => {
             page: currentPage
         },
         ));
-    }, [currentPage, isUpdateMaterialImport, isDeleteMaterialImport, isAddMaterialImport])
+    }, [currentPage, isUpdateMaterialImport, isDeleteMaterialImport, isAddMaterialImport, isAddListMaterialImport])
 
     return (
         <>
