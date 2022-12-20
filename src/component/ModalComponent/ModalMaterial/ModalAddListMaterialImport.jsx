@@ -90,6 +90,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
             const res = await axiosInstance.post(addListMaterialImportAPI, materialExport)
             console.log("res", res)
             toast.success("thêm thành công", toastCss)
+            setMaterialExport.bind(null)
             
         } catch (error) {
             toast.error("thêm lỗi", toastCss)
@@ -104,8 +105,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 title="Bán sản phẩm"
                 open={modalAddOpen}
                 width="87%"
-
-                onOk={() => {setModalAddOpen(false);handleAddList()}}
+                onOk={() => {setModalAddOpen(false);dispatch(handleAddList())}}
                 onCancel={() => setModalAddOpen(false)}
             >
                 <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
