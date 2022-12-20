@@ -82,6 +82,14 @@ const Sidebar = () => {
                             </ListItemButton>
                         )
                 }
+                <ListItemButton>
+                    <ListItemIcon>
+                        <ScheduleIcon />
+                    </ListItemIcon>
+                    <Link to={'/schedule'}>
+                        <ListItemText style={{ color: "black" }} primary='Quản lý lịch hẹn' />
+                    </Link>
+                </ListItemButton>
 
                 {
                     role === 'Doctor' || role === 'Receptionist' ?
@@ -96,14 +104,7 @@ const Sidebar = () => {
                             </ListItemButton>
                         )
                 }
-                <ListItemButton>
-                    <ListItemIcon>
-                        <ScheduleIcon />
-                    </ListItemIcon>
-                    <Link to={'/schedule'}>
-                        <ListItemText style={{ color: "black" }} primary='Quản lý lịch hẹn' />
-                    </Link>
-                </ListItemButton>
+
                 {
                     role === 'Doctor' || role === 'Receptionist' ?
                         (<></>)
