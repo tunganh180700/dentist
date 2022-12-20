@@ -25,7 +25,6 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
     const validationSchema = yup.object({
         patientName: yup
             .string('Nhập họ tên')
-            .matches(regexName, 'Họ và tên không được nhập số hoặc kí tự đặc biệt, nhập từ 8 đến 32 ký tự.')
             .required('Họ tên là bắt buộc.'),
         phone: yup
             .string("Nhập số điện thoại")

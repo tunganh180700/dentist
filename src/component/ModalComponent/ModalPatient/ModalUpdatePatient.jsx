@@ -26,7 +26,6 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const validationSchema = yup.object({
         patientName: yup
             .string('Nhập họ tên')
-            .matches(regexName, 'Họ và tên không được nhập số hoặc kí tự đặc biệt')
             .required('Họ tên là bắt buộc.'),
         phone: yup
             .string("Nhập số điện thoại")
