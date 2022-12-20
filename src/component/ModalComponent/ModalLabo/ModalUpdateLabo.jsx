@@ -67,11 +67,11 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         formik.values.laboName = oldData.laboName
         formik.values.phone = oldData.phone
 
-        formik.errors.laboName = ""
-        formik.touched.laboName = ""
+        // formik.errors.laboName = ""
+        // formik.touched.laboName = ""
 
-        formik.errors.phone = ""
-        formik.touched.phone = ""
+        // formik.errors.phone = ""
+        // formik.touched.phone = ""
 
         setModalUpdateOpen(false)
     }

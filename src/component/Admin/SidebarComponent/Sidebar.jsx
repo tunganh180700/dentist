@@ -16,6 +16,7 @@ import StarBorder from '@mui/icons-material/StarBorder';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import { useState } from 'react';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 
 const Sidebar = () => {
     const [open, setOpen] = useState(true);
@@ -95,7 +96,14 @@ const Sidebar = () => {
                             </ListItemButton>
                         )
                 }
-
+                <ListItemButton>
+                    <ListItemIcon>
+                        <ScheduleIcon />
+                    </ListItemIcon>
+                    <Link to={'/schedule'}>
+                        <ListItemText style={{ color: "black" }} primary='Quản lý lịch hẹn' />
+                    </Link>
+                </ListItemButton>
                 {
                     role === 'Doctor' || role === 'Receptionist' ?
                         (<></>)
