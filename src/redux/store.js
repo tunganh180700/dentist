@@ -34,6 +34,7 @@ import choosenBillSlice from "./BillSlice/choosenBillSlice";
 import listSpecimensSlice from "./SpecimensSlice/listSpecimensSlice";
 import choosenSpecimensSlice from "./SpecimensSlice/choosenSpecimensSlice";
 import listRecordSlice from "./RecordSlice/listRecordSlice";
+
 import listReceiptSlice from "./ReceiptSlice/listReceiptSlice";
 import choosenNewReceiptSlice from "./ReceiptSlice/choosenNewReceiptSlice";
 import listWaitingSlice from "./WaitingSlice/listWaitingSlice";
