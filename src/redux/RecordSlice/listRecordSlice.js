@@ -23,7 +23,16 @@ const initState = {
     message: '',
     statusPatient: 0,
     listService: [],
-    status: ''
+    status: '',
+
+    reason: '',
+    diagnostic: '',
+    causal: '',
+    date: '',
+    marrowRecord: '',
+    note: '',
+    treatment: '',
+    prescription: ''
 }
 
 const listRecordSlice = createSlice({
@@ -43,6 +52,15 @@ const listRecordSlice = createSlice({
                 state.listRecord = action.payload
                 state.listService = action.payload.serviceDTOS
                 state.totalPage = action.payload.totalPages
+
+                state.reason = action.payload.reason;
+                state.diagnostic = action.payload.diagnostic;
+                state.causal = action.payload.causal;
+                state.date = action.payload.date;
+                state.marrowRecord = action.payload.marrowRecord;
+                state.note = action.payload.note
+                state.treatment = action.payload.treatment
+                state.prescription = action.payload.prescription
             })
             .addCase(addRecord.pending, (state, action) => {
                 state.statusAddRecord = true
