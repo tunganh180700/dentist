@@ -42,6 +42,9 @@ const initState = {
     isOpenUpdateSpecimen:false,
     isOpenDeleteSpecimen:false,
 
+    waitingRoomId: 0,
+    isOpenUpdateSchedule:false,
+
 }
 
 const modalSlice = createSlice({
@@ -115,7 +118,10 @@ const modalSlice = createSlice({
         },
         setIsOpenDeleteSpecimen: (state, action) => {
             state.isOpenDeleteSpecimen = action.payload
-        }
+        },
+        setScheduleId: (state,action) => {
+            state.waitingRoomId = action.payload
+        },
     }
 })
 export const { setUserId } = modalSlice.actions;
@@ -130,6 +136,8 @@ export const { setServicedId } = modalSlice.actions;
 export const { setTreatmentId} = modalSlice.actions;
 
 export const { setSpecimenId} = modalSlice.actions;
+
+export const { setScheduleId} = modalSlice.actions;
 
 
 export default modalSlice.reducer;

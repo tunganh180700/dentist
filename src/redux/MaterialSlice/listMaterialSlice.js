@@ -3,7 +3,7 @@ import axios from "axios"
 import { listMaterialAPI, updateMaterialAPI, deleteMaterialAPI, addMaterialAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
-import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, DELETE_FAIL_MATERIAL } from "../../config/constant"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, DELETE_FAIL_MATERIAL, ADD_FAIL_MATERIAL } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 
 const initState = {
@@ -120,7 +120,7 @@ export const addMaterial = createAsyncThunk('listMaterial/addMaterial', async (v
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error('Thêm mới thất bại :(', toastCss)
+        toast.error(ADD_FAIL_MATERIAL, toastCss)
     }
 })
 export const { setListMaterial } = listMaterialSlice.actions;

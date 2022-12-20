@@ -76,27 +76,21 @@ const PatientManagementContent = () => {
     }
 
     useEffect(() => {
-        setLoading(true)
-        try {
-            if (searchValue === '') {
-                dispatch(fetchAllPatient({
-                    size: pageSize,
-                    page: currentPage,
-                })
-                );
-            } else {
-                dispatch(searchPatient({
-                    ...searchValue,
-                    size: pageSize,
-                    page: currentPage,
-                }
-                ))
+        if (searchValue === '') {
+            dispatch(fetchAllPatient({
+                size: pageSize,
+                page: currentPage,
+            })
+            );
+        } else {
+            dispatch(searchPatient({
+                ...searchValue,
+                size: pageSize,
+                page: currentPage,
             }
-        } catch (error) {
-            console.log(error)
+            ))
         }
-        setLoading(false)
-    }, [currentPage, isAddPatient, isUpdatePatient])
+    }, [currentPage, isUpdatePatient, isAddPatient, searchValue])
 
     useEffect(() => {
         if (isDeletePatient == true && totalElements % pageSize == 1) {
@@ -141,13 +135,13 @@ const PatientManagementContent = () => {
     }, [searchValue, isDeletePatient, isUpdatePatient, isAddPatient]);
 
     const addWaitingPatient = (patientId) => {
-            try {
-                axiosInstance.post('http://localhost:8080/api/patients/' + patientId + '/waiting_room');
-                toast('Thêm bệnh nhân đang chờ thành công');
-            } catch (error) {
-                toast('Thêm bệnh nhân đang chờ không thành công');
-                console.log('error = ', error);
-            }
+        try {
+            axiosInstance.post('http://localhost:8080/api/patients/' + patientId + '/waiting_room');
+            toast('Thêm bệnh nhân đang chờ thành công');
+        } catch (error) {
+            toast('Thêm bệnh nhân đang chờ không thành công');
+            console.log('error = ', error);
+        }
     }
 
     return (
@@ -268,54 +262,69 @@ const PatientManagementContent = () => {
                             <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
-                    <TableBody>
-                        {listPatient.map((item) =>
-                            <TableRow key={item.patientId}>
-                                <TableCell style={styleText}>
-                                    <IconButton aria-label="detail" onClick={() => {
-                                        setModalDetailOpen(true)
-                                        dispatch(setUserId(item.patientId))
-                                    }}>
-                                        <RemoveRedEyeIcon />
-                                    </IconButton>
-                                </TableCell>
-                                <TableCell style={styleText}>
-                                    <Link to={`/record/${item.patientId}`}>
-                                        {item.patientName}
-                                    </Link>
-                                </TableCell>
-                                <TableCell style={styleText}>{item.birthdate}</TableCell>
-                                <TableCell style={styleText}>{item.phone}</TableCell>
-                                <TableCell style={styleText}>{item.gender ? "Nam" : "Nữ"}</TableCell>
-                                <TableCell style={styleText}>{item.address}</TableCell>
-                                <TableCell style={styleText}>{item.email}</TableCell>
-                                <TableCell style={styleText}>{item.status === 0 ? "NOT TREATMENT" : item.status === 1 ? "TREATING" : "DONE"}</TableCell>
-                                <TableCell style={styleText}>
-                                    <IconButton aria-label="edit" onClick={() => {
-                                        setModalUpdateOpen(true)
-                                        dispatch(setUserId(item.patientId))
-                                    }}>
-                                        <EditIcon />
-                                    </IconButton>
-                                </TableCell>
-                                <TableCell style={styleText}>
-                                    <IconButton aria-label="delete" onClick={() => {
-                                        setModalDeleteOpen(true)
-                                        dispatch(setUserId(item.patientId))
-                                    }}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                                <TableCell style={styleText}>
-                                    <IconButton aria-label="add" onClick={() => {
-                                        addWaitingPatient(item.patientId)
-                                    }}>
-                                        <AddIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
+                    {totalPages === 0 ? (
+                        <>
+                            <Typography
+                                component="h1"
+                                variant="h5"
+                                color="inherit"
+                                noWrap
+                                textAlign="center"
+                            >
+                                Không có bệnh nhân nào
+                            </Typography>
+                        </>
+                    ) : (
+                        <TableBody>
+                            {listPatient.map((item) =>
+                                <TableRow key={item.patientId}>
+                                    <TableCell style={styleText}>
+                                        <IconButton aria-label="detail" onClick={() => {
+                                            setModalDetailOpen(true)
+                                            dispatch(setUserId(item.patientId))
+                                        }}>
+                                            <RemoveRedEyeIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell style={styleText}>
+                                        <Link to={`/record/${item.patientId}`}>
+                                            {item.patientName}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell style={styleText}>{item.birthdate}</TableCell>
+                                    <TableCell style={styleText}>{item.phone}</TableCell>
+                                    <TableCell style={styleText}>{item.gender ? "Nam" : "Nữ"}</TableCell>
+                                    <TableCell style={styleText}>{item.address}</TableCell>
+                                    <TableCell style={styleText}>{item.email}</TableCell>
+                                    <TableCell style={styleText}>{item.status === 0 ? "NOT TREATMENT" : item.status === 1 ? "TREATING" : "DONE"}</TableCell>
+                                    <TableCell style={styleText}>
+                                        <IconButton aria-label="edit" onClick={() => {
+                                            setModalUpdateOpen(true)
+                                            dispatch(setUserId(item.patientId))
+                                        }}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell style={styleText}>
+                                        <IconButton aria-label="delete" onClick={() => {
+                                            setModalDeleteOpen(true)
+                                            dispatch(setUserId(item.patientId))
+                                        }}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell style={styleText}>
+                                        <IconButton aria-label="add" onClick={() => {
+                                            addWaitingPatient(item.patientId)
+                                        }}>
+                                            <AddIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    )
+                    }
                 </Table>
             </>}
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>

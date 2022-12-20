@@ -1,4 +1,4 @@
-export const baseUrl = `http://localhost:8080`
+export const baseUrl = process.env.BASE_URL || 'http://localhost:8080'
 
 export const listUserAPI = `${baseUrl}/api/users/get_list_users`
 export const getAccountByIdAPI = `${baseUrl}/api/users/`
@@ -111,4 +111,11 @@ export const reportSpecimenAPI = `${baseUrl}/api/specimens/report_specimen/`
 export const useSpecimenAPI = `${baseUrl}/api/specimens/use_specimen/`
 
 export const getAllLaboAPI = `${baseUrl}/api/labos/get_all_labo`
+
+
+export const getListScheduleAPI = `${baseUrl}/api/schedule/get_list_schedule`
+export const getScheduleByIdAPI = `${baseUrl}/api/schedule/`
+export const addScheduleAPI = `${baseUrl}/api/schedule`
+export const updateScheduleAPI = `${baseUrl}/api/schedule/`
+
 

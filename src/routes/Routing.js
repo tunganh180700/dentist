@@ -18,6 +18,7 @@ import IncomeManagement from "../component/Admin/IncomeManagementComponent/Incom
 import RecordManagement from "../component/Admin/RecordComponent/RecordManagement";
 import BillManagement from "../component/Admin/BillManagementComponent/BillManagement";
 import SpecimenManagement from "../component/Admin/SpecimenManagementComponent/SpecimenManagement";
+import ScheduleManagement from "../component/Admin/ScheduleManagementComponent/ScheduleManagement";
 
 
 const Routing = () => {
@@ -42,6 +43,7 @@ const Routing = () => {
                 <Route path='/' element={<HomePage />} />
                 <Route path='/forgot-password' element={<ForgotPassword />} />
                 <Route path='/specimen' element={<SpecimenManagement />} />
+                <Route path='/schedule' element={<ScheduleManagement />} />
                 <Route path='*' element={<>404 Error</>} />
             </Routes>
         </Router>

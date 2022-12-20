@@ -30,7 +30,7 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
     const serviceName = useSelector(state => state.choosenSpecimen.serviceName);
     const laboName = useSelector(state => state.choosenSpecimen.laboName);
     const patientName = useSelector(state => state.choosenSpecimen.patientName);
-    
+
 
     const isDeleteSpecimen = useSelector(state => state.choosenSpecimen.isDeleteSpecimen);
     const isUpdateSpecimen = useSelector(state => state.listSpecimen.isUpdateSpecimen);
@@ -64,22 +64,22 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
     }, [isDeleteSpecimen, isUpdateSpecimen, isAddSpecimen])
 
     const getStatusStr = (status) => {
-        if(status === 1){
+        if (status === 1) {
             return 'Chuẩn bị mẫu vật'
         }
-        else if(status === 2){
+        else if (status === 2) {
             return 'Labo nhận mẫu'
         }
-        else if(status === 3){
+        else if (status === 3) {
             return 'Labo giao mẫu'
         }
-        else if(status === 4){
+        else if (status === 4) {
             return 'Bệnh nhân đã sử dụng'
         }
-        else if(status === 5){
+        else if (status === 5) {
             return 'Mẫu lỗi gửi lại cho labo'
         }
-        else{
+        else {
             return 'Hoàn thành'
         }
     }
@@ -88,6 +88,7 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
         <>
             <Modal
                 open={modalDetailOpen}
+                width="70%"
                 onOk={() => setModalDetailOpen(false)}
                 onCancel={() => setModalDetailOpen(false)}
             >
@@ -147,9 +148,9 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
                         <TableBody>
                             <TableRow key={specimenId}>
                                 <TableCell>{specimenName}</TableCell>
-                                <TableCell>{receiveDate?moment(receiveDate).format("DD/MM/YYYY"):''}</TableCell>
-                                <TableCell>{usedDate?moment(usedDate).format("DD/MM/YYYY"):''}</TableCell>
-                                <TableCell>{deliveryDate?moment(deliveryDate).format("DD/MM/YYYY"):''}</TableCell>
+                                <TableCell>{receiveDate ? moment(receiveDate).format("DD/MM/YYYY") : ''}</TableCell>
+                                <TableCell>{usedDate ? moment(usedDate).format("DD/MM/YYYY") : ''}</TableCell>
+                                <TableCell>{deliveryDate ? moment(deliveryDate).format("DD/MM/YYYY") : ''}</TableCell>
                                 <TableCell>{amount}</TableCell>
                                 <TableCell>{unitPrice}</TableCell>
                                 <TableCell>{serviceName}</TableCell>
