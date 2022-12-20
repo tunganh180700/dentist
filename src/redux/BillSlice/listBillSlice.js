@@ -10,7 +10,7 @@ const initState = {
     pagination: [],
     status: false,
     index: 0,
-    pageSize: 10,
+    pageSize: 0,
     totalPage: 0,
     statusUpdateBill: false,
     isUpdateBill: false,
@@ -35,7 +35,7 @@ const listBillSlice = createSlice({
                 state.listBill = action.payload.content;
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
-                state.pageSize = action.payload.pageSize;
+                state.pageSize = action.payload.size;
                 state.totalPage = action.payload.totalPages;
                 state.message = action.payload.message
             })

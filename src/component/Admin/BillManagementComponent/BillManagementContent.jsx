@@ -32,7 +32,7 @@ const BillManagementContent = () => {
     const [modalReceiptOpen, setModalReceiptOpen] = useState(false);
 
     console.log('bill: ', listBill)
-    console.log('page: ', totalPages)
+    console.log('page: ', pageSize)
     //dung roi, total pages trong api dang co 1 thoi
     useEffect(() => {
         dispatch(fetchAllBill({
