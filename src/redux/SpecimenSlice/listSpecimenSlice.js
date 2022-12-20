@@ -20,6 +20,8 @@ const initState = {
     isAddSpecimen: false,
     statusSearchSpecimen: false,
     isSearchSpecimen: false,
+    statusUseSpecimen: false,
+    isUseSpecimen: false,
     message: '',
     statusSpecimen: 0
 }
@@ -73,11 +75,11 @@ const listSpecimenSlice = createSlice({
             .addCase(reportSpecimen.fulfilled, (state, action) => {
                 state.isUpdateSpecimen = true
             })
-            .addCase(confirmUsedSpecimen.fulfilled, (state, action) => {
-                state.isUpdateSpecimen = true
-            })
             .addCase(confirmUsedSpecimen.pending, (state, action) => {
-                state.statusSearchSpecimen = true
+                state.statusUseSpecimen = true
+            })
+            .addCase(confirmUsedSpecimen.fulfilled, (state, action) => {
+                state.isUseSpecimen = true
             })
             .addCase(searchSpecimen.pending, (state, action) => {
                 state.statusSearchSpecimen = true
@@ -100,7 +102,6 @@ export const fetchAllSpecimen = createAsyncThunk('listSpecimen/fetchAllSpecimen'
             params: paramSearch,
         })
         return res.data
-        console.log('all spec = ',res.data)
     } catch (error) {
         console.log(error)
     }

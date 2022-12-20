@@ -41,6 +41,7 @@ const SpecimenManagementContent = () => {
     const isDeleteSpecimen = useSelector(state => state.listSpecimen.isDeleteSpecimen);
     const isAddSpecimen = useSelector(state => state.listSpecimen.isAddSpecimen);
     const isUpdateSpecimen = useSelector(state => state.listSpecimen.isUpdateSpecimen);
+    const isUseSpecimen = useSelector(state => state.listSpecimen.isUseSpecimen);
     const isSearchSpecimen = useSelector(state => state.listSpecimen.isSearchSpecimen);
     const [loading, setLoading] = useState(false)
     const statusList = [null, 1, 2, 3, 4, 5, 6];
@@ -81,14 +82,12 @@ const SpecimenManagementContent = () => {
         setLoading(true)
         try {
             if (searchValue === emptySearchValue) {
-                toast('d s');
                 dispatch(fetchAllSpecimen({
                     size: pageSize,
                     page: currentPage,
                 })
                 );
             } else {
-                toast('s');
                 dispatch(searchSpecimen({
                     ...searchValue,
                     size: pageSize,
@@ -104,7 +103,7 @@ const SpecimenManagementContent = () => {
 
     useEffect(() => {
         loadSpecimenList();
-    }, [currentPage,isAddSpecimen,isUpdateSpecimen])
+    }, [currentPage,isAddSpecimen,isUpdateSpecimen, isUseSpecimen])
 
     // useEffect(() => {
     //     if (isDeleteSpecimen == true && totalElements % pageSize == 1) {
@@ -297,13 +296,14 @@ const SpecimenManagementContent = () => {
                             </TableCell>
                             <TableCell>
                                 <div className='attibute'>Trạng thái</div>
-                                <div style={{ width: "160px" }}>
+                                <div style={{ width: "200px" }}>
                                     <br></br>
                                     <Select
                                         labelId="statusSearch"
                                         id="statusSearch"
                                         label="statusSearch"
-                                        value={statusId}
+                                        value={searchValue.status}
+                                        style={{width:"100%"}}
                                         onChange={(e) => {
                                             setSearchValue(prevState => ({ ...prevState, status: e.target.value }))
                                         }}

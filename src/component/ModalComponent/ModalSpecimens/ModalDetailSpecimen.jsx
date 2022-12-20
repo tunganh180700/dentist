@@ -40,6 +40,7 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
 
     const isDeleteSpecimen = useSelector(state => state.choosenSpecimen.isDeleteSpecimen);
     const isUpdateSpecimen = useSelector(state => state.listSpecimen.isUpdateSpecimen);
+    const isUseSpecimen = useSelector(state => state.choosenSpecimen.isUseSpecimen);
     const isAddSpecimen = useSelector(state => state.listSpecimen.isAddSpecimen);
 
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
@@ -60,14 +61,14 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
             console.log(error)
         }
         setLoading(false)
-    }, [specimenId, isUpdateSpecimen, isAddSpecimen, isDeleteSpecimen])
+    }, [specimenId])
 
 
     useEffect(() => {
         setLoading(true)
         dispatch(fetchAllSpecimen(detailSpecimen));
         setLoading(false)
-    }, [isDeleteSpecimen, isUpdateSpecimen, isAddSpecimen])
+    }, [isDeleteSpecimen, isUpdateSpecimen, isAddSpecimen, isUseSpecimen])
 
     const getStatusStr = (status) => {
         if (status === 1) {
