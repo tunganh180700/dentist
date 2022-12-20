@@ -72,6 +72,8 @@ const ServiceAndCategoryManagementContent = () => {
   const [categoryServiceId, setCategoryServiceId] = useState();
 
   const [serviceIds, setServiceIds] = useState([]);
+  const [isSubmitFormService, setIsSubmitFormService] = useState(false);
+
   const [serviceId, setServiceId] = useState();
   const [categoryId, setCategoryId] = useState();
 
@@ -110,9 +112,8 @@ const ServiceAndCategoryManagementContent = () => {
   };
 
   useEffect(() => {
-    if (categoryServiceId > 0) loadServiceByCategoryId(categoryServiceId);
-    console.log("fetch");
-  }, [categoryServiceId, isAddService, isDeleteService, isUpdateService]);
+    if (categoryServiceId) loadServiceByCategoryId(categoryServiceId);
+  }, [categoryServiceId, isSubmitFormService]);
 
   // console.log('haha', listServiceAndCategory)
   return (
@@ -134,7 +135,11 @@ const ServiceAndCategoryManagementContent = () => {
               <FormControl fullWidth>
                 <InputLabel id="material">Category</InputLabel>
                 <Select
-                  style={{ padding: "25px 0", paddingRight: "10px" }}
+                  style={{
+                    padding: "25px 0",
+                    paddingRight: "10px",
+                    width: "100%",
+                  }}
                   labelId="material"
                   id="materialSelect"
                   label="Vật liệu"
@@ -234,7 +239,11 @@ const ServiceAndCategoryManagementContent = () => {
                     key={item.serviceId}
                     size="medium"
                   >
-                    <TableCell size="medium">{item.serviceName}</TableCell>
+                    <TableCell size="medium">
+                      <div style={{width:'300px', overflowX: `${item.serviceName.length > 20 ? 'scroll' : 'unset'} `}}>
+                        <span>{item.serviceName}</span>
+                      </div>
+                    </TableCell>
                     <TableCell>{item.unit}</TableCell>
                     <TableCell>{item.marketPrice}</TableCell>
                     <TableCell>{item.price}</TableCell>
@@ -277,12 +286,14 @@ const ServiceAndCategoryManagementContent = () => {
             <ModalUpdateService
               modalUpdateOpen={modalUpdateServiceOpen}
               setModalUpdateOpen={setModalUpdateServiceOpen}
+              isSubmitForm={setIsSubmitFormService}
             />
           </div>
           <div>
             <ModalDeleteService
               modalDeleteOpen={modalDeleteOpen}
               setModalDeleteOpen={setModalDeleteOpen}
+              isSubmitForm={setIsSubmitFormService}
             />
           </div>
           <div>
@@ -296,6 +307,7 @@ const ServiceAndCategoryManagementContent = () => {
             <ModalAddService
               modalAddOpen={modalAddServiceOpen}
               setModalAddOpen={setModalAddServiceOpen}
+              isSubmitForm={setIsSubmitFormService}
             />
           </div>
         </>

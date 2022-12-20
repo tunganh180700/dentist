@@ -14,7 +14,7 @@ import axiosInstance from "../../../config/customAxios";
 import { regexEmail, regexName, regexPhone, validationDate } from "../../../config/validation";
 import { updatePatient } from "../../../redux/PatienSlice/listPatientSlice";
 
-const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
+const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen, isSubmitForm }) => {
     const dispatch = useDispatch();
     const [gender, setGender] = useState();
     const [value, setValue] = useState(null);
@@ -45,10 +45,11 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         initialValues: {
 
         },
-        validationSchema: validationSchema,
+        // validationSchema: validationSchema,
         onSubmit: (values) => {
             values.birthdate = moment(value.$d).format(validationDate);
             values.gender = gender;
+            isSubmitForm(true)
             dispatch(updatePatient(values));
             setModalUpdateOpen(false);
         }
@@ -77,6 +78,7 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     }, [patientId])
 
     const handleCancel = () => {
+        isSubmitForm(false)
         formik.values.patientName = oldData.patientName
         setValue(oldData.birthdate)
         formik.values.phone = oldData.phone

@@ -17,7 +17,7 @@ import { useFormik } from 'formik';
 import moment from 'moment';
 import { addPatient } from '../../../redux/PatienSlice/listPatientSlice';
 
-const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
+const ModalAddPatient = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     const dispatch = useDispatch();
     const [value, setValue] = useState(null);
     const [gender, setGender] = useState();
@@ -53,6 +53,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
         onSubmit: (values) => {
             values.birthdate = moment(value.$d).format(validationDate);
             values.gender = gender;
+            isSubmitForm(true)
             dispatch(addPatient(values))
             setModalAddOpen(false)
             formik.handleReset()
@@ -61,7 +62,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen }) => {
 
     const handleCancel = () => {
         setModalAddOpen(false)
-
+        isSubmitForm(false)
         // formik.values.patientName = ""
         // formik.errors.patientName = ""
 
