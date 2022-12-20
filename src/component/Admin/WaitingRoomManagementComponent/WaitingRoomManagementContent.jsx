@@ -14,8 +14,11 @@ import { updateWaitingAPI, listConfirmWaitingAPI } from "../../../config/baseAPI
 import axiosInstance from "../../../config/customAxios";
 import ModalConfirmWaiting from '../../ModalComponent/ModalWaiting/ModalConfirmWaiting';
 import { ToastContainer, toast } from 'react-toastify';
+import SockJsClient from 'react-stomp';
 
 const WaitingRoomManagementContent = () => {
+
+    const SOCKET_URL = 'http://localhost:8080/waiting-room/';
 
     const listWaiting = useSelector(state => state.listWaiting.listWaiting)
     const dispatch = useDispatch()
@@ -26,6 +29,7 @@ const WaitingRoomManagementContent = () => {
     const [modalConfirmWaitingOpen, setModalConfirmWaitingOpen] = useState(false);
     const [role, setRole] = useState(null);
     const [u, setU] = useState(true);
+    const [triggerGetList, setTriggerGetList] = useState(true);
 
 
     const loadWaitingList = () => {
@@ -34,6 +38,10 @@ const WaitingRoomManagementContent = () => {
             page: currentPage
         },
         ));
+    }
+
+    const onConnected = () => {
+        console.log("Connected!!")
     }
 
     const checkExistConfirmWaiting = async () => {
@@ -92,6 +100,14 @@ const WaitingRoomManagementContent = () => {
         }
     }
 
+    const handlePopupConfirm = () => {
+        if (role === null || role === 'Receptionist' ) {
+            setTriggerGetList((prev) => !prev)
+            setModalConfirmWaitingOpen(true);
+            
+        }
+    }
+
     return (
         <>
             <ToastContainer />
@@ -104,7 +120,14 @@ const WaitingRoomManagementContent = () => {
             >
                 QUẢN LÝ PHÒNG CHỜ
             </Typography>
-
+            <SockJsClient
+                url={SOCKET_URL}
+                topics={['/topic/group']}
+                onConnect={onConnected}
+                onDisconnect={() => console.log("Disconnected!")}
+                onMessage={handlePopupConfirm}
+                debug={false}
+            />
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
@@ -168,7 +191,7 @@ const WaitingRoomManagementContent = () => {
                 }
             </div>
             <div>
-                <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} />
+                <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} triggerGetList={triggerGetList}  />
             </div>
 
 

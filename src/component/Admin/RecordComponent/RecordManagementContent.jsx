@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserId } from "../../../redux/modalSlice";
 import ModalDeleteRecord from "../../ModalComponent/ModalRecord/ModalDeleteRecord";
 import ModalDetailService from "../../ModalComponent/ModalRecord/ModalDetailService";
+import ModalDetailRecord from "../../ModalComponent/ModalRecord/ModalDetailRecord";
 
 const RecordManagementContent = () => {
     const dispatch = useDispatch()
@@ -24,6 +25,8 @@ const RecordManagementContent = () => {
     const [modalAddOpen, setModalAddOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalDetailOpen, setModalDetailOpen] = useState(false);
+    const [modalDetailRecordOpen, setModalDetailRecordOpen] = useState(false);
+
     const patientName = useSelector(state => state.choosenPatient.patientName)
 
     const isAddRecord = useSelector(state => state.listRecord.isAddRecord)
@@ -32,6 +35,15 @@ const RecordManagementContent = () => {
     console.log("pagezise.", totalPages)
     const { id } = useParams()
     const [recordList, setRecordList] = useState([])
+
+    const styleTxt = {
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+        width: "300px",
+        display: "block",
+        overflow: "hidden"
+    }
+
     const getDetail = async (id) => {
         try {
             const res = await axiosInstance.get(allPatientRecordAPI + id, {
@@ -120,20 +132,20 @@ const RecordManagementContent = () => {
                             <TableRow key={el.patientRecordId}>
                                 <TableCell>
                                     <IconButton aria-label="detail" onClick={() => {
-                                        // setModalDetailOpen(true)
-                                        // dispatch(setUserId(item.patientId))
+                                        setModalDetailRecordOpen(true)
+                                        dispatch(setUserId(el.patientRecordId))
                                     }}>
                                         <RemoveRedEyeIcon />
                                     </IconButton>
                                 </TableCell>
-                                <TableCell>{el.reason}</TableCell>
-                                <TableCell>{el.diagnostic}</TableCell>
-                                <TableCell>{el.causal}</TableCell>
+                                <TableCell style={styleTxt}>{el.reason}</TableCell>
+                                <TableCell style={styleTxt}>{el.diagnostic}</TableCell>
+                                <TableCell style={styleTxt}>{el.causal}</TableCell>
                                 <TableCell>{el.date}</TableCell>
-                                <TableCell>{el.marrowRecord}</TableCell>
-                                <TableCell>{el.note}</TableCell>
-                                <TableCell>{el.treatment}</TableCell>
-                                <TableCell>{el.prescription}</TableCell>
+                                <TableCell style={styleTxt}>{el.marrowRecord}</TableCell>
+                                <TableCell style={styleTxt}>{el.note}</TableCell>
+                                <TableCell style={styleTxt}>{el.treatment}</TableCell>
+                                <TableCell style={styleTxt}>{el.prescription}</TableCell>
                                 <TableCell>
                                     <Button onClick={() => {
                                         setModalDetailOpen(true)
@@ -167,6 +179,9 @@ const RecordManagementContent = () => {
                     />
                     : null
                 }
+            </div>
+            <div>
+                <ModalDetailRecord modalDetailRecordOpen={modalDetailRecordOpen} setModalDetailRecordOpen={setModalDetailRecordOpen} />
             </div>
             <div>
                 <ModalAddRecord modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />

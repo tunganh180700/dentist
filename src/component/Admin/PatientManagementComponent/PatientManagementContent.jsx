@@ -76,27 +76,21 @@ const PatientManagementContent = () => {
     }
 
     useEffect(() => {
-        setLoading(true)
-        try {
-            if (searchValue === '') {
-                dispatch(fetchAllPatient({
-                    size: pageSize,
-                    page: currentPage,
-                })
-                );
-            } else {
-                dispatch(searchPatient({
-                    ...searchValue,
-                    size: pageSize,
-                    page: currentPage,
-                }
-                ))
+        if (searchValue === '') {
+            dispatch(fetchAllPatient({
+                size: pageSize,
+                page: currentPage,
+            })
+            );
+        } else {
+            dispatch(searchPatient({
+                ...searchValue,
+                size: pageSize,
+                page: currentPage,
             }
-        } catch (error) {
-            console.log(error)
+            ))
         }
-        setLoading(false)
-    }, [currentPage, isUpdatePatient])
+    }, [currentPage, isUpdatePatient, isAddPatient, searchValue])
 
     useEffect(() => {
         if (isDeletePatient == true && totalElements % pageSize == 1) {

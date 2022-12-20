@@ -15,11 +15,11 @@ import {
     Select
 } from "@mui/material";
 import axiosInstance from "../../../config/customAxios";
-import {listAllMaterialAPI} from "../../../config/baseAPI";
+import { listAllMaterialAPI } from "../../../config/baseAPI";
 import _ from "lodash";
 import ClearIcon from "@mui/icons-material/Clear";
 
-    const ModalExportMaterial = ({ modalExportOpen, setModalExportOpen, exportMaterial, materialExportDTOS }) => {
+const ModalExportMaterial = ({ modalExportOpen, setModalExportOpen, exportMaterial, materialExportDTOS }) => {
     const dispatch = useDispatch();
     const [material, setMaterial] = useState([])
     const [materialExport, setMaterialExport] = useState([])
@@ -45,40 +45,41 @@ import ClearIcon from "@mui/icons-material/Clear";
                 okText={'Lưu'}
                 title="Bán sản phẩm"
                 open={modalExportOpen}
-                width="50%"
-                onOk={() => {setModalExportOpen(false);exportMaterial(materialExport)}}
+                width="65%"
+                
+                onOk={() => { setModalExportOpen(false); exportMaterial(materialExport) }}
                 onCancel={() => setModalExportOpen(false)}
             >
                 <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
-                    setMaterialExport((prev) => [...prev, {materialId: null, amount: null, unitPrice: null, total: null}])
+                    setMaterialExport((prev) => [...prev, { materialId: null, amount: null, unitPrice: null, total: null }])
                 }}>
                     Thêm mới
                 </IconButton>
-            <Table size="small" style={{ marginTop: "15px" }}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell style={{ width: "25%" }}>
-                            Tên sản phẩm
-                        </TableCell>
-                        <TableCell>
-                            Số lượng
-                        </TableCell>
-                        <TableCell>
-                            Đơn giá
-                        </TableCell>
-                        <TableCell>
-                            Tổng giá
-                        </TableCell>
-                        <TableCell>
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        materialExport?.map((materialExport, index) => (
-                            <TableRow key={index}>
-                                <TableCell padding="none">
-                                <Select
+                <Table size="small" style={{ marginTop: "15px" }}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell style={{ width: "25%" }}>
+                                Tên sản phẩm
+                            </TableCell>
+                            <TableCell>
+                                Số lượng
+                            </TableCell>
+                            <TableCell>
+                                Đơn giá
+                            </TableCell>
+                            <TableCell>
+                                Tổng giá
+                            </TableCell>
+                            <TableCell>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            materialExport?.map((materialExport, index) => (
+                                <TableRow key={index}>
+                                    <TableCell style={{paddingTop: '1.5rem'}}>
+                                        <Select
                                             id="materialId"
                                             value={materialExport?.materialId}
                                             onChange={(e) => {
@@ -95,63 +96,65 @@ import ClearIcon from "@mui/icons-material/Clear";
                                                 <MenuItem key={item.materialId} value={item.materialId}>{item.materialName}</MenuItem>
                                             ))}
                                         </Select>
-                                </TableCell>
-                                <TableCell padding="none">
-                                    <input
-                                        value={materialExport.amount}
-                                        name="amount"
-                                        type={"number"}
-                                        onChange={(e) =>
-                                            setMaterialExport((prev) => {
-                                                prev[index].amount = e.target.value
-                                                prev[index].total = (e.target.value || 0) * (prev[index].unitPrice || 0)
-                                                return _.cloneDeep(prev)
-                                            })
-                                        }
-                                    />
-                                </TableCell>
-                                <TableCell padding="none">
-                                    <input
-                                        value={materialExport.unitPrice}
-                                        name="unitPrice"
-                                        onChange={(e) =>
-                                            setMaterialExport((prev) => {
-                                                prev[index].unitPrice = e.target.value;
-                                                return _.cloneDeep(prev)
-                                            })
-                                        }
-                                        disabled={true}
-                                    />
-                                </TableCell>
-                                <TableCell padding="none">
-                                    <input
-                                        value={materialExport.total}
-                                        name="total"
-                                        onChange={(e) =>
-                                            setMaterialExport((prev) => {
-                                                prev[index].total = e.target.value;
-                                                return _.cloneDeep(prev)
-                                            })
-                                        }
-                                        disabled={true}
-                                    />
-                                </TableCell>
-                                <TableCell padding="none">
-                                    <Button className="mr10" onClick={
-                                        () => {setMaterialExport((prev) => {
-                                            prev.splice(index, 1)
-                                            return _.cloneDeep(prev)
-                                        })}
-                                    } >
-                                        <ClearIcon />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                        <input
+                                            value={materialExport.amount}
+                                            name="amount"
+                                            type={"number"}
+                                            onChange={(e) =>
+                                                setMaterialExport((prev) => {
+                                                    prev[index].amount = e.target.value
+                                                    prev[index].total = (e.target.value || 0) * (prev[index].unitPrice || 0)
+                                                    return _.cloneDeep(prev)
+                                                })
+                                            }
+                                        />
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                        <input
+                                            value={materialExport.unitPrice}
+                                            name="unitPrice"
+                                            onChange={(e) =>
+                                                setMaterialExport((prev) => {
+                                                    prev[index].unitPrice = e.target.value;
+                                                    return _.cloneDeep(prev)
+                                                })
+                                            }
+                                            disabled={true}
+                                        />
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                        <input
+                                            value={materialExport.total}
+                                            name="total"
+                                            onChange={(e) =>
+                                                setMaterialExport((prev) => {
+                                                    prev[index].total = e.target.value;
+                                                    return _.cloneDeep(prev)
+                                                })
+                                            }
+                                            disabled={true}
+                                        />
+                                    </TableCell>
+                                    <TableCell padding="none">
+                                        <Button className="mr10" onClick={
+                                            () => {
+                                                setMaterialExport((prev) => {
+                                                    prev.splice(index, 1)
+                                                    return _.cloneDeep(prev)
+                                                })
+                                            }
+                                        } >
+                                            <ClearIcon />
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
                             )
-                        )
-                    }
-                </TableBody>
-            </Table>
+                            )
+                        }
+                    </TableBody>
+                </Table>
             </Modal>
         </>
     )
