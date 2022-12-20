@@ -89,7 +89,7 @@ const ScheduleManagementContent = () => {
                             </Button>
                         </td>
                         <td>
-                            <Button aria-label="delete" variant='danger'>
+                            <Button aria-label="delete" variant='danger' disabled>
                                 <DeleteIcon />
                             </Button>
                         </td>
