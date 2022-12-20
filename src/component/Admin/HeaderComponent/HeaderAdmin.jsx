@@ -15,7 +15,7 @@ const HeaderAdmin = ({ title }) => {
         <>
             <div style={{ display: "flex", justifyContent: "space-between", width: '100%', }}>
                 <div>
-                    <img src={Logo} style={{ height: '50px' }} />
+                    <img src={Logo} style={{ height: '130px', position: 'absolute', top:"-35px"  }} />
                 </div>
                 <Typography
                     component="h1"
