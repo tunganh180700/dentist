@@ -4,25 +4,10 @@ import 'antd/dist/antd.css';
 import { Typography, TextField } from '@mui/material';
 import { useDispatch } from "react-redux";
 // import { useFormik } from "formik";
-import * as yup from "yup";
-import { addMaterialImport } from '../../../redux/MaterialSlice/listMaterialImportSlice';
-import { regexNumber, validationDate } from '../../../config/validation';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { listAllMaterialAPI } from '../../../config/baseAPI';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import moment from 'moment/moment';
 import axiosInstance from '../../../config/customAxios';
-// import React, { useState, useEffect } from 'react';
-// import { Modal, Row, Col, Input, Radio } from 'antd';
-import PropsTypes from 'prop-types';
-import { unwrapResult } from '@reduxjs/toolkit';
-// import { useDispatch } from 'react-redux';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -32,8 +17,6 @@ import {
     Button,
     IconButton
 } from "@mui/material";
-// import axiosInstance from "../../../config/customAxios";
-import {getAllLaboAPI} from "../../../config/baseAPI";
 import _ from "lodash";
 import ClearIcon from "@mui/icons-material/Clear";
 import { addListMaterialImportAPI } from '../../../config/baseAPI';
@@ -43,10 +26,7 @@ import { toastCss } from '../../../redux/toastCss';
 
 const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
-    const [value, setValue] = useState(null);
     const [materialIds, setMaterialIds] = useState([]);
-    const [materialId, setMaterialId] = useState();
-    const [materialPrice, setMaterialPrice] = useState();
     const [materialExport, setMaterialExport] = useState([])
 
 
@@ -73,11 +53,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     const loadMaterial = async () => {
         try {
             const res = await axiosInstance.get(listAllMaterialAPI)
-
-
-            setMaterialId(res.data[0].materialId)
             setMaterialIds(res.data)
-            // setMaterialPrice(res.data[0].price)
 
 
         } catch (error) {
@@ -110,11 +86,11 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
 
     const handleAddList = async () => {
         try {
-            const res = await axios.post(addListMaterialImportAPI, materialExport)
+            const res = await axiosInstance.post(addListMaterialImportAPI, materialExport)
             console.log("res", res)
             
         } catch (error) {
-            toast.error("", toastCss)
+            toast.error("thêm lỗi", toastCss)
         }
     }
 
@@ -148,7 +124,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 title="Bán sản phẩm"
                 open={modalAddOpen}
                 width="50%"
-                onOk={() => {setModalAddOpen(false); handleAddList()}}
+                onOk={() => {setModalAddOpen(false);dispatch(handleAddList())}}
                 onCancel={() => setModalAddOpen(false)}
             >
                 <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
@@ -219,7 +195,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                                         onChange={(e) =>
                                             setMaterialExport((prev) => {
                                                 prev[index].amount = e.target.value
-                                                prev[index].total = (e.target.value || 0) * (prev[index].unitPrice || 0)
+                                                prev[index].total = (e.target.value) * (prev[index].unitPrice)
                                                 return _.cloneDeep(prev)
                                             })
                                         }
@@ -232,6 +208,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                                         onChange={(e) =>
                                             setMaterialExport((prev) => {
                                                 prev[index].unitPrice = e.target.value;
+                                                prev[index].total = (e.target.value) * (prev[index].amount)
                                                 return _.cloneDeep(prev)
                                             })
                                         }
@@ -243,7 +220,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                                         name="total"
                                         onChange={(e) =>
                                             setMaterialExport((prev) => {
-                                                prev[index].total = (e.target.value || 0) * (prev[index].unitPrice || 0)
+                                                
                                                 return _.cloneDeep(prev)
                                             })
                                         }
