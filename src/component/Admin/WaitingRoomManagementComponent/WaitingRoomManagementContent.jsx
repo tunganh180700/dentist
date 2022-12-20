@@ -8,12 +8,12 @@ import TableRow from '@mui/material/TableRow';
 import { Pagination, Typography, IconButton, TextField } from '@mui/material';
 import "./style.css"
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllWaiting } from '../../../redux/WaitingSlice/listWaitingSlice';
+import { fetchAllWaiting, callWaiting, deleteWaiting } from '../../../redux/WaitingSlice/listWaitingSlice';
 import moment from 'moment';
 import { updateWaitingAPI, listConfirmWaitingAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
 import ModalConfirmWaiting from '../../ModalComponent/ModalWaiting/ModalConfirmWaiting';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import SockJsClient from 'react-stomp';
 
 const WaitingRoomManagementContent = () => {
@@ -30,7 +30,8 @@ const WaitingRoomManagementContent = () => {
     const [role, setRole] = useState(null);
     const [u, setU] = useState(true);
     const [triggerGetList, setTriggerGetList] = useState(true);
-
+    const isCallWaiting = useSelector(state => state.listWaiting.isCallWaiting);
+    const isDeleteWaiting = useSelector(state => state.listWaiting.isDeleteWaiting);
 
     const loadWaitingList = () => {
         dispatch(fetchAllWaiting({
@@ -73,20 +74,20 @@ const WaitingRoomManagementContent = () => {
         loadWaitingList();
     }, [currentPage])
 
-    // useEffect(() => {
+    useEffect(() => {
+        if (isDeleteWaiting == true && totalElements % pageSize == 1) {
+            setCurrentPage(currentPage - 1)
+            dispatch(fetchAllWaiting({
+                size: pageSize,
+                page: currentPage,
+            }))
+        }
+    }, [isDeleteWaiting, isCallWaiting])
 
-    // }, [u])
-
-    const updateWaiting = async (id) => {
-        axiosInstance.post(updateWaitingAPI + id)
-            .then(res => {
-                loadWaitingList();
-                toast("Gọi bệnh nhân thành công");
-            })
-            .catch(err => {
-                toast("Gọi bệnh nhân không thành công");
-            });
+    const call = async (id) => {
+            dispatch(callWaiting(id));
     }
+
 
     const getStatusStr = (status) => {
         if (status == 1) {
@@ -101,11 +102,15 @@ const WaitingRoomManagementContent = () => {
     }
 
     const handlePopupConfirm = () => {
-        if (role === null || role === 'Receptionist' ) {
+        if (role === null || role === 'Receptionist') {
             setTriggerGetList((prev) => !prev)
             setModalConfirmWaitingOpen(true);
-            
+
         }
+    }
+
+    const remove = (id) => {
+        dispatch(deleteWaiting(id));
     }
 
     return (
@@ -165,13 +170,24 @@ const WaitingRoomManagementContent = () => {
                                                 :
                                                 <TableCell>
                                                     <IconButton aria-label="edit" onClick={() => {
-                                                        updateWaiting(item.waitingRoomId)
+                                                        call(item.waitingRoomId)
                                                     }}>
                                                         Gọi
                                                     </IconButton>
                                                 </TableCell>
                                         }
-
+                                        {
+                                            role === null || role === 'Receptionist' || item.status === 1 ?
+                                                <></>
+                                                :
+                                                <TableCell>
+                                                    <IconButton aria-label="delete" onClick={() => {
+                                                        remove(item.waitingRoomId)
+                                                    }}>
+                                                        Xóa
+                                                    </IconButton>
+                                                </TableCell>
+                                        }
                                     </TableRow>
                                 )}
                             </TableBody>
@@ -191,7 +207,7 @@ const WaitingRoomManagementContent = () => {
                 }
             </div>
             <div>
-                <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} triggerGetList={triggerGetList}  />
+                <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} triggerGetList={triggerGetList} />
             </div>
 
 

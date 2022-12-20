@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { fetchAllSpecimen, searchSpecimen } from '../../../redux/SpecimenSlice/listSpecimenSlice';
 import ModalAddSpecimens from '../../ModalComponent/ModalSpecimens/ModalAddSpecimens';
@@ -41,16 +43,20 @@ const SpecimenManagementContent = () => {
     const isUpdateSpecimen = useSelector(state => state.listSpecimen.isUpdateSpecimen);
     const isSearchSpecimen = useSelector(state => state.listSpecimen.isSearchSpecimen);
     const [loading, setLoading] = useState(false)
+    const statusList = [null, 1, 2, 3, 4, 5, 6];
+    const [statusId, setStatusId] = useState(false)
 
-    const [searchValue, setSearchValue] = useState({
+    const emptySearchValue = {
         specimenName: "",
         patientName: "",
         receiveDate: "",
         usedDate: "",
         deliveryDate: "",
         laboName: "",
-        serviceName: ""
-    })
+        serviceName: "",
+        status: null
+    }
+    const [searchValue, setSearchValue] = useState(emptySearchValue)
 
     let styleText = {}
 
@@ -71,16 +77,18 @@ const SpecimenManagementContent = () => {
 
     }
 
-    useEffect(() => {
+    const loadSpecimenList = () => {
         setLoading(true)
         try {
-            if (searchValue === '') {
+            if (searchValue === emptySearchValue) {
+                toast('d s');
                 dispatch(fetchAllSpecimen({
                     size: pageSize,
                     page: currentPage,
                 })
                 );
             } else {
+                toast('s');
                 dispatch(searchSpecimen({
                     ...searchValue,
                     size: pageSize,
@@ -92,23 +100,26 @@ const SpecimenManagementContent = () => {
             console.log(error)
         }
         setLoading(false)
-    }, [currentPage, isAddSpecimen, isUpdateSpecimen])
+    }
 
     useEffect(() => {
-        if (isDeleteSpecimen == true && totalElements % pageSize == 1) {
-            setCurrentPage(currentPage - 1)
-            dispatch(fetchAllSpecimen({
-                size: pageSize,
-                page: currentPage,
-            }))
-        }
-    }, [isDeleteSpecimen])
+        loadSpecimenList();
+    }, [currentPage,isAddSpecimen,isUpdateSpecimen])
+
+    // useEffect(() => {
+    //     if (isDeleteSpecimen == true && totalElements % pageSize == 1) {
+    //         setCurrentPage(currentPage - 1)
+    //         dispatch(fetchAllSpecimen({
+    //             size: pageSize,
+    //             page: currentPage,
+    //         }))
+    //     }
+    // }, [isDeleteSpecimen])
 
     const handleSearchDebounce = useRef(_.debounce(async (formValues) => {
         setLoading(true)
         setCurrentPage(0)
         try {
-
             dispatch(searchSpecimen({
                 ...formValues,
                 size: pageSize,
@@ -122,8 +133,6 @@ const SpecimenManagementContent = () => {
 
     const handleSearch = (e) => {
         setSearchValue(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
-        console.log(searchValue)
-        // setSearchValue({[e.target.name]: e.target.value})
     }
 
     useEffect(() => {
@@ -134,7 +143,7 @@ const SpecimenManagementContent = () => {
 
     useEffect(() => {
         handleSearchDebounce(searchValue)
-    }, [searchValue, isDeleteSpecimen, isUpdateSpecimen, isAddSpecimen]);
+    }, [searchValue]);
 
     const getStatusStr = (status) => {
         if (status === 1) {
@@ -152,8 +161,11 @@ const SpecimenManagementContent = () => {
         else if (status === 5) {
             return 'Mẫu lỗi gửi lại cho labo'
         }
-        else {
+        else if (status == 6) {
             return 'Hoàn thành'
+        }
+        else {
+            return '';
         }
     }
 
@@ -285,65 +297,66 @@ const SpecimenManagementContent = () => {
                             </TableCell>
                             <TableCell>
                                 <div className='attibute'>Trạng thái</div>
+                                <div style={{ width: "160px" }}>
+                                    <br></br>
+                                    <Select
+                                        labelId="statusSearch"
+                                        id="statusSearch"
+                                        label="statusSearch"
+                                        value={statusId}
+                                        onChange={(e) => {
+                                            setSearchValue(prevState => ({ ...prevState, status: e.target.value }))
+                                        }}
+                                    >
+                                        {statusList?.map(status => (
+                                            <MenuItem key={status} value={status}>{getStatusStr(status)}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </div>
                             </TableCell>
                             <TableCell></TableCell>
                             {/* <TableCell></TableCell> */}
                         </TableRow>
                     </TableHead>
-                    {totalPages === 0 ? (
-                        <>
-                            <Typography
-                                component="h1"
-                                variant="h5"
-                                color="inherit"
-                                noWrap
-                                textAlign="center"
-                            >
-                                Không có mẫu vật nào
-                            </Typography>
-                        </>
-                    ) : (
-                        <TableBody>
-                            {listSpecimen.map((item) =>
-                                <TableRow key={item.specimenId}>
-                                    <TableCell style={styleText}>
-                                        <IconButton aria-label="detail" onClick={() => {
-                                            setModalDetailOpen(true)
-                                            dispatch(setSpecimenId(item.specimenId))
-                                        }}>
-                                            <RemoveRedEyeIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                    <TableCell style={styleText}>{item.specimenName}</TableCell>
-                                    <TableCell style={styleText}>{item.receiveDate ? moment(item.receiveDate).format("DD/MM/YYYY") : ''}</TableCell>
-                                    <TableCell style={styleText}>{item.usedDate ? moment(item.usedDate).format("DD/MM/YYYY") : ''}</TableCell>
-                                    <TableCell style={styleText}>{item.deliveryDate ? moment(item.deliveryDate).format("DD/MM/YYYY") : ''}</TableCell>
-                                    <TableCell style={styleText}>{item.amount}</TableCell>
-                                    <TableCell style={styleText}>{item.unitPrice}</TableCell>
-                                    <TableCell style={styleText}>{item.serviceName}</TableCell>
-                                    <TableCell style={styleText}>{item.laboName}</TableCell>
-                                    <TableCell style={styleText}>{item.patientName}</TableCell>
-                                    <TableCell style={styleText}>{getStatusStr(item.status)}</TableCell>
-                                    <TableCell style={styleText}>
-                                        <IconButton aria-label="edit" onClick={() => {
-                                            setModalUpdateOpen(true)
-                                            dispatch(setSpecimenId(item.specimenId))
-                                        }}>
-                                            <EditIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                    {/* <TableCell style={styleText}>
+                    <TableBody>
+                        {listSpecimen.map((item) =>
+                            <TableRow key={item.specimenId}>
+                                <TableCell style={styleText}>
+                                    <IconButton aria-label="detail" onClick={() => {
+                                        setModalDetailOpen(true)
+                                        dispatch(setSpecimenId(item.specimenId))
+                                    }}>
+                                        <RemoveRedEyeIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell style={styleText}>{item.specimenName}</TableCell>
+                                <TableCell style={styleText}>{item.receiveDate ? moment(item.receiveDate).format("DD/MM/YYYY") : ''}</TableCell>
+                                <TableCell style={styleText}>{item.usedDate ? moment(item.usedDate).format("DD/MM/YYYY") : ''}</TableCell>
+                                <TableCell style={styleText}>{item.deliveryDate ? moment(item.deliveryDate).format("DD/MM/YYYY") : ''}</TableCell>
+                                <TableCell style={styleText}>{item.amount}</TableCell>
+                                <TableCell style={styleText}>{item.unitPrice}</TableCell>
+                                <TableCell style={styleText}>{item.serviceName}</TableCell>
+                                <TableCell style={styleText}>{item.laboName}</TableCell>
+                                <TableCell style={styleText}>{item.patientName}</TableCell>
+                                <TableCell style={styleText}>{getStatusStr(item.status)}</TableCell>
+                                <TableCell style={styleText}>
+                                    <IconButton aria-label="edit" onClick={() => {
+                                        setModalUpdateOpen(true)
+                                        dispatch(setSpecimenId(item.specimenId))
+                                    }}>
+                                        <EditIcon />
+                                    </IconButton>
+                                </TableCell>
+                                {/* <TableCell style={styleText}>
                                     <IconButton aria-label="delete" onClick={() => {
                                         
                                     }}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </TableCell> */}
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    )
-                    }
+                            </TableRow>
+                        )}
+                    </TableBody>
                 </Table>
             </>}
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
@@ -360,14 +373,14 @@ const SpecimenManagementContent = () => {
             <div>
                 <ModalAddSpecimens modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
             </div>
-            <div>
+            {/* <div>
                 <ModalDeleteSpecimens modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
-            </div>
+            </div> */}
             <div>
                 <ModalUpdateSpecimens modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
             </div>
             <div>
-                <ModalDetailSpecimen modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
+                <ModalDetailSpecimen loadSpecimenList={loadSpecimenList} modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
             </div>
         </>
     )

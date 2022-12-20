@@ -23,6 +23,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import ModalReportSpecimen from './ModalReportSpecimen';
 import { toast } from 'react-toastify';
+import { setSpecimenId } from '../../../redux/modalSlice';
 
 
 const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -45,7 +46,6 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
     const [buttonUseEnable, setButtonUseEnable] = useState(false);
     const [buttonReportEnable, setButtonReportEnable] = useState(false);
-    const [reportOpen, setReportOpen] = useState(false);
 
     const [statusStr, setStatusStr] = useState('');
 
@@ -68,7 +68,7 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const loadPatient = async () => {
         try {
             const res = await axiosInstance.get(listAllPatientAPI)
-            console.log('patient = ', res.data)
+            console.log('update patient = ', res.data)
             setPatientIds(res.data)
             setPatientId(res.data[0].patientId)
         } catch (error) {
@@ -79,7 +79,7 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const loadLabos = async () => {
         try {
             const res = await axiosInstance.get(getAllLaboAPI)
-            console.log('labos = ', res.data)
+            console.log('update labos = ', res.data)
             setLabos(res.data);
             setLaboId(res.data[0].laboId);
         } catch (error) {
@@ -112,6 +112,7 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             values.patientRecordId = patientRecordId;
             values.serviceId = serviceId;
             dispatch(updateSpecimen(values));
+            // loadSpecimenList();
             setModalUpdateOpen(false);
         }
     })
@@ -122,7 +123,7 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             const res = await axiosInstance.get(
                 getSpecimensByIdAPI + specimenId,
             )
-            console.log('spec = ', res.data);
+            console.log('get upate spec = ', res.data);
             formik.setValues(res.data)
             setPatientId(res.data.patientId)
             setPatientRecordId(res.data.patientRecordId)
@@ -195,17 +196,6 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         }
     }, [receiveDate, deliveryDate])
 
-    const useSpecimen = async () => {
-        try {
-            const res = await axiosInstance.post(useSpecimenAPI + specimenId);
-            console.log('use = ', res);
-            toast('Cập nhật sử dụng mẫu vật thành công');
-        } catch (error) {
-            console.log(error);
-            toast('Cập nhật sử dụng mẫu vật không thành công');
-        }
-    }
-
     return (
         <>
             <Modal
@@ -214,17 +204,6 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                 onOk={formik.handleSubmit}
                 onCancel={() => setModalUpdateOpen(false)}
             >
-                {/* {loading === false && <> */}
-                {buttonReportEnable ?
-                    <><Button style={{ color: 'red' }} onClick={() => { setReportOpen(true) }}>Mẫu lỗi, bàn giao lại cho labo</Button></>
-                    :
-                    <></>
-                }
-                {buttonUseEnable ?
-                    <><Button style={{ color: 'green' }} onClick={useSpecimen}>Sử dụng</Button></>
-                    :
-                    <></>
-                }
                 <TextField
                     margin="normal"
                     required
@@ -368,9 +347,6 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                 />
                 {/* </>} */}
             </Modal>
-            <div>
-                <ModalReportSpecimen reportOpen={reportOpen} setReportOpen={setReportOpen} />
-            </div>
         </>
     )
 }

@@ -1,6 +1,7 @@
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, IconButton, Typography } from "@mui/material"
 // import Modal from '@mui/material/Modal';
 import { Modal } from 'antd';
+import { Button } from '@mui/material';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSpecimen } from "../../../redux/SpecimenSlice/choosenSpecimenSlice";
@@ -10,8 +11,11 @@ import AddIcon from '@mui/icons-material/Add';
 // import ModalDeleteSpecimens from '../../ModalComponent/ModalSpecimens/ModalDeleteSpecimens';
 import ModalUpdateSpecimens from '../../ModalComponent/ModalSpecimens/ModalUpdateSpecimens';
 import ModalAddSpecimens from '../../ModalComponent/ModalSpecimens/ModalAddSpecimens';
-import { fetchAllSpecimen } from "../../../redux/SpecimenSlice/listSpecimenSlice";
+import ModalReportSpecimen from '../../ModalComponent/ModalSpecimens/ModalReportSpecimen';
+import { fetchAllSpecimen, updateSpecimen } from "../../../redux/SpecimenSlice/listSpecimenSlice";
 import { setSpecimenId } from '../../../redux/modalSlice';
+import { confirmUsedSpecimen } from '../../../redux/SpecimenSlice/listSpecimenSlice';
+
 import moment from 'moment';
 
 const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
@@ -30,7 +34,9 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
     const serviceName = useSelector(state => state.choosenSpecimen.serviceName);
     const laboName = useSelector(state => state.choosenSpecimen.laboName);
     const patientName = useSelector(state => state.choosenSpecimen.patientName);
-
+    const buttonUseEnable = useSelector(state => state.choosenSpecimen.buttonUseEnable);
+    const buttonReportEnable = useSelector(state => state.choosenSpecimen.buttonReportEnable);
+    const [reportOpen, setReportOpen] = useState(false);
 
     const isDeleteSpecimen = useSelector(state => state.choosenSpecimen.isDeleteSpecimen);
     const isUpdateSpecimen = useSelector(state => state.listSpecimen.isUpdateSpecimen);
@@ -54,7 +60,7 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
             console.log(error)
         }
         setLoading(false)
-    }, [specimenId, isUpdateSpecimen, isAddSpecimen, isUpdateSpecimen, isDeleteSpecimen])
+    }, [specimenId, isUpdateSpecimen, isAddSpecimen, isDeleteSpecimen])
 
 
     useEffect(() => {
@@ -88,7 +94,6 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
         <>
             <Modal
                 open={modalDetailOpen}
-                width="70%"
                 onOk={() => setModalDetailOpen(false)}
                 onCancel={() => setModalDetailOpen(false)}
             >
@@ -110,6 +115,26 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
                 {loading === false && <>
                     <Table>
                         <TableHead>
+                            <TableRow>
+                                <TableCell colSpan={10}>
+                                    {buttonReportEnable ?
+                                        <Button style={{ color: 'red' }} onClick={() => {
+                                            setReportOpen(true)
+                                            // dispatch(setSpecimenId(specimenId))
+                                        }}>Mẫu lỗi, bàn giao lại cho labo
+                                        </Button>
+                                        :
+                                        <></>
+                                    }
+                                    {buttonUseEnable ?
+                                        <Button style={{ color: 'green' }} onClick={() => {
+                                            dispatch(confirmUsedSpecimen(specimenId))
+                                        }}>Sử dụng</Button>
+                                        :
+                                        <></>
+                                    }
+                                </TableCell>
+                            </TableRow>
                             <TableRow>
                                 <TableCell>
                                     <div className='attibute'>Tên mẫu vật</div>
@@ -157,14 +182,14 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
                                 <TableCell>{laboName}</TableCell>
                                 <TableCell>{patientName}</TableCell>
                                 <TableCell>{getStatusStr(status)}</TableCell>
-                                <TableCell>
+                                {/* <TableCell>
                                     <IconButton aria-label="edit" onClick={() => {
                                         setModalUpdateOpen(true)
                                         dispatch(setSpecimenId(specimenId))
                                     }}>
                                         <EditIcon />
                                     </IconButton>
-                                </TableCell>
+                                </TableCell> */}
                                 {/* <TableCell>
                                     <IconButton aria-label="delete" onClick={() => {
                                         setModalDeleteOpen(true)
@@ -179,11 +204,14 @@ const ModalDetailSpecimen = ({ modalDetailOpen, setModalDetailOpen }) => {
                     {/* <div>
                         <ModalDeleteSpecimens modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
                     </div> */}
-                    <div>
+                    {/* <div>
                         <ModalUpdateSpecimens modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
                     </div>
                     <div>
                         <ModalAddSpecimens modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+                    </div> */}
+                    <div>
+                        <ModalReportSpecimen specimenId={specimenId} reportOpen={reportOpen} setReportOpen={setReportOpen} />
                     </div>
                 </>}
             </Modal>
