@@ -107,10 +107,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
         // status: yup
         //     .string("Enter your email")
         //     .required("Email is required"),
-        prescription: yup
-            .string('Nhập đơn thuốc')
-            .max(250, "Đơn thuốc không được quá 250 ký tự.")
-            .required('Đơn thuốc là bắt buộc.'),
+        // prescription: yup
+        //     .string('Nhập đơn thuốc')
+        //     .max(250, "Đơn thuốc không được quá 250 ký tự.")
+        //     .required('Đơn thuốc là bắt buộc.'),
     });
 
     const loadServiceOption = async () => {
@@ -409,7 +409,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen }) => {
                             margin="normal"
                             fullWidth
                             id="prescription"
-                            label="Tiền sử răng miệng"
+                            label="Đơn thuốc"
                             name="prescription"
                             autoComplete="prescription"
                             value={formik.values.prescription}
