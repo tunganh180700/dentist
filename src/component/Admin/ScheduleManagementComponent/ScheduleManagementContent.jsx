@@ -5,6 +5,7 @@ import 'antd/dist/antd.css';
 // import TableCell from '@mui/material/TableCell';
 // import TableHead from '@mui/material/TableHead';
 // import TableRow from '@mui/material/TableRow';
+import { setScheduleId } from '../../../redux/modalSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -12,6 +13,8 @@ import { Pagination, Typography, IconButton } from '@mui/material';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import ModalAddSchedule from '../../ModalComponent/ModalSchedule/ModalAddSchedule';
+import ModalUpdateSchedule from '../../ModalComponent/ModalSchedule/ModalUpdateSchedule';
+
 import { fetchAllSchedule } from '../../../redux/ScheduleSlice/listScheduleSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -24,7 +27,10 @@ const ScheduleManagementContent = () => {
     const [currentPage, setCurrentPage] = useState(0);
 
     const isAddSchedule = useSelector(state => state.listSchedule.isAddSchedule);
+    const isUpdateSchedule = useSelector(state => state.listSchedule.isUpdateSchedule);
+    
     const [modalAddOpen, setModalAddOpen] = useState(false);
+    const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
 
     useEffect(() => {
         dispatch(fetchAllSchedule({
@@ -32,7 +38,7 @@ const ScheduleManagementContent = () => {
             page: currentPage
         },
         ));
-    }, [currentPage,isAddSchedule])
+    }, [currentPage,isAddSchedule,isUpdateSchedule])
 
     return (
 
@@ -75,7 +81,10 @@ const ScheduleManagementContent = () => {
                         <td>{item.date}</td>
                         <td>{item.note}</td>
                         <td>
-                            <Button aria-label="edit" variant='info'>
+                            <Button aria-label="edit" variant='info' onClick={() => {
+                                    setModalUpdateOpen(true)
+                                    dispatch(setScheduleId(item.waitingRoomId))
+                                }}>
                                 <EditIcon />
                             </Button>
                         </td>
@@ -101,6 +110,9 @@ const ScheduleManagementContent = () => {
             </div>
             <div>
                 <ModalAddSchedule modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+            </div>
+            <div>
+                <ModalUpdateSchedule modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
             </div>
             </>
 

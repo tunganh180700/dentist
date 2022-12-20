@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
-import { getListScheduleAPI,addScheduleAPI } from "../../config/baseAPI"
+import { getListScheduleAPI,addScheduleAPI,updateScheduleAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
@@ -13,8 +13,8 @@ const initState = {
     index: 0,
     pageSize: 3,
     totalPage: 0,
-    // statusUpdateLabo: false,
-    // isUpdateLabo: false,
+    statusUpdateSchedule: false,
+    isUpdateSchedule: false,
     // statusDeleteLabo: false,
     // isDeleteLabo: false,
     statusAddSchedule: false,
@@ -43,12 +43,12 @@ const listScheduleSlice = createSlice({
 
                 state.message = action.payload.message
             })
-            // .addCase(updateLabo.pending, (state, action) => {
-            //     state.statusUpdateLabo = true
-            // })
-            // .addCase(updateLabo.fulfilled, (state, action) => {
-            //     state.isUpdateLabo = true
-            // })
+            .addCase(updateSchedule.pending, (state, action) => {
+                state.statusUpdateSchedule = true
+            })
+            .addCase(updateSchedule.fulfilled, (state, action) => {
+                state.isUpdateSchedule = true
+            })
             // .addCase(deleteLabo.pending, (state, action) => {
             //     state.statusDeleteLabo = true
             // })
@@ -87,6 +87,22 @@ export const addSchedule = createAsyncThunk('listSchedule/addSchedule', async (v
     } catch (error) {
         console.log(error)
         toast.error('Thêm mới thất bại :(', toastCss)
+    }
+})
+
+export const updateSchedule = createAsyncThunk('listSchedule/updateSchedule', async (data) => {
+    // console.log(data.userId)
+    try {
+        const res = await axiosInstance.put(
+            updateScheduleAPI + data.waitingRoomId, data
+        )
+        console.log(res)
+        toast.success(UPDATE_SUCCESS, toastCss)
+        return res.data
+    } catch (error) {
+        console.log(error)
+        toast.error(UPDATE_FAIL, toastCss)
+
     }
 })
 
