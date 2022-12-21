@@ -53,9 +53,9 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
         onSubmit: (values) => {
             values.birthdate = moment(value.$d).format(validationDate);
             values.gender = gender;
-            isSubmitForm(true)
             dispatch(addPatient(values))
             setModalAddOpen(false)
+            isSubmitForm(true)
             formik.handleReset()
         }
     });

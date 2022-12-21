@@ -49,9 +49,9 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen, isSubmitForm 
         onSubmit: (values) => {
             values.birthdate = moment(value.$d).format(validationDate);
             values.gender = gender;
-            isSubmitForm(true)
             dispatch(updatePatient(values));
             setModalUpdateOpen(false);
+            isSubmitForm(true)
         }
     })
 

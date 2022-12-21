@@ -131,7 +131,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   }, []);
 
   useEffect(() => {
-    // setServiceDTOS(formatToDTOS(listTreatingService, rows));
+    setServiceDTOS(formatToDTOS(listTreatingService, rows));
   }, [rows, listTreatingService]);
 
   const handleExportMaterial = (material) => {

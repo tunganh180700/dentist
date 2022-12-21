@@ -23,6 +23,7 @@ import _ from "lodash";
 import ModalDetailPatient from "../../ModalComponent/ModalPatient/ModalDetailPatient";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../config/customAxios";
+import Loading from "../../ui/Loading";
 import { ToastContainer, toast } from "react-toastify";
 
 const color = {
@@ -89,22 +90,28 @@ const PatientManagementContent = () => {
 
   useEffect(() => {
     if (isSubmitFormPatient) {
+      setLoading(true);
       //   const page = currentPage;
       //   if (isDeletePatient == true && totalElements % pageSize == 1) {
       //     setCurrentPage(page - 1);
       //   }
-      dispatch(
-        fetchAllPatient({
-          ...searchValue,
-          size: pageSize,
-          page: currentPage,
-        })
-      );
+      console.log("run here");
+      setTimeout(() => {
+        dispatch(
+          fetchAllPatient({
+            ...searchValue,
+            size: pageSize,
+            page: currentPage,
+          })
+        );
+        setLoading(false);
+      }, 1000);
+      setIsSubmitFormPatient(false);
     }
-    setIsSubmitFormPatient(false);
   }, [isSubmitFormPatient]);
-  
+
   useEffect(() => {
+    setLoading(true);
     dispatch(
       fetchAllPatient({
         ...searchValue,
@@ -112,15 +119,18 @@ const PatientManagementContent = () => {
         page: currentPage,
       })
     );
+    setLoading(false);
   }, [currentPage]);
 
   useEffect(() => {
+    setLoading(true);
     setCurrentPage(0);
     searchPatient({
       ...searchValue,
       size: pageSize,
       page: 0,
     });
+    setLoading(false);
   }, [searchValue]);
 
   const handleSearchDebounce = useRef(
@@ -197,6 +207,7 @@ const PatientManagementContent = () => {
               borderRadius: "10px",
               border: `1px solid ${color.border}`,
               background: "#3774d0",
+              marginRight: "20px",
             }}
             onClick={() => {
               setModalAddOpen(true);
@@ -206,8 +217,6 @@ const PatientManagementContent = () => {
           </IconButton>
         </div>
       )}
-
-      {loading === false && (
         <div
           className="table"
           style={{
@@ -406,7 +415,7 @@ const PatientManagementContent = () => {
             </Typography>
           )}
         </div>
-      )}
+
       <div
         style={{
           display: "flex",
