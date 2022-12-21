@@ -132,6 +132,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
 
   useEffect(() => {
     setServiceDTOS(formatToDTOS(listTreatingService, rows));
+    setEdit(true);
   }, [rows, listTreatingService]);
 
   const handleExportMaterial = (material) => {
@@ -194,23 +195,19 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     width: "70%",
   };
   useEffect(() => {
-    // handleServiceChange(countRow - 1, 1);
     if (countRow) {
-      setRows([
-        ...rows,
-        {
-          id: rows.length + 1,
-          serviceId: 1,
-          price: 20000,
-          discount: "",
-          status: 1,
-        },
-      ]);
+      const serviceInfo = serviceIds.find(
+        (s) => s.serviceId === serviceIds[0].serviceId
+      );
+      setRows((prev) => {
+        prev[countRow - 1] = { ...prev[countRow - 1], ...serviceInfo };
+        prev[countRow - 1].isNew = 1;
+        return _.cloneDeep(prev);
+      });
     }
   }, [countRow]);
 
   const handleAdd = () => {
-    setEdit(true);
     setCountRow(countRow + 1);
   };
 
