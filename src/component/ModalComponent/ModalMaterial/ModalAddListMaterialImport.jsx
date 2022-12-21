@@ -123,7 +123,8 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 okText={'Lưu'}
                 title="Bán sản phẩm"
                 open={modalAddOpen}
-                width="50%"
+                width="70%"
+                
                 onOk={() => {setModalAddOpen(false);dispatch(handleAddList())}}
                 onCancel={() => setModalAddOpen(false)}
             >
@@ -135,7 +136,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell style={{ width: "25%" }}>
+                        <TableCell style={{ width: "20%" }}>
                             Tên sản phẩm
                         </TableCell>
                         <TableCell>
@@ -158,7 +159,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     {
                         materialExport?.map((materialExport, index) => (
                             <TableRow key={index}>
-                                <TableCell padding="none">
+                                <TableCell style={{paddingTop: '1.5rem'}}>
                                 <Select
                                             id="materialId"
                                             value={materialExport?.materialId}
