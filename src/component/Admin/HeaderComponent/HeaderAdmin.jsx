@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Logo from '../../../img/ngang.png'
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -37,12 +37,17 @@ const HeaderAdmin = ({ title }) => {
         }
 
     }, [])
-    
+
+    const handleLogOut = () => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('role')
+    }
+
     return (
         <>
             <div style={{ display: "flex", justifyContent: "space-between", width: '100%', }}>
                 <div>
-                    <img src={Logo} style={{ height: '130px', position: 'absolute', top:"-35px"  }} />
+                    <img src={Logo} style={{ height: '130px', position: 'absolute', top: "-35px" }} />
                 </div>
                 <Typography
                     component="h1"
@@ -55,14 +60,14 @@ const HeaderAdmin = ({ title }) => {
 
                 <Dropdown>
                     <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                       {roleName}: {fullName}
+                        {roleName}: {fullName}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
                         <Dropdown.Item href="/profile">Hồ sơ cá nhân</Dropdown.Item>
                         <Dropdown.Item href="">Đổi mật khẩu</Dropdown.Item>
-                         <Dropdown.Divider />
-                        <Dropdown.Item href="/login" style={{ textDecoration: "none", }} >Đăng xuất</Dropdown.Item>
+                        <Dropdown.Divider />
+                        <Dropdown.Item href="/login" style={{ textDecoration: "none", }} onClick={handleLogOut}>Đăng xuất</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             </div>

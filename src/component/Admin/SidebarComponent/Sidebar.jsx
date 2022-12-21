@@ -47,17 +47,15 @@ const Sidebar = () => {
                         <ListItemText style={{ color: "black" }} primary='Quản lý chấm công' />
                     </Link>
                 </ListItemButton>
-                {
-                    role === 'Receptionist' ?
-                        (<></>)
-                        :
-                        (<ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                                <StarBorder />
-                            </ListItemIcon><Link to={'/patient-management'}>
-                                <ListItemText style={{ color: "black" }} primary=' Bệnh nhân' />
-                            </Link></ListItemButton>)
-                }
+
+
+                <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon>
+                        <StarBorder />
+                    </ListItemIcon><Link to={'/patient-management'}>
+                        <ListItemText style={{ color: "black" }} primary=' Bệnh nhân' />
+                    </Link></ListItemButton>
+
 
                 <ListItemButton>
                     <ListItemIcon>
