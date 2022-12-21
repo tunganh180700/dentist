@@ -47,11 +47,11 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
       console.log(error);
     }
     setLoading(false);
-  }, [treatmentId, fetchBill]);
+  }, [treatmentId]);
 
   useEffect(()=>{
     try {
-        if (treatmentId) {
+        if (isSubmitForm) {
           dispatch(fetchBill(treatmentId));
           dispatch(fetchNewReceipt(treatmentId));
         }
