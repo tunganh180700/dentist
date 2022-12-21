@@ -48,6 +48,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
             const res = await axiosInstance.get(listAllMaterialAPI)
             setMaterialId(res.data[0].materialId)
             setMaterialIds(res.data)
+            // isSubmitForm(false)
             setMaterialPrice(res.data[0].price)
 
 
@@ -64,7 +65,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
             const res = await axiosInstance.get(listAllPatientAPI)
             setPatientId(res.data[0].patientId)
             setPatientIds(res.data)
-
+            // isSubmitForm(false)
             console.log('patient', res.data)
 
         } catch (error) {
@@ -91,6 +92,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
             console.log(values);
             dispatch(addMaterialExport(values))
             setModalAddOpen(false)
+            // isSubmitForm(true)
             formik.handleReset()
         }
     });
@@ -106,7 +108,6 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
             console.log('id', res.data.materialId)
             setPatientRecordId(res.data.patientRecordId)
             setMaterialExportId(res.data.materialExportId)
-            // setMaterialId(res.data.materialId)
             console.log('day roi: ', res.data.patientRecordId)
             setValue(res.data.date)
         } catch (error) {
@@ -158,9 +159,9 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
 
     const handleCancel = () => {
         setModalAddOpen(false)
-
-        // formik.errors.amount = ""
-        // formik.touched.amount = ""
+        // setMaterialId(1)
+        // setMaterialExportId(1)
+        // setPatientId(1)
         formik.resetForm()
     }
     return (
@@ -172,10 +173,11 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
                 onCancel={handleCancel}
             >
 
-                <Box sx={{ minWidth: 120 }}>
+                <Box >
                     <FormControl fullWidth>
                         <InputLabel id="material">Vật liệu</InputLabel>
                         <Select
+                            style={{ width: '100%', height: '10%' }}
                             labelId="material"
                             id="materialSelect"
                             label="Vật liệu"
@@ -192,10 +194,11 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
                     </FormControl>
                 </Box>
 
-                <Box sx={{ minWidth: 120 }}>
+                <Box >
                     <FormControl fullWidth>
                         <InputLabel id="patient">Bệnh nhân</InputLabel>
                         <Select
+                            style={{ width: '100%', height: '10%' }}
                             labelId="patient"
                             id="patientSelect"
                             label="Bệnh nhân"
@@ -212,10 +215,11 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
                     </FormControl>
                 </Box>
 
-                <Box sx={{ minWidth: 120 }}>
+                <Box >
                     <FormControl fullWidth>
                         <InputLabel id="patientrecord">Date record</InputLabel>
                         <Select
+                            style={{ width: '100%', height: '10%' }}
                             labelId="patientrecord"
                             id="patientrecordSelect"
                             label="Date record"
