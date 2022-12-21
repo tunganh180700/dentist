@@ -172,8 +172,8 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const handleCancel = async () => {
         formik.values.amount = oldData.amount
 
-        formik.errors.amount = ""
-        formik.touched.amount = ""
+        // formik.errors.amount = ""
+        // formik.touched.amount = ""
         // const res = await axiosInstance.get(
         //     getMaterialExportByIdAPI + materialExportId,
         // )

@@ -111,8 +111,8 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         formik.values.amount = oldData.amount
         formik.values.unitPrice = oldData.unitPrice
 
-        formik.errors.supplyName = ""
-        formik.touched.supplyName = ""
+        // formik.errors.supplyName = ""
+        // formik.touched.supplyName = ""
         setModalUpdateOpen(false)
     }
 

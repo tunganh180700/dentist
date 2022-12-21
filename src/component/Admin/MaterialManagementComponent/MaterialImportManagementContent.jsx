@@ -16,6 +16,7 @@ import { fetchAllMaterialImport } from '../../../redux/MaterialSlice/listMateria
 import ModalUpdateMaterialImport from '../../ModalComponent/ModalMaterial/ModalUpdateMaterialImport';
 import ModalDeleteMaterialImport from '../../ModalComponent/ModalMaterial/ModalDeleteMaterialImport';
 import ModalAddMaterialImport from '../../ModalComponent/ModalMaterial/ModalAddMaterialImport';
+import ModalAddListMaterialImport from '../../ModalComponent/ModalMaterial/ModalAddListMaterialImport';
 
 const MaterialImportManagementContent = () => {
 
@@ -32,6 +33,7 @@ const MaterialImportManagementContent = () => {
     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
+    const [modalAddListOpen, setModalAddListOpen] = useState(false);
 
 
 
@@ -55,7 +57,8 @@ const MaterialImportManagementContent = () => {
                 Quản Lý Nhập Vật Liệu
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
-                setModalAddOpen(true)
+                // setModalAddOpen(true)
+                setModalAddListOpen(true)
             }}>
                 <AddIcon /> Thêm mới
             </IconButton>
@@ -72,34 +75,49 @@ const MaterialImportManagementContent = () => {
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {listMaterialImport.map((item, index) =>
-                        <TableRow key={item.materialImportId}>
-                            <TableCell>{item.materialName}</TableCell>
-                            <TableCell>{item.supplyName}</TableCell>
-                            <TableCell>{item.date}</TableCell>
-                            <TableCell>{item.amount}</TableCell>
-                            <TableCell>{item.unitPrice}</TableCell>
-                            <TableCell>{item.amount * item.unitPrice}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setMaterialImportId(item.materialImportId))
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setMaterialImportId(item.materialImportId))
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
+                {totalPages === 0 ? (
+                    <>
+                        <Typography
+                            component="h1"
+                            variant="h5"
+                            color="inherit"
+                            noWrap
+                            textAlign="center"
+                        >
+                            Không có vật liệu nào
+                        </Typography>
+                    </>
+                ) : (
+                    <TableBody>
+                        {listMaterialImport.map((item, index) =>
+                            <TableRow key={item.materialImportId}>
+                                <TableCell>{item.materialName}</TableCell>
+                                <TableCell>{item.supplyName}</TableCell>
+                                <TableCell>{item.date}</TableCell>
+                                <TableCell>{item.amount}</TableCell>
+                                <TableCell>{item.unitPrice}</TableCell>
+                                <TableCell>{item.amount * item.unitPrice}</TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="edit" onClick={() => {
+                                        setModalUpdateOpen(true)
+                                        dispatch(setMaterialImportId(item.materialImportId))
+                                    }}>
+                                        <EditIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="delete" onClick={() => {
+                                        setModalDeleteOpen(true)
+                                        dispatch(setMaterialImportId(item.materialImportId))
+                                    }}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                )
+                }
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 {totalPages > 1 ?
@@ -118,8 +136,11 @@ const MaterialImportManagementContent = () => {
             <div>
                 <ModalDeleteMaterialImport modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
             </div>
-            <div>
+            {/* <div>
                 <ModalAddMaterialImport modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
+            </div> */}
+            <div>
+                <ModalAddListMaterialImport modalAddOpen={modalAddListOpen} setModalAddOpen={setModalAddListOpen} />
             </div>
 
         </>

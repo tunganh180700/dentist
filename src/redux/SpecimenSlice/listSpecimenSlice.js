@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 import { toast } from "react-toastify"
-import { addSpecimensAPI, deleteSpecimenAPI, listSpecimenAPI, searchSpecimenAPI, updateSpecimensAPI, reportSpecimenAPI } from "../../config/baseAPI"
-import { DELETE_FAIL, DELETE_SUCCESS, UPDATE_FAIL, UPDATE_SUCCESS } from "../../config/constant"
+import { addSpecimensAPI, useSpecimenAPI, listSpecimenAPI, searchSpecimenAPI, updateSpecimensAPI, deleteSpecimensAPI, reportSpecimenAPI } from "../../config/baseAPI"
+import { UPDATE_FAIL, UPDATE_SUCCESS, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 import { toastCss } from "../toastCss"
 
@@ -20,6 +20,8 @@ const initState = {
     isAddSpecimen: false,
     statusSearchSpecimen: false,
     isSearchSpecimen: false,
+    statusUseSpecimen: false,
+    isUseSpecimen: false,
     message: '',
     statusSpecimen: 0
 }
@@ -55,17 +57,29 @@ const listSpecimenSlice = createSlice({
             .addCase(addSpecimen.fulfilled, (state, action) => {
                 state.isAddSpecimen = true
             })
-            // .addCase(deleteSpecimen.pending, (state, action) => {
-            //     state.statusDeleteSpecimen = true
-            // })
-            // .addCase(deleteSpecimen.fulfilled, (state, action) => {
-            //     state.isDeleteSpecimen = true
-            // })
+            .addCase(deleteSpecimen.pending, (state, action) => {
+                state.statusDeleteSpecimen = true
+            })
+            .addCase(deleteSpecimen.fulfilled, (state, action) => {
+                state.isDeleteSpecimen = true
+            })
             .addCase(updateSpecimen.pending, (state, action) => {
                 state.statusUpdateSpecimen = true
             })
             .addCase(updateSpecimen.fulfilled, (state, action) => {
                 state.isUpdateSpecimen = true
+            })
+            .addCase(reportSpecimen.pending, (state, action) => {
+                state.statusUpdateSpecimen = true
+            })
+            .addCase(reportSpecimen.fulfilled, (state, action) => {
+                state.isUpdateSpecimen = true
+            })
+            .addCase(confirmUsedSpecimen.pending, (state, action) => {
+                state.statusUseSpecimen = true
+            })
+            .addCase(confirmUsedSpecimen.fulfilled, (state, action) => {
+                state.isUseSpecimen = true
             })
             .addCase(searchSpecimen.pending, (state, action) => {
                 state.statusSearchSpecimen = true
@@ -75,8 +89,10 @@ const listSpecimenSlice = createSlice({
                 state.isSearchSpecimen = true
                 state.totalPage = action.payload.totalPages
                 state.totalElements = action.payload.totalElements;
+                state.isDeleteSpecimen = false;
+                state.isUpdateSpecimen = false;
+                state.isAddSpecimen = false;
             })
-
     }
 })
 
@@ -116,7 +132,7 @@ export const searchSpecimen = createAsyncThunk('listSpecimen/searchSpecimen', as
         const res = await axiosInstance.get(searchSpecimenAPI, {
             params: paramSearch
         })
-        console.log(res)
+        console.log('search spec = ',res.data)
         return res.data
     } catch (error) {
         console.log(error)
@@ -140,17 +156,17 @@ export const updateSpecimen = createAsyncThunk('listSpecimen/updateSpecimen', as
 })
 
 
-// export const deleteSpecimens = createAsyncThunk('listSpecimens/deleteSpecimens', async (specimenId) => {
-//     console.log('sss', specimenId)
-//     try {
-//         const res = await axiosInstance.delete(deleteSpecimensAPI + specimenId)
-//         toast.success(DELETE_SUCCESS, toastCss)
-//         return specimenId
-//     } catch (error) {
-//         toast.error(DELETE_FAIL, toastCss)
+export const deleteSpecimen = createAsyncThunk('listSpecimen/deleteSpecimen', async (specimenId) => {
+    console.log('sss', specimenId)
+    try {
+        const res = await axiosInstance.delete(deleteSpecimensAPI + specimenId)
+        toast.success(DELETE_SUCCESS, toastCss)
+        return specimenId
+    } catch (error) {
+        toast.error(DELETE_FAIL, toastCss)
 
-//     }
-// })
+    }
+})
 
 export const addSpecimen = createAsyncThunk('listSpecimen/addSpecimen', async (values) => {
     try {
@@ -177,6 +193,17 @@ export const reportSpecimen = createAsyncThunk('listSpecimen/reportSpecimen', as
     } catch (error) {
         console.log(error)
         toast.error('Báo cáo thất bại :(', toastCss)
+    }
+})
+
+export const confirmUsedSpecimen = createAsyncThunk('listSpecimen/confirmUsedSpecimen', async (specimenId) => {
+    try {
+        const res = await axiosInstance.post(useSpecimenAPI + specimenId);
+        console.log(res.data)
+        toast.success('Cập nhật sử dụng mẫu vật thành công');
+    } catch (error) {
+        console.log(error);
+        toast.error('Cập nhật sử dụng mẫu vật không thành công');
     }
 })
 

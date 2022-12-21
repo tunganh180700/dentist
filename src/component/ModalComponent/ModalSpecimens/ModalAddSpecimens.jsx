@@ -64,7 +64,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
             const res = await axiosInstance.get(listAllPatientAPI)
             setPatientId(res.data[0].patientId)
             setPatientIds(res.data)
-            console.log('patient', res.data)
+            console.log('add patient', res.data)
         } catch (error) {
             console.log(error)
         }
@@ -75,7 +75,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
             const res = await axiosInstance.get(getAllLaboAPI)
             setLabos(res.data);
             setLaboId(res.data[0].laboId);
-            console.log('labos', res.data)
+            console.log('add labos', res.data)
         } catch (error) {
             console.log(error)
         }
@@ -84,7 +84,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
     useEffect(() => {
         loadPatient();
         loadLabos();
-    }, [])
+    }, []);
 
     const formik = useFormik({
         initialValues: {
@@ -94,9 +94,8 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
         },
         // validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log('value = ', values);
             if(receiveDate!==null){
-                values.receiveDate = moment(receiveDate.$d).format(validationDate);
+            values.receiveDate = moment(receiveDate.$d).format(validationDate);
             }
             if(deliveryDate!==null){
             values.deliveryDate = moment(deliveryDate.$d).format(validationDate);
@@ -154,6 +153,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
             )
             setPatientRecordId(res.data[0].patientRecordId)
             setPatientRecordIds(res.data)
+            console.log('add record = ',res.data);
         } catch (error) {
             console.log(error)
         }
@@ -168,6 +168,7 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
             )
             setServiceId(res.data[0].serviceId)
             setServices(res.data)
+            console.log('add service = ',res.data);
         } catch (error) {
             console.log(error)
         }

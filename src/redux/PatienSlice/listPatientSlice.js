@@ -74,6 +74,9 @@ const listPatientSlice = createSlice({
                 state.isSearchPatient = true
                 state.totalPage = action.payload.totalPages
                 state.totalElements = action.payload.totalElements;
+                state.isDeletePatient = false;
+                state.isUpdatePatient = false;
+                state.isAddPatient = false;
             })
 
     }

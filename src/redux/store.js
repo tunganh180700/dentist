@@ -20,6 +20,8 @@ import listmaterialImportSlice from "./MaterialSlice/listMaterialImportSlice";
 import choosenMaterialExportSlice from "./MaterialSlice/choosenMaterialExportSlice";
 import listMaterialExportSlice from "./MaterialSlice/listMaterialExportSlice";
 
+import userProfileSlice from "./ProfileSlice/userProfileSlice";
+
 
 
 import listIncomeSlice from "./IncomeSlice/listIncomeSlice";
@@ -34,6 +36,7 @@ import choosenBillSlice from "./BillSlice/choosenBillSlice";
 import listSpecimensSlice from "./SpecimensSlice/listSpecimensSlice";
 import choosenSpecimensSlice from "./SpecimensSlice/choosenSpecimensSlice";
 import listRecordSlice from "./RecordSlice/listRecordSlice";
+
 import listReceiptSlice from "./ReceiptSlice/listReceiptSlice";
 import choosenNewReceiptSlice from "./ReceiptSlice/choosenNewReceiptSlice";
 import listWaitingSlice from "./WaitingSlice/listWaitingSlice";
@@ -41,6 +44,8 @@ import listConfirmWaitingSlice from "./WaitingSlice/listConfirmWaitingSlice";
 
 import listSpecimenSlice from "./SpecimenSlice/listSpecimenSlice";
 import choosenSpecimenSlice from "./SpecimenSlice/choosenSpecimenSlice";
+
+import listScheduleSlice from "./ScheduleSlice/listScheduleSlice";
 
 
 
@@ -84,8 +89,12 @@ const store = configureStore({
         listWaiting: listWaitingSlice,
         listConfirmWaiting: listConfirmWaitingSlice,
 
+        userProfile: userProfileSlice,
+
         listSpecimen: listSpecimenSlice,
         choosenSpecimen: choosenSpecimenSlice,
+
+        listSchedule: listScheduleSlice,
     }
 })
 

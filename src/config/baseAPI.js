@@ -1,4 +1,4 @@
-export const baseUrl = `http://localhost:8080`
+export const baseUrl = process.env.BASE_URL || 'http://localhost:8080'
 
 export const listUserAPI = `${baseUrl}/api/users/get_list_users`
 export const getAccountByIdAPI = `${baseUrl}/api/users/`
@@ -41,6 +41,7 @@ export const getMaterialImportByIdAPI = `${baseUrl}/api/material_imports/`
 export const updateMaterialImportAPI = `${baseUrl}/api/material_imports/`
 export const deleteMaterialImportAPI = `${baseUrl}/api/material_imports/`
 export const addMaterialImportAPI = `${baseUrl}/api/material_imports/`
+export const addListMaterialImportAPI = `${baseUrl}/api/materials_imports/add_list_import/`
 
 export const listServiceAndCategoryAPI = `${baseUrl}/api/categories/get_list_service`
 
@@ -59,6 +60,8 @@ export const deleteRecordAPI = `${baseUrl}/api/patient_record/`
 export const updateRecordAPI = `${baseUrl}/api/patient_record/`
 
 export const loginAPI = `${baseUrl}/api/login`
+export const forgotPassword = `${baseUrl}/api/forgot_password?username=`
+export const profileAPI = `${baseUrl}/api/users/get_profile`
 
 export const GET_LIST_TIMEKEEPING = `${baseUrl}/api/timekeeping/get_list_timekeeping?size=10&page=`
 export const CHECK_IN = `${baseUrl}/api/timekeeping/checkin`
@@ -96,7 +99,8 @@ export const listAllServiceAPI = `${baseUrl}/api/categories/get_all_service`
 
 export const listWaitingAPI = `${baseUrl}/api/waiting_room/get-list-waiting`
 export const listConfirmWaitingAPI = `${baseUrl}/api/waiting_room/get_list_confirm`
-export const updateWaitingAPI = `${baseUrl}/api/waiting_room/call-patient/`
+export const deleteWaitingAPI = `${baseUrl}/api/waiting_room/`
+export const callWaitingAPI = `${baseUrl}/api/waiting_room/call-patient/`
 export const confirmWaitingAPI = `${baseUrl}/api/waiting_room/confirm-customer/`
 
 export const listSpecimenAPI = `${baseUrl}/api/specimens/get_list_speciemns`
@@ -111,4 +115,11 @@ export const reportSpecimenAPI = `${baseUrl}/api/specimens/report_specimen/`
 export const useSpecimenAPI = `${baseUrl}/api/specimens/use_specimen/`
 
 export const getAllLaboAPI = `${baseUrl}/api/labos/get_all_labo`
+
+
+export const getListScheduleAPI = `${baseUrl}/api/schedule/get_list_schedule`
+export const getScheduleByIdAPI = `${baseUrl}/api/schedule/`
+export const addScheduleAPI = `${baseUrl}/api/schedule`
+export const updateScheduleAPI = `${baseUrl}/api/schedule/`
+
 

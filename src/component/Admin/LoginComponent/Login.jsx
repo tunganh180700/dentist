@@ -24,6 +24,7 @@ const LoginComponent = () => {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
     const paperStyle = {
+        background: 'linear-gradient(45deg,  rgba(66, 183, 245,0.8) 0%,rgba(66, 245, 189,0.4) 100%)',
         height: '100vh',
         width: '100%',
         display: 'flex',
@@ -76,6 +77,7 @@ const LoginComponent = () => {
                     padding: 10,
                     borderRadius: 5,
                     boxShadow: "0px 6px 6px -3px rgb(0 0 0 / 20%), 0px 10px 14px 1px rgb(0 0 0 / 14%), 0px 4px 18px 3px rgb(0 0 0 / 12%)",
+                    backgroundColor: 'white'
                 }}>
                 <Grid style={{ display: 'flex', justifyContent: 'center' }}>
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main', alignItems: 'center' }}>

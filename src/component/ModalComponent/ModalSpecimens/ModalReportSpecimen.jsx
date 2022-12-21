@@ -18,9 +18,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 
-const ModalReportSpecimen = ({ reportOpen, setReportOpen }) => {
+const ModalReportSpecimen = ({ reportOpen, setReportOpen, specimenId }) => {
     const dispatch = useDispatch();
-    const specimenId = useSelector(state => state.modal.specimenId);
+    // const specimenId = useSelector(state => state.modal.specimenId);
 
     const formik = useFormik({
         initialValues: {

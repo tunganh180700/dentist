@@ -16,7 +16,7 @@ import { listAllCategoryAPI } from '../../../config/baseAPI';
 import { regexNumber } from '../../../config/validation';
 
 
-const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
+const ModalAddService = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     const dispatch = useDispatch();
     const [value, setValue] = useState(null);
 
@@ -50,6 +50,7 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
             const res = await axiosInstance.get(listAllCategoryAPI)
             setCategoryServiceId(res.data[0].categoryServiceId)
             setCategoryServiceIds(res.data)
+            isSubmitForm(false)
             console.log("lam on ra kqua di: ", res.data);
 
         } catch (error) {
@@ -73,12 +74,14 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
             values.categoryServiceId = categoryServiceId
             dispatch(addService(values))
             setModalAddOpen(false)
+            isSubmitForm(true)
             formik.handleReset()
         }
     });
 
     const handleCancel = () => {
         setModalAddOpen(false)
+        setCategoryServiceId(1)
 
         // formik.errors.serviceName = ""
         // formik.touched.serviceName = ""
@@ -104,7 +107,7 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
                 onCancel={handleCancel}
             >
 
-                <Box sx={{ p: 5 }}>
+                <Box sx={{ p: 0 }}>
                     <FormControl fullWidth>
                         <InputLabel id="material">Category</InputLabel>
 
@@ -113,6 +116,7 @@ const ModalAddService = ({ modalAddOpen, setModalAddOpen }) => {
                             id="materialSelect"
                             label="Vật liệu"
                             value={categoryServiceId}
+                            style={{ padding: "25px 0", paddingRight: "10px", width:'100%' }}
                             onChange={(e) => setCategoryServiceId(e.target.value)}
                         >
 

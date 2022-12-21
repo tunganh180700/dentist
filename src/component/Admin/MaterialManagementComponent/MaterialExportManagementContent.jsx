@@ -71,33 +71,48 @@ const MaterialExportManagementContent = () => {
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {listMaterialExport.map((item, index) =>
-                        <TableRow key={item.materialExportId}>
-                            <TableCell>{item.materialName}</TableCell>
-                            <TableCell>{item.amount}</TableCell>
-                            <TableCell>{item.unitPrice}</TableCell>
-                            <TableCell>{item.patientName}</TableCell>
-                            <TableCell>{item.date}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setMaterialExportId(item.materialExportId))
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setMaterialExportId(item.materialExportId))
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
+                {totalPages === 0 ? (
+                    <>
+                        <Typography
+                            component="h1"
+                            variant="h5"
+                            color="inherit"
+                            noWrap
+                            textAlign="center"
+                        >
+                            Không có vật liệu nào
+                        </Typography>
+                    </>
+                ) : (
+                    <TableBody>
+                        {listMaterialExport.map((item, index) =>
+                            <TableRow key={item.materialExportId}>
+                                <TableCell>{item.materialName}</TableCell>
+                                <TableCell>{item.amount}</TableCell>
+                                <TableCell>{item.unitPrice}</TableCell>
+                                <TableCell>{item.patientName}</TableCell>
+                                <TableCell>{item.date}</TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="edit" onClick={() => {
+                                        setModalUpdateOpen(true)
+                                        dispatch(setMaterialExportId(item.materialExportId))
+                                    }}>
+                                        <EditIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="delete" onClick={() => {
+                                        setModalDeleteOpen(true)
+                                        dispatch(setMaterialExportId(item.materialExportId))
+                                    }}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                )
+                }
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 {totalPages > 1 ?

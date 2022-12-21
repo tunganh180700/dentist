@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { fetchAllSpecimen, searchSpecimen } from '../../../redux/SpecimenSlice/listSpecimenSlice';
 import ModalAddSpecimens from '../../ModalComponent/ModalSpecimens/ModalAddSpecimens';
@@ -39,18 +41,23 @@ const SpecimenManagementContent = () => {
     const isDeleteSpecimen = useSelector(state => state.listSpecimen.isDeleteSpecimen);
     const isAddSpecimen = useSelector(state => state.listSpecimen.isAddSpecimen);
     const isUpdateSpecimen = useSelector(state => state.listSpecimen.isUpdateSpecimen);
+    const isUseSpecimen = useSelector(state => state.listSpecimen.isUseSpecimen);
     const isSearchSpecimen = useSelector(state => state.listSpecimen.isSearchSpecimen);
     const [loading, setLoading] = useState(false)
+    const statusList = [null, 1, 2, 3, 4, 5, 6];
+    const [statusId, setStatusId] = useState(false)
 
-    const [searchValue, setSearchValue] = useState({
+    const emptySearchValue = {
         specimenName: "",
         patientName: "",
         receiveDate: "",
         usedDate: "",
         deliveryDate: "",
         laboName: "",
-        serviceName: ""
-    })
+        serviceName: "",
+        status: null
+    }
+    const [searchValue, setSearchValue] = useState(emptySearchValue)
 
     let styleText = {}
 
@@ -71,10 +78,10 @@ const SpecimenManagementContent = () => {
 
     }
 
-    useEffect(() => {
+    const loadSpecimenList = () => {
         setLoading(true)
         try {
-            if (searchValue === '') {
+            if (searchValue === emptySearchValue) {
                 dispatch(fetchAllSpecimen({
                     size: pageSize,
                     page: currentPage,
@@ -92,23 +99,26 @@ const SpecimenManagementContent = () => {
             console.log(error)
         }
         setLoading(false)
-    }, [currentPage, isAddSpecimen, isUpdateSpecimen])
+    }
 
     useEffect(() => {
-        if (isDeleteSpecimen == true && totalElements % pageSize == 1) {
-            setCurrentPage(currentPage - 1)
-            dispatch(fetchAllSpecimen({
-                size: pageSize,
-                page: currentPage,
-            }))
-        }
-    }, [isDeleteSpecimen])
+        loadSpecimenList();
+    }, [currentPage,isAddSpecimen,isUpdateSpecimen, isUseSpecimen])
+
+    // useEffect(() => {
+    //     if (isDeleteSpecimen == true && totalElements % pageSize == 1) {
+    //         setCurrentPage(currentPage - 1)
+    //         dispatch(fetchAllSpecimen({
+    //             size: pageSize,
+    //             page: currentPage,
+    //         }))
+    //     }
+    // }, [isDeleteSpecimen])
 
     const handleSearchDebounce = useRef(_.debounce(async (formValues) => {
         setLoading(true)
         setCurrentPage(0)
         try {
-
             dispatch(searchSpecimen({
                 ...formValues,
                 size: pageSize,
@@ -122,8 +132,6 @@ const SpecimenManagementContent = () => {
 
     const handleSearch = (e) => {
         setSearchValue(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
-        console.log(searchValue)
-        // setSearchValue({[e.target.name]: e.target.value})
     }
 
     useEffect(() => {
@@ -134,26 +142,29 @@ const SpecimenManagementContent = () => {
 
     useEffect(() => {
         handleSearchDebounce(searchValue)
-    }, [searchValue, isDeleteSpecimen, isUpdateSpecimen, isAddSpecimen]);
+    }, [searchValue]);
 
     const getStatusStr = (status) => {
-        if(status === 1){
+        if (status === 1) {
             return 'Chuẩn bị mẫu vật'
         }
-        else if(status === 2){
+        else if (status === 2) {
             return 'Labo nhận mẫu'
         }
-        else if(status === 3){
+        else if (status === 3) {
             return 'Labo giao mẫu'
         }
-        else if(status === 4){
+        else if (status === 4) {
             return 'Bệnh nhân đã sử dụng'
         }
-        else if(status === 5){
+        else if (status === 5) {
             return 'Mẫu lỗi gửi lại cho labo'
         }
-        else{
+        else if (status == 6) {
             return 'Hoàn thành'
+        }
+        else {
+            return '';
         }
     }
 
@@ -285,6 +296,23 @@ const SpecimenManagementContent = () => {
                             </TableCell>
                             <TableCell>
                                 <div className='attibute'>Trạng thái</div>
+                                <div style={{ width: "200px" }}>
+                                    <br></br>
+                                    <Select
+                                        labelId="statusSearch"
+                                        id="statusSearch"
+                                        label="statusSearch"
+                                        value={searchValue.status}
+                                        style={{width:"100%"}}
+                                        onChange={(e) => {
+                                            setSearchValue(prevState => ({ ...prevState, status: e.target.value }))
+                                        }}
+                                    >
+                                        {statusList?.map(status => (
+                                            <MenuItem key={status} value={status}>{getStatusStr(status)}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </div>
                             </TableCell>
                             <TableCell></TableCell>
                             {/* <TableCell></TableCell> */}
@@ -302,9 +330,9 @@ const SpecimenManagementContent = () => {
                                     </IconButton>
                                 </TableCell>
                                 <TableCell style={styleText}>{item.specimenName}</TableCell>
-                                <TableCell style={styleText}>{item.receiveDate?moment(item.receiveDate).format("DD/MM/YYYY"):''}</TableCell>
-                                <TableCell style={styleText}>{item.usedDate?moment(item.usedDate).format("DD/MM/YYYY"):''}</TableCell>
-                                <TableCell style={styleText}>{item.deliveryDate?moment(item.deliveryDate).format("DD/MM/YYYY"):''}</TableCell>
+                                <TableCell style={styleText}>{item.receiveDate ? moment(item.receiveDate).format("DD/MM/YYYY") : ''}</TableCell>
+                                <TableCell style={styleText}>{item.usedDate ? moment(item.usedDate).format("DD/MM/YYYY") : ''}</TableCell>
+                                <TableCell style={styleText}>{item.deliveryDate ? moment(item.deliveryDate).format("DD/MM/YYYY") : ''}</TableCell>
                                 <TableCell style={styleText}>{item.amount}</TableCell>
                                 <TableCell style={styleText}>{item.unitPrice}</TableCell>
                                 <TableCell style={styleText}>{item.serviceName}</TableCell>
@@ -345,14 +373,14 @@ const SpecimenManagementContent = () => {
             <div>
                 <ModalAddSpecimens modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
             </div>
-            <div>
+            {/* <div>
                 <ModalDeleteSpecimens modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
-            </div>
+            </div> */}
             <div>
                 <ModalUpdateSpecimens modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
             </div>
             <div>
-                <ModalDetailSpecimen modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
+                <ModalDetailSpecimen loadSpecimenList={loadSpecimenList} modalDetailOpen={modalDetailOpen} setModalDetailOpen={setModalDetailOpen} />
             </div>
         </>
     )

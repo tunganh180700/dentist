@@ -72,40 +72,57 @@ const LaboManagementContent = () => {
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {listLabo.map((item, index) =>
-                        <TableRow key={item.laboId}>
+                {totalPages === 0 ? (
+                    <>
+                        <Typography
+                            component="h1"
+                            variant="h5"
+                            color="inherit"
+                            noWrap
+                            textAlign="center"
+                        >
+                            Không có labo
+                        </Typography>
+                    </>
+                ) : (
+                    <>
+                        <TableBody>
+                            {listLabo.map((item, index) =>
+                                <TableRow key={item.laboId}>
 
-                            <TableCell>{item.laboName}</TableCell>
-                            <TableCell>{item.phone}</TableCell>
-                            <TableCell>{item.totalMoney}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="detail" onClick={() => {
-                                    setModalDetailOpen(true)
-                                    dispatch(setLaboId(item.laboId))
-                                }}>
-                                    <RemoveRedEyeIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setLaboId(item.laboId))
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setLaboId(item.laboId))
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
+                                    <TableCell>{item.laboName}</TableCell>
+                                    <TableCell>{item.phone}</TableCell>
+                                    <TableCell>{item.totalMoney}</TableCell>
+                                    <TableCell>
+                                        <IconButton aria-label="detail" onClick={() => {
+                                            setModalDetailOpen(true)
+                                            dispatch(setLaboId(item.laboId))
+                                        }}>
+                                            <RemoveRedEyeIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell>
+                                        <IconButton aria-label="edit" onClick={() => {
+                                            setModalUpdateOpen(true)
+                                            dispatch(setLaboId(item.laboId))
+                                        }}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell>
+                                        <IconButton aria-label="delete" onClick={() => {
+                                            setModalDeleteOpen(true)
+                                            dispatch(setLaboId(item.laboId))
+                                        }}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </>
+                )
+                }
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 {totalPages > 1 ?

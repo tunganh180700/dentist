@@ -8,14 +8,17 @@ import TableRow from '@mui/material/TableRow';
 import { Pagination, Typography, IconButton, TextField } from '@mui/material';
 import "./style.css"
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllWaiting } from '../../../redux/WaitingSlice/listWaitingSlice';
+import { fetchAllWaiting, callWaiting, deleteWaiting } from '../../../redux/WaitingSlice/listWaitingSlice';
 import moment from 'moment';
 import { updateWaitingAPI, listConfirmWaitingAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
 import ModalConfirmWaiting from '../../ModalComponent/ModalWaiting/ModalConfirmWaiting';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import SockJsClient from 'react-stomp';
 
 const WaitingRoomManagementContent = () => {
+
+    const SOCKET_URL = 'http://localhost:8080/waiting-room/';
 
     const listWaiting = useSelector(state => state.listWaiting.listWaiting)
     const dispatch = useDispatch()
@@ -26,7 +29,9 @@ const WaitingRoomManagementContent = () => {
     const [modalConfirmWaitingOpen, setModalConfirmWaitingOpen] = useState(false);
     const [role, setRole] = useState(null);
     const [u, setU] = useState(true);
-
+    const [triggerGetList, setTriggerGetList] = useState(true);
+    const isCallWaiting = useSelector(state => state.listWaiting.isCallWaiting);
+    const isDeleteWaiting = useSelector(state => state.listWaiting.isDeleteWaiting);
 
     const loadWaitingList = () => {
         dispatch(fetchAllWaiting({
@@ -34,6 +39,10 @@ const WaitingRoomManagementContent = () => {
             page: currentPage
         },
         ));
+    }
+
+    const onConnected = () => {
+        console.log("Connected!!")
     }
 
     const checkExistConfirmWaiting = async () => {
@@ -65,20 +74,20 @@ const WaitingRoomManagementContent = () => {
         loadWaitingList();
     }, [currentPage])
 
-    // useEffect(() => {
-    
-    // }, [u])
+    useEffect(() => {
+        if (isDeleteWaiting == true && totalElements % pageSize == 1) {
+            setCurrentPage(currentPage - 1)
+            dispatch(fetchAllWaiting({
+                size: pageSize,
+                page: currentPage,
+            }))
+        }
+    }, [isDeleteWaiting, isCallWaiting])
 
-    const updateWaiting = async (id) => {
-        axiosInstance.post(updateWaitingAPI + id)
-            .then(res => {
-                loadWaitingList();
-                toast("Gọi bệnh nhân thành công");
-            })
-            .catch(err => {
-                toast("Gọi bệnh nhân không thành công");
-            });
+    const call = async (id) => {
+            dispatch(callWaiting(id));
     }
+
 
     const getStatusStr = (status) => {
         if (status == 1) {
@@ -90,6 +99,18 @@ const WaitingRoomManagementContent = () => {
         else {
             return 'Đến lượt';
         }
+    }
+
+    const handlePopupConfirm = () => {
+        if (role === null || role === 'Receptionist') {
+            setTriggerGetList((prev) => !prev)
+            setModalConfirmWaitingOpen(true);
+
+        }
+    }
+
+    const remove = (id) => {
+        dispatch(deleteWaiting(id));
     }
 
     return (
@@ -104,6 +125,14 @@ const WaitingRoomManagementContent = () => {
             >
                 QUẢN LÝ PHÒNG CHỜ
             </Typography>
+            <SockJsClient
+                url={SOCKET_URL}
+                topics={['/topic/group']}
+                onConnect={onConnected}
+                onDisconnect={() => console.log("Disconnected!")}
+                onMessage={handlePopupConfirm}
+                debug={false}
+            />
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
@@ -112,41 +141,76 @@ const WaitingRoomManagementContent = () => {
                         <TableCell>Trạng thái</TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {listWaiting?.map((item) =>
-                        <TableRow key={item.waitingRoomId}>
-                            <TableCell>{item.patientName}</TableCell>
-                            <TableCell>{moment(item.date).format("DD/MM/YYYY")}</TableCell>
-                            <TableCell>{getStatusStr(item.status)}</TableCell>
-                            {
-                                role === null || role === 'Receptionist' || item.status === 1 ?
-                                    <></>
-                                    :
-                                    <TableCell>
-                                        <IconButton aria-label="edit" onClick={() => {
-                                            updateWaiting(item.waitingRoomId)
-                                        }}>
-                                            Gọi
-                                        </IconButton>
-                                    </TableCell>
-                            }
-
-                        </TableRow>
-                    )}
-                </TableBody>
+                {totalPages === 0 ?
+                    (
+                        <>
+                            <Typography
+                                component="h1"
+                                variant="h5"
+                                color="inherit"
+                                noWrap
+                                textAlign="center"
+                            >
+                                Không có ai ở phòng chờ
+                            </Typography>
+                        </>
+                    )
+                    :
+                    (
+                        <>
+                            <TableBody>
+                                {listWaiting?.map((item) =>
+                                    <TableRow key={item.waitingRoomId}>
+                                        <TableCell>{item.patientName}</TableCell>
+                                        <TableCell>{moment(item.date).format("DD/MM/YYYY")}</TableCell>
+                                        <TableCell>{getStatusStr(item.status)}</TableCell>
+                                        {
+                                            role === null || role === 'Receptionist' || item.status === 1 ?
+                                                <></>
+                                                :
+                                                <TableCell>
+                                                    <IconButton aria-label="edit" onClick={() => {
+                                                        call(item.waitingRoomId)
+                                                    }}>
+                                                        Gọi
+                                                    </IconButton>
+                                                </TableCell>
+                                        }
+                                        {
+                                            role === null || role === 'Receptionist' || item.status === 1 ?
+                                                <></>
+                                                :
+                                                <TableCell>
+                                                    <IconButton aria-label="delete" onClick={() => {
+                                                        remove(item.waitingRoomId)
+                                                    }}>
+                                                        Xóa
+                                                    </IconButton>
+                                                </TableCell>
+                                        }
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </>
+                    )
+                }
             </Table >
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Pagination
-                    count={totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
             <div>
-                <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} />
+                <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} triggerGetList={triggerGetList} />
             </div>
+
+
         </>
     )
 }

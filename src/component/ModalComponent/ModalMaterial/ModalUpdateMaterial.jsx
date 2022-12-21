@@ -77,17 +77,17 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         formik.values.amount = oldData.amount
         formik.values.price = oldData.price
 
-        formik.errors.materialName = ""
-        formik.touched.materialName = ""
+        // formik.errors.materialName = ""
+        // formik.touched.materialName = ""
 
-        formik.errors.unit = ""
-        formik.touched.unit = ""
+        // formik.errors.unit = ""
+        // formik.touched.unit = ""
 
-        formik.errors.amount = ""
-        formik.touched.amount = ""
+        // formik.errors.amount = ""
+        // formik.touched.amount = ""
 
-        formik.errors.price = ""
-        formik.touched.price = ""
+        // formik.errors.price = ""
+        // formik.touched.price = ""
         setModalUpdateOpen(false)
     }
 
