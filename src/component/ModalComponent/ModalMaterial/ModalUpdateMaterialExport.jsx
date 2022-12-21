@@ -120,7 +120,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             console.log('id', res.data.materialId)
             setOldData(res.data)
             setPatientRecordId(res.data.patientRecordId)
-            // setMaterialId(res.data.materialId)
+
             console.log('day roi: ', res.data.patientRecordId)
             setValue(res.data.date)
         } catch (error) {
@@ -140,7 +140,6 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             const res = await axiosInstance.get(
                 listPatientRecordByTreatmentIdAPI + patientId,
             )
-            //  setPatientRecordId(res.data[0].patientId)
             setPatientRecordId(res.data[0].patientRecordId)
             setPatientRecordIds(res.data)
             console.log('kiem tra', res.data)
@@ -194,10 +193,11 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             >
                 {loading === false && <>
 
-                    <Box sx={{ minWidth: 120 }}>
+                    <Box>
                         <FormControl fullWidth>
                             <InputLabel id="material">Vật liệu</InputLabel>
                             <Select
+                                style={{ width: '100%', height: '10%' }}
                                 labelId="material"
                                 id="materialSelect"
                                 label="Vật liệu"
@@ -214,10 +214,11 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         </FormControl>
                     </Box>
 
-                    <Box fullWidth>
+                    <Box>
                         <FormControl fullWidth>
                             <InputLabel id="patient">Bệnh nhân</InputLabel>
                             <Select
+                                style={{ width: '100%', height: '10%' }}
                                 labelId="patient"
                                 id="patientSelect"
                                 label="Bệnh nhân"
@@ -234,10 +235,11 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         </FormControl>
                     </Box>
 
-                    <Box sx={{ minWidth: 120 }}>
+                    <Box>
                         <FormControl fullWidth>
                             <InputLabel id="patientrecord">Date record</InputLabel>
                             <Select
+                                style={{ width: '100%', height: '10%' }}
                                 labelId="patientrecord"
                                 id="patientrecordSelect"
                                 label="Date record"
