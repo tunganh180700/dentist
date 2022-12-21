@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import axios from "axios"
 import { toast } from "react-toastify"
 import { addPatientAPI, deletePatientAPI, listPatientAPI, searchPatientAPI, updatePatientAPI } from "../../config/baseAPI"
 import { DELETE_FAIL, DELETE_SUCCESS, UPDATE_FAIL, UPDATE_SUCCESS } from "../../config/constant"
