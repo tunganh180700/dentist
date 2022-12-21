@@ -2,6 +2,21 @@ import { Avatar, Box, Button, Grid, Link, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import { useHref } from 'react-router-dom';
+import axiosInstance from "../../config/customAxios";
+import { forgotPassword } from '../../config/baseAPI';
+import { regexEmail } from '../../config/validation';
+import * as yup from "yup";
+import { useFormik } from "formik";
+import axios from 'axios';
+import { Alert } from "antd";
+
+
+const validationSchema = yup.object({
+    username: yup
+        .string("Enter username")
+        .required("Username is required"),
+
+});
 
 const ForgotPassword = () => {
     const paperStyle = {
@@ -12,6 +27,38 @@ const ForgotPassword = () => {
         justifyContent: 'center',
         alignItems: 'center',
     }
+
+
+
+    const [loading, setLoading] = useState(false)
+    const [message, setMessage] = useState({ type: '', message: '' })
+
+    const handleChange = (event) => {
+        formik.handleChange(event);
+    };
+    const handleForgot = async (values) => {
+        // setLoading(true)
+        try {
+            const res = await axios.post(forgotPassword + values.username, values)
+            setMessage({ ...message, type: 'success', message: "Thành công, vui lòng kiểm tra email"})
+        } catch (error) {
+            setMessage({ ...message, type: 'error', message: error.response.data.message + "kiểm tra lại tên đăng nhập"})
+        }
+        // setLoading(false)
+    }
+
+
+
+    const formik = useFormik({
+        initialValues: {
+            username: "",
+            // code: '',
+        },
+        validationSchema: validationSchema,
+        onSubmit: (values) => {
+            handleForgot(values);
+        }
+    });
 
     return (
         <>
@@ -30,46 +77,57 @@ const ForgotPassword = () => {
                         </Avatar>
                     </Grid>
 
-                    <label>Vui lòng nhập gmail để tìm kiếm tài khoản</label>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="E-mail"
-                        name="email"
-                        // value={formik.values.password}
-                        autoComplete="email"
-                        autoFocus
-                    // onChange={handleChange}
+                <label>Vui lòng nhập tài khoản để gửi yêu cầu đổi mật khẩu</label>
+                {/* <form onSubmit={formik.handleSubmit}> */}
+                {
+                    message.message !== '' && <Alert
+                        description={message.message}
+                        type={message.type}
+                        showIcon
                     />
-                    {/* {formik.errors.password && <Typography color={'red'}>{formik.errors.password}</Typography>} */}
-                    <div style={{ display: 'flex', width: '60%', marginLeft: '135px' }}>
-                        <Button
-                            // loading={loading}
-                            type="submit"
-                            fullWidth
-                            variant="outlined"
-                            sx={{ mt: 3, mb: 2 }}
-                            href="/login"
-                            style={{ marginRight: '5px' }}
-                        >
-                            Hủy
-                        </Button>
-                        <Button
-                            // loading={loading}
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        // onClick={formik.handleSubmit}
-                        >
-                            Tìm kiếm
-                        </Button>
-                    </div>
-                </Box >
-            </Grid >
-        </>
+                }
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Nhập tài khoản cần gửi yêu cầu"
+                    name="username"
+
+                    autoComplete="username"
+                    autoFocus
+                    value={formik.values.username}
+                    onChange={handleChange}
+                />
+                {/* {formik.errors.password && <Typography color={'red'}>{formik.errors.password}</Typography>} */}
+                <div style={{ display: 'flex', width: '60%', marginLeft: '135px' }}>
+                    <Button
+                        // loading={loading}
+                        type="submit"
+                        fullWidth
+                        variant="outlined"
+                        sx={{ mt: 3, mb: 2 }}
+                        href="/login"
+                        style={{ marginRight: '5px' }}
+                    >
+                        Login
+                    </Button>
+                    <Button
+                        loading={loading}
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                        onClick={formik.handleSubmit}
+                    >
+                        Gửi yêu cầu
+                    </Button>
+                </div>
+                {/* </form> */}
+
+            </Box >
+        </Grid >
+        // </>
     )
 }
 

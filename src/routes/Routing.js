@@ -17,6 +17,7 @@ import ServiceAndCategoryManagement from "../component/Admin/ServiceAndCategoryM
 import IncomeManagement from "../component/Admin/IncomeManagementComponent/IncomeManagement";
 import RecordManagement from "../component/Admin/RecordComponent/RecordManagement";
 import BillManagement from "../component/Admin/BillManagementComponent/BillManagement";
+import ProfileManagement from "../component/Admin/ProfileManagementComponent/ProfileManagement";
 import SpecimenManagement from "../component/Admin/SpecimenManagementComponent/SpecimenManagement";
 import ScheduleManagement from "../component/Admin/ScheduleManagementComponent/ScheduleManagement";
 
@@ -42,6 +43,7 @@ const Routing = () => {
                 <Route path='/bill' element={<BillManagement />} />
                 <Route path='/' element={<HomePage />} />
                 <Route path='/forgot-password' element={<ForgotPassword />} />
+                <Route path='/profile' element={<ProfileManagement />} />
                 <Route path='/specimen' element={<SpecimenManagement />} />
                 <Route path='/schedule' element={<ScheduleManagement />} />
                 <Route path='*' element={<>404 Error</>} />

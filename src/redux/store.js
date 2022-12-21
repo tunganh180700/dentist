@@ -20,6 +20,8 @@ import listmaterialImportSlice from "./MaterialSlice/listMaterialImportSlice";
 import choosenMaterialExportSlice from "./MaterialSlice/choosenMaterialExportSlice";
 import listMaterialExportSlice from "./MaterialSlice/listMaterialExportSlice";
 
+import userProfileSlice from "./ProfileSlice/userProfileSlice";
+
 
 
 import listIncomeSlice from "./IncomeSlice/listIncomeSlice";
@@ -86,6 +88,8 @@ const store = configureStore({
 
         listWaiting: listWaitingSlice,
         listConfirmWaiting: listConfirmWaitingSlice,
+
+        userProfile: userProfileSlice,
 
         listSpecimen: listSpecimenSlice,
         choosenSpecimen: choosenSpecimenSlice,
