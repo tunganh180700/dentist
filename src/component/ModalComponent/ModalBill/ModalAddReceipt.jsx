@@ -49,17 +49,18 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
     setLoading(false);
   }, [treatmentId]);
 
-  useEffect(()=>{
+  useEffect(() => {
+    console.log(isSubmitForm);
     try {
-        if (isSubmitForm) {
-          dispatch(fetchBill(treatmentId));
-          dispatch(fetchNewReceipt(treatmentId));
-        }
-      } catch (error) {
-        console.log(error);
+      if (isSubmitForm) {
+        dispatch(fetchBill(treatmentId));
+        dispatch(fetchNewReceipt(treatmentId));
+        setIsSubmitForm(false);
       }
-    setIsSubmitForm(false)
-  }, [isSubmitForm])
+    } catch (error) {
+      console.log(error);
+    }
+  }, [isSubmitForm]);
 
   const formik = useFormik({
     initialValues: {
@@ -75,8 +76,10 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
       console.log("hien thi values", values.patientId);
       dispatch(addNewReceipt(addValue));
       setModalAddReceiptOpen(false);
-      setIsSubmitForm(true)
       formik.handleReset();
+      setTimeout(()=>{
+      setIsSubmitForm(true);
+      }, 1000)
     },
   });
 
