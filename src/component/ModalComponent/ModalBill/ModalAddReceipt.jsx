@@ -128,6 +128,7 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
             <TableCell style={{ fontWeight: "bold" }}>Dịch vụ mới </TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Giá tiền</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Giảm giá</TableCell>
+            <TableCell style={{ fontWeight: "bold" }}>Số lượng</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -136,6 +137,7 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
               <TableCell>{item.serviceName}</TableCell>
               <TableCell>{item.currentPrice}</TableCell>
               <TableCell>{item.discount}</TableCell>
+              <TableCell>{item.amount}</TableCell>
             </TableRow>
           ))}
         </TableBody>

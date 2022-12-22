@@ -581,6 +581,20 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                             />
                           </TableCell>
                           <TableCell padding="none">
+                            <input
+                              value={i?.amount || 1}
+                              name="discount"
+                              onChange={(e) =>
+                                // setServiceDiscount(e.target.value)
+                                setRows((prev) => {
+                                  prev[index].amount = e.target.value;
+                                  return _.cloneDeep(prev);
+                                })
+                              }
+                              style={styleInput}
+                            />
+                          </TableCell>
+                          <TableCell padding="none">
                             <Box sx={{ minWidth: 120 }}>
                               <FormControl fullWidth>
                                 <Select
