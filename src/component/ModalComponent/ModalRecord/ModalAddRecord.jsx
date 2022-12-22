@@ -26,6 +26,7 @@ import axiosInstance from "../../../config/customAxios";
 import { useParams } from "react-router-dom";
 import {
   addRecordAPI,
+  getPatientByIdAPI,
   listAllServiceAPI,
   listTreatingServiceAPI,
 } from "../../../config/baseAPI";
@@ -142,6 +143,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     setSpecimenDTOS(specimen);
   };
 
+
+
   const formik = useFormik({
     initialValues: {
       reason: "",
@@ -248,24 +251,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     setModalAddOpen(false);
     formik.handleReset();
 
-    // formik.values.reason = ""
-    // formik.errors.reason = ""
-
-    // formik.values.causal = ""
-    // formik.errors.causal = ""
-
-    // formik.values.diagnostic = ""
-    // formik.errors.diagnostic = ""
-
-    // formik.values.marrowRecord = ""
-    // formik.errors.marrowRecord = ""
-
-    // formik.values.note = ""
-    // formik.errors.note = ""
-
-    // formik.values.treatment = ""
-    // formik.errors.treatment = ""
-
     setValue(null);
     formik.resetForm();
   };
@@ -312,6 +297,23 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     getServiceTreating(id);
   }, [id, serviceId, isAddRecord]);
 
+  const fetchPatient = async (patientId) => {
+    try {
+      const res = await axiosInstance.get(
+        getPatientByIdAPI + patientId,
+      )
+      console.log("ga vl", res.data)
+      formik.setValues(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (id > 0)
+      fetchPatient(id)
+  }, [id])
+
   return (
     <>
       <Modal
@@ -322,7 +324,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
         onCancel={handleCancel}
       >
         <div className="container" style={{ display: "flex" }}>
-          <div className="form-input" style={{ width: "50%" }}>
+          <div className="form-input" style={{ width: "80%" }}>
             <TextField
               margin="normal"
               required
@@ -332,6 +334,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               name="reason"
               autoComplete="reason"
               value={formik.values.reason}
+              multiline
+              rows={5}
               autoFocus
               onChange={formik.handleChange}
             />
@@ -349,6 +353,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               name="diagnostic"
               autoComplete="diagnostic"
               value={formik.values.diagnostic}
+              multiline
+              rows={5}
               autoFocus
               onChange={formik.handleChange}
             />
@@ -366,6 +372,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               name="causal"
               autoComplete="causal"
               value={formik.values.causal}
+              multiline
+              rows={5}
               autoFocus
               onChange={formik.handleChange}
             />
@@ -396,6 +404,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               name="marrowRecord"
               autoComplete="marrowRecord"
               value={formik.values.marrowRecord}
+              multiline
+              rows={5}
               autoFocus
               onChange={formik.handleChange}
             />
@@ -413,6 +423,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               name="note"
               autoComplete="note"
               value={formik.values.note}
+              multiline
+              rows={5}
               autoFocus
               onChange={formik.handleChange}
             />
@@ -430,6 +442,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               name="treatment"
               autoComplete="treatment"
               value={formik.values.treatment}
+              multiline
+              rows={5}
               autoFocus
               onChange={formik.handleChange}
             />
@@ -652,6 +666,34 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 })}
               </TableBody>
             </Table>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="teethPrehistory"
+              label="Tiền sử răng miệng"
+              name="teethPrehistory"
+              autoComplete="teethPrehistory"
+              value={formik.values.teethPrehistory}
+              multiline
+              rows={5}
+              autoFocus
+              onChange={formik.handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="bodyPrehistory"
+              label="Tiền sử cơ thể"
+              name="bodyPrehistory"
+              autoComplete="bodyPrehistory"
+              value={formik.values.bodyPrehistory}
+              multiline
+              rows={5}
+              autoFocus
+              onChange={formik.handleChange}
+            />
           </div>
         </div>
         <ModalExportMaterial
