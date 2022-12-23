@@ -5,7 +5,7 @@ import PatientManagementContent from './PatientManagementContent';
 const PatientManagement = () => {
     return (
         <>
-            <Dashboard component={<PatientManagementContent />} />
+            <PatientManagementContent />
         </>
     )
 }

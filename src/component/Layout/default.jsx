@@ -14,12 +14,10 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import HeaderAdmin from "../HeaderComponent/HeaderAdmin";
-import Sidebar from "../SidebarComponent/Sidebar";
-import { Outlet } from "react-router-dom";
-
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import Sidebar from "../Admin/SidebarComponent/Sidebar";
+import { Link, Outlet } from "react-router-dom";
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -67,7 +65,7 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
-function DashboardContent({ component }) {
+function LayoutDefault({ component }) {
   const [open, setOpen] = React.useState(false);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -80,10 +78,6 @@ function DashboardContent({ component }) {
           background: "linear-gradient(-90deg,#CAF8FF 0%,#F7B89C 100%)",
         }}
         sx={{
-          // backgroundColor: (theme) =>
-          //   theme.palette.mode === "light"
-          //     ? 'linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(9,58,121,0.5830707282913166) 43%, rgba(2,159,200,1) 100%)'
-          //     : '',
           flexGrow: 1,
           height: "100vh",
           overflow: "auto",
@@ -122,18 +116,6 @@ function DashboardContent({ component }) {
             className="rounded-lg w-full border-0"
             open={open}
           >
-            {/* <Toolbar
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              px: [1],
-            }}
-          >
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Toolbar> */}
             <Box>
               <Sidebar isOpenSideBar={open} />
               <Box role="button" className="text-center">
@@ -143,9 +125,6 @@ function DashboardContent({ component }) {
           </Drawer>
         </Box>
         <Box style={{ padding: "60px" }} className="float-right mx-auto">
-          {/* <Grid container spacing={3} textAlign="center" display={"block"}>
-            </Grid> */}
-            {/* {component} */}
           <Outlet />
         </Box>
       </Box>
@@ -153,4 +132,4 @@ function DashboardContent({ component }) {
   );
 }
 
-export default DashboardContent;
+export default LayoutDefault;

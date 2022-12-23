@@ -6,7 +6,7 @@ import ProfileManagementContent from './ProfileManagementContent';
 const ProfileManagement = () => {
     return (
         <>
-            <Dashboard component={<ProfileManagementContent />} />
+            <ProfileManagementContent />
         </>
     )
 }

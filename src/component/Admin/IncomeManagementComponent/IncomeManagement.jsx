@@ -5,7 +5,7 @@ import IncomeManagementContent from './IncomeManagementContent';
 const IncomeManagement = () => {
     return (
         <>
-            <Dashboard component={<IncomeManagementContent />} />
+            <IncomeManagementContent />
         </>
     )
 }

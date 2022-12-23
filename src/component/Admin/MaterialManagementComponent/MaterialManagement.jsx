@@ -5,7 +5,7 @@ import MaterialManagementContent from './MaterialManagementContent';
 const MaterialManagement = () => {
     return (
         <>
-            <Dashboard component={<MaterialManagementContent />} />
+           <MaterialManagementContent />
         </>
     )
 }

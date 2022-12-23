@@ -5,7 +5,7 @@ import LaboManagementContent from './LaboManagementContent';
 const LaboManagement = () => {
     return (
         <>
-            <Dashboard component={<LaboManagementContent />} />
+            <LaboManagementContent />
         </>
     )
 }

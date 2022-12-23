@@ -6,7 +6,7 @@ import AccountManagementContent from './AccountManagementContent';
 const AccountManagement = () => {
     return (
         <>
-            <Dashboard component={<AccountManagementContent />} />
+        <AccountManagementContent />
         </>
     )
 }

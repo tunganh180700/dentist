@@ -5,7 +5,7 @@ import SpecimenManagementContent from './SpecimenManagementContent';
 const SpecimenManagement = () => {
     return (
         <>
-            <Dashboard component={<SpecimenManagementContent />} />
+            <SpecimenManagementContent />
         </>
     )
 }

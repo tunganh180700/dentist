@@ -5,7 +5,7 @@ import ServiceAndCategoryManagementContent from './ServiceAndCategoryManagementC
 const ServiceAndCategoryManagement = () => {
     return (
         <>
-            <Dashboard component={<ServiceAndCategoryManagementContent />} />
+            <ServiceAndCategoryManagementContent />
         </>
     )
 }

@@ -5,7 +5,7 @@ import RecordManagementContent from './RecordManagementContent';
 const RecordManagement = () => {
     return (
         <>
-            <Dashboard component={<RecordManagementContent />} />
+            <RecordManagementContent />
         </>
     )
 }

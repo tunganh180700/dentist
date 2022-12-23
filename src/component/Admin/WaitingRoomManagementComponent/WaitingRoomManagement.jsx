@@ -6,7 +6,7 @@ import WaitingRoomManagementContent from './WaitingRoomManagementContent';
 const WaitingRoomManagement = () => {
     return (
         <>
-            <Dashboard component={<WaitingRoomManagementContent />} />
+            <WaitingRoomManagementContent />
         </>
     )
 }

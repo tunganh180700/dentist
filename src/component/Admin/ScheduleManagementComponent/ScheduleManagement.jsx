@@ -5,7 +5,7 @@ import ScheduleManagementContent from './ScheduleManagementContent';
 const ScheduleManagement = () => {
     return (
         <>
-            <Dashboard component={<ScheduleManagementContent />} />
+            <ScheduleManagementContent />
         </>
     )
 }

@@ -5,7 +5,7 @@ import BillManagementContent from './BillManagementContent';
 const BillManagement = () => {
     return (
         <>
-            <Dashboard component={<BillManagementContent />} />
+        <BillManagementContent />
         </>
     )
 }
