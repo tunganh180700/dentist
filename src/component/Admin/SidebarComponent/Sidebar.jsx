@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import ListItemButton from "@mui/material/ListItemButton";
 import Box from "@mui/material/Box";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -20,9 +20,10 @@ import { useState } from "react";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import Logo from "../../../img/logo.png";
 import { menu } from "./constant";
-
-const Sidebar = ({ isOpenSideBar = true }) => {
-  const [isOpenCollapse, setIsOpenCollapse] = useState(true);
+import { useLocation } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
+const Sidebar = ({ isOpenSideBar = false }) => {
+  const [isOpenCollapse, setIsOpenCollapse] = useState(false);
   const [role, setRole] = useState(null);
   const handleClickCollapse = () => {
     setIsOpenCollapse(!isOpenCollapse);
@@ -37,51 +38,100 @@ const Sidebar = ({ isOpenSideBar = true }) => {
     const role = localStorage.getItem("role");
     setRole(role);
   }, []);
+  const location = useLocation();
+
+  const activeTab = useCallback(
+    (item) => {
+      return location.pathname === item.href;
+    },
+    [location]
+  );
 
   return (
-    <div className="decoration-white text-black">
-      <img
-        src={Logo}
-        width={130}
-        style={{ margin: "auto", borderRadius: "10px" }}
-        alt=""
-        className="mb-5"
-      />
-      {menu.map((item) => (
-        <Box>
-          {!item?.subItem && (
-            <Link to={item.href} className="decoration-white text-black">
-              <ListItemButton className="flex justify-center">
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                {item.title}
-              </ListItemButton>
-            </Link>
-          )}
-          {item?.subItem && (
-            <Box>
-              <ListItemButton onClick={handleClickCollapse}>
-                <ListItemIcon>
-                  <CategoryIcon />
-                </ListItemIcon>
-                Quản lý vật liệu
-                {isOpenCollapse ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={isOpenCollapse} timeout="auto" unmountOnExit>
-                {item.subItem.map((sub) => (
-                  <Box className="ml-8">
-                    <Link to={sub.href} className="decoration-white text-black">
-                      <ListItemButton className="flex justify-center ml-3">
-                        <ListItemIcon>{sub.icon}</ListItemIcon>
-                        {sub.title}
-                      </ListItemButton>
-                    </Link>
-                  </Box>
-                ))}
-              </Collapse>
-            </Box>
-          )}
-        </Box>
-      ))}
+    <div className="decoration-white text-black h-4/5">
+      <div className="mb-2">
+        <img
+          src={Logo}
+          width={130}
+          style={{ margin: "auto", borderRadius: "10px" }}
+          alt=""
+        />
+      </div>
+
+      <Box className="flex flex-col gap-2 h-full">
+        {menu.map((item) => (
+          <Box>
+            {item?.subItem ? (
+              <Box>
+                <ListItemButton
+                  sx={{
+                    justifyContent: "flex-start",
+                    borderRadius: "10px",
+                  }}
+                  onClick={handleClickCollapse}
+                >
+                  <ListItemIcon className="ml-2">{item.icon}</ListItemIcon>
+                  {item.title}
+                  {isOpenCollapse ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={isOpenCollapse} timeout="auto" unmountOnExit>
+                  {item.subItem.map((sub) => (
+                    <Box className="ml-5">
+                      <Link
+                        to={sub.href}
+                        className={`decoration-transparent  ${
+                          activeTab(sub) ? "text-sky-500" : "text-black"
+                        } rounded-full`}
+                      >
+                        <ListItemButton
+                          sx={{
+                            justifyContent: "flex-start",
+                            borderRadius: "10px",
+                            background: `${activeTab(sub) ? "#CAF8FF" : ""}`,
+                            boxShadow: `${activeTab(sub) ? "#CAF8FF" : ""}`,
+                          }}
+                        >
+                          <ListItemIcon>
+                            {" "}
+                            {activeTab(sub) ? sub.iconActive : sub.icon}
+                          </ListItemIcon>
+                          {sub.title}
+                        </ListItemButton>
+                      </Link>
+                    </Box>
+                  ))}
+                </Collapse>
+              </Box>
+            ) : (
+              <Link
+                to={item.href}
+                className={`h-10 decoration-transparent  ${
+                  activeTab(item) ? "text-sky-500" : "text-black"
+                } rounded-full`}
+              >
+                <Tooltip
+                  arrow
+                  title={!isOpenSideBar ? item.title : ''}
+                  placement="left"
+                >
+                  <ListItemButton
+                    sx={{
+                      justifyContent: "flex-start",
+                      borderRadius: "10px",
+                      background: `${activeTab(item) ? "#CAF8FF" : ""}`,
+                    }}
+                  >
+                    <ListItemIcon className="ml-2">
+                      {activeTab(item) ? item.iconActive : item.icon}
+                    </ListItemIcon>
+                    {item.title}
+                  </ListItemButton>
+                </Tooltip>
+              </Link>
+            )}
+          </Box>
+        ))}
+      </Box>
     </div>
   );
 };

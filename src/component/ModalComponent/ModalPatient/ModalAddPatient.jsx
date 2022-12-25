@@ -121,9 +121,9 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                         name="birthdate"
                         value={value}
                         disableFuture={true}
+                        inputFormat="DD/MM/YYYY"
                         onChange={(newValue) => {
                             setValue(newValue);
-                            console.log(newValue)
                         }}
                         renderInput={(params) => <TextField {...params} />}
                     />

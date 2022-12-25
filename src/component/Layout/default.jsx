@@ -16,8 +16,10 @@ import Paper from "@mui/material/Paper";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Sidebar from "../Admin/SidebarComponent/Sidebar";
 import { Link, Outlet } from "react-router-dom";
+import HeaderAdmin from "../Admin/HeaderComponent/HeaderAdmin";
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -49,8 +51,8 @@ const Drawer = styled(MuiDrawer, {
     }),
     border: "none",
     boxSizing: "border-box",
+    overflow: "hidden",
     ...(!open && {
-      overflowX: "hidden",
       transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -75,7 +77,8 @@ function LayoutDefault({ component }) {
     <ThemeProvider theme={mdTheme}>
       <Box
         style={{
-          background: "linear-gradient(-90deg,#CAF8FF 0%,#F7B89C 100%)",
+          background:
+            "linear-gradient(244.89deg, rgb(226, 251, 255) 7.39%, rgb(234, 225, 217) 74.76%, rgb(247, 184, 156) 100%)",
         }}
         sx={{
           flexGrow: 1,
@@ -85,6 +88,9 @@ function LayoutDefault({ component }) {
         }}
         className="relative p-10"
       >
+        <Box className="absolute right-10">
+          <HeaderAdmin />
+        </Box>
         {/* <CssBaseline /> */}
         {/* <AppBar position="absolute" open={open}>
           <Toolbar
@@ -104,27 +110,27 @@ function LayoutDefault({ component }) {
             >
               <MenuIcon />
             </IconButton>
-            <HeaderAdmin title={"Dashboard"} />
           </Toolbar>
         </AppBar> */}
-        <Box className="p-3 bg-white rounded-lg relative">
+        <Box className="p-3 bg-white rounded-lg sticky top-0 shadow-md">
           <Drawer
             variant="permanent"
             sx={{
               borderColor: "#fff !important",
+              overflow: "hidden",
             }}
-            className="rounded-lg w-full border-0"
+            className="rounded-lg w-full h-full border-0 overflow-hidden"
             open={open}
           >
-            <Box>
+            <Box className="relative h-full flex flex-col justify-between">
               <Sidebar isOpenSideBar={open} />
-              <Box role="button" className="text-center">
-                <ChevronLeftIcon onClick={toggleDrawer} />
+              <Box role="button" className="text-center" onClick={toggleDrawer}>
+                {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
               </Box>
             </Box>
           </Drawer>
         </Box>
-        <Box style={{ padding: "60px" }} className="float-right mx-auto">
+        <Box className="w-full ml-10 float-right">
           <Outlet />
         </Box>
       </Box>

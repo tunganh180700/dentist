@@ -43,7 +43,6 @@ const ModalDeletePatient = ({
     if (patientId > 0 && modalDeleteOpen) {
       dispatch(fetchPatient(patientId));
       isSubmitForm(false);
-      console.log('123123');
     }
   }, [isOpenDeletePatient]);
 

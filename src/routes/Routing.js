@@ -27,10 +27,10 @@ const Routing = () => {
     // <Dashboard title="Dashboard" component={  } />
     <Router>
       <Routes>
+        <Route path="/login" element={<LoginComponent />} />
+        <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/" element={<DefaultLayout />}>
           <Route index element={<HomePage />} />
-          <Route path="/login" element={<LoginComponent />} />
-          <Route path="/forgot" element={<ForgotPassword />} />
           <Route path="accmanagement" element={<AccountManagement />} />
           <Route path="labo" element={<LaboManagement />} />
           <Route path="meetingroom" element={<WaitingRoomManagement />} />

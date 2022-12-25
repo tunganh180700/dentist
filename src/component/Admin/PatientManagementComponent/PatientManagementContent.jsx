@@ -1,30 +1,43 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Pagination, Typography, IconButton, TextField } from "@mui/material";
+import {
+  Pagination,
+  Typography,
+  IconButton,
+  SwipeableDrawer,
+  Button,
+  TextField,
+  Box,
+  Chip,
+} from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   fetchAllPatient,
   searchPatient,
 } from "../../../redux/PatienSlice/listPatientSlice";
+import Loading from "../../ui/Loading";
 import ModalAddPatient from "../../ModalComponent/ModalPatient/ModalAddPatient";
 import ModalDeletePatient from "../../ModalComponent/ModalPatient/ModalDeletePatient";
-import { setUserId } from "../../../redux/modalSlice";
 import ModalUpdatePatient from "../../ModalComponent/ModalPatient/ModalUpdatePatient";
-import "./style.css";
-import _ from "lodash";
 import ModalDetailPatient from "../../ModalComponent/ModalPatient/ModalDetailPatient";
-import { Link } from "react-router-dom";
 import axiosInstance from "../../../config/customAxios";
-import Loading from "../../ui/Loading";
+import { setUserId } from "../../../redux/modalSlice";
+import { Link } from "react-router-dom";
+import { StyledTableCell, StyledTableRow, StyledTable } from "../../ui/TableElements";
 import { ToastContainer, toast } from "react-toastify";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "./style.css";
+import dayjs from "dayjs";
+import _ from "lodash";
 
 const color = {
   border: "rgba(0, 0, 0, 0.2)",
@@ -42,6 +55,8 @@ const PatientManagementContent = () => {
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [modalDetailOpen, setModalDetailOpen] = useState(false);
   const [isSubmitFormPatient, setIsSubmitFormPatient] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
+  const [datePickerValue, setDatePickerValue] = useState(dayjs());
 
   const isDeletePatient = useSelector(
     (state) => state.listPatient.isDeletePatient
@@ -63,30 +78,26 @@ const PatientManagementContent = () => {
   }, []);
 
   const [searchValue, setSearchValue] = useState({
-    name: "",
+    name: "a",
     birthdate: "",
     address: "",
     phone: "",
     email: "",
   });
-
   let styleText = {};
 
-  function changeColor(status) {
+  const renderColor = (status) => {
+    let color = "#59995c";
     if (status === 0) {
-      styleText = {
-        color: "green",
-      };
+      color = "#e18220";
     } else if (status === 1) {
-      styleText = {
-        color: "red",
-      };
-    } else {
-      styleText = {
-        color: "blue",
-      };
+      color = "#418eed";
     }
-  }
+    return color;
+  };
+  const statusFormatter = (status) => {
+    return status === 0 ? "Chưa Chữa Trị" : status === 1 ? "Đang Chữa" : "Xong";
+  };
 
   useEffect(() => {
     if (isSubmitFormPatient) {
@@ -95,7 +106,6 @@ const PatientManagementContent = () => {
       //   if (isDeletePatient == true && totalElements % pageSize == 1) {
       //     setCurrentPage(page - 1);
       //   }
-      console.log("run here");
       setTimeout(() => {
         dispatch(
           fetchAllPatient({
@@ -105,7 +115,7 @@ const PatientManagementContent = () => {
           })
         );
         setLoading(false);
-      }, 1000);
+      }, 500);
       setIsSubmitFormPatient(false);
     }
   }, [isSubmitFormPatient]);
@@ -119,302 +129,196 @@ const PatientManagementContent = () => {
         page: currentPage,
       })
     );
-    setLoading(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   }, [currentPage]);
 
-  useEffect(() => {
+  const handleSearch = async () => {
     setLoading(true);
     setCurrentPage(0);
-    searchPatient({
-      ...searchValue,
-      size: pageSize,
-      page: 0,
-    });
-    setLoading(false);
-  }, [searchValue]);
-
-  const handleSearchDebounce = useRef(
-    _.debounce(async (formValues) => {
-      setLoading(true);
-      setCurrentPage(0);
-      try {
-        dispatch(
-          searchPatient({
-            ...formValues,
-            size: pageSize,
-            page: 0,
-          })
-        );
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      await dispatch(
+        searchPatient({
+          ...searchValue,
+          size: pageSize,
+          page: 0,
+        })
+      );
       setLoading(false);
-    }, 500)
-  ).current;
-
-  const handleSearch = (e) => {
-    setSearchValue((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
-    console.log(searchValue);
-    // setSearchValue({[e.target.name]: e.target.value})
+      setOpenFilter(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  useEffect(() => {
-    return () => {
-      handleSearchDebounce.cancel();
-    };
-  }, [handleSearchDebounce]);
-
-  useEffect(() => {
-    handleSearchDebounce(searchValue);
-  }, [searchValue]);
-
-  const addWaitingPatient = (patientId) => {
+  const addWaitingPatient = async (patientId) => {
     try {
-      axiosInstance.post(
+      await axiosInstance.post(
         "http://localhost:8080/api/patients/" + patientId + "/waiting_room"
       );
       toast("Thêm bệnh nhân đang chờ thành công");
     } catch (error) {
-      toast("Thêm bệnh nhân đang chờ không thành công");
       console.log("error = ", error);
+      toast("Thêm bệnh nhân đang chờ không thành công");
     }
   };
 
   return (
     <>
-      <ToastContainer />
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        Danh Sách Bệnh Nhân
-      </Typography>
-      {role === "Doctor" || role === "Nurse" ? (
-        <></>
-      ) : (
-        <div>
-          <IconButton
-            aria-label="add"
-            style={{
-              color: "#fff",
-              fontSize: "16px",
-              borderRadius: "10px",
-              border: `1px solid ${color.border}`,
-              background: "#3774d0",
-              marginRight: "20px",
-            }}
+      {loading && <Loading />}
+      <h2 className="font-bold mb-4">Danh Sách Bệnh Nhân</h2>
+      <Box className="flex items-center gap-3 mb-3">
+        <p className="font-bold text-lg mb-0">Có (3) bản ghi</p>
+        {role === "Doctor" || role === "Nurse" ? (
+          <></>
+        ) : (
+          <Button
+            variant="contained"
+            color="success"
+            endIcon={<AddCircleIcon />}
             onClick={() => {
               setModalAddOpen(true);
             }}
           >
-            <AddIcon /> Thêm mới
-          </IconButton>
-        </div>
-      )}
-        <div
-          className="table"
-          style={{
-            marginTop: "15px",
-            textAlign: "center",
-            borderRadius: "8px",
-            padding: "20px",
-            border: `1px solid ${color.border}`,
-          }}
+            <span className="leading-none">Thêm bệnh nhân mới</span>
+          </Button>
+        )}
+        <Button
+          variant="contained"
+          color="info"
+          endIcon={<FilterAltIcon />}
+          onClick={() => setOpenFilter(true)}
         >
-          <Table size="small" style={{ marginTop: "15px" }}>
-            <TableHead>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>
-                  <div className="attibute">Họ tên</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      id="searchRoom"
-                      label="Tìm kiếm"
-                      name="name"
-                      autoComplete="searchRoom"
-                      value={searchValue.name}
-                      autoFocus
-                      onChange={handleSearch}
+          <span className="leading-none">Lọc</span>
+        </Button>
+      </Box>
+
+        <StyledTable size="small"  className="shadow-md">
+          <TableHead>
+            <StyledTableRow>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell>Họ tên</StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Ngày sinh</div>
+              </StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Số điện thoại</div>
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  verticalAlign: "top",
+                }}
+              >
+                <div className="attibute">Giới tính</div>
+              </StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Địa chỉ</div>
+              </StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Email</div>
+              </StyledTableCell>
+              <StyledTableCell
+                style={{
+                  verticalAlign: "text-top",
+                }}
+              >
+                <div className="attibute">Trạng thái</div>
+              </StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+            </StyledTableRow>
+          </TableHead>
+          {totalPages === 0 ? null : (
+            <TableBody>
+              {listPatient.map((item) => (
+                <StyledTableRow key={item.patientId}>
+                  <StyledTableCell>
+                    <IconButton
+                      aria-label="detail"
+                      onClick={() => {
+                        setModalDetailOpen(true);
+                        dispatch(setUserId(item.patientId));
+                      }}
+                    >
+                      <RemoveRedEyeIcon />
+                    </IconButton>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Link to={`/record/${item.patientId}`}>
+                      {item.patientName}
+                    </Link>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    {dayjs(item.birthdate).format("DD/MM/YYYY")}
+                  </StyledTableCell>
+                  <StyledTableCell>{item.phone}</StyledTableCell>
+                  <StyledTableCell>
+                    {item.gender ? "Nam" : "Nữ"}
+                  </StyledTableCell>
+                  <StyledTableCell>{item.address}</StyledTableCell>
+                  <StyledTableCell>{item.email}</StyledTableCell>
+                  <StyledTableCell>
+                    <Chip
+                      size="small"
+                      label={statusFormatter(item.status)}
+                      style={{
+                        background: `${renderColor(item.status)}`,
+                        color: "#fff",
+                      }}
                     />
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="attibute">Ngày sinh</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      id="searchBirth"
-                      label="Tìm kiếm"
-                      name="birthdate"
-                      autoComplete="searchRoom"
-                      value={searchValue.birthdate}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="attibute">Số điện thoại</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      id="searchRoom"
-                      label="Tìm kiếm"
-                      name="phone"
-                      autoComplete="searchRoom"
-                      value={searchValue.phone}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </TableCell>
-                <TableCell
-                  style={{
-                    verticalAlign: "top",
-                  }}
-                >
-                  <div className="attibute">Giới tính</div>
-                </TableCell>
-                <TableCell>
-                  <div className="attibute">Địa chỉ</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      id="searchRoom"
-                      label="Tìm kiếm"
-                      name="address"
-                      autoComplete="searchRoom"
-                      value={searchValue.address}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="attibute">Email</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      id="searchRoom"
-                      label="Tìm kiếm"
-                      name="email"
-                      autoComplete="searchRoom"
-                      value={searchValue.email}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </TableCell>
-                <TableCell
-                  style={{
-                    verticalAlign: "text-top",
-                  }}
-                >
-                  <div className="attibute">Trạng thái</div>
-                </TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            {totalPages === 0 ? null : (
-              <TableBody>
-                {listPatient.map((item) => (
-                  <TableRow key={item.patientId}>
-                    <TableCell style={styleText}>
-                      <IconButton
-                        aria-label="detail"
-                        onClick={() => {
-                          setModalDetailOpen(true);
-                          dispatch(setUserId(item.patientId));
-                        }}
-                      >
-                        <RemoveRedEyeIcon />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell style={styleText}>
-                      <Link to={`/record/${item.patientId}`}>
-                        {item.patientName}
-                      </Link>
-                    </TableCell>
-                    <TableCell style={styleText}>{item.birthdate}</TableCell>
-                    <TableCell style={styleText}>{item.phone}</TableCell>
-                    <TableCell style={styleText}>
-                      {item.gender ? "Nam" : "Nữ"}
-                    </TableCell>
-                    <TableCell style={styleText}>{item.address}</TableCell>
-                    <TableCell style={styleText}>{item.email}</TableCell>
-                    <TableCell style={styleText}>
-                      {item.status === 0
-                        ? "Chưa Chữa Trị"
-                        : item.status === 1
-                        ? "Đang Chữa"
-                        : "Xong"}
-                    </TableCell>
-                    <TableCell style={styleText}>
-                      <IconButton
-                        aria-label="edit"
-                        onClick={() => {
-                          setModalUpdateOpen(true);
-                          dispatch(setUserId(item.patientId));
-                        }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell style={styleText}>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => {
-                          setModalDeleteOpen(true);
-                          dispatch(setUserId(item.patientId));
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell style={styleText}>
-                      <IconButton
-                        aria-label="add"
-                        onClick={() => {
-                          addWaitingPatient(item.patientId);
-                        }}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            )}
-          </Table>
-          {totalPages === 0 && (
-            <Typography
-              component="h1"
-              variant="h5"
-              color="inherit"
-              noWrap
-              textAlign="center"
-              width="100%"
-              padding="100px"
-            >
-              Không có bệnh nhân nào
-            </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <IconButton
+                      aria-label="edit"
+                      onClick={() => {
+                        setModalUpdateOpen(true);
+                        dispatch(setUserId(item.patientId));
+                      }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => {
+                        setModalDeleteOpen(true);
+                        dispatch(setUserId(item.patientId));
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <IconButton
+                      aria-label="add"
+                      onClick={() => {
+                        addWaitingPatient(item.patientId);
+                      }}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
           )}
-        </div>
+        </StyledTable>
+        {totalPages === 0 && (
+          <Typography
+            component="h1"
+            variant="h5"
+            color="inherit"
+            noWrap
+            textAlign="center"
+            width="100%"
+            padding="100px"
+          >
+            Không có bệnh nhân nào
+          </Typography>
+        )}
 
       <div
         style={{
@@ -427,6 +331,7 @@ const PatientManagementContent = () => {
           <Pagination
             page={currentPage + 1}
             count={totalPages}
+            color="primary"
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);
             }}
@@ -460,6 +365,89 @@ const PatientManagementContent = () => {
           setModalDetailOpen={setModalDetailOpen}
         />
       </div>
+      <SwipeableDrawer
+        anchor="right"
+        open={openFilter}
+        onClose={() => setOpenFilter(false)}
+        PaperProps={{ elevation: 0, style: { backgroundColor: "transparent" } }}
+      >
+        <Box className="p-3 w-[300px] bg-white h-full rounded-tl-lg rounded-bl-lg">
+          <h3 className="mb-3">Lọc</h3>
+          <Box className="mb-3">
+            <p className="mb-1">Họ tên</p>
+            <TextField
+              required
+              onChange={(newValue) =>
+                setSearchValue({
+                  ...searchValue,
+                  name: newValue.target.value,
+                })
+              }
+            />
+          </Box>
+          <Box className="mb-3">
+            <p className="mb-1">Ngày sinh</p>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                disableFuture={true}
+                value={datePickerValue}
+                inputFormat="DD/MM/YYYY"
+                onChange={(newValue) => {
+                  setDatePickerValue(newValue);
+                  setSearchValue({
+                    ...searchValue,
+                    birthdate: dayjs(newValue).format("DD-MM-YYYY"),
+                  });
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </Box>
+          <Box className="mb-3">
+            <p className="mb-1">Số điện thoại</p>
+            <TextField
+              required
+              onChange={(newValue) =>
+                setSearchValue({
+                  ...searchValue,
+                  phone: newValue.target.value,
+                })
+              }
+            />
+          </Box>
+          <Box className="mb-3">
+            <p className="mb-1">Địa chỉ</p>
+            <TextField
+              required
+              onChange={(newValue) =>
+                setSearchValue({
+                  ...searchValue,
+                  address: newValue.target.value,
+                })
+              }
+            />
+          </Box>
+          <Box className="mb-3">
+            <p className="mb-1">Email</p>
+            <TextField
+              required
+              onChange={(newValue) =>
+                setSearchValue({
+                  ...searchValue,
+                  email: newValue.target.value,
+                })
+              }
+            />
+          </Box>
+          <Button
+            variant="contained"
+            className="mx-auto"
+            onClick={handleSearch}
+          >
+            Đồng ý
+          </Button>
+        </Box>
+      </SwipeableDrawer>
     </>
   );
 };

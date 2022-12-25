@@ -6,8 +6,11 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { Avatar } from "@mui/material";
 import Dropdown from "react-bootstrap/Dropdown";
 import { fetchUserProfile } from "../../../redux/ProfileSlice/userProfileSlice";
+import { Link } from "react-router-dom";
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -19,7 +22,7 @@ const styleLogo = {
   backgroundRepeat: `no-repeat`,
 };
 
-const HeaderAdmin = ({ title }) => {
+const HeaderAdmin = () => {
   const dispatch = useDispatch();
   const fullName = useSelector((state) => state.userProfile.fullName);
   const roleName = useSelector((state) => state.userProfile.roleName);
@@ -33,39 +36,40 @@ const HeaderAdmin = ({ title }) => {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-      >
-        <div>
-          <img
-            src={Logo}
-            style={{ height: "130px", position: "absolute", top: "-35px" }}
-            alt=""
+      <Dropdown>
+        <Dropdown.Toggle
+          id="dropdown-basic"
+          className="bg-transparent border-0 gap-2"
+          style={{ display: "flex", alignItems: "center" }}
+          drop="none"
+        >
+          <Avatar
+            alt={fullName}
+            src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80"
+            id="dropdown-basic"
           />
-        </div>
-        <Typography component="h1" variant="h4" color="inherit" noWrap>
-          {title}
-        </Typography>
+        </Dropdown.Toggle>
 
-        <Dropdown>
-          <Dropdown.Toggle variant="primary" id="dropdown-basic">
-            {roleName}: {fullName}
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <Dropdown.Item href="/profile">Hồ sơ cá nhân</Dropdown.Item>
-            <Dropdown.Item href="">Đổi mật khẩu</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item href="/login" style={{ textDecoration: "none" }}>
-              Đăng xuất
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
+        <Dropdown.Menu className="border-0 shadow-md">
+          <Dropdown.Item>
+            <Link to="/profile" className="decoration-white text-black">
+              <span>Hồ sơ cá nhân</span>
+            </Link>
+          </Dropdown.Item>
+          <Dropdown.Item>
+            <Link to="/" className="decoration-white text-black">
+              <span>Đổi mật khẩu</span>
+            </Link>
+          </Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item>
+            <Link to="/login" className="decoration-white text-black flex items-center gap-2">
+              <PowerSettingsNewIcon fontSize="12px" />
+              <span> Đăng xuất</span>
+            </Link>
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
     </>
   );
 };

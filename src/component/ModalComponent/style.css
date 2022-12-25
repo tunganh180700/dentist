@@ -10,5 +10,8 @@
 .ant-modal-title{
     text-align: center;
 }
-
+.ant-modal-title{
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
 

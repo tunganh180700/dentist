@@ -14,9 +14,9 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 600,
   bgcolor: "background.paper",
-  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
+  borderRadius: "10px",
 };
 
 const ModalDetailPatient = ({
@@ -75,143 +75,141 @@ const ModalDetailPatient = ({
             Chi tiết bệnh nhân
           </Typography>
           {loading === false && (
-            <>
-              <div className="box" style={{ marginTop: "40px" }}>
-                <div
-                  className="attribute"
-                  style={{ display: "flex", justifyContent: "center" }}
+            <div className="box border-0 w-4/5 mx-auto flex flex-col gap-3 mt-10">
+              <div
+                className="attribute"
+                style={{ display: "flex", gap:"15px" }}
+              >
+                <Typography
+                  component="h1"
+                  color="inherit"
+                  noWrap
+                  fontWeight="bold"
                 >
-                  <Typography
-                    component="h1"
-                    color="inherit"
-                    noWrap
-                    fontWeight="bold"
-                  >
-                    Họ và tên:
-                  </Typography>
-                  <Typography component="h1" color="inherit" noWrap>
-                    {patientName}
-                  </Typography>
-                </div>
-                <div
-                  className="attribute"
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Typography
-                    component="h1"
-                    color="inherit"
-                    noWrap
-                    fontWeight="bold"
-                  >
-                    Ngày sinh:
-                  </Typography>
-                  <Typography component="h1" color="inherit" noWrap>
-                    {birthdate}
-                  </Typography>
-                </div>
-                <div
-                  className="attribute"
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Typography
-                    component="h1"
-                    color="inherit"
-                    noWrap
-                    fontWeight="bold"
-                  >
-                    Giới tính:
-                  </Typography>
-                  <Typography component="h1" color="inherit" noWrap>
-                    {gender ? "Nam" : "Nữ"}
-                  </Typography>
-                </div>
-                <div
-                  className="attribute"
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Typography
-                    component="h1"
-                    color="inherit"
-                    noWrap
-                    fontWeight="bold"
-                  >
-                    Địa chỉ:
-                  </Typography>
-                  <Typography component="h1" color="inherit" noWrap>
-                    {address}
-                  </Typography>
-                </div>
-                <div
-                  className="attribute"
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Typography
-                    component="h1"
-                    color="inherit"
-                    noWrap
-                    fontWeight="bold"
-                  >
-                    Điện thoại:
-                  </Typography>
-                  <Typography component="h1" color="inherit" noWrap>
-                    {phone}
-                  </Typography>
-                </div>
-                <div
-                  className="attribute"
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Typography
-                    component="h1"
-                    color="inherit"
-                    noWrap
-                    fontWeight="bold"
-                  >
-                    Email:
-                  </Typography>
-                  <Typography component="h1" color="inherit" noWrap>
-                    {email}
-                  </Typography>
-                </div>
-                <div
-                  className="attribute"
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Typography
-                    component="h1"
-                    color="inherit"
-                    noWrap
-                    fontWeight="bold"
-                  >
-                    Tiền sử cơ thể:
-                  </Typography>
-                  <Typography component="h1" color="inherit" noWrap>
-                    {bodyPrehistory}
-                  </Typography>
-                </div>
-                <div
-                  className="attribute"
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Typography
-                    component="h1"
-                    color="inherit"
-                    noWrap
-                    fontWeight="bold"
-                  >
-                    Lịch sử răng miệng:
-                  </Typography>
-                  <Typography component="h1" color="inherit" noWrap>
-                    {teethPrehistory}
-                  </Typography>
-                </div>
+                  Họ và tên:
+                </Typography>
+                <Typography component="h1" color="inherit" noWrap>
+                  {patientName}
+                </Typography>
               </div>
-            </>
+              <div
+                className="attribute"
+                style={{ display: "flex", gap:"15px" }}
+              >
+                <Typography
+                  component="h1"
+                  color="inherit"
+                  noWrap
+                  fontWeight="bold"
+                >
+                  Ngày sinh:
+                </Typography>
+                <Typography component="h1" color="inherit" noWrap>
+                  {birthdate}
+                </Typography>
+              </div>
+              <div
+                className="attribute"
+                style={{ display: "flex", gap:"15px" }}
+              >
+                <Typography
+                  component="h1"
+                  color="inherit"
+                  noWrap
+                  fontWeight="bold"
+                >
+                  Giới tính:
+                </Typography>
+                <Typography component="h1" color="inherit" noWrap>
+                  {gender ? "Nam" : "Nữ"}
+                </Typography>
+              </div>
+              <div
+                className="attribute"
+                style={{ display: "flex", gap:"15px" }}
+              >
+                <Typography
+                  component="h1"
+                  color="inherit"
+                  noWrap
+                  fontWeight="bold"
+                >
+                  Địa chỉ:
+                </Typography>
+                <Typography component="h1" color="inherit" noWrap>
+                  {address}
+                </Typography>
+              </div>
+              <div
+                className="attribute"
+                style={{ display: "flex", gap:"15px" }}
+              >
+                <Typography
+                  component="h1"
+                  color="inherit"
+                  noWrap
+                  fontWeight="bold"
+                >
+                  Điện thoại:
+                </Typography>
+                <Typography component="h1" color="inherit" noWrap>
+                  {phone}
+                </Typography>
+              </div>
+              <div
+                className="attribute"
+                style={{ display: "flex", gap:"15px" }}
+              >
+                <Typography
+                  component="h1"
+                  color="inherit"
+                  noWrap
+                  fontWeight="bold"
+                >
+                  Email:
+                </Typography>
+                <Typography component="h1" color="inherit" noWrap>
+                  {email}
+                </Typography>
+              </div>
+              <div
+                className="attribute"
+                style={{ display: "flex", gap:"15px" }}
+              >
+                <Typography
+                  component="h1"
+                  color="inherit"
+                  noWrap
+                  fontWeight="bold"
+                >
+                  Tiền sử cơ thể:
+                </Typography>
+                <Typography component="h1" color="inherit" noWrap>
+                  {bodyPrehistory}
+                </Typography>
+              </div>
+              <div
+                className="attribute"
+                style={{ display: "flex", gap:"15px" }}
+              >
+                <Typography
+                  component="h1"
+                  color="inherit"
+                  noWrap
+                  fontWeight="bold"
+                >
+                  Lịch sử răng miệng:
+                </Typography>
+                <Typography component="h1" color="inherit" noWrap>
+                  {teethPrehistory}
+                </Typography>
+              </div>
+            </div>
           )}
-
           <Button
+            className="float-right"
             onClick={() => setModalDetailOpen(false)}
-            style={{ justifyContent: "center" }}
+            style={{ gap:"15px" }}
           >
             Đóng
           </Button>
