@@ -115,9 +115,6 @@ const PatientManagementContent = () => {
         dispatch(
           fetchAllPatient({
             ...searchValue,
-            birthdate: searchValue.birthdate
-              ? dayjs(searchValue.birthdate).format("DD-MM-YYYY")
-              : searchValue.birthdate,
             size: pageSize,
             page: currentPage,
           })
@@ -134,9 +131,6 @@ const PatientManagementContent = () => {
     dispatch(
       fetchAllPatient({
         ...searchValue,
-        birthdate: searchValue.birthdate
-          ? dayjs(searchValue.birthdate).format("DD-MM-YYYY")
-          : searchValue.birthdate,
         size: pageSize,
         page: currentPage,
       })
@@ -154,9 +148,6 @@ const PatientManagementContent = () => {
         await dispatch(
           searchPatient({
             ...search,
-            birthdate: search.birthdate
-              ? dayjs(search.birthdate).format("DD-MM-YYYY")
-              : search.birthdate,
             size: pageSize,
             page: 0,
           })
@@ -165,6 +156,7 @@ const PatientManagementContent = () => {
         setOpenFilter(false);
       }
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -247,7 +239,7 @@ const PatientManagementContent = () => {
         <TableHead>
           <StyledTableRow>
             <StyledTableCell></StyledTableCell>
-            <StyledTableCell>Họ tên {searchValue.birthdate}</StyledTableCell>
+            <StyledTableCell>Họ tên</StyledTableCell>
             <StyledTableCell>
               <div className="attibute">Ngày sinh</div>
             </StyledTableCell>
@@ -440,7 +432,7 @@ const PatientManagementContent = () => {
               onChange={(value) => {
                 setSearchValue({
                   ...searchValue,
-                  birthdate: moment(value).format("DD/MM/YYYY"),
+                  birthdate: value ? moment(value).format("DD/MM/YYYY") : "",
                 });
               }}
             />
@@ -502,7 +494,7 @@ const PatientManagementContent = () => {
             <Button
               variant="contained"
               className="mr-3"
-              onClick={handleSearch}
+              onClick={() => handleSearch(searchValue)}
               disabled={!enableButtonSearch}
             >
               Đồng ý

@@ -19,6 +19,7 @@ const DatePickerDentist = ({ value, range = false, onChange }) => (
       <RangePicker value={value} disabledDate={disabledDate} />
     ) : (
       <DatePicker
+      arrow
         onChange={onChange}
         presets={[
           { label: "Yesterday", value: dayjs().add(-1, "d") },

@@ -50,7 +50,7 @@ const TableTimeKeepingManagement = (props) => {
         className="w-full rounded-lg shadow-md  overflow-hidden"
         style={{ background: "#fff" }}
       >
-        <Table size="large">
+        <Table size="small">
           <TableHead>
             <TableRow>
               <StyledTableCell>STT</StyledTableCell>
