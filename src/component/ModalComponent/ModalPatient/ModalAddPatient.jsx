@@ -87,11 +87,8 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     }
 
     useEffect(() => {
-
         setGender(false)
-
-
-    })
+    },[])
 
 
     return (

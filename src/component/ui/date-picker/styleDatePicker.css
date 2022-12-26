@@ -1,0 +1,11 @@
+.ant-picker-panel-container{
+    padding: 10px;
+    border-radius: 10px;
+    z-index: 999999 !important;
+}
+.ant-picker{
+    padding: 10px;
+    border-radius: 4px;
+    border-color: #bfbfbfde;
+    width: 100%;
+}
