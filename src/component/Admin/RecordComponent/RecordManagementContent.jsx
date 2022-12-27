@@ -143,6 +143,7 @@ const RecordManagementContent = () => {
               <div className="attibute">Đơn thuốc</div>
             </StyledTableCell>
             <StyledTableCell></StyledTableCell>
+            <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
         {totalPages ==!0 && (
