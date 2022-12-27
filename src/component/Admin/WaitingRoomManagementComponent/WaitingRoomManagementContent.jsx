@@ -127,15 +127,7 @@ const WaitingRoomManagementContent = () => {
   return (
     <>
       <ToastContainer />
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        QUẢN LÝ PHÒNG CHỜ
-      </Typography>
+      <h2 className="font-bold mb-5">Quản Lý Phòng Chờ</h2>
       <SockJsClient
         url={SOCKET_URL}
         topics={["/topic/group"]}
@@ -144,7 +136,7 @@ const WaitingRoomManagementContent = () => {
         onMessage={handlePopupConfirm}
         debug={false}
       />
-      <StyledTable size="small" style={{ marginTop: "15px" }}>
+      <StyledTable size="small" className="shadow-md">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell>Bệnh nhân</StyledTableCell>

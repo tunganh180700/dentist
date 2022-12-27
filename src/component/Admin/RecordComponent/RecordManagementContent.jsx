@@ -6,9 +6,8 @@ import {
   Pagination,
   Table,
   TableBody,
-  TableCell,
   TableHead,
-  TableRow,
+  Box,
   TextField,
   Typography,
 } from "@mui/material";
@@ -27,7 +26,12 @@ import { setUserId } from "../../../redux/modalSlice";
 import ModalDeleteRecord from "../../ModalComponent/ModalRecord/ModalDeleteRecord";
 import ModalDetailService from "../../ModalComponent/ModalRecord/ModalDetailService";
 import ModalDetailRecord from "../../ModalComponent/ModalRecord/ModalDetailRecord";
-
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
 const RecordManagementContent = () => {
   const dispatch = useDispatch();
 
@@ -35,6 +39,7 @@ const RecordManagementContent = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [isSubmitForm, setIsSubmitForm] = useState(false);
+  const [totalElements, setTotalElements] = useState(0);
 
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
@@ -68,6 +73,7 @@ const RecordManagementContent = () => {
           page: currentPage,
         },
       });
+      setTotalElements(res.data.totalElements);
       setTotalPages(res.data.totalPages);
       setRecordList(res.data.content);
       setIsSubmitForm(false);
@@ -87,80 +93,63 @@ const RecordManagementContent = () => {
 
   return (
     <>
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        Hồ Sơ Bệnh Án Của {patientName}
-      </Typography>
-      <IconButton
-        aria-label="add"
-        style={{ borderRadius: "20%" }}
-        onClick={() => {
-          setModalAddOpen(true);
-        }}
-      >
-        <AddIcon /> Thêm mới
-      </IconButton>
-      <IconButton
-        aria-label="back"
-        style={{ borderRadius: "20%", marginRight: "83%" }}
-      >
-        <Link to={"/patient-management"}>
-          <ArrowBackIosNewIcon />
-        </Link>
-      </IconButton>
-      <Table size="small" style={{ marginTop: "15px" }}>
+      <Box className="flex items-center gap-3 mb-5">
+        <IconButton aria-label="back" className="p-0">
+          <Link to={"/patient-management"}>
+            <ArrowBackIosNewIcon />
+          </Link>
+        </IconButton>
+        <h2 className="font-bold mb-0">Hồ Sơ Bệnh Án Của {patientName}</h2>
+      </Box>
+      <Box className="flex gap-3  mb-3">
+        <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>
+        <Button
+          variant="contained"
+          color="success"
+          endIcon={<AddCircleIcon />}
+          onClick={() => {
+            setModalAddOpen(true);
+          }}
+        >
+          <span className="leading-none">Thêm mới</span>
+        </Button>
+      </Box>
+      <StyledTable className="shadow-md" size="small">
         <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell>
+          <StyledTableRow>
+            <StyledTableCell></StyledTableCell>
+            <StyledTableCell>
               <div className="attibute">Lý do đến khám</div>
-            </TableCell>
-            <TableCell>
+            </StyledTableCell>
+            <StyledTableCell>
               <div className="attibute">Chẩn đoán</div>
-            </TableCell>
-            <TableCell>
+            </StyledTableCell>
+            <StyledTableCell>
               <div className="attibute">Nguyên nhân</div>
-            </TableCell>
-            <TableCell>
+            </StyledTableCell>
+            <StyledTableCell>
               <div className="attibute">Ngày khám</div>
-            </TableCell>
-            <TableCell>
+            </StyledTableCell>
+            <StyledTableCell>
               <div className="attibute">Lưu ý về tủy</div>
-            </TableCell>
-            <TableCell>
+            </StyledTableCell>
+            <StyledTableCell>
               <div className="attibute">Ghi chú</div>
-            </TableCell>
-            <TableCell>
+            </StyledTableCell>
+            <StyledTableCell>
               <div className="attibute">Điều trị</div>
-            </TableCell>
-            <TableCell>
+            </StyledTableCell>
+            <StyledTableCell>
               <div className="attibute">Đơn thuốc</div>
-            </TableCell>
-            <TableCell></TableCell>
-          </TableRow>
+            </StyledTableCell>
+            <StyledTableCell></StyledTableCell>
+          </StyledTableRow>
         </TableHead>
-        {totalPages === 0 ? (
-          <>
-            <Typography
-              component="h1"
-              variant="h5"
-              color="inherit"
-              noWrap
-              textAlign="center"
-            >
-              Không có hồ sơ nào
-            </Typography>
-          </>
-        ) : (
+        {totalPages ==!0 && (
           <TableBody>
             {recordList?.map((el) => (
-              <TableRow key={el.patientRecordId}>
-                <TableCell>
+              <StyledTableRow key={el.patientRecordId}>
+                <StyledTableCell>
                   <IconButton
                     aria-label="detail"
                     onClick={() => {
@@ -170,30 +159,30 @@ const RecordManagementContent = () => {
                   >
                     <RemoveRedEyeIcon />
                   </IconButton>
-                </TableCell>
-                <TableCell>
+                </StyledTableCell>
+                <StyledTableCell>
                   <div style={{ ...styleTxt, width: "200px" }}>{el.reason}</div>
-                </TableCell>
-                <TableCell>
+                </StyledTableCell>
+                <StyledTableCell>
                   <div style={styleTxt}>{el.diagnostic}</div>
-                </TableCell>
-                <TableCell>
+                </StyledTableCell>
+                <StyledTableCell>
                   <div style={styleTxt}>{el.causal}</div>
-                </TableCell>
-                <TableCell>{el.date}</TableCell>
-                <TableCell>
+                </StyledTableCell>
+                <StyledTableCell>{el.date}</StyledTableCell>
+                <StyledTableCell>
                   <div style={styleTxt}>{el.marrowRecord}</div>
-                </TableCell>
-                <TableCell>
+                </StyledTableCell>
+                <StyledTableCell>
                   <div style={styleTxt}>{el.note}</div>
-                </TableCell>
-                <TableCell>
+                </StyledTableCell>
+                <StyledTableCell>
                   <div style={styleTxt}>{el.treatment}</div>
-                </TableCell>
-                <TableCell>
+                </StyledTableCell>
+                <StyledTableCell>
                   <div style={styleTxt}>{el.prescription}</div>
-                </TableCell>
-                <TableCell>
+                </StyledTableCell>
+                <StyledTableCell>
                   <Button
                     onClick={() => {
                       setModalDetailOpen(true);
@@ -202,8 +191,8 @@ const RecordManagementContent = () => {
                   >
                     Dịch vụ
                   </Button>
-                </TableCell>
-                <TableCell>
+                </StyledTableCell>
+                <StyledTableCell>
                   <IconButton
                     aria-label="delete"
                     onClick={() => {
@@ -213,12 +202,26 @@ const RecordManagementContent = () => {
                   >
                     <DeleteIcon />
                   </IconButton>
-                </TableCell>
-              </TableRow>
+                </StyledTableCell>
+              </StyledTableRow>
             ))}
           </TableBody>
         )}
-      </Table>
+      </StyledTable>
+      {totalPages === 0 && (
+        <>
+          <Typography
+            component="h1"
+            variant="h5"
+            color="inherit"
+            noWrap
+            textAlign="center"
+            marginTop={15}
+          >
+            Không có hồ sơ nào
+          </Typography>
+        </>
+      )}
       <div
         style={{
           display: "flex",

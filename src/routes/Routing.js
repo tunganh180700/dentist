@@ -34,9 +34,11 @@ const Routing = () => {
           <Route path="accmanagement" element={<AccountManagement />} />
           <Route path="labo" element={<LaboManagement />} />
           <Route path="meetingroom" element={<WaitingRoomManagement />} />
-          <Route path="patient-management" element={<PatientManagement />} />
+          <Route path="patient-management">
+            <Route index  element={<PatientManagement />} />
+            <Route path="record/:id" element={<RecordManagement />} />
+          </Route>
           <Route path="timekeeping" element={<TimekeepingManagement />} />
-          <Route path="record/:id" element={<RecordManagement />} />
           <Route path="materialmanagement" element={<MaterialManagement />} />
           <Route path="materialimport" element={<MaterialImportManagement />} />
           <Route path="materialexport" element={<MaterialExportManagement />} />

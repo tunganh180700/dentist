@@ -47,17 +47,8 @@ const BillManagementContent = () => {
 
   return (
     <>
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        Danh Sách Hóa Đơn
-      </Typography>
-
-      <StyledTable size="small" style={{ marginTop: "15px" }}>
+      <h2 className="font-bold mb-5">Danh Sách Hóa Đơn</h2>
+      <StyledTable size="small" className="shadow-md">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell style={{ fontWeight: "bold" }}>Tên bệnh nhân</StyledTableCell>
@@ -124,6 +115,7 @@ const BillManagementContent = () => {
       >
         {totalPages > 1 ? (
           <Pagination
+          color="primary"
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);

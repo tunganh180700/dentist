@@ -12,3 +12,9 @@
 .ant-picker-dropdown {
   z-index: 10000 !important;
 }
+.ant-picker-cell-inner{
+    border-radius: 50% !important;
+}
+.ant-picker-cell-inner::before{
+    border-radius: 50% !important;
+}

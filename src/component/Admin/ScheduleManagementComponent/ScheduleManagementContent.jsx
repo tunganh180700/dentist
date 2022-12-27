@@ -50,15 +50,7 @@ const ScheduleManagementContent = () => {
 
   return (
     <>
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        Lịch hẹn
-      </Typography>
+      <h2 className="font-bold mb-5">Lịch hẹn</h2>
       <Button
         aria-label="add"
         variant="success"
@@ -70,7 +62,7 @@ const ScheduleManagementContent = () => {
         <AddIcon /> Thêm mới
       </Button>
 
-      <StyledTable size="small" style={{ marginTop: "15px" }}>
+      <StyledTable size="small" className="shadow-md">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell>Bệnh nhân</StyledTableCell>

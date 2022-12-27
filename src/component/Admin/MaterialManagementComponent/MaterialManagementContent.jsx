@@ -52,15 +52,7 @@ const MaterialManagementContent = () => {
 
   return (
     <>
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        Danh Sách Vật Liệu
-      </Typography>
+      <h2 className="font-bold mb-5">Danh Sách Vật Liệu</h2>
       <IconButton
         aria-label="add"
         style={{ borderRadius: "5%" }}
@@ -70,7 +62,7 @@ const MaterialManagementContent = () => {
       >
         <AddIcon /> Thêm mới
       </IconButton>
-      <StyledTable size="small" style={{ marginTop: "15px" }}>
+      <StyledTable size="small" className="shadow-md">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell style={{ fontWeight: "bold" }}>

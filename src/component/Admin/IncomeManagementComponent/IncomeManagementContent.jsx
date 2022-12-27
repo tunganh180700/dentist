@@ -24,6 +24,7 @@ import {
   fetchAllTotalSpendIncome,
 } from "../../../redux/IncomeSlice/listIncomeSlice";
 import ChartIncome from "./ChartIncome";
+import moment from "moment/moment";
 
 const IncomeManagementContent = () => {
   const listIncome = useSelector((state) => state.listIncome.listIncome);
@@ -44,12 +45,8 @@ const IncomeManagementContent = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [dataChart, setDataChart] = useState([]);
 
-  console.log("income: ", listIncome);
-
   useEffect(() => {
-    dispatch(fetchAllIncome({}));
-    dispatch(fetchAllNetIncome({}));
-    dispatch(fetchAllTotalSpendIncome({}));
+    handleFetchData();
   }, []);
 
   useEffect(() => {
@@ -81,6 +78,20 @@ const IncomeManagementContent = () => {
     style: "currency",
     currency: "VND",
   });
+
+  const handleFetchData = (filter = null) => {
+    dispatch(fetchAllIncome(filter || {}));
+    dispatch(fetchAllNetIncome(filter || {}));
+    dispatch(fetchAllTotalSpendIncome(filter || {}));
+  };
+
+  const onFetchDataByDate = (date) => {
+    const filter = {
+      startDate: moment(date[0]).format("YYYY-MM-DD"),
+      endDate: moment(date[0]).format("YYYY-MM-DD"),
+    };
+    handleFetchData(filter)
+  };
 
   const InComeTable = () => {
     return (
@@ -171,7 +182,7 @@ const IncomeManagementContent = () => {
   return (
     <>
       <h2 className="font-bold mb-5">Quản lý Thu nhập</h2>
-      <ChartIncome data={dataChart} />
+      <ChartIncome data={dataChart} onChangeDateRange={onFetchDataByDate} />
       <Tabs
         defaultActiveKey="1"
         className="mt-3"

@@ -59,7 +59,7 @@ const AccountManagementContent = () => {
 
   return (
     <>
-      <h2 className="font-bold mb-4">Danh Sách Tài Khoản</h2>
+      <h2 className="font-bold mb-5">Danh Sách Tài Khoản</h2>
       <Box className="flex items-center gap-3 mb-3">
         <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>
         <Button

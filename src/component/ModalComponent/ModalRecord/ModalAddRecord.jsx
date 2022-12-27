@@ -7,7 +7,6 @@ import {
   DialogContentText,
   DialogTitle,
   FormControl,
-  IconButton,
   MenuItem,
   Select,
   TextField,
@@ -19,7 +18,6 @@ import { Modal } from "antd";
 import { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axiosInstance from "../../../config/customAxios";
@@ -31,10 +29,10 @@ import {
 } from "../../../config/baseAPI";
 import { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import AddIcon from "@mui/icons-material/Add";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import SellIcon from "@mui/icons-material/Sell";
 import ClearIcon from "@mui/icons-material/Clear";
 import { toast } from "react-toastify";
-import { toastCss } from "../../../redux/toastCss";
 import * as yup from "yup";
 import { regexNumber, validationDate } from "../../../config/validation";
 import moment from "moment";
@@ -43,12 +41,19 @@ import { useDispatch, useSelector } from "react-redux";
 import ModalExportMaterial from "./ModalExportMaterial";
 import ModalSpecimen from "./ModalSpecimen";
 import { addRecord } from "../../../redux/RecordSlice/listRecordSlice";
+import DatePickerDentist from "../../ui/date-picker/DatePickerDentist";
+import InputDentist from "../../ui/input";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
 import "./style.css";
 import _ from "lodash";
 
 const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   const dispatch = useDispatch();
-  const [value, setValue] = useState(new Date());
+  const [valueDate, setValueDate] = useState(new Date());
   const { id } = useParams();
   const [listTreatingService, setListTreatingService] = useState([]);
 
@@ -148,6 +153,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
       reason: "",
       diagnostic: "",
       causal: "",
+      date: new Date(),
       marrowRecord: "",
       note: "",
       treatment: "",
@@ -157,7 +163,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     onSubmit: (values) => {
       setRows([]);
       setCountRow(0);
-      values.date = moment(value.$d).format(validationDate);
+      // values.date = moment(valueDate.$d).format(validationDate);
       const listA = listTreatingService.filter((a) => {
         return Object.keys(a).length !== 0;
       });
@@ -263,7 +269,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     // formik.values.treatment = ""
     // formik.errors.treatment = ""
 
-    setValue(null);
+    setValueDate(new Date());
     formik.resetForm();
   };
 
@@ -318,60 +324,55 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
       >
-        <div className="container" style={{ display: "flex" }}>
-          <div className="form-input" style={{ width: "50%" }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
+        <Box
+          className="container"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
+          <Box className="form-input" style={{ width: "30%" }}>
+            <InputDentist
               id="reason"
-              label="Lý do đến khám"
-              name="reason"
-              autoComplete="reason"
+              label="Triệu chứng"
+              required
               value={formik.values.reason}
-              autoFocus
               onChange={formik.handleChange}
+              error={formik.errors.reason}
             />
-            {formik.errors.reason && formik.touched.reason && (
-              <Typography style={{ color: "red", fontStyle: "italic" }}>
-                {formik.errors.reason}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
-              required
-              fullWidth
+            <InputDentist
               id="diagnostic"
-              label="Chẩn đoán"
-              name="diagnostic"
-              autoComplete="diagnostic"
-              value={formik.values.diagnostic}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            {formik.errors.diagnostic && formik.touched.diagnostic && (
-              <Typography style={{ color: "red", fontStyle: "italic" }}>
-                {formik.errors.diagnostic}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
+              label="Chuẩn đoán"
               required
-              fullWidth
+              value={formik.values.diagnostic}
+              onChange={formik.handleChange}
+              error={formik.errors.diagnostic}
+            />
+            {/* <Box className="mb-2">
+              <p className="mb-1 font-bold">
+                Nguyên nhân <span className="text-red-600">*</span>
+              </p>
+              <TextField
+                required
+                fullWidth
+                placeholder="Nguyên nhân"
+                value={formik.values.causal}
+                multiline
+                onChange={formik.handleChange}
+              />
+              {formik.errors.causal && formik.touched.causal && (
+                <Typography style={{ color: "red", fontStyle: "italic" }}>
+                  {formik.errors.causal}
+                </Typography>
+              )}
+            </Box> */}
+            <InputDentist
               id="causal"
               label="Nguyên nhân"
-              name="causal"
-              autoComplete="causal"
+              required
               value={formik.values.causal}
-              autoFocus
               onChange={formik.handleChange}
+              error={formik.errors.causal}
             />
-            {formik.errors.causal && formik.touched.causal && (
-              <Typography style={{ color: "red", fontStyle: "italic" }}>
-                {formik.errors.causal}
-              </Typography>
-            )}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Ngày khám"
                 name="birthdate"
@@ -383,80 +384,94 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 }}
                 renderInput={(params) => <TextField {...params} />}
               />
-            </LocalizationProvider>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
+            </LocalizationProvider> */}
+            <Box className="mb-2">
+              <p className="mb-1 font-bold">
+                Ngày khám <span className="text-red-600">*</span>
+              </p>
+              <DatePickerDentist
+                value={valueDate}
+                placeholder="Ngày khám"
+                onChange={(value) => {
+                  setValueDate(
+                    value ? moment(value).format(validationDate) : ""
+                  );
+                }}
+              />
+            </Box>
+            <InputDentist
               id="marrowRecord"
               label="Lưu ý về tủy"
-              name="marrowRecord"
-              autoComplete="marrowRecord"
+              required
               value={formik.values.marrowRecord}
-              autoFocus
               onChange={formik.handleChange}
+              error={formik.errors.marrowRecord}
             />
-            {formik.errors.marrowRecord && formik.touched.marrowRecord && (
-              <Typography style={{ color: "red", fontStyle: "italic" }}>
-                {formik.errors.marrowRecord}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="note"
-              label="Ghi chú"
-              name="note"
-              autoComplete="note"
-              value={formik.values.note}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            {formik.errors.note && formik.touched.note && (
-              <Typography style={{ color: "red", fontStyle: "italic" }}>
-                {formik.errors.note}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
-              required
-              fullWidth
+
+            <Box className="mb-2">
+              <p className="mb-1 font-bold">Ghi chú</p>
+              <TextField
+                id="note"
+                required
+                fullWidth
+                placeholder="Ghi chú"
+                value={formik.values.note}
+                multiline
+                onChange={formik.handleChange}
+              />
+            </Box>
+            <InputDentist
               id="treatment"
               label="Điều trị"
-              name="treatment"
-              autoComplete="treatment"
+              required
               value={formik.values.treatment}
-              autoFocus
               onChange={formik.handleChange}
+              error={formik.errors.treatment}
             />
-            {formik.errors.treatment && formik.touched.treatment && (
-              <Typography style={{ color: "red", fontStyle: "italic" }}>
-                {formik.errors.treatment}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
-              fullWidth
-              id="prescription"
-              label="Đơn thuốc"
-              name="prescription"
-              autoComplete="prescription"
-              value={formik.values.prescription}
-              multiline
-              rows={5}
-              variant="outlined"
-              autoFocus
-              onChange={formik.handleChange}
-            />
-          </div>
-          <div className="table" style={{ marginLeft: "150px" }}>
-            <div>
-              <Button align="right" onClick={isEdit ? handleAdd : handleEdit}>
-                <AddIcon />
-                Thêm dòng
+            <Box className="mb-2">
+              <p className="mb-1 font-bold">Đơn thuốc</p>
+              <TextField
+                required
+                fullWidth
+                placeholder="Đơn thuốc"
+                value={formik.values.prescription}
+                multiline
+                onChange={formik.handleChange}
+              />
+            </Box>
+          </Box>
+          <Box className="w-2/3">
+            <Box className="flex gap-3 float-right mb-3">
+              <Button
+                variant="contained"
+                color="success"
+                endIcon={<AddCircleIcon className="p-0 border-0" />}
+                onClick={isEdit ? handleAdd : handleEdit}
+              >
+                <span className="leading-none">Thêm dịch vụ</span>
               </Button>
-              <IconButton
+              <Button
+                variant="contained"
+                color="success"
+                endIcon={<AddCircleIcon className="p-0 border-0" />}
+                onClick={() => {
+                  setModalSpecimenOpen(true);
+                }}
+              >
+                <span className="leading-none">Thêm mẫu vật</span>
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                endIcon={<SellIcon className="p-0 border-0" />}
+                onClick={() => {
+                  setModalExportOpen(true);
+                }}
+              >
+                <span className="leading-none">Bán sản phẩm</span>
+              </Button>
+            </Box>
+            {/* <IconButton
                 style={{ fontSize: "larger", borderRadius: "5%" }}
                 aria-label="add"
                 onClick={() => {
@@ -473,25 +488,26 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 }}
               >
                 Bán sản phẩm
-              </IconButton>
-            </div>
-            <Table size="small" style={{ marginTop: "15px" }}>
+              </IconButton> */}
+            <StyledTable className="shadow-md" size="small">
               <TableHead>
-                <TableRow>
-                  <TableCell style={{ width: "25%" }}>Dich vụ</TableCell>
-                  <TableCell>Giá tiền</TableCell>
-                  <TableCell>Giảm giá</TableCell>
-                  <TableCell>Trạng thái</TableCell>
-                  <TableCell>Xóa</TableCell>
-                </TableRow>
+                <StyledTableRow>
+                  <StyledTableCell style={{ width: "25%" }}>
+                    Dich vụ
+                  </StyledTableCell>
+                  <StyledTableCell>Giá tiền</StyledTableCell>
+                  <StyledTableCell>Giảm giá</StyledTableCell>
+                  <StyledTableCell>Trạng thái</StyledTableCell>
+                  <StyledTableCell></StyledTableCell>
+                </StyledTableRow>
               </TableHead>
               <TableBody>
                 {listTreatingService?.map((item, index) => (
-                  <TableRow key={item.serviceId}>
-                    <TableCell>{item.serviceName}</TableCell>
-                    <TableCell>{item.price}</TableCell>
-                    <TableCell>{item.discount}</TableCell>
-                    <TableCell>
+                  <StyledTableRow key={item.serviceId}>
+                    <StyledTableCell>{item.serviceName}</StyledTableCell>
+                    <StyledTableCell>{item.price}</StyledTableCell>
+                    <StyledTableCell>{item.discount}</StyledTableCell>
+                    <StyledTableCell>
                       <Box sx={{ minWidth: 120 }}>
                         <FormControl fullWidth>
                           <Select
@@ -512,16 +528,16 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                           </Select>
                         </FormControl>
                       </Box>
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
+                    </StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
+                  </StyledTableRow>
                 ))}
                 {rows?.map((i, index) => {
                   return (
-                    <TableRow>
+                    <StyledTableRow>
                       {isEdit ? (
                         <>
-                          <TableCell padding="none">
+                          <StyledTableCell padding="none">
                             {/* <select
                                                             name="cars"
                                                             id="cars"
@@ -555,8 +571,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                                 </Select>
                               </FormControl>
                             </Box>
-                          </TableCell>
-                          <TableCell padding="none">
+                          </StyledTableCell>
+                          <StyledTableCell padding="none">
                             <input
                               id={i?.serviceId || 1}
                               disabled
@@ -565,8 +581,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                               onChange={(e) => handleInputChange(e, i)}
                               style={styleInput}
                             />
-                          </TableCell>
-                          <TableCell padding="none">
+                          </StyledTableCell>
+                          <StyledTableCell padding="none">
                             <input
                               value={i?.serviceDiscount || 0}
                               name="discount"
@@ -579,8 +595,8 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                               }
                               style={styleInput}
                             />
-                          </TableCell>
-                          <TableCell padding="none">
+                          </StyledTableCell>
+                          <StyledTableCell padding="none">
                             <Box sx={{ minWidth: 120 }}>
                               <FormControl fullWidth>
                                 <Select
@@ -599,12 +615,12 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                                 </Select>
                               </FormControl>
                             </Box>
-                          </TableCell>
-                          <TableCell padding="none">
+                          </StyledTableCell>
+                          <StyledTableCell padding="none">
                             <Button className="mr10" onClick={handleConfirm}>
                               <ClearIcon />
                             </Button>
-                          </TableCell>
+                          </StyledTableCell>
                         </>
                       ) : (
                         <></>
@@ -629,14 +645,14 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                               <Button
                                 onClick={() => handleRemoveClick(i)}
                                 color="primary"
-                                autoFocus
+                                multiline
                               >
                                 Yes
                               </Button>
                               <Button
                                 onClick={handleNo}
                                 color="primary"
-                                autoFocus
+                                multiline
                               >
                                 No
                               </Button>
@@ -644,13 +660,13 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                           </Dialog>
                         </div>
                       )}
-                    </TableRow>
+                    </StyledTableRow>
                   );
                 })}
               </TableBody>
-            </Table>
-          </div>
-        </div>
+            </StyledTable>
+          </Box>
+        </Box>
         <ModalExportMaterial
           modalExportOpen={modalExportOpen}
           setModalExportOpen={setModalExportOpen}

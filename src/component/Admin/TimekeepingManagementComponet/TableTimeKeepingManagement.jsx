@@ -8,8 +8,11 @@ import {
   Chip,
   Box,
 } from "@mui/material";
-import { tableCellClasses } from "@mui/material/TableCell";
-import { styled } from "@mui/material/styles";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
 import moment from "moment";
 
 const TableTimeKeepingManagement = (props) => {
@@ -23,34 +26,9 @@ const TableTimeKeepingManagement = (props) => {
     else return "Checked out";
   };
 
-  const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-      backgroundColor: "#000000ba",
-      fontWeight: "bold",
-      color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 14,
-    },
-  }));
-
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    "&:last-child td, &:last-child th": {
-      border: 0,
-    },
-  }));
-
   return (
     <>
-      <Box
-        className="w-full rounded-lg shadow-md  overflow-hidden"
-        style={{ background: "#fff" }}
-      >
-        <Table size="small">
+        <StyledTable size="small" className="shadow-md">
           <TableHead>
             <TableRow>
               <StyledTableCell>STT</StyledTableCell>
@@ -75,18 +53,22 @@ const TableTimeKeepingManagement = (props) => {
                 <StyledTableCell>
                   {renderTime(item.timeCheckout)}
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell className="p-3">
                   <Chip
                     size="small"
                     label={renderStatus(item.timeCheckout)}
-                    style={{background:`${item.timeCheckout ? "#59995c" : "#418eed"}`, color:'#fff'}}
+                    style={{
+                      background: `${
+                        item.timeCheckout ? "#59995c" : "#418eed"
+                      }`,
+                      color: "#fff",
+                    }}
                   />
                 </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
-        </Table>
-      </Box>
+        </StyledTable>
     </>
   );
 };

@@ -49,15 +49,7 @@ const LaboManagementContent = () => {
 
   return (
     <>
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        Quản Lý Labo
-      </Typography>
+      <h2 className="font-bold mb-5"> Quản Lý Labo</h2>
       <IconButton
         aria-label="add"
         style={{ borderRadius: "5%" }}
@@ -67,12 +59,18 @@ const LaboManagementContent = () => {
       >
         <AddIcon /> Thêm mới
       </IconButton>
-      <StyledTable size="small" style={{ marginTop: "15px" }}>
+      <StyledTable className="shadow-md" size="small">
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Tên Labo</StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Phone</StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Tổng tiền</StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Tên Labo
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Phone
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Tổng tiền
+            </StyledTableCell>
             <StyledTableCell></StyledTableCell>
             <StyledTableCell></StyledTableCell>
             <StyledTableCell></StyledTableCell>

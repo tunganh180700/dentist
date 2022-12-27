@@ -77,7 +77,7 @@ const MaterialExportManagementContent = () => {
       >
         <AddIcon /> Thêm mới
       </IconButton>
-      <StyledTable size="small" style={{ marginTop: "15px" }}>
+      <StyledTable className="shadow-md" size="small">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell style={{ fontWeight: "bold" }}>

@@ -38,15 +38,15 @@ import {
   StyledTable,
 } from "../../ui/TableElements";
 import { ToastContainer, toast } from "react-toastify";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+// import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "./style.css";
 import dayjs from "dayjs";
 import moment from "moment";
 
-const color = {
-  border: "rgba(0, 0, 0, 0.2)",
-};
+// const color = {
+//   border: "rgba(0, 0, 0, 0.2)",
+// };
 
 const PatientManagementContent = () => {
   const dispatch = useDispatch();
@@ -61,18 +61,7 @@ const PatientManagementContent = () => {
   const [modalDetailOpen, setModalDetailOpen] = useState(false);
   const [isSubmitFormPatient, setIsSubmitFormPatient] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
-  const [datePickerValue, setDatePickerValue] = useState();
 
-  const isDeletePatient = useSelector(
-    (state) => state.listPatient.isDeletePatient
-  );
-  const isAddPatient = useSelector((state) => state.listPatient.isAddPatient);
-  const isUpdatePatient = useSelector(
-    (state) => state.listPatient.isUpdatePatient
-  );
-  const isSearchPatient = useSelector(
-    (state) => state.listPatient.isSearchPatient
-  );
   const [loading, setLoading] = useState(false);
 
   const [role, setRole] = useState(null);
@@ -197,18 +186,8 @@ const PatientManagementContent = () => {
 
   return (
     <>
-      {/* <DatePickerDentist
-        value={searchValue.birthdate}
-        onChange={(value) => {
-          setSearchValue({
-            ...searchValue,
-            birthdate: moment(value).format("DD/MM/YYYY"),
-          });
-        }}
-        }}
-      /> */}
       {loading && <Loading />}
-      <h2 className="font-bold mb-4">Danh Sách Bệnh Nhân</h2>
+      <h2 className="font-bold mb-5">Danh Sách Bệnh Nhân</h2>
       <Box className="flex items-center gap-3 mb-3">
         <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>
         {role === "Doctor" || role === "Nurse" ? (
@@ -287,7 +266,7 @@ const PatientManagementContent = () => {
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell>
-                  <Link to={`/record/${item.patientId}`}>
+                  <Link to={`record/${item.patientId}`}>
                     {item.patientName}
                   </Link>
                 </StyledTableCell>
