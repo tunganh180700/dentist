@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ReactDOM from "react-dom";
 import { Column } from "@ant-design/plots";
 import { Box } from "@mui/material";
@@ -12,48 +12,51 @@ const ChartIncome = ({ data, onChangeDateRange }) => {
     currency: "VND",
   });
 
-  const config = {
-    data,
-    xField: "date",
-    yField: "value",
-    seriesField: "type",
-    isStack: true,
-    columnStyle: {},
-    legend: {
-      position: "bottom",
-    },
-    slider:
-      data.length > 12
-        ? {
-            start: 0,
-            end: 0.5,
-            trendCfg: {
-              isArea: false,
-            },
-            height: 7,
-            handlerStyle: {
-              height: 10,
-            },
-          }
-        : null,
-    color: ({ type }) => {
-      switch (type) {
-        case "Doanh thu":
-          return "#418eed";
-        case "Thực thu":
-          return "#59994c";
-        default:
-          return "#e18220";
-      }
-    },
-    meta: {
-      value: {
-        formatter: (val) => {
-          return formatter.format(val) + " " + "VND";
+  const config = useMemo(
+    () => ({
+      data,
+      xField: "date",
+      yField: "value",
+      seriesField: "type",
+      isStack: true,
+      columnStyle: {},
+      legend: {
+        position: "bottom",
+      },
+      // slider:
+      //   data.length > 12
+      //     ? {
+      //         start: 0,
+      //         end: 0.5,
+      //         trendCfg: {
+      //           isArea: false,
+      //         },
+      //         height: 7,
+      //         handlerStyle: {
+      //           height: 10,
+      //         },
+      //       }
+      //     : null,
+      color: ({ type }) => {
+        switch (type) {
+          case "Doanh thu":
+            return "#418eed";
+          case "Thực thu":
+            return "#59994c";
+          default:
+            return "#e18220";
+        }
+      },
+      meta: {
+        value: {
+          formatter: (val) => {
+            return formatter.format(val) + " " + "VND";
+          },
         },
       },
-    },
-  };
+    }),
+    [data]
+  );
 
   return (
     <Box className="bg-white p-3 rounded-lg shadow-md">

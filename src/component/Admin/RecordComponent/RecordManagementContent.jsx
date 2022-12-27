@@ -53,7 +53,6 @@ const RecordManagementContent = () => {
     (state) => state.listRecord.isDeleteRecord
   );
 
-  console.log("pagezise.", totalPages);
   const { id } = useParams();
   const [recordList, setRecordList] = useState([]);
 
@@ -73,9 +72,9 @@ const RecordManagementContent = () => {
           page: currentPage,
         },
       });
-      setTotalElements(res.data.totalElements);
-      setTotalPages(res.data.totalPages);
-      setRecordList(res.data.content);
+      setTotalElements(res?.data?.totalElements || 0);
+      setTotalPages(res?.data?.totalPages || 0);
+      setRecordList(res?.data?.content || []);
       setIsSubmitForm(false);
     } catch (error) {
       console.log(error);
@@ -83,7 +82,7 @@ const RecordManagementContent = () => {
   };
   useEffect(() => {
     getDetail(id);
-  }, [id, currentPage, pageSize]);
+  }, [id, currentPage]);
 
   useEffect(() => {
     if (isSubmitForm) {
@@ -146,7 +145,7 @@ const RecordManagementContent = () => {
             <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
-        {totalPages ==!0 && (
+        {totalPages === 0 ? null : (
           <TableBody>
             {recordList?.map((el) => (
               <StyledTableRow key={el.patientRecordId}>
@@ -209,7 +208,7 @@ const RecordManagementContent = () => {
           </TableBody>
         )}
       </StyledTable>
-      {totalPages === 0 && (
+      {!totalPages && (
         <>
           <Typography
             component="h1"

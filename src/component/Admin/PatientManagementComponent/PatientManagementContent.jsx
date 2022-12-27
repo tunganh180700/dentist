@@ -90,7 +90,7 @@ const PatientManagementContent = () => {
     return color;
   };
   const statusFormatter = (status) => {
-    return status === 0 ? "Chưa Chữa Trị" : status === 1 ? "Đang Chữa" : "Xong";
+    return status === 0 ? "Chưa Chữa Trị" : status === 1 ? "Đang Chữa" : "Đã Chữa Trị";
   };
 
   useEffect(() => {
@@ -411,7 +411,7 @@ const PatientManagementContent = () => {
               onChange={(value) => {
                 setSearchValue({
                   ...searchValue,
-                  birthdate: value ? moment(value).format("DD/MM/YYYY") : "",
+                  birthdate: value ? moment(value).format("YYYY-MM-DD") : "",
                 });
               }}
             />
