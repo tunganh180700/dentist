@@ -24,7 +24,6 @@ const ModalDetailService = ({ modalDetailOpen, setModalDetailOpen }) => {
   const patientRecordId = useSelector((state) => state.modal.userId);
   const listService = useSelector((state) => state.listRecord.listService);
 
-  console.log(patientRecordId);
   const handleCancel = () => {
     setModalDetailOpen(false);
   };

@@ -4,7 +4,7 @@ const InputDentist = ({
   value,
   label,
   required = false,
-  error,
+  error = { message: "", touched: false },
   id,
   onChange,
 }) => {
@@ -23,11 +23,11 @@ const InputDentist = ({
           placeholder={label}
           onChange={onChange}
         />
-        {error && (
+        {required && error?.touched && (
           <Typography
             style={{ color: "red", fontStyle: "italic", fontSize: "14px" }}
           >
-            {error}
+            {error.message}
           </Typography>
         )}
       </Box>

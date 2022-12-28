@@ -10,6 +10,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  OutlinedInput,
   Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -53,31 +54,34 @@ import _ from "lodash";
 
 const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   const dispatch = useDispatch();
-  const [valueDate, setValueDate] = useState(new Date());
+  const [valueDate, setValueDate] = useState(null);
   const { id } = useParams();
   const [listTreatingService, setListTreatingService] = useState([]);
 
   const [serviceId, setServiceId] = useState();
-  const [serviceName, setServiceName] = useState();
+  // const [serviceName, setServiceName] = useState();
   const [serviceIds, setServiceIds] = useState([]);
   const [showModalExportMaterial, setShowModalExportMaterial] = useState(0);
   const [modalExportOpen, setModalExportOpen] = useState(false);
   const [showModalSpecimen, setShowModalSpecimen] = useState(0);
   const [modalSpecimenOpen, setModalSpecimenOpen] = useState(false);
 
-  const [newPrice, setNewPrice] = useState();
-  const [servicePrice, setServicePrice] = useState();
-  const [serviceDiscount, setServiceDiscount] = useState();
-  const [status, setStatus] = useState();
+  // const [newPrice, setNewPrice] = useState();
+  // const [servicePrice, setServicePrice] = useState();
+  // const [serviceDiscount, setServiceDiscount] = useState();
+  // const [status, setStatus] = useState();
 
-  const [open, setOpen] = useState(false);
-  const [disable, setDisable] = useState(true);
-  const [showConfirm, setShowConfirm] = useState(false);
+  // const [open, setOpen] = useState(false);
+  // const [disable, setDisable] = useState(true);
+  const [showConfirm, setShowConfirm] = useState(-1);
   const [isEdit, setEdit] = useState(false);
 
   const isAddRecord = useSelector((state) => state.listRecord.isAddRecord);
   const [rows, setRows] = useState([]);
-  const [countRow, setCountRow] = useState(0);
+  const [countRow, setCountRow] = useState({
+    statusCount: "up",
+    value: 0,
+  });
   const [serviceDTOS, setServiceDTOS] = useState([]);
 
   const [materialExportDTOS, setMaterialExportDTOS] = useState([]);
@@ -97,35 +101,19 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
       .string("Nhập lưu ý về tủy")
       .max(250, "Lưu ý về tuỷ không được quá 250 ký tự.")
       .required("Lưu ý về tuỷ là bắt buộc."),
-    note: yup
-      .string("Nhập ghi chú")
-      .max(250, "Ghi chú không được quá 250 ký tự.")
-      .required("Ghi chú là bắt buộc."),
     treatment: yup
       .string("Nhập điều trị")
       .max(250, "Điều trị không được quá 250 ký tự.")
       .required("Điều trị là bắt buộc."),
-    // discount: yup
-    //     .string("Enter your discount")
-    //     .matches(regexNumber, "Only number or positive number")
-    //     .required("discount is required"),
-    // status: yup
-    //     .string("Enter your email")
-    //     .required("Email is required"),
-    // prescription: yup
-    //     .string('Nhập đơn thuốc')
-    //     .max(250, "Đơn thuốc không được quá 250 ký tự.")
-    //     .required('Đơn thuốc là bắt buộc.'),
   });
 
   const loadServiceOption = async () => {
     try {
       const res = await axiosInstance.get(listAllServiceAPI);
       setServiceId(res.data[0].serviceId);
-      // console.log(serviceId)
       setServiceIds(res.data);
-      setServicePrice(res.data[0].price);
-      setServiceDiscount(res.data[0].discount);
+      // setServicePrice(res.data[0].price);
+      // setServiceDiscount(res.data[0].discount);
     } catch (error) {
       console.log(error);
     }
@@ -153,7 +141,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
       reason: "",
       diagnostic: "",
       causal: "",
-      date: new Date(),
       marrowRecord: "",
       note: "",
       treatment: "",
@@ -161,115 +148,121 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      setRows([]);
-      setCountRow(0);
-      // values.date = moment(valueDate.$d).format(validationDate);
+      const formatValue = values;
+
       const listA = listTreatingService.filter((a) => {
         return Object.keys(a).length !== 0;
       });
       const listB = rows.filter((a) => {
         return Object.keys(a).length !== 0;
       });
-      values.serviceDTOS = listA.concat(listB);
-      values.materialExportDTOS = materialExportDTOS;
-      values.specimensDTOS = specimenDTOS;
+      formatValue.serviceDTOS = listA.concat(listB);
+      formatValue.materialExportDTOS = materialExportDTOS;
+      formatValue.specimensDTOS = specimenDTOS;
+      formatValue.date = valueDate;
       const addValue = {
         id: id,
-        values: values,
+        values: formatValue,
       };
       dispatch(addRecord(addValue));
+      setRows([]);
+      setCountRow({
+        statusCount: "up",
+        value: 0,
+      });
       setModalAddOpen(false);
+      setValueDate(null);
       formik.handleReset();
       setTimeout(() => {
+        getServiceTreating(id);
         isSubmitForm(true);
       }, 1000);
     },
   });
 
   const formatToDTOS = (listTreatingService, rows) => {
-    const listA = listTreatingService.filter((a) => {
-      return Object.keys(a).length !== 0;
+    let listA = [];
+    let listB = [];
+    listA = listTreatingService.filter((a) => {
+      return Object.keys(a)?.length !== 0;
     });
-    const listB = rows.filter((a) => {
-      return Object.keys(a).length !== 0;
+    listB = rows?.filter((a) => {
+      if (a) {
+        return Object.keys(a).length !== 0;
+      }
+      return null;
     });
-
     return listA.concat(listB);
   };
 
   const styleInput = {
     width: "70%",
+    background: "none",
   };
+
   useEffect(() => {
-    if (countRow) {
+    if (countRow.value && countRow.statusCount === "up") {
       const serviceInfo = serviceIds.find(
         (s) => s.serviceId === serviceIds[0].serviceId
       );
       setRows((prev) => {
-        prev[countRow - 1] = { ...prev[countRow - 1], ...serviceInfo };
-        prev[countRow - 1].isNew = 1;
+        prev[countRow.value - 1] = {
+          ...prev[countRow.value - 1],
+          ...serviceInfo,
+        };
+        prev[countRow.value - 1].isNew = 1;
+        prev[countRow.value - 1].status = 1;
         return _.cloneDeep(prev);
       });
     }
   }, [countRow]);
 
   const handleAdd = () => {
-    setCountRow(countRow + 1);
+    setCountRow({
+      statusCount: "up",
+      value: countRow.value + 1,
+    });
   };
 
   const handleEdit = (e) => {
     setEdit(!isEdit);
   };
 
-  const handleInputChange = (e, index) => {
-    setDisable(false);
-    const { name, value } = e.target;
-    const list = [...rows];
-    list[index][name] = value;
-    setRows(list);
+  // const handleInputChange = (e, index) => {
+  //   setDisable(false);
+  //   const { name, value } = e.target;
+  //   const list = [...rows];
+  //   list[index][name] = value;
+  //   setRows(list);
+  // };
+
+  const handleConfirm = (index) => {
+    setShowConfirm(index);
   };
 
-  const handleConfirm = () => {
-    setShowConfirm(true);
-  };
-
-  const handleRemoveClick = (i) => {
-    const list = [...rows];
-    list.splice(i, 1);
+  const handleRemoveClick = (ind) => {
+    const list = rows.filter((_, index) => index !== ind);
     setRows(list);
-    setShowConfirm(false);
+    setCountRow({
+      statusCount: "down",
+      value: countRow.value - 1,
+    });
+    setShowConfirm(-1);
   };
 
   const handleNo = () => {
-    setShowConfirm(false);
+    setShowConfirm(-1);
   };
 
   const handleCancel = () => {
     setRows([]);
-    setCountRow(0);
-    isSubmitForm(false);
+    setCountRow({
+      statusCount: "up",
+      value: 0,
+    });
     setModalAddOpen(false);
+    setValueDate(null);
     formik.handleReset();
-
-    // formik.values.reason = ""
-    // formik.errors.reason = ""
-
-    // formik.values.causal = ""
-    // formik.errors.causal = ""
-
-    // formik.values.diagnostic = ""
-    // formik.errors.diagnostic = ""
-
-    // formik.values.marrowRecord = ""
-    // formik.errors.marrowRecord = ""
-
-    // formik.values.note = ""
-    // formik.errors.note = ""
-
-    // formik.values.treatment = ""
-    // formik.errors.treatment = ""
-
-    setValueDate(new Date());
     formik.resetForm();
   };
 
@@ -278,25 +271,29 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     setRows((prev) => {
       prev[index] = { ...prev[index], ...serviceInfo };
       prev[index].isNew = 1;
+      prev[index].status = 1;
       return _.cloneDeep(prev);
     });
   };
 
-  const handleStatusForItem = (row, value) => {
-    console.log(value);
-    row.status = value;
-  };
+  // const handleStatusForItem = (row, value) => {
+  //   console.log(value);
+  //   row.status = value;
+  // };
 
   const getServiceTreating = async (id) => {
     try {
       const res = await axiosInstance.get(listTreatingServiceAPI + id);
-      console.log("list", res.data);
       setListTreatingService(res.data);
-      // formik.setValues(res.data)
     } catch (error) {
       console.log(error);
     }
   };
+
+  const formatter = new Intl.NumberFormat({
+    style: "currency",
+    currency: "VND",
+  });
 
   // useEffect(() => {
   //     const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
@@ -306,12 +303,9 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   // }, [serviceId])
 
   useEffect(() => {
-    // const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
-
-    const price = serviceIds?.filter((e) => e.serviceId === serviceId)[0]
-      ?.price;
-
-    setServicePrice(price);
+    // const price = serviceIds?.filter((e) => e.serviceId === serviceId)[0]
+    //   ?.price;
+    // setServicePrice(price);
     getServiceTreating(id);
   }, [id, serviceId, isAddRecord]);
 
@@ -335,7 +329,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               required
               value={formik.values.reason}
               onChange={formik.handleChange}
-              error={formik.errors.reason}
+              error={{
+                message: formik.errors.reason,
+                touched: formik.touched.reason,
+              }}
             />
             <InputDentist
               id="diagnostic"
@@ -343,54 +340,27 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               required
               value={formik.values.diagnostic}
               onChange={formik.handleChange}
-              error={formik.errors.diagnostic}
+              error={{
+                message: formik.errors.diagnostic,
+                touched: formik.touched.diagnostic,
+              }}
             />
-            {/* <Box className="mb-2">
-              <p className="mb-1 font-bold">
-                Nguyên nhân <span className="text-red-600">*</span>
-              </p>
-              <TextField
-                required
-                fullWidth
-                placeholder="Nguyên nhân"
-                value={formik.values.causal}
-                multiline
-                onChange={formik.handleChange}
-              />
-              {formik.errors.causal && formik.touched.causal && (
-                <Typography style={{ color: "red", fontStyle: "italic" }}>
-                  {formik.errors.causal}
-                </Typography>
-              )}
-            </Box> */}
             <InputDentist
               id="causal"
               label="Nguyên nhân"
               required
               value={formik.values.causal}
               onChange={formik.handleChange}
-              error={formik.errors.causal}
+              error={{
+                message: formik.errors.causal,
+                touched: formik.touched.causal,
+              }}
             />
-
-            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Ngày khám"
-                name="birthdate"
-                value={value}
-                disablePast={true}
-                onChange={(newValue) => {
-                  setValue(newValue);
-                  console.log(newValue);
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider> */}
             <Box className="mb-2">
               <p className="mb-1 font-bold">
-                Ngày khám <span className="text-red-600">*</span>
+                Ngày khám<span className="text-red-600">*</span>
               </p>
               <DatePickerDentist
-                value={valueDate}
                 placeholder="Ngày khám"
                 onChange={(value) => {
                   setValueDate(
@@ -398,6 +368,17 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                   );
                 }}
               />
+              {/* {formik.touched && !valueDate && (
+                <Typography
+                  style={{
+                    color: "red",
+                    fontStyle: "italic",
+                    fontSize: "14px",
+                  }}
+                >
+                  Ngày khám bắt buộc
+                </Typography>
+              )} */}
             </Box>
             <InputDentist
               id="marrowRecord"
@@ -405,7 +386,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               required
               value={formik.values.marrowRecord}
               onChange={formik.handleChange}
-              error={formik.errors.marrowRecord}
+              error={{
+                message: formik.errors.marrowRecord,
+                touched: formik.touched.marrowRecord,
+              }}
             />
 
             <Box className="mb-2">
@@ -426,11 +410,15 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               required
               value={formik.values.treatment}
               onChange={formik.handleChange}
-              error={formik.errors.treatment}
+              error={{
+                message: formik.errors.treatment,
+                touched: formik.touched.treatment,
+              }}
             />
             <Box className="mb-2">
               <p className="mb-1 font-bold">Đơn thuốc</p>
               <TextField
+                id="prescription"
                 required
                 fullWidth
                 placeholder="Đơn thuốc"
@@ -471,24 +459,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 <span className="leading-none">Bán sản phẩm</span>
               </Button>
             </Box>
-            {/* <IconButton
-                style={{ fontSize: "larger", borderRadius: "5%" }}
-                aria-label="add"
-                onClick={() => {
-                  setModalSpecimenOpen(true);
-                }}
-              >
-                Thêm mẫu vật
-              </IconButton>
-              <IconButton
-                aria-label="add"
-                style={{ fontSize: "larger", borderRadius: "5%" }}
-                onClick={() => {
-                  setModalExportOpen(true);
-                }}
-              >
-                Bán sản phẩm
-              </IconButton> */}
             <StyledTable className="shadow-md" size="small">
               <TableHead>
                 <StyledTableRow>
@@ -505,8 +475,12 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 {listTreatingService?.map((item, index) => (
                   <StyledTableRow key={item.serviceId}>
                     <StyledTableCell>{item.serviceName}</StyledTableCell>
-                    <StyledTableCell>{item.price}</StyledTableCell>
-                    <StyledTableCell>{item.discount}</StyledTableCell>
+                    <StyledTableCell>
+                      {formatter.format(item.price)} VND
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {formatter.format(item.discount)} VND
+                    </StyledTableCell>
                     <StyledTableCell>
                       <Box sx={{ minWidth: 120 }}>
                         <FormControl fullWidth>
@@ -537,7 +511,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                     <StyledTableRow>
                       {isEdit ? (
                         <>
-                          <StyledTableCell padding="none">
+                          <StyledTableCell>
                             {/* <select
                                                             name="cars"
                                                             id="cars"
@@ -572,31 +546,40 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                               </FormControl>
                             </Box>
                           </StyledTableCell>
-                          <StyledTableCell padding="none">
+                          <StyledTableCell>
                             <input
                               id={i?.serviceId || 1}
                               disabled
-                              value={i?.price || 0}
+                              value={formatter.format(i?.price) || 0}
                               name="price"
-                              onChange={(e) => handleInputChange(e, i)}
                               style={styleInput}
+                              // onChange={(e) => handleInputChange(e, i)}
                             />
                           </StyledTableCell>
-                          <StyledTableCell padding="none">
-                            <input
-                              value={i?.serviceDiscount || 0}
-                              name="discount"
-                              onChange={(e) =>
-                                // setServiceDiscount(e.target.value)
-                                setRows((prev) => {
-                                  prev[index].discount = e.target.value;
-                                  return _.cloneDeep(prev);
-                                })
+                          <StyledTableCell>
+                            <OutlinedInput
+                              id="discount"
+                              value={formatter.format(i?.discount)}
+                              endAdornment={
+                                <p className="mb-0 leading-0 text-xs">VND</p>
                               }
-                              style={styleInput}
+                              onChange={
+                                (e) => {
+                                  const value = e.target.value.replaceAll(
+                                    ",",
+                                    ""
+                                  );
+                                  setRows((prev) => {
+                                    prev[index].discount = value;
+                                    return _.cloneDeep(prev);
+                                  });
+                                }
+                                // setServiceDiscount(e.target.value)
+                              }
+                              className="h-[30px] bg-white"
                             />
                           </StyledTableCell>
-                          <StyledTableCell padding="none">
+                          <StyledTableCell>
                             <Box sx={{ minWidth: 120 }}>
                               <FormControl fullWidth>
                                 <Select
@@ -616,8 +599,11 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                               </FormControl>
                             </Box>
                           </StyledTableCell>
-                          <StyledTableCell padding="none">
-                            <Button className="mr10" onClick={handleConfirm}>
+                          <StyledTableCell>
+                            <Button
+                              className="mr10"
+                              onClick={() => handleConfirm(index)}
+                            >
                               <ClearIcon />
                             </Button>
                           </StyledTableCell>
@@ -625,41 +611,39 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                       ) : (
                         <></>
                       )}
-                      {showConfirm && (
-                        <div>
-                          <Dialog
-                            open={showConfirm}
-                            onClose={handleNo}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                          >
-                            <DialogTitle id="alert-dialog-title">
-                              {"Confirm Delete"}
-                            </DialogTitle>
-                            <DialogContent>
-                              <DialogContentText id="alert-dialog-description">
-                                Are you sure to delete
-                              </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                              <Button
-                                onClick={() => handleRemoveClick(i)}
-                                color="primary"
-                                multiline
-                              >
-                                Yes
-                              </Button>
-                              <Button
-                                onClick={handleNo}
-                                color="primary"
-                                multiline
-                              >
-                                No
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
-                        </div>
-                      )}
+                      <div>
+                        <Dialog
+                          open={showConfirm === index}
+                          onClose={handleNo}
+                          aria-labelledby="alert-dialog-title"
+                          aria-describedby="alert-dialog-description"
+                        >
+                          <DialogTitle id="alert-dialog-title">
+                            {"Chấp nhận xóa"}
+                          </DialogTitle>
+                          <DialogContent>
+                            {/* <DialogContentText id="alert-dialog-description">
+                              Are you sure to delete
+                            </DialogContentText> */}
+                          </DialogContent>
+                          <DialogActions style={{justifyContent:'center'}}>
+                            <Button
+                              onClick={() => handleRemoveClick(index)}
+                              color="primary"
+                              multiline
+                            >
+                              Yes
+                            </Button>
+                            <Button
+                              onClick={handleNo}
+                              color="primary"
+                              multiline
+                            >
+                              No
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                      </div>
                     </StyledTableRow>
                   );
                 })}
