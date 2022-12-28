@@ -80,7 +80,6 @@ export const fetchAllIncome = createAsyncThunk('listIncome/fetchAllIncome', asyn
         const res = await axiosInstance.get(listIncomeAPI, {
             params: paramsSearch,
         })
-        console.log('data income: ', res.data.incomeDetailDTOS);
         return res.data
 
     } catch (error) {
@@ -93,7 +92,6 @@ export const fetchAllNetIncome = createAsyncThunk('listIncome/fetchAllNetIncome'
         const res = await axiosInstance.get(listNetIncomeAPI, {
             params: paramsSearch,
         })
-        console.log('data net income: ', res.data.incomeDetailDTOS);
         return res.data
 
     } catch (error) {
@@ -106,7 +104,6 @@ export const fetchAllTotalSpendIncome = createAsyncThunk('listIncome/fetchAllTot
         const res = await axiosInstance.get(listTotalSpendIncomeAPI, {
             params: paramsSearch,
         })
-        console.log('data net income: ', res.data.incomeDetailDTOS);
         return res.data
 
     } catch (error) {

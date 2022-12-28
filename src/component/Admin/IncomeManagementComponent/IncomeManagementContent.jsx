@@ -24,6 +24,7 @@ import {
   fetchAllTotalSpendIncome,
 } from "../../../redux/IncomeSlice/listIncomeSlice";
 import ChartIncome from "./ChartIncome";
+import moment from "moment/moment";
 
 const IncomeManagementContent = () => {
   const listIncome = useSelector((state) => state.listIncome.listIncome);
@@ -44,43 +45,47 @@ const IncomeManagementContent = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [dataChart, setDataChart] = useState([]);
 
-  console.log("income: ", listIncome);
-
   useEffect(() => {
-    dispatch(fetchAllIncome({}));
-    dispatch(fetchAllNetIncome({}));
-    dispatch(fetchAllTotalSpendIncome({}));
+    handleFetchData();
   }, []);
 
   useEffect(() => {
-    if (
-      listTotalSpendIncome.length &&
-      listNetIncome.length &&
-      listIncome.length
-    ) {
-      const cookIncome = listIncome.map((item) => ({
-        ...item,
-        value: item.price,
-        type: "Doanh thu",
-      }));
-      const cookNetIncome = listNetIncome.map((item) => ({
-        ...item,
-        value: item.price,
-        type: "Thực thu",
-      }));
-      const cookTotalSpend = listTotalSpendIncome.map((item) => ({
-        ...item,
-        value: item.price,
-        type: "Tổng chi",
-      }));
-      setDataChart([...cookIncome, ...cookNetIncome, ...cookTotalSpend]);
-    }
+    const cookIncome = listIncome?.map((item) => ({
+      ...item,
+      value: item.price,
+      type: "Doanh thu",
+    }));
+    const cookNetIncome = listNetIncome?.map((item) => ({
+      ...item,
+      value: item.price,
+      type: "Thực thu",
+    }));
+    const cookTotalSpend = listTotalSpendIncome?.map((item) => ({
+      ...item,
+      value: item.price,
+      type: "Tổng chi",
+    }));
+    setDataChart([...cookIncome, ...cookNetIncome, ...cookTotalSpend]);
   }, [listTotalSpendIncome, listNetIncome, listIncome]);
 
   const formatter = new Intl.NumberFormat({
     style: "currency",
     currency: "VND",
   });
+
+  const handleFetchData = (filter = null) => {
+    dispatch(fetchAllIncome(filter || {}));
+    dispatch(fetchAllNetIncome(filter || {}));
+    dispatch(fetchAllTotalSpendIncome(filter || {}));
+  };
+
+  const onFetchDataByDate = (date) => {
+    const filter = {
+      startDate: moment(date[0]).format("YYYY-MM-DD"),
+      endDate: moment(date[1]).format("YYYY-MM-DD"),
+    };
+    handleFetchData(filter);
+  };
 
   const InComeTable = () => {
     return (
@@ -104,7 +109,7 @@ const IncomeManagementContent = () => {
             colSpan={3}
             style={{ fontWeight: "bold", fontSize: "20px", textAlign: "end" }}
           >
-            Tổng tiền : {totalIncome}
+            Tổng tiền : {formatter.format(totalIncome)} VND
           </StyledTableCell>
         </TableBody>
       </StyledTable>
@@ -132,7 +137,7 @@ const IncomeManagementContent = () => {
             colSpan={3}
             style={{ fontWeight: "bold", fontSize: "20px", textAlign: "end" }}
           >
-            Tổng tiền : {totalNetIncome}
+            Tổng tiền : {formatter.format(totalNetIncome)} VND
           </StyledTableCell>
         </TableBody>
       </StyledTable>
@@ -161,7 +166,7 @@ const IncomeManagementContent = () => {
             colSpan={3}
             style={{ fontWeight: "bold", fontSize: "20px", textAlign: "end" }}
           >
-            Tổng tiền : {totalSpendIncome}
+            Tổng tiền : {formatter.format(totalSpendIncome)} VND
           </StyledTableCell>
         </TableBody>
       </StyledTable>
@@ -171,7 +176,7 @@ const IncomeManagementContent = () => {
   return (
     <>
       <h2 className="font-bold mb-5">Quản lý Thu nhập</h2>
-      <ChartIncome data={dataChart} />
+      <ChartIncome data={dataChart} onChangeDateRange={onFetchDataByDate} />
       <Tabs
         defaultActiveKey="1"
         className="mt-3"

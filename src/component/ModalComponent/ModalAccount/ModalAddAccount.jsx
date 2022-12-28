@@ -176,6 +176,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
           </Typography>
         )}
         <TextField
+          className="mb-4"
           margin="normal"
           required
           fullWidth
@@ -194,13 +195,14 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
         )}
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
+            className="mb-3"
             label="Ngày sinh"
             name="birthdate"
             value={value}
+            inputFormat="DD/MM/YYYY"
             disableFuture={true}
             onChange={(newValue) => {
               setValue(newValue);
-              console.log(newValue);
             }}
             renderInput={(params) => <TextField {...params} />}
           />
@@ -222,7 +224,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
             {formik.errors.salary}
           </Typography>
         )}
-        <Box sx={{ minWidth: 120, padding: "10px" }}>
+        <Box sx={{ minWidth: 120 }} className="w-full">
           <FormControl fullWidth>
             <InputLabel id="permisstion">Quyền hạn</InputLabel>
             <Select

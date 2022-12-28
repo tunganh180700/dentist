@@ -9,7 +9,7 @@ import { toastCss } from "../toastCss"
 const initState = {
     listPatient: [],
     index: 0,
-    pageSize: 3,
+    pageSize: 13,
     totalPage: 0,
     totalElements: 0,
     statusUpdatePatient: false,

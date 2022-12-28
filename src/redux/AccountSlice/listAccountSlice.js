@@ -11,7 +11,7 @@ const initState = {
     pagination: [],
     status: false,
     index: 0,
-    pageSize: 3,
+    pageSize: 10,
     totalPage: 0,
     totalElements: 0,
     statusUpdateAccount: false,
