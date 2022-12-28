@@ -90,7 +90,11 @@ const PatientManagementContent = () => {
     return color;
   };
   const statusFormatter = (status) => {
-    return status === 0 ? "Chưa Chữa Trị" : status === 1 ? "Đang Chữa" : "Đã Chữa Trị";
+    return status === 0
+      ? "Chưa Chữa Trị"
+      : status === 1
+      ? "Đang Chữa"
+      : "Đã Chữa Trị";
   };
 
   useEffect(() => {

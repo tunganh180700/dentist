@@ -24,7 +24,7 @@ const LoginComponent = () => {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
     const paperStyle = {
-        background: 'linear-gradient(45deg,  rgba(66, 183, 245,0.8) 0%,rgba(66, 245, 189,0.4) 100%)',
+        background: 'linear-gradient(244.89deg, rgb(226, 251, 255) 7.39%, rgb(234, 225, 217) 74.76%, rgb(247, 184, 156) 100%)',
         height: '100vh',
         width: '100%',
         display: 'flex',

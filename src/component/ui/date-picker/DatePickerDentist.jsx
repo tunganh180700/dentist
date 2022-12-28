@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -20,10 +20,6 @@ const DatePickerDentist = ({
   placeholder = "Select date",
   onChange,
 }) => {
-  React.useEffect(() => {
-    console.log(value);
-  }, [value]);
-
   return (
     <Box>
       {range ? (
@@ -39,7 +35,7 @@ const DatePickerDentist = ({
         />
       ) : (
         <DatePicker
-          value={value}
+          value={value ? moment(value) : null}
           onChange={onChange}
           placeholder={placeholder}
           disabledDate={disabledDate}

@@ -361,6 +361,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 Ngày khám<span className="text-red-600">*</span>
               </p>
               <DatePickerDentist
+                value={valueDate}
                 placeholder="Ngày khám"
                 onChange={(value) => {
                   setValueDate(
@@ -626,7 +627,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                               Are you sure to delete
                             </DialogContentText> */}
                           </DialogContent>
-                          <DialogActions style={{justifyContent:'center'}}>
+                          <DialogActions style={{ justifyContent: "center" }}>
                             <Button
                               onClick={() => handleRemoveClick(index)}
                               color="primary"
