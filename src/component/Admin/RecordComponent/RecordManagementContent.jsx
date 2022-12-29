@@ -238,32 +238,25 @@ const RecordManagementContent = () => {
           />
         ) : null}
       </div>
-      <div>
-        <ModalDetailRecord
-          modalDetailRecordOpen={modalDetailRecordOpen}
-          setModalDetailRecordOpen={setModalDetailRecordOpen}
-        />
-      </div>
-      <div>
-        <ModalAddRecord
-          modalAddOpen={modalAddOpen}
-          setModalAddOpen={setModalAddOpen}
-          isSubmitForm={setIsSubmitForm}
-        />
-      </div>
-      <div>
-        <ModalDeleteRecord
-          modalDeleteOpen={modalDeleteOpen}
-          setModalDeleteOpen={setModalDeleteOpen}
-          isSubmitForm={setIsSubmitForm}
-        />
-      </div>
-      <div>
-        <ModalDetailService
-          modalDetailOpen={modalDetailOpen}
-          setModalDetailOpen={setModalDetailOpen}
-        />
-      </div>
+      <ModalDetailRecord
+        modalDetailRecordOpen={modalDetailRecordOpen}
+        setModalDetailRecordOpen={setModalDetailRecordOpen}
+      />
+
+      <ModalAddRecord
+        modalAddOpen={modalAddOpen}
+        setModalAddOpen={setModalAddOpen}
+        isSubmitForm={setIsSubmitForm}
+      />
+      <ModalDeleteRecord
+        modalDeleteOpen={modalDeleteOpen}
+        setModalDeleteOpen={setModalDeleteOpen}
+        isSubmitForm={setIsSubmitForm}
+      />
+      <ModalDetailService
+        modalDetailOpen={modalDetailOpen}
+        setModalDetailOpen={setModalDetailOpen}
+      />
     </>
   );
 };

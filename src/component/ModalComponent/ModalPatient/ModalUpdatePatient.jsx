@@ -1,14 +1,13 @@
 import {
+  Box,
   FormControl,
   FormControlLabel,
-  FormLabel,
-  Radio,
   RadioGroup,
+  FormLabel,
   TextField,
   Typography,
 } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Radio, Space } from "antd";
 import { Modal } from "antd";
 import axios from "axios";
 import { useFormik } from "formik";
@@ -26,6 +25,8 @@ import {
   validationDate,
 } from "../../../config/validation";
 import { updatePatient } from "../../../redux/PatienSlice/listPatientSlice";
+import DatePickerDentist from "../../ui/date-picker/DatePickerDentist";
+import InputDentist from "../../ui/input";
 
 const ModalUpdatePatient = ({
   modalUpdateOpen,
@@ -65,7 +66,7 @@ const ModalUpdatePatient = ({
     initialValues: {},
     // validationSchema: validationSchema,
     onSubmit: (values) => {
-      values.birthdate = moment(value.$d).format(validationDate);
+      values.birthdate = moment(value).format(validationDate);
       values.gender = gender;
       dispatch(updatePatient(values));
       setModalUpdateOpen(false);
@@ -77,7 +78,7 @@ const ModalUpdatePatient = ({
     setLoading(true);
     try {
       const res = await axiosInstance.get(getPatientByIdAPI + patientId);
-      console.log(res.data);
+      console.log("gender", res.data.gender);
       formik.setValues(res.data);
       setOldData(res.data);
       setValue(res.data.birthdate);
@@ -89,167 +90,107 @@ const ModalUpdatePatient = ({
   };
 
   useEffect(() => {
-    if (patientId > 0) fetchPatient(patientId);
+    if (patientId) fetchPatient(patientId);
   }, [patientId]);
 
   const handleCancel = () => {
-    isSubmitForm(false);
-    formik.values.patientName = oldData.patientName;
-    setValue(oldData.birthdate);
-    formik.values.phone = oldData.phone;
-    formik.values.address = oldData.address;
-    formik.values.bodyPrehistory = oldData.bodyPrehistory;
-    setGender(oldData.gender);
-    formik.values.teethPrehistory = oldData.teethPrehistory;
+    // formik.values.patientName = oldData.patientName;
+    // formik.values.phone = oldData.phone;
+    // formik.values.address = oldData.address;
+    // formik.values.bodyPrehistory = oldData.bodyPrehistory;
+    // formik.values.teethPrehistory = oldData.teethPrehistory;
+    // setGender(oldData.gender);
+    // setValue(oldData.birthdate);
     setModalUpdateOpen(false);
   };
 
   return (
     <>
       <Modal
-        title="Chỉnh Sửa Bệnh Nhân"
+        title="Thêm Bệnh Nhân"
         open={modalUpdateOpen}
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
       >
-        {loading === false && (
-          <>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="patientName"
-              label="Họ và tên bệnh nhân"
-              name="patientName"
-              autoComplete="patientName"
-              value={formik.values.patientName}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            {formik.errors.patientName && formik.touched.patientName && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.patientName}
-              </Typography>
-            )}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Ngày sinh"
-                name="birthdate"
-                inputFormat="DD/MM/YYYY"
-                value={value}
-                disableFuture={true}
-                onChange={(newValue) => {
-                  setValue(newValue);
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="phonenumber"
-              label="Số điện thoại"
-              name="phone"
-              autoComplete="phonenumber"
-              value={formik.values.phone}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            {formik.errors.phone && formik.touched.phone && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.phone}
-              </Typography>
-            )}
-            <FormControl style={{ display: "flex" }}>
-              <FormLabel
-                id="demo-row-radio-buttons-group-label"
-                style={{ marginRight: "80%" }}
-              >
-                Gender
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                style={{ marginRight: "30%" }}
-                onChange={(e) => setGender(e.target.value)}
-                value={gender}
-              >
-                <FormControlLabel
-                  value={false}
-                  control={<Radio />}
-                  label="Nữ"
-                />
-                <FormControlLabel
-                  value={true}
-                  control={<Radio />}
-                  label="Nam"
-                />
-              </RadioGroup>
-            </FormControl>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="address"
-              label="Địa chỉ"
-              name="address"
-              autoComplete="address"
-              value={formik.values.address}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            {formik.errors.address && formik.touched.address && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.address}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              autoComplete="email"
-              value={formik.values.email}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            {formik.errors.email && formik.touched.email && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.email}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
-              fullWidth
-              id="bodyPrehistory"
-              label="Tiền sử cơ thể"
-              name="bodyPrehistory"
-              autoComplete="bodyPrehistory"
-              value={formik.values.bodyPrehistory}
-              autoFocus
-              multiline
-              rows={5}
-              onChange={formik.handleChange}
-            />
-            <TextField
-              margin="normal"
-              fullWidth
-              id="teethPrehistory"
-              label="Tiền sử răng miệng"
-              name="teethPrehistory"
-              autoComplete="teethPrehistory"
-              value={formik.values.teethPrehistory}
-              autoFocus
-              multiline
-              rows={5}
-              onChange={formik.handleChange}
-            />
-          </>
-        )}
+        <InputDentist
+          id="patientName"
+          label="Họ và tên bệnh nhân"
+          required
+          value={formik.values.patientName}
+          onChange={formik.handleChange}
+          error={{
+            message: formik.errors.patientName,
+            touched: formik.touched.patientName,
+          }}
+        />
+        <Box className="mb-2">
+          <p className="mb-1 font-bold">
+            Ngày sinh<span className="text-red-600">*</span>
+          </p>
+          <DatePickerDentist
+            value={value}
+            onChange={(newValue) => {
+              setValue(newValue);
+            }}
+          />
+        </Box>
+        <InputDentist
+          id="phonenumber"
+          label="Số điện thoại"
+          required
+          value={formik.values.phone}
+          onChange={formik.handleChange}
+          error={{
+            message: formik.errors.phone,
+            touched: formik.touched.phone,
+          }}
+        />
+        <Box className="flex gap-3 mb-2">
+          <span className="mr-3  font-bold">Gender:</span>
+          <Radio.Group
+            style={{ marginRight: "30%" }}
+            onChange={(e) => setGender(e.target.value)}
+            value={gender}
+            className="items-center"
+          >
+            <FormControlLabel value={true} control={<Radio />} label="Nam" />
+            <FormControlLabel value={false} control={<Radio />} label="Nữ" />
+          </Radio.Group>
+        </Box>
+        <InputDentist
+          id="address"
+          label="Địa chỉ"
+          required
+          value={formik.values.address}
+          onChange={formik.handleChange}
+          error={{
+            message: formik.errors.address,
+            touched: formik.touched.address,
+          }}
+        />
+        <InputDentist
+          id="email"
+          label="Email"
+          required
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          error={{
+            message: formik.errors.email,
+            touched: formik.touched.email,
+          }}
+        />
+        <InputDentist
+          id="bodyPrehistory"
+          label="Tiền sử cơ thể"
+          value={formik.values.bodyPrehistory}
+          onChange={formik.handleChange}
+        />
+        <InputDentist
+          id="teethPrehistory"
+          label="Tiền sử răng miệng"
+          value={formik.values.teethPrehistory}
+          onChange={formik.handleChange}
+        />
       </Modal>
     </>
   );

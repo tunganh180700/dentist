@@ -54,71 +54,78 @@ const ModalDetailRecord = ({
         onCancel={() => setModalDetailRecordOpen(false)}
         footer={null}
       >
-        <Typography
-          variant="h6"
-          gutterBottom
-          color="inherit"
-          noWrap
-          fontWeight="bold"
-        >
+        <Box className="mb-3">
+          <Typography
+            variant="h"
+            gutterBottom
+            color="inherit"
+            noWrap
+            fontWeight="bold"
+          >
+            Lý do đến khám:
+          </Typography>
+          <p className="font-bold text-lg mb-1">
           Lý do đến khám:
-        </Typography>
-        {/* <TextareaAutosize
+          </p>
+          {/* <TextareaAutosize
                     variant="subtitle1"
                     color="inherit"
                     noWrap
                 >
                     {reason}
                 </TextareaAutosize> */}
-        <TextField
-          fullWidth
-          value={reason}
-          multiline
-          variant="outlined"
-          rows={2}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-        <Typography
-          variant="h6"
-          gutterBottom
-          color="inherit"
-          noWrap
-          fontWeight="bold"
-        >
-          Chẩn đoán:
-        </Typography>
+          <TextField
+            fullWidth
+            value={reason}
+            multiline
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Box>
+        <Box className="mb-3">
+          <Typography
+            variant="p"
+            gutterBottom
+            color="inherit"
+            noWrap
+            fontWeight="bold"
+          >
+            Chẩn đoán:
+          </Typography>
 
-        <TextField
-          fullWidth
-          value={diagnostic}
-          multiline
-          variant="outlined"
-          rows={2}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-        <Typography
-          variant="h6"
-          gutterBottom
-          color="inherit"
-          noWrap
-          fontWeight="bold"
-        >
-          Nguyên nhân:
-        </Typography>
-        <TextField
-          fullWidth
-          value={causal}
-          multiline
-          variant="outlined"
-          rows={2}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
+          <TextField
+            fullWidth
+            value={diagnostic}
+            multiline
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Box>
+        <Box className="mb-3">
+          <Typography
+            variant="p"
+            gutterBottom
+            color="inherit"
+            noWrap
+            fontWeight="bold"
+          >
+            Nguyên nhân:
+          </Typography>
+          <TextField
+            fullWidth
+            value={causal}
+            multiline
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Box>
+
         <div
           style={{
             display: "flex",
@@ -128,7 +135,7 @@ const ModalDetailRecord = ({
           }}
         >
           <Typography
-            variant="h6"
+            variant="p"
             gutterBottom
             color="inherit"
             noWrap
@@ -141,82 +148,86 @@ const ModalDetailRecord = ({
             {date}
           </Typography>
         </div>
-        <Typography
-          variant="h6"
-          gutterBottom
-          color="inherit"
-          noWrap
-          fontWeight="bold"
-        >
-          Lưu ý về tủy:
-        </Typography>
-        <TextField
-          fullWidth
-          value={marrowRecord}
-          multiline
-          variant="outlined"
-          rows={2}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-        <Typography
-          variant="h6"
-          gutterBottom
-          color="inherit"
-          noWrap
-          fontWeight="bold"
-        >
-          Ghi chú:
-        </Typography>
-        <TextField
-          fullWidth
-          value={note}
-          multiline
-          variant="outlined"
-          rows={2}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-        <Typography
-          variant="h6"
-          gutterBottom
-          color="inherit"
-          noWrap
-          fontWeight="bold"
-        >
-          Điều trị:
-        </Typography>
-        <TextField
-          fullWidth
-          value={treatment}
-          multiline
-          variant="outlined"
-          rows={2}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-        <Typography
-          variant="h6"
-          gutterBottom
-          color="inherit"
-          noWrap
-          fontWeight="bold"
-        >
-          Đơn thuốc:
-        </Typography>
-        <TextField
-          fullWidth
-          value={prescription}
-          multiline
-          variant="outlined"
-          rows={2}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
+        <Box className="mb-3">
+          <Typography
+            variant="p"
+            gutterBottom
+            color="inherit"
+            noWrap
+            fontWeight="bold"
+          >
+            Lưu ý về tủy:
+          </Typography>
+          <TextField
+            fullWidth
+            value={marrowRecord}
+            multiline
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Box>
+        <Box className="mb-3">
+          <Typography
+            variant="p"
+            gutterBottom
+            color="inherit"
+            noWrap
+            fontWeight="bold"
+          >
+            Ghi chú:
+          </Typography>
+          <TextField
+            fullWidth
+            value={note}
+            multiline
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Box>
+        <Box className="mb-3">
+          <Typography
+            variant="p"
+            gutterBottom
+            color="inherit"
+            noWrap
+            fontWeight="bold"
+          >
+            Điều trị:
+          </Typography>
+          <TextField
+            fullWidth
+            value={treatment}
+            multiline
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Box>
+        <Box className="mb-3">
+          <Typography
+            variant="p"
+            gutterBottom
+            color="inherit"
+            noWrap
+            fontWeight="bold"
+          >
+            Đơn thuốc:
+          </Typography>
+          <TextField
+            fullWidth
+            value={prescription}
+            multiline
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Box>
       </Modal>
     </>
   );

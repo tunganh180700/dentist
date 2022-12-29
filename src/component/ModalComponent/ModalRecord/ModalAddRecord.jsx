@@ -255,12 +255,12 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   };
 
   const handleCancel = () => {
+    setModalAddOpen(false);
     setRows([]);
     setCountRow({
       statusCount: "up",
       value: 0,
     });
-    setModalAddOpen(false);
     setValueDate(null);
     formik.handleReset();
     formik.resetForm();
