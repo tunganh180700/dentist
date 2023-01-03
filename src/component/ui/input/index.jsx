@@ -6,12 +6,13 @@ const InputDentist = ({
   required = false,
   error = { message: "", touched: false },
   id,
+  isFlex,
   onChange,
 }) => {
   return (
     <div>
-      <Box className="mb-2">
-        <p className="mb-1 font-bold">
+      <Box className={`mb-2 ${isFlex && 'flex items-center'}`}>
+        <p className={`mb-1 font-bold ${isFlex && 'w-1/3'}`}>
           {label} {required && <span className="text-red-600">*</span>}
         </p>
         <TextField

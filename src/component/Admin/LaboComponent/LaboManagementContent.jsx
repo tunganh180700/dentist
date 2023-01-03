@@ -49,7 +49,7 @@ const LaboManagementContent = () => {
 
   return (
     <>
-      <h2 className="font-bold mb-5"> Quản Lý Labo</h2>
+      <h2 className="font-bold mb-4"> Quản Lý Labo</h2>
       <IconButton
         aria-label="add"
         style={{ borderRadius: "5%" }}

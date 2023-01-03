@@ -127,7 +127,7 @@ const WaitingRoomManagementContent = () => {
   return (
     <>
       <ToastContainer />
-      <h2 className="font-bold mb-5">Quản Lý Phòng Chờ</h2>
+      <h2 className="font-bold mb-4">Quản Lý Phòng Chờ</h2>
       <SockJsClient
         url={SOCKET_URL}
         topics={["/topic/group"]}

@@ -54,7 +54,7 @@ import _ from "lodash";
 
 const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   const dispatch = useDispatch();
-  const [valueDate, setValueDate] = useState(null);
+  const valueDate = moment().format(validationDate);
   const { id } = useParams();
   const [listTreatingService, setListTreatingService] = useState([]);
 
@@ -171,7 +171,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
         value: 0,
       });
       setModalAddOpen(false);
-      setValueDate(null);
       formik.handleReset();
       setTimeout(() => {
         getServiceTreating(id);
@@ -228,14 +227,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     setEdit(!isEdit);
   };
 
-  // const handleInputChange = (e, index) => {
-  //   setDisable(false);
-  //   const { name, value } = e.target;
-  //   const list = [...rows];
-  //   list[index][name] = value;
-  //   setRows(list);
-  // };
-
   const handleConfirm = (index) => {
     setShowConfirm(index);
   };
@@ -260,8 +251,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
       statusCount: "up",
       value: 0,
     });
-    setModalAddOpen(false);
-    setValueDate(null);
     formik.handleReset();
     formik.resetForm();
   };
@@ -275,11 +264,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
       return _.cloneDeep(prev);
     });
   };
-
-  // const handleStatusForItem = (row, value) => {
-  //   console.log(value);
-  //   row.status = value;
-  // };
 
   const getServiceTreating = async (id) => {
     try {
@@ -295,24 +279,14 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     currency: "VND",
   });
 
-  // useEffect(() => {
-  //     const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
-  //     const discount = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.discount
-  //     setServicePrice(price)
-  //     setServiceDiscount(discount)
-  // }, [serviceId])
-
   useEffect(() => {
-    // const price = serviceIds?.filter((e) => e.serviceId === serviceId)[0]
-    //   ?.price;
-    // setServicePrice(price);
     getServiceTreating(id);
   }, [id, serviceId, isAddRecord]);
 
   return (
     <>
       <Modal
-        title="Thêm Hồ Sơ"
+        title={`Ngày ${moment(valueDate).format("DD-MM-YYYY")}`}
         open={modalAddOpen}
         width="70%"
         onOk={formik.handleSubmit}
@@ -356,31 +330,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 touched: formik.touched.causal,
               }}
             />
-            <Box className="mb-2">
-              <p className="mb-1 font-bold">
-                Ngày khám<span className="text-red-600">*</span>
-              </p>
-              <DatePickerDentist
-                value={valueDate}
-                placeholder="Ngày khám"
-                onChange={(value) => {
-                  setValueDate(
-                    value ? moment(value).format(validationDate) : ""
-                  );
-                }}
-              />
-              {/* {formik.touched && !valueDate && (
-                <Typography
-                  style={{
-                    color: "red",
-                    fontStyle: "italic",
-                    fontSize: "14px",
-                  }}
-                >
-                  Ngày khám bắt buộc
-                </Typography>
-              )} */}
-            </Box>
             <InputDentist
               id="marrowRecord"
               label="Lưu ý về tủy"
@@ -513,17 +462,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                       {isEdit ? (
                         <>
                           <StyledTableCell>
-                            {/* <select
-                                                            name="cars"
-                                                            id="cars"
-                                                            value={serviceId}
-                                                            style={{ styleInput, justifyContent: "center" }}
-                                                            onChange={(e) => setServiceId(e.target.value)}
-                                                        >
-                                                            {serviceIds?.map(item => (
-                                                                <option key={item.serviceId} value={item.serviceId}>{item.serviceName}</option>
-                                                            ))}
-                                                        </select> */}
                             <Box sx={{ minWidth: 120 }}>
                               <FormControl fullWidth>
                                 <Select

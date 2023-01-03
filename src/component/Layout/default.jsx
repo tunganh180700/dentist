@@ -88,7 +88,7 @@ function LayoutDefault({ component }) {
         }}
         className="relative p-10"
       >
-        <Box className="absolute right-10">
+        <Box className="absolute right-10 top-5">
           <HeaderAdmin />
         </Box>
         {/* <CssBaseline /> */}

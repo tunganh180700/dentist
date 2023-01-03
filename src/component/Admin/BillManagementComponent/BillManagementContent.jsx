@@ -47,7 +47,7 @@ const BillManagementContent = () => {
 
   return (
     <>
-      <h2 className="font-bold mb-5">Danh Sách Hóa Đơn</h2>
+      <h2 className="font-bold mb-4">Danh Sách Hóa Đơn</h2>
       <StyledTable size="small" className="shadow-md">
         <TableHead>
           <StyledTableRow>

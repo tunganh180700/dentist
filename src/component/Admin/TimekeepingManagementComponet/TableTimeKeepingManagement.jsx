@@ -53,7 +53,7 @@ const TableTimeKeepingManagement = (props) => {
                 <StyledTableCell>
                   {renderTime(item.timeCheckout)}
                 </StyledTableCell>
-                <StyledTableCell className="p-3">
+                <StyledTableCell>
                   <Chip
                     size="small"
                     label={renderStatus(item.timeCheckout)}

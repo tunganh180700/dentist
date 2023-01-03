@@ -36,7 +36,7 @@ const Routing = () => {
           <Route path="meetingroom" element={<WaitingRoomManagement />} />
           <Route path="patient-management">
             <Route index  element={<PatientManagement />} />
-            <Route path="record/:id" element={<RecordManagement />} />
+            <Route path="profile/:id" element={<RecordManagement />} />
           </Route>
           <Route path="timekeeping" element={<TimekeepingManagement />} />
           <Route path="materialmanagement" element={<MaterialManagement />} />

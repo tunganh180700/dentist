@@ -52,7 +52,7 @@ const MaterialManagementContent = () => {
 
   return (
     <>
-      <h2 className="font-bold mb-5">Danh Sách Vật Liệu</h2>
+      <h2 className="font-bold mb-4">Danh Sách Vật Liệu</h2>
       <IconButton
         aria-label="add"
         style={{ borderRadius: "5%" }}

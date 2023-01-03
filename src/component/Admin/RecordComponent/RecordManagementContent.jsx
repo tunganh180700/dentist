@@ -11,9 +11,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import PatientProfile from "../PatientManagementComponent/PatientProfile";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { Divider } from "antd";
+import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -82,7 +84,7 @@ const RecordManagementContent = () => {
   };
   useEffect(() => {
     getDetail(id);
-  }, [id, currentPage]);
+  }, [currentPage]);
 
   useEffect(() => {
     if (isSubmitForm) {
@@ -92,178 +94,187 @@ const RecordManagementContent = () => {
 
   return (
     <>
-      <Box className="flex items-center gap-3 mb-5">
-        <IconButton aria-label="back" className="p-0">
-          <Link to={"/patient-management"}>
-            <ArrowBackIosNewIcon />
-          </Link>
-        </IconButton>
-        <h2 className="font-bold mb-0">Hồ Sơ Bệnh Án Của {patientName}</h2>
+      <Box className="flex items-center gap-3 mb-4">
+        <Link className="text-decoration-none flex" to={"/patient-management"}>
+          <ArrowBackIosNewIcon />
+          <span className="text-base">Back to list</span>
+        </Link>
       </Box>
-      <Box className="flex gap-3  mb-3">
-        <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>
-        <Button
-          variant="contained"
-          color="success"
-          endIcon={<AddCircleIcon />}
-          onClick={() => {
-            setModalAddOpen(true);
+      <Box className="bg-white rounded-lg shadow-md px-10 py-3">
+        <Box className="mb-6">
+          <PatientProfile />
+        </Box>
+        <Divider
+          plain
+          style={{ borderColor: "#000000ba", color:'#000000ba' }}
+          className="mb-3"
+        >
+          <span className="font-bold text-lg ">Hồ sơ khám bệnh</span>
+        </Divider>
+        <Box className="flex gap-3 mb-3">
+          <p className="font-bold text-lg mb-0">Có ({totalElements}) hồ sơ</p>
+          <Button
+            variant="contained"
+            color="success"
+            endIcon={<AddCircleIcon />}
+            onClick={() => {
+              setModalAddOpen(true);
+            }}
+          >
+            <span className="leading-none">Thêm hồ sơ</span>
+          </Button>
+        </Box>
+        <StyledTable className="shadow-md" size="small">
+          <TableHead>
+            <StyledTableRow>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Lý do đến khám</div>
+              </StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Chẩn đoán</div>
+              </StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Nguyên nhân</div>
+              </StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Ngày khám</div>
+              </StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Lưu ý về tủy</div>
+              </StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Ghi chú</div>
+              </StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Điều trị</div>
+              </StyledTableCell>
+              <StyledTableCell>
+                <div className="attibute">Đơn thuốc</div>
+              </StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+            </StyledTableRow>
+          </TableHead>
+          {totalPages === 0 ? null : (
+            <TableBody>
+              {recordList?.map((el) => (
+                <StyledTableRow key={el.patientRecordId}>
+                  <StyledTableCell>
+                    <IconButton
+                      aria-label="detail"
+                      onClick={() => {
+                        setModalDetailRecordOpen(true);
+                        dispatch(setUserId(el.patientRecordId));
+                      }}
+                    >
+                      <RemoveRedEyeIcon />
+                    </IconButton>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <div style={{ ...styleTxt, width: "200px" }}>
+                      {el.reason}
+                    </div>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <div style={styleTxt}>{el.diagnostic}</div>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <div style={styleTxt}>{el.causal}</div>
+                  </StyledTableCell>
+                  <StyledTableCell>{el.date}</StyledTableCell>
+                  <StyledTableCell>
+                    <div style={styleTxt}>{el.marrowRecord}</div>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <div style={styleTxt}>{el.note}</div>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <div style={styleTxt}>{el.treatment}</div>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <div style={styleTxt}>{el.prescription}</div>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Button
+                      variant="contained"
+                      color="info"
+                      onClick={() => {
+                        setModalDetailOpen(true);
+                        dispatch(setUserId(el.patientRecordId));
+                      }}
+                    >
+                      <span className="leading-none">Dịch vụ</span>
+                    </Button>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => {
+                        setModalDeleteOpen(true);
+                        dispatch(setUserId(el.patientRecordId));
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          )}
+        </StyledTable>
+        {!totalPages && (
+          <>
+            <Typography
+              component="h1"
+              variant="h5"
+              color="inherit"
+              noWrap
+              textAlign="center"
+              marginTop={15}
+            >
+              Không có hồ sơ nào
+            </Typography>
+          </>
+        )}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "14px 16px",
           }}
         >
-          <span className="leading-none">Thêm mới</span>
-        </Button>
+          {totalPages > 1 ? (
+            <Pagination
+              color="primary"
+              count={totalPages}
+              onChange={(e, pageNumber) => {
+                setCurrentPage(pageNumber - 1);
+              }}
+            />
+          ) : null}
+        </div>
       </Box>
-      <StyledTable className="shadow-md" size="small">
-        <TableHead>
-          <StyledTableRow>
-            <StyledTableCell></StyledTableCell>
-            <StyledTableCell>
-              <div className="attibute">Lý do đến khám</div>
-            </StyledTableCell>
-            <StyledTableCell>
-              <div className="attibute">Chẩn đoán</div>
-            </StyledTableCell>
-            <StyledTableCell>
-              <div className="attibute">Nguyên nhân</div>
-            </StyledTableCell>
-            <StyledTableCell>
-              <div className="attibute">Ngày khám</div>
-            </StyledTableCell>
-            <StyledTableCell>
-              <div className="attibute">Lưu ý về tủy</div>
-            </StyledTableCell>
-            <StyledTableCell>
-              <div className="attibute">Ghi chú</div>
-            </StyledTableCell>
-            <StyledTableCell>
-              <div className="attibute">Điều trị</div>
-            </StyledTableCell>
-            <StyledTableCell>
-              <div className="attibute">Đơn thuốc</div>
-            </StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-          </StyledTableRow>
-        </TableHead>
-        {totalPages === 0 ? null : (
-          <TableBody>
-            {recordList?.map((el) => (
-              <StyledTableRow key={el.patientRecordId}>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="detail"
-                    onClick={() => {
-                      setModalDetailRecordOpen(true);
-                      dispatch(setUserId(el.patientRecordId));
-                    }}
-                  >
-                    <RemoveRedEyeIcon />
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div style={{ ...styleTxt, width: "200px" }}>{el.reason}</div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div style={styleTxt}>{el.diagnostic}</div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div style={styleTxt}>{el.causal}</div>
-                </StyledTableCell>
-                <StyledTableCell>{el.date}</StyledTableCell>
-                <StyledTableCell>
-                  <div style={styleTxt}>{el.marrowRecord}</div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div style={styleTxt}>{el.note}</div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div style={styleTxt}>{el.treatment}</div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div style={styleTxt}>{el.prescription}</div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Button
-                    onClick={() => {
-                      setModalDetailOpen(true);
-                      dispatch(setUserId(el.patientRecordId));
-                    }}
-                  >
-                    Dịch vụ
-                  </Button>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => {
-                      setModalDeleteOpen(true);
-                      dispatch(setUserId(el.patientRecordId));
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        )}
-      </StyledTable>
-      {!totalPages && (
-        <>
-          <Typography
-            component="h1"
-            variant="h5"
-            color="inherit"
-            noWrap
-            textAlign="center"
-            marginTop={15}
-          >
-            Không có hồ sơ nào
-          </Typography>
-        </>
-      )}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          padding: "14px 16px",
-        }}
-      >
-        {totalPages > 1 ? (
-          <Pagination
-            count={totalPages}
-            onChange={(e, pageNumber) => {
-              setCurrentPage(pageNumber - 1);
-            }}
-          />
-        ) : null}
-      </div>
-      <div>
-        <ModalDetailRecord
-          modalDetailRecordOpen={modalDetailRecordOpen}
-          setModalDetailRecordOpen={setModalDetailRecordOpen}
-        />
-      </div>
-      <div>
-        <ModalAddRecord
-          modalAddOpen={modalAddOpen}
-          setModalAddOpen={setModalAddOpen}
-          isSubmitForm={setIsSubmitForm}
-        />
-      </div>
-      <div>
-        <ModalDeleteRecord
-          modalDeleteOpen={modalDeleteOpen}
-          setModalDeleteOpen={setModalDeleteOpen}
-          isSubmitForm={setIsSubmitForm}
-        />
-      </div>
-      <div>
-        <ModalDetailService
-          modalDetailOpen={modalDetailOpen}
-          setModalDetailOpen={setModalDetailOpen}
-        />
-      </div>
+
+      <ModalDetailRecord
+        modalDetailRecordOpen={modalDetailRecordOpen}
+        setModalDetailRecordOpen={setModalDetailRecordOpen}
+      />
+
+      <ModalAddRecord
+        modalAddOpen={modalAddOpen}
+        setModalAddOpen={setModalAddOpen}
+        isSubmitForm={setIsSubmitForm}
+      />
+      <ModalDeleteRecord
+        modalDeleteOpen={modalDeleteOpen}
+        setModalDeleteOpen={setModalDeleteOpen}
+        isSubmitForm={setIsSubmitForm}
+      />
+      <ModalDetailService
+        modalDetailOpen={modalDetailOpen}
+        setModalDetailOpen={setModalDetailOpen}
+      />
     </>
   );
 };

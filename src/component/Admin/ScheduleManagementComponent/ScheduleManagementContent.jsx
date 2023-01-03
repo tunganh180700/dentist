@@ -50,7 +50,7 @@ const ScheduleManagementContent = () => {
 
   return (
     <>
-      <h2 className="font-bold mb-5">Lịch hẹn</h2>
+      <h2 className="font-bold mb-4">Lịch hẹn</h2>
       <Button
         aria-label="add"
         variant="success"
