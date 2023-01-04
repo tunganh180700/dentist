@@ -253,6 +253,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     });
     formik.handleReset();
     formik.resetForm();
+    setModalAddOpen(false);
   };
 
   const handleServiceChange = (index, newsServiceId) => {

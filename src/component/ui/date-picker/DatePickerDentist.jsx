@@ -17,6 +17,7 @@ const disabledDate = (current) => {
 const DatePickerDentist = ({
   value,
   range = false,
+  clearIcon,
   placeholder = "Select date",
   onChange,
 }) => {

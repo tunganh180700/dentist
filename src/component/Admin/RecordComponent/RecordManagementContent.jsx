@@ -107,7 +107,7 @@ const RecordManagementContent = () => {
         <Divider
           plain
           style={{ borderColor: "#000000ba", color:'#000000ba' }}
-          className="mb-3"
+          className="mt-5 mb-1"
         >
           <span className="font-bold text-lg ">Hồ sơ khám bệnh</span>
         </Divider>
@@ -231,7 +231,7 @@ const RecordManagementContent = () => {
               color="inherit"
               noWrap
               textAlign="center"
-              marginTop={15}
+              marginTop={10}
             >
               Không có hồ sơ nào
             </Typography>

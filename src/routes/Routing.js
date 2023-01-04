@@ -46,6 +46,7 @@ const Routing = () => {
             path="serviceandcategory"
             element={<ServiceAndCategoryManagement />}
           />
+          <Route path='/serviceandcategory' element={<ServiceAndCategoryManagement />} />
           <Route path="income" element={<IncomeManagement />} />
           <Route path="bill" element={<BillManagement />} />
           <Route path="forgot-password" element={<ForgotPassword />} />

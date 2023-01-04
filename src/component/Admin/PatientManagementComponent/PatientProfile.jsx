@@ -4,39 +4,45 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPatient } from "../../../redux/PatienSlice/choosenPatientSlice";
+import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Loading from "../../ui/Loading";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
 import BlockUpdatePatient from "./BlockUpdatePatient";
+import ModalDeletePatient from "../../ModalComponent/ModalPatient/ModalDeletePatient";
 import { Skeleton } from "antd";
 
 const PatientProfile = () => {
   const [loading, setLoading] = useState();
   const [isEdit, setIsEdit] = useState(false);
+  const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const [isSubmitForm, setIsSubmitForm] = useState(false);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const userInfo = {
-    patientId: id,
+    patientId: Number(id),
     patientName: useSelector((state) => state.choosenPatient.patientName),
     birthdate: useSelector((state) => state.choosenPatient.birthdate),
     gender: useSelector((state) => state.choosenPatient.gender),
     address: useSelector((state) => state.choosenPatient.address),
     phone: useSelector((state) => state.choosenPatient.phone),
     email: useSelector((state) => state.choosenPatient.email),
+    bodyPrehistory: useSelector((state) => state.choosenPatient.bodyPrehistory),
+    teethPrehistory: useSelector((state) => state.choosenPatient.teethPrehistory),
+    status: useSelector((state) => state.choosenPatient.status),
+    isDeleted: useSelector((state) => state.choosenPatient.isDeleted),
   };
   const bodyPrehistory = useSelector(
     (state) => state.choosenPatient.bodyPrehistory
   );
   const teethPrehistory = useSelector(
     (state) => state.choosenPatient.teethPrehistory
-  );
-
-  const isUpdatePatient = useSelector(
-    (state) => state.listPatient.isUpdatePatient
   );
 
   const styleTxt = {
@@ -66,6 +72,7 @@ const PatientProfile = () => {
       if (id && isSubmitForm) {
         setLoading(true);
         dispatch(fetchPatient(id));
+        setIsEdit(false)
       }
     } catch (error) {
       console.log(error);
@@ -75,6 +82,12 @@ const PatientProfile = () => {
       setLoading(false);
     }, 500);
   }, [isSubmitForm]);
+
+  useEffect(() => {
+    if (isDelete) {
+      navigate(-1);
+    }
+  }, [isDelete]);
 
   return (
     <>
@@ -176,6 +189,7 @@ const PatientProfile = () => {
                   variant="contained"
                   color="error"
                   startIcon={<DeleteIcon />}
+                  onClick={() => setModalDeleteOpen(true)}
                 >
                   <span className="leading-none">Xóa</span>
                 </Button>
@@ -190,13 +204,11 @@ const PatientProfile = () => {
             <Skeleton paragraph={{ rows: 8 }} />
           </Box>
         )}
-        {/* <Button
-          className="float-right"
-          onClick={() => setModalDetailOpen(false)}
-          style={{ gap: "15px" }}
-        >
-          Đóng
-        </Button> */}
+        <ModalDeletePatient
+          modalDeleteOpen={modalDeleteOpen}
+          setModalDeleteOpen={setModalDeleteOpen}
+          isSubmitForm={setIsDelete}
+        />
       </Box>
     </>
   );

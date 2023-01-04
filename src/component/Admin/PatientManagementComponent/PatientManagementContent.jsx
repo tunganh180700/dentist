@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Pagination,
   Typography,
-  IconButton,
   SwipeableDrawer,
   Button,
   TextField,
@@ -15,9 +14,7 @@ import MaleIcon from "@mui/icons-material/Male";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DatePickerDentist from "../../ui/date-picker/DatePickerDentist";
 import {
@@ -26,27 +23,17 @@ import {
 } from "../../../redux/PatienSlice/listPatientSlice";
 import Loading from "../../ui/Loading";
 import ModalAddPatient from "../../ModalComponent/ModalPatient/ModalAddPatient";
-import ModalDeletePatient from "../../ModalComponent/ModalPatient/ModalDeletePatient";
-import ModalUpdatePatient from "./BlockUpdatePatient";
-// import ModalDetailPatient from "../../ModalComponent/ModalPatient/ModalDetailPatient";
 import axiosInstance from "../../../config/customAxios";
-import { Link } from "react-router-dom";
 import {
   StyledTableCell,
-  StyledTableRow,
+  StyledTableRowClick,
   StyledTable,
 } from "../../ui/TableElements";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-// import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { toast } from "react-toastify";
 import "./style.css";
 import dayjs from "dayjs";
 import moment from "moment";
-
-// const color = {
-//   border: "rgba(0, 0, 0, 0.2)",
-// };
 
 const PatientManagementContent = () => {
   const dispatch = useDispatch();
@@ -55,8 +42,6 @@ const PatientManagementContent = () => {
   const totalPages = useSelector((state) => state.listPatient.totalPage);
   const totalElements = useSelector((state) => state.listPatient.totalElements);
   const [currentPage, setCurrentPage] = useState(0);
-  const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
-  const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [isSubmitFormPatient, setIsSubmitFormPatient] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
@@ -65,7 +50,7 @@ const PatientManagementContent = () => {
 
   const [role, setRole] = useState(null);
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -219,7 +204,7 @@ const PatientManagementContent = () => {
 
       <StyledTable size="small" className="shadow-md">
         <TableHead>
-          <StyledTableRow>
+          <StyledTableRowClick>
             {/* <StyledTableCell></StyledTableCell> */}
             <StyledTableCell>Họ tên</StyledTableCell>
             <StyledTableCell>
@@ -248,38 +233,20 @@ const PatientManagementContent = () => {
             >
               <div className="attibute">Trạng thái</div>
             </StyledTableCell>
-            {/* <StyledTableCell></StyledTableCell>
-            <StyledTableCell></StyledTableCell> */}
             <StyledTableCell></StyledTableCell>
-          </StyledTableRow>
+          </StyledTableRowClick>
         </TableHead>
         {totalPages === 0 ? null : (
           <TableBody>
             {listPatient.map((item) => (
-              <StyledTableRow
-                className="cursor-pointer"
+              <StyledTableRowClick
+                className="hover cursor-pointer"
                 key={item.patientId}
                 onClick={() => {
                   navigate(`profile/${item.patientId}`);
                 }}
               >
-                {/* <StyledTableCell>
-                  <IconButton
-                    aria-label="detail"
-                    onClick={() => {
-                      setModalDetailOpen(true);
-                      dispatch(setUserId(item.patientId));
-                    }}
-                  >
-                    <RemoveRedEyeIcon />
-                  </IconButton>
-                </StyledTableCell> */}
-                <StyledTableCell>
-                  {item.patientName}
-                  {/* <Link to={`record/${item.patientId}`}>
-                    {item.patientName}
-                  </Link> */}
-                </StyledTableCell>
+                <StyledTableCell>{item.patientName}</StyledTableCell>
                 <StyledTableCell>
                   {dayjs(item.birthdate).format("DD/MM/YYYY")}
                 </StyledTableCell>
@@ -303,41 +270,20 @@ const PatientManagementContent = () => {
                     }}
                   />
                 </StyledTableCell>
-                {/* <StyledTableCell>
-                  <IconButton
-                    aria-label="edit"
-                    onClick={() => {
-                      setModalUpdateOpen(true);
-                      dispatch(setUserId(item.patientId));
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => {
-                      setModalDeleteOpen(true);
-                      dispatch(setUserId(item.patientId));
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </StyledTableCell> */}
                 <StyledTableCell>
                   <Button
                     variant="contained"
                     color="info"
                     startIcon={<AddIcon />}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       addWaitingPatient(item.patientId);
                     }}
                   >
                     <span className="leading-none">Đặt lịch</span>
                   </Button>
                 </StyledTableCell>
-              </StyledTableRow>
+              </StyledTableRowClick>
             ))}
           </TableBody>
         )}
@@ -380,26 +326,6 @@ const PatientManagementContent = () => {
           setModalAddOpen={setModalAddOpen}
           isSubmitForm={setIsSubmitFormPatient}
         />
-      </div>
-      <div>
-        <ModalDeletePatient
-          modalDeleteOpen={modalDeleteOpen}
-          setModalDeleteOpen={setModalDeleteOpen}
-          isSubmitForm={setIsSubmitFormPatient}
-        />
-      </div>
-      <div>
-        {/* <ModalUpdatePatient
-          modalUpdateOpen={modalUpdateOpen}
-          setModalUpdateOpen={setModalUpdateOpen}
-          isSubmitForm={setIsSubmitFormPatient}
-        /> */}
-      </div>
-      <div>
-        {/* <ModalDetailPatient
-          modalDetailOpen={modalDetailOpen}
-          setModalDetailOpen={setModalDetailOpen}
-        /> */}
       </div>
       <SwipeableDrawer
         anchor="right"

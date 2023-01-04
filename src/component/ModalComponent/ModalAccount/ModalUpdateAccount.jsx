@@ -78,7 +78,6 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     setLoading(true);
     try {
       const res = await axiosInstance.get(getAccountByIdAPI + userId);
-      console.log(res.data);
       formik.setValues(res.data);
       setOldData(res.data);
       setRoleId(res.data.roleId);

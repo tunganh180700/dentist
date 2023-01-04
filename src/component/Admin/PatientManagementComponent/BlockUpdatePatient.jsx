@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { getPatientByIdAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
-import { updatePatient } from "../../../redux/PatienSlice/listPatientSlice";
+import { updatePatient } from "../../../redux/PatienSlice/choosenPatientSlice";
 import DatePickerDentist from "../../ui/date-picker/DatePickerDentist";
 import InputDentist from "../../ui/input";
 import {
@@ -18,21 +18,19 @@ import {
   validationDate,
 } from "../../../config/validation";
 
-const BlockUpdatePatient = ({setIsEdit , userInfo, submit }) => {
+const BlockUpdatePatient = ({ setIsEdit, userInfo, submit }) => {
   const dispatch = useDispatch();
   const [gender, setGender] = useState(userInfo.gender);
   const [valueDate, setValueDate] = useState(moment(userInfo.birthdate));
-  const [loading, setLoading] = useState();
-  const patientId = useSelector((state) => state.modal.userId);
-
-  // const [oldData, setOldData] = useState();
 
   const validationSchema = yup.object({
     patientName: yup
       .string("Nhập họ tên")
+      .required("Vui lòng nhập họ tên")
       .matches(regexName, "Họ và tên không được nhập số hoặc kí tự đặc biệt"),
     phone: yup
       .string("Nhập số điện thoại")
+      .required("Vui lòng nhập số điện thoại")
       .matches(
         regexPhone,
         "Số điện thoại không được nhập chữ, kí tự, bắt buộc phải 10 số bắt đầu là 03, 05, 07 08, 09."
@@ -42,54 +40,28 @@ const BlockUpdatePatient = ({setIsEdit , userInfo, submit }) => {
       .matches(regexEmail, "Email không đúng với định dạng."),
     address: yup
       .string("Nhập địa chỉ")
+      .required("Vui lòng nhập địa chỉ")
       .max(255, "Địa chỉ không thể quá 255 kí tự."),
   });
 
   const formik = useFormik({
     initialValues: userInfo,
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const valueForm = { ...values };
       valueForm.birthdate = moment(valueDate).format(validationDate);
       valueForm.gender = gender;
-      dispatch(updatePatient(valueForm));
+      await dispatch(updatePatient(valueForm));
       submit(true);
     },
   });
-
-  const fetchPatient = async (patientId) => {
-    setLoading(true);
-    try {
-      const res = await axiosInstance.get(getPatientByIdAPI + patientId);
-      formik.setValues(res.data);
-      // setOldData(res.data);
-      setValueDate(res.data.birthdate);
-      setGender(res.data.gender);
-    } catch (error) {
-      console.log(error);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    if (patientId) fetchPatient(patientId);
-  }, [patientId]);
-
-  const handleCancel = () => {
-    // formik.values.patientName = oldData.patientName;
-    // formik.values.phone = oldData.phone;
-    // formik.values.address = oldData.address;
-    // formik.values.bodyPrehistory = oldData.bodyPrehistory;
-    // formik.values.teethPrehistory = oldData.teethPrehistory;
-    // setGender(oldData.gender);
-    // setValue(oldData.birthdate);
-  };
 
   return (
     <>
       <InputDentist
         id="patientName"
         isFlex
+        validate
         label="Họ và tên:"
         value={formik.values.patientName}
         onChange={formik.handleChange}
@@ -103,6 +75,7 @@ const BlockUpdatePatient = ({setIsEdit , userInfo, submit }) => {
         <Box className="w-full">
           <DatePickerDentist
             value={valueDate}
+            clearIcon={null}
             onChange={(newValue) => {
               setValueDate(newValue);
             }}
@@ -110,9 +83,10 @@ const BlockUpdatePatient = ({setIsEdit , userInfo, submit }) => {
         </Box>
       </Box>
       <InputDentist
-        id="phonenumber"
-        isFlex
+        id="phone"
         label="Số điện thoại"
+        isFlex
+        validate
         value={formik.values.phone}
         onChange={formik.handleChange}
         error={{
@@ -134,6 +108,7 @@ const BlockUpdatePatient = ({setIsEdit , userInfo, submit }) => {
       <InputDentist
         id="address"
         isFlex
+        validate
         label="Địa chỉ"
         value={formik.values.address}
         onChange={formik.handleChange}
@@ -156,6 +131,7 @@ const BlockUpdatePatient = ({setIsEdit , userInfo, submit }) => {
       <InputDentist
         id="bodyPrehistory"
         isFlex
+        validate
         label="Tiền sử cơ thể"
         value={formik.values.bodyPrehistory}
         onChange={formik.handleChange}
@@ -167,14 +143,18 @@ const BlockUpdatePatient = ({setIsEdit , userInfo, submit }) => {
         value={formik.values.teethPrehistory}
         onChange={formik.handleChange}
       />
-     <Box className="flex justify-end gap-3">
-     <Button variant="contained" color="info" onClick={formik.handleSubmit}>
-        <span className="leading-none">Lưu</span>
-      </Button>
-      <Button variant="contained" color="error" onClick={() => setIsEdit(false)}>
-        <span className="leading-none">Hủy</span>
-      </Button>
-     </Box>
+      <Box className="flex justify-end gap-3">
+        <Button variant="contained" color="info" onClick={formik.handleSubmit}>
+          <span className="leading-none">Lưu</span>
+        </Button>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => setIsEdit(false)}
+        >
+          <span className="leading-none">Hủy</span>
+        </Button>
+      </Box>
     </>
   );
 };

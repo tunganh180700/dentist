@@ -82,6 +82,12 @@ export const menu = [
     permissionDeny: ["Receptionist", "Doctor", "Nurse"],
   },
   {
+    icon: <ScheduleIcon />,
+    iconActive: <ScheduleIcon color="info" />,
+    title: "Quản lý dịch vụ",
+    href: "/serviceandcategory",
+  },
+  {
     icon: <CurrencyExchangeIcon />,
     iconActive: <CurrencyExchangeIcon color="info" />,
     title: "Thu nhập",
