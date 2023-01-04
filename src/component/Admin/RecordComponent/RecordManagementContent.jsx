@@ -106,7 +106,7 @@ const RecordManagementContent = () => {
         </Box>
         <Divider
           plain
-          style={{ borderColor: "#000000ba", color:'#000000ba' }}
+          style={{ borderColor: "#000000ba", color: "#000000ba" }}
           className="mt-5 mb-1"
         >
           <span className="font-bold text-lg ">Hồ sơ khám bệnh</span>
@@ -127,7 +127,6 @@ const RecordManagementContent = () => {
         <StyledTable className="shadow-md" size="small">
           <TableHead>
             <StyledTableRow>
-              <StyledTableCell></StyledTableCell>
               <StyledTableCell>
                 <div className="attibute">Lý do đến khám</div>
               </StyledTableCell>
@@ -161,17 +160,6 @@ const RecordManagementContent = () => {
               {recordList?.map((el) => (
                 <StyledTableRow key={el.patientRecordId}>
                   <StyledTableCell>
-                    <IconButton
-                      aria-label="detail"
-                      onClick={() => {
-                        setModalDetailRecordOpen(true);
-                        dispatch(setUserId(el.patientRecordId));
-                      }}
-                    >
-                      <RemoveRedEyeIcon />
-                    </IconButton>
-                  </StyledTableCell>
-                  <StyledTableCell>
                     <div style={{ ...styleTxt, width: "200px" }}>
                       {el.reason}
                     </div>
@@ -200,11 +188,11 @@ const RecordManagementContent = () => {
                       variant="contained"
                       color="info"
                       onClick={() => {
-                        setModalDetailOpen(true);
+                        setModalDetailRecordOpen(true);
                         dispatch(setUserId(el.patientRecordId));
                       }}
                     >
-                      <span className="leading-none">Dịch vụ</span>
+                      <span className="leading-none">Chi tiết</span>
                     </Button>
                   </StyledTableCell>
                   <StyledTableCell>

@@ -71,7 +71,7 @@ const BlockUpdatePatient = ({ setIsEdit, userInfo, submit }) => {
         }}
       />
       <Box className="flex items-center mb-2">
-        <p className="mb-1 font-bold w-1/3">Ngày sinh</p>
+        <p className="mb-1 font-bold w-1/3">Ngày sinh:</p>
         <Box className="w-full">
           <DatePickerDentist
             value={valueDate}
@@ -84,7 +84,7 @@ const BlockUpdatePatient = ({ setIsEdit, userInfo, submit }) => {
       </Box>
       <InputDentist
         id="phone"
-        label="Số điện thoại"
+        label="Số điện thoại:"
         isFlex
         validate
         value={formik.values.phone}
@@ -109,7 +109,7 @@ const BlockUpdatePatient = ({ setIsEdit, userInfo, submit }) => {
         id="address"
         isFlex
         validate
-        label="Địa chỉ"
+        label="Địa chỉ:"
         value={formik.values.address}
         onChange={formik.handleChange}
         error={{
@@ -120,7 +120,7 @@ const BlockUpdatePatient = ({ setIsEdit, userInfo, submit }) => {
       <InputDentist
         id="email"
         isFlex
-        label="Email"
+        label="Email:"
         value={formik.values.email}
         onChange={formik.handleChange}
         error={{
@@ -132,14 +132,14 @@ const BlockUpdatePatient = ({ setIsEdit, userInfo, submit }) => {
         id="bodyPrehistory"
         isFlex
         validate
-        label="Tiền sử cơ thể"
+        label="Tiền sử cơ thể:"
         value={formik.values.bodyPrehistory}
         onChange={formik.handleChange}
       />
       <InputDentist
         id="teethPrehistory"
         isFlex
-        label="Tiền sử răng miệng"
+        label="Tiền sử răng miệng:"
         value={formik.values.teethPrehistory}
         onChange={formik.handleChange}
       />

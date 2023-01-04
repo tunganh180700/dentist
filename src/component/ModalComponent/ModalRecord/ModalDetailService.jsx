@@ -5,7 +5,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Chip
+  Chip,
 } from "@mui/material";
 import { Modal } from "antd";
 import e from "cors";
@@ -33,11 +33,11 @@ const ModalDetailService = ({ modalDetailOpen, setModalDetailOpen }) => {
   }, [patientRecordId]);
 
   const renderColor = (status) => {
-    let color = "#59995c";
+    let color = "#2e7d32";
     if (status === 0) {
       color = "#e18220";
     } else if (status === 1) {
-      color = "#418eed";
+      color = "#0288d1";
     }
     return color;
   };
@@ -63,17 +63,18 @@ const ModalDetailService = ({ modalDetailOpen, setModalDetailOpen }) => {
             {listService?.map((item) => {
               return (
                 <TableRow key={item.serviceId}>
-                  <TableCell className="text-center">{item.serviceName}</TableCell>
+                  <TableCell className="text-center">
+                    {item.serviceName}
+                  </TableCell>
                   <TableCell className="text-center py-3">
-                    {/* {item.status === 1 ? "Đang chữa trị" : "Đã xong"} */}
                     <Chip
-                    size="small"
-                    label={statusFormatter(item.status)}
-                    style={{
-                      background: `${renderColor(item.status)}`,
-                      color: "#fff",
-                    }}
-                  />
+                      size="small"
+                      label={statusFormatter(item.status)}
+                      style={{
+                        background: `${renderColor(item.status)}`,
+                        color: "#fff",
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               );

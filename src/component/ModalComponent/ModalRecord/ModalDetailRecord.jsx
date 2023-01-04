@@ -1,8 +1,21 @@
-import { Box, TextField, TextareaAutosize, Typography } from "@mui/material";
-import { Modal } from "antd";
+import {
+  Box,
+  TextField,
+  Table,
+  TableBody,
+  TableHead,
+  Chip,
+} from "@mui/material";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
+import { Modal, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRecord } from "../../../redux/RecordSlice/listRecordSlice";
+import moment from "moment";
 
 const ModalDetailRecord = ({
   modalDetailRecordOpen,
@@ -19,6 +32,8 @@ const ModalDetailRecord = ({
   const note = useSelector((state) => state.listRecord.note);
   const treatment = useSelector((state) => state.listRecord.treatment);
   const prescription = useSelector((state) => state.listRecord.prescription);
+  const listService = useSelector((state) => state.listRecord.listService);
+  const patientRecordId = useSelector((state) => state.modal.userId);
 
   const style = {
     position: "absolute",
@@ -31,12 +46,25 @@ const ModalDetailRecord = ({
     boxShadow: 24,
     p: 4,
   };
+  const renderColor = (status) => {
+    let color = "#2e7d32";
+    if (status === 0) {
+      color = "#e18220";
+    } else if (status === 1) {
+      color = "#0288d1";
+    }
+    return color;
+  };
+  const statusFormatter = (status) => {
+    return status === 1 ? "Đang Chữa" : "Đã Chữa Trị";
+  };
 
   useEffect(() => {
     setLoading(true);
     try {
       if (recordId > 0) {
         dispatch(fetchRecord(recordId));
+        dispatch(fetchRecord(patientRecordId));
       }
     } catch (error) {
       console.log(error);
@@ -44,202 +72,186 @@ const ModalDetailRecord = ({
     setLoading(false);
   }, [recordId]);
 
+  const detailRecord = (
+    <Box>
+      <Box className="mb-3 flex gap-3 items-center">
+        <div className="w-1/5">
+          <p className="font-bold">Lý do đến khám:</p>
+        </div>
+        <TextField
+          fullWidth
+          value={reason}
+          multiline
+          variant="outlined"
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </Box>
+      <Box className="mb-3 flex gap-3 items-center">
+        <div className="w-1/5">
+          <p className="font-bold">Chẩn đoán:</p>
+        </div>
+
+        <TextField
+          fullWidth
+          value={diagnostic}
+          multiline
+          variant="outlined"
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </Box>
+      <Box className="mb-3 flex gap-3 items-center">
+        <div className="w-1/5">
+          <p className="font-bold">Nguyên nhân:</p>
+        </div>
+        <TextField
+          fullWidth
+          value={causal}
+          multiline
+          variant="outlined"
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </Box>
+      <Box className="mb-3 flex gap-3 items-center">
+        <div className="w-1/5">
+          <p className="font-bold">Lưu ý về tủy:</p>
+        </div>
+        <TextField
+          fullWidth
+          value={marrowRecord}
+          multiline
+          variant="outlined"
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </Box>
+      <Box className="mb-3 flex gap-3 items-center">
+        <div className="w-1/5">
+          <p className="font-bold">Ghi chú:</p>
+        </div>
+        <TextField
+          fullWidth
+          value={note}
+          multiline
+          variant="outlined"
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </Box>
+      <Box className="mb-3 flex gap-3 items-center">
+        <div className="w-1/5">
+          <p className="font-bold">Điều trị:</p>
+        </div>
+        <TextField
+          fullWidth
+          value={treatment}
+          multiline
+          variant="outlined"
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </Box>
+      <Box className="mb-3 flex gap-3 items-center">
+        <div className="w-1/5">
+          <p className="font-bold">Đơn thuốc:</p>
+        </div>
+        <TextField
+          fullWidth
+          value={prescription}
+          multiline
+          variant="outlined"
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </Box>
+    </Box>
+  );
+
+  const servicesBlock = (
+    <StyledTable
+      size="small"
+      className="shadow-md"
+      style={{ marginTop: "15px" }}
+    >
+      <TableHead>
+        <StyledTableRow>
+          <StyledTableCell>
+            <div className="attibute text-center">Tên dịch vụ</div>
+          </StyledTableCell>
+          <StyledTableCell>
+            <div className="attibute text-center">Trạng thái</div>
+          </StyledTableCell>
+        </StyledTableRow>
+      </TableHead>
+      <TableBody>
+        {listService?.map((item) => {
+          return (
+            <StyledTableRow key={item.serviceId}>
+              <StyledTableCell className="text-center">
+                {item.serviceName}
+              </StyledTableCell>
+              <StyledTableCell className="text-center py-3">
+                <Chip
+                  size="small"
+                  label={statusFormatter(item.status)}
+                  style={{
+                    background: `${renderColor(item.status)}`,
+                    color: "#fff",
+                  }}
+                />
+              </StyledTableCell>
+            </StyledTableRow>
+          );
+        })}
+      </TableBody>
+    </StyledTable>
+  );
+
   return (
     <>
       <Modal
-        title={`Ngày ${date}`}
+        title={`Ngày ${moment(date).format("DD-MM-YYYY")}`}
         open={modalDetailRecordOpen}
-        // onOk={formik.handleSubmit}
         width={800}
         onCancel={() => setModalDetailRecordOpen(false)}
         footer={null}
       >
-        <Box className="mb-3 flex gap-3 items-center">
-          <div className="w-1/5">
-            <p className="font-bold">Lý do đến khám:</p>
-          </div>
-
-          {/* <Typography
-            variant="p"
-            gutterBottom
-            color="inherit"
-            noWrap
-            fontWeight="bold"
-          >
-            Lý do đến khám:
-          </Typography> */}
-          <TextField
-            fullWidth
-            value={reason}
-            multiline
-            variant="outlined"
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Box>
-        <Box className="mb-3 flex gap-3 items-center">
-          {/* <Typography
-            variant="p"
-            gutterBottom
-            color="inherit"
-            noWrap
-            fontWeight="bold"
-          >
-            Chẩn đoán:
-          </Typography> */}
-          <div className="w-1/5">
-            <p className="font-bold">Chẩn đoán:</p>
-          </div>
-
-          <TextField
-            fullWidth
-            value={diagnostic}
-            multiline
-            variant="outlined"
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Box>
-        <Box className="mb-3 flex gap-3 items-center">
-          {/* <Typography
-            variant="p"
-            gutterBottom
-            color="inherit"
-            noWrap
-            fontWeight="bold"
-          >
-            Nguyên nhân:
-          </Typography> */}
-          <div className="w-1/5">
-            <p className="font-bold">Nguyên nhân:</p>
-          </div>
-          <TextField
-            fullWidth
-            value={causal}
-            multiline
-            variant="outlined"
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Box>
-        {/* 
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            alignItems: "center",
-            marginBottom: "5px",
-          }}
-        >
-          <Typography
-            variant="h6"
-            gutterBottom
-            color="inherit"
-            noWrap
-            fontWeight="bold"
-            style={{ marginBottom: 0 }}
-          >
-            Ngày khám:
-          </Typography>
-          <Typography variant="subtitle1" color="inherit" noWrap>
-           
-          </Typography>
-        </div> */}
-        <Box className="mb-3 flex gap-3 items-center">
-          {/* <Typography
-            variant="p"
-            gutterBottom
-            color="inherit"
-            noWrap
-            fontWeight="bold"
-          >
-            Lưu ý về tủy:
-          </Typography> */}
-          <div className="w-1/5">
-            <p className="font-bold">Lưu ý về tủy:</p>
-          </div>
-          <TextField
-            fullWidth
-            value={marrowRecord}
-            multiline
-            variant="outlined"
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Box>
-        <Box className="mb-3 flex gap-3 items-center">
-          {/* <Typography
-            variant="p"
-            gutterBottom
-            color="inherit"
-            noWrap
-            fontWeight="bold"
-          >
-            Ghi chú:
-          </Typography> */}
-          <div className="w-1/5">
-            <p className="font-bold">Ghi chú:</p>
-          </div>
-          <TextField
-            fullWidth
-            value={note}
-            multiline
-            variant="outlined"
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Box>
-        <Box className="mb-3 flex gap-3 items-center">
-          {/* <Typography
-            variant="p"
-            gutterBottom
-            color="inherit"
-            noWrap
-            fontWeight="bold"
-          >
-            Điều trị:
-          </Typography> */}
-          <div className="w-1/5">
-            <p className="font-bold">Điều trị:</p>
-          </div>
-          <TextField
-            fullWidth
-            value={treatment}
-            multiline
-            variant="outlined"
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Box>
-        <Box className="mb-3 flex gap-3 items-center">
-          {/* <Typography
-            variant="p"
-            gutterBottom
-            color="inherit"
-            noWrap
-            fontWeight="bold"
-          >
-            Đơn thuốc:
-          </Typography> */}
-          <div className="w-1/5">
-            <p className="font-bold">Đơn thuốc:</p>
-          </div>
-          <TextField
-            fullWidth
-            value={prescription}
-            multiline
-            variant="outlined"
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Box>
+        <Tabs
+          defaultActiveKey={1}
+          centered
+          type="card"
+          items={[
+            {
+              label: "Chi tiết",
+              key: 1,
+              children: detailRecord,
+            },
+            {
+              label: "Dịch vụ",
+              key: 2,
+              children: servicesBlock,
+            },
+            {
+              label: "Vật liệu đã sử dụng",
+              key: 3,
+              children: "Vật liệu đã sử dụng",
+            },
+            {
+              label: "Mẫu vật đã sử dụng",
+              key: 4,
+              children: "Mẫu vật đã sử dụng",
+            },
+          ]}
+        />
       </Modal>
     </>
   );

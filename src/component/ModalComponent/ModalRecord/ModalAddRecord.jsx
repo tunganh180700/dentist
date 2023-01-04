@@ -59,11 +59,11 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   const [listTreatingService, setListTreatingService] = useState([]);
 
   const [serviceId, setServiceId] = useState();
-  // const [serviceName, setServiceName] = useState();
+  const [errorUpdateMess, setErrorUpdateMess] = useState("");
   const [serviceIds, setServiceIds] = useState([]);
   const [showModalExportMaterial, setShowModalExportMaterial] = useState(0);
-  const [modalExportOpen, setModalExportOpen] = useState(false);
   const [showModalSpecimen, setShowModalSpecimen] = useState(0);
+  const [modalExportOpen, setModalExportOpen] = useState(false);
   const [modalSpecimenOpen, setModalSpecimenOpen] = useState(false);
 
   // const [newPrice, setNewPrice] = useState();
@@ -124,6 +124,9 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   }, []);
 
   useEffect(() => {
+    if (rows.length + listTreatingService.length) {
+      setErrorUpdateMess("");
+    }
     setServiceDTOS(formatToDTOS(listTreatingService, rows));
     setEdit(true);
   }, [rows, listTreatingService]);
@@ -148,8 +151,11 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      if (!rows.length) {
+        setErrorUpdateMess("Vui lòng thêm dịch vụ!");
+        return;
+      }
       const formatValue = values;
-
       const listA = listTreatingService.filter((a) => {
         return Object.keys(a).length !== 0;
       });
@@ -389,7 +395,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               >
                 <span className="leading-none">Thêm dịch vụ</span>
               </Button>
-              <Button
+              {/* <Button
                 variant="contained"
                 color="success"
                 endIcon={<AddCircleIcon className="p-0 border-0" />}
@@ -408,7 +414,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 }}
               >
                 <span className="leading-none">Bán sản phẩm</span>
-              </Button>
+              </Button> */}
             </Box>
             <StyledTable className="shadow-md" size="small">
               <TableHead>
@@ -589,6 +595,19 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 })}
               </TableBody>
             </StyledTable>
+            <Box className="text-center mt-4">
+              {errorUpdateMess && (
+                <Typography
+                  style={{
+                    color: "red",
+                    fontStyle: "italic",
+                    fontSize: "14px",
+                  }}
+                >
+                  {errorUpdateMess}
+                </Typography>
+              )}
+            </Box>
           </Box>
         </Box>
         <ModalExportMaterial
