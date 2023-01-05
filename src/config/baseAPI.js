@@ -19,6 +19,8 @@ export const listRoleAPI = `${baseUrl}/api/roles/get_list_roles`
 
 export const listLaboAPI = `${baseUrl}/api/labos/get_list_labos`
 export const getLaboByIdAPI = `${baseUrl}/api/labos/`
+export const getListPrepareByIdAPI = `${baseUrl}/api/labos/get_list_prepare/`
+export const updatePrepareAPI = `${baseUrl}/api/specimens/labo_receive`
 export const updateLaboAPI = `${baseUrl}/api/labos/`
 export const deleteLaboAPI = `${baseUrl}/api/labos/`
 export const addLaboAPI = `${baseUrl}/api/labos/`

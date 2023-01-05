@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 const InputDentist = ({
   value,
   label,
-  required = false,
-  validate = false,
-  error = { message: "", touched: false },
   id,
   isFlex,
   onChange,
+  placeholder = null,
+  isEdit = false,
+  required = false,
+  validate = false,
+  disabled = false,
+  error = { message: "", touched: false },
 }) => {
+  const [selfDisable, setselfDisable] = useState(true);
   return (
     <div>
       <Box className={`mb-2 ${isFlex && "flex items-center"}`}>
@@ -17,15 +22,20 @@ const InputDentist = ({
           {label} {required && <span className="text-red-600">*</span>}
         </p>
         <Box className="w-full">
-          <TextField
-            multiline
-            fullWidth
-            id={id}
-            value={value}
-            required={required}
-            placeholder={label}
-            onChange={onChange}
-          />
+          <Box className="flex gap-3 items-center">
+            <TextField
+              className="bg-white rounded-md"
+              multiline
+              fullWidth
+              id={id}
+              value={value}
+              disabled={isEdit ? selfDisable : disabled}
+              required={required}
+              placeholder={placeholder || label}
+              onChange={onChange}
+            />
+            {isEdit && <EditIcon className="text-slate-500 cursor-pointer" onClick={()=> setselfDisable(!selfDisable)} />}
+          </Box>
           {(validate || required) && error?.touched && (
             <Typography
               style={{ color: "red", fontStyle: "italic", fontSize: "14px" }}

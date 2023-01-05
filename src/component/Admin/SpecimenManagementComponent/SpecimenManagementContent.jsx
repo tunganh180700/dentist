@@ -35,7 +35,7 @@ import {
 const SpecimenManagementContent = () => {
   const dispatch = useDispatch();
   const listSpecimen = useSelector((state) => state.listSpecimen.listSpecimen);
-  const pageSize = useSelector((state) => state.listSpecimen.pageSize);
+  const pageSize = 10;
   const totalPages = useSelector((state) => state.listSpecimen.totalPage);
   const totalElements = useSelector(
     (state) => state.listSpecimen.totalElements
@@ -200,7 +200,7 @@ const SpecimenManagementContent = () => {
       >
         Quản lý mẫu vật
       </Typography>
-      <IconButton
+      {/* <IconButton
         aria-label="add"
         style={{ borderRadius: "20%" }}
         onClick={() => {
@@ -208,7 +208,7 @@ const SpecimenManagementContent = () => {
         }}
       >
         <AddIcon /> Thêm mới
-      </IconButton>
+      </IconButton> */}
       {loading === false && (
         <>
           <StyledTable size="small" style={{ marginTop: "15px" }}>
@@ -217,7 +217,7 @@ const SpecimenManagementContent = () => {
                 <StyledTableCell></StyledTableCell>
                 <StyledTableCell>
                   <div className="attibute">Tên mẫu vật</div>
-                  <div style={{ width: "160px" }}>
+                  {/* <div style={{ width: "160px" }}>
                     <TextField
                       margin="normal"
                       required
@@ -227,11 +227,11 @@ const SpecimenManagementContent = () => {
                       autoFocus
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
                 </StyledTableCell>
                 <StyledTableCell>
                   <div className="attibute">Ngày nhận</div>
-                  <div style={{ width: "160px" }}>
+                  {/* <div style={{ width: "160px" }}>
                     <TextField
                       margin="normal"
                       required
@@ -241,11 +241,11 @@ const SpecimenManagementContent = () => {
                       autoFocus
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
                 </StyledTableCell>
                 <StyledTableCell>
                   <div className="attibute">Ngày sử dụng</div>
-                  <div style={{ width: "160px" }}>
+                  {/* <div style={{ width: "160px" }}>
                     <TextField
                       margin="normal"
                       required
@@ -255,11 +255,11 @@ const SpecimenManagementContent = () => {
                       autoFocus
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
                 </StyledTableCell>
                 <StyledTableCell>
                   <div className="attibute">Ngày giao</div>
-                  <div style={{ width: "160px" }}>
+                  {/* <div style={{ width: "160px" }}>
                     <TextField
                       margin="normal"
                       required
@@ -269,7 +269,7 @@ const SpecimenManagementContent = () => {
                       autoFocus
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
                 </StyledTableCell>
                 <StyledTableCell>
                   <div className="attibute">Số lượng</div>
@@ -279,7 +279,7 @@ const SpecimenManagementContent = () => {
                 </StyledTableCell>
                 <StyledTableCell>
                   <div className="attibute">Loại dịch vụ</div>
-                  <div style={{ width: "160px" }}>
+                  {/* <div style={{ width: "160px" }}>
                     <TextField
                       margin="normal"
                       required
@@ -289,11 +289,11 @@ const SpecimenManagementContent = () => {
                       autoFocus
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
                 </StyledTableCell>
                 <StyledTableCell>
                   <div className="attibute">Labo</div>
-                  <div style={{ width: "160px" }}>
+                  {/* <div style={{ width: "160px" }}>
                     <TextField
                       margin="normal"
                       required
@@ -303,11 +303,11 @@ const SpecimenManagementContent = () => {
                       autoFocus
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
                 </StyledTableCell>
                 <StyledTableCell>
                   <div className="attibute">Bệnh nhân</div>
-                  <div style={{ width: "160px" }}>
+                  {/* <div style={{ width: "160px" }}>
                     <TextField
                       margin="normal"
                       required
@@ -317,11 +317,11 @@ const SpecimenManagementContent = () => {
                       autoFocus
                       onChange={handleSearch}
                     />
-                  </div>
+                  </div> */}
                 </StyledTableCell>
                 <StyledTableCell>
                   <div className="attibute">Trạng thái</div>
-                  <div style={{ width: "200px" }}>
+                  {/* <div style={{ width: "200px" }}>
                     <br></br>
                     <Select
                       labelId="statusSearch"
@@ -342,7 +342,7 @@ const SpecimenManagementContent = () => {
                         </MenuItem>
                       ))}
                     </Select>
-                  </div>
+                  </div> */}
                 </StyledTableCell>
                 <StyledTableCell></StyledTableCell>
                 {/* <StyledTableCell></StyledTableCell> */}

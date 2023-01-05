@@ -395,7 +395,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               >
                 <span className="leading-none">Thêm dịch vụ</span>
               </Button>
-              {/* <Button
+              <Button
                 variant="contained"
                 color="success"
                 endIcon={<AddCircleIcon className="p-0 border-0" />}
@@ -414,7 +414,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 }}
               >
                 <span className="leading-none">Bán sản phẩm</span>
-              </Button> */}
+              </Button>
             </Box>
             <StyledTable className="shadow-md" size="small">
               <TableHead>

@@ -12,7 +12,6 @@ const ModalDeleteLabo = ({ modalDeleteOpen, setModalDeleteOpen }) => {
     const isOpenDeleteLabo = useSelector(state => state.modal.isOpenDeleteLabo)
     const [modalText, setModalText] = useState('Bạn có chắc chắn muốn xóa không ?');
 
-    console.log(laboId)
     const handleOk = () => {
         setModalText('Bạn chắc chắn muốn xóa không ?');
         handleDelete(laboId);

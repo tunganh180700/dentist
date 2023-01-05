@@ -205,7 +205,6 @@ const PatientManagementContent = () => {
       <StyledTable size="small" className="shadow-md">
         <TableHead>
           <StyledTableRowClick>
-            {/* <StyledTableCell></StyledTableCell> */}
             <StyledTableCell>Họ tên</StyledTableCell>
             <StyledTableCell>
               <div className="attibute">Ngày sinh</div>
@@ -359,20 +358,6 @@ const PatientManagementContent = () => {
                 });
               }}
             />
-            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                disableFuture={true}
-                value={searchValue.birthdate}
-                inputFormat="DD/MM/YYYY"
-                onChange={(newValue) => {
-                  setSearchValue({
-                    ...searchValue,
-                    birthdate: dayjs(newValue).format("MM-DD-YYYY"),
-                  });
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider> */}
           </Box>
           <Box className="mb-3">
             <p className="mb-1">Số điện thoại</p>

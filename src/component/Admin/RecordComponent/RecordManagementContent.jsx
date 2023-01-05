@@ -97,7 +97,7 @@ const RecordManagementContent = () => {
       <Box className="flex items-center gap-3 mb-4">
         <Link className="text-decoration-none flex" to={"/patient-management"}>
           <ArrowBackIosNewIcon />
-          <span className="text-base">Back to list</span>
+          <span className="text-base">Quay lại danh sách</span>
         </Link>
       </Box>
       <Box className="bg-white rounded-lg shadow-md px-10 py-3">
