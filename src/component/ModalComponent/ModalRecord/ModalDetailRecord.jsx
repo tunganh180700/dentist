@@ -240,16 +240,6 @@ const ModalDetailRecord = ({
               key: 2,
               children: servicesBlock,
             },
-            {
-              label: "Vật liệu đã sử dụng",
-              key: 3,
-              children: "Vật liệu đã sử dụng",
-            },
-            {
-              label: "Mẫu vật đã sử dụng",
-              key: 4,
-              children: "Mẫu vật đã sử dụng",
-            },
           ]}
         />
       </Modal>

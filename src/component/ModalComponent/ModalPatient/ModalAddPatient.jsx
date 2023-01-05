@@ -130,7 +130,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
           />
         </Box>
         <InputDentist
-          id="phonenumber"
+          id="phone"
           label="Số điện thoại"
           required
           value={formik.values.phone}

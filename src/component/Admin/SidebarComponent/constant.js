@@ -5,7 +5,7 @@ import AddHomeWorkIcon from "@mui/icons-material/AddHomeWork";
 import RoomPreferencesIcon from "@mui/icons-material/RoomPreferences";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import Diversity2Icon from "@mui/icons-material/Diversity2";
+import BiotechIcon from '@mui/icons-material/Biotech';
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 export const menu = [
@@ -75,8 +75,8 @@ export const menu = [
     permissionDeny: ["Admin", "Doctor", "Nurse", "LeaderNurse"],
   },
   {
-    icon: <Diversity2Icon />,
-    iconActive: <Diversity2Icon color="info" />,
+    icon: <BiotechIcon />,
+    iconActive: <BiotechIcon color="info" />,
     title: "Quản lý Labo",
     href: "/labo",
     permissionDeny: ["Receptionist", "Doctor", "Nurse"],

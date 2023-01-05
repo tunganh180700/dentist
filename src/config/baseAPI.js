@@ -21,11 +21,14 @@ export const listLaboAPI = `${baseUrl}/api/labos/get_list_labos`
 export const getLaboByIdAPI = `${baseUrl}/api/labos/`
 export const getListPrepareByIdAPI = `${baseUrl}/api/labos/get_list_prepare/`
 export const updatePrepareAPI = `${baseUrl}/api/specimens/labo_receive`
+export const updateReceiveAPI = `${baseUrl}/api/specimens/labo_delivery`
+export const getListReceiveByIdAPI = `${baseUrl}/api/labos/get_list_receive/`
 export const updateLaboAPI = `${baseUrl}/api/labos/`
 export const deleteLaboAPI = `${baseUrl}/api/labos/`
 export const addLaboAPI = `${baseUrl}/api/labos/`
 
 export const getSpecimensByIdAPI = `${baseUrl}/api/specimens/`
+export const patientSpecimenAPI = `${baseUrl}/api/specimens/get_list_specimens_of_patient/`
 export const addSpecimensAPI = `${baseUrl}/api/specimens/`
 export const updateSpecimensAPI = `${baseUrl}/api/specimens/`
 export const deleteSpecimensAPI = `${baseUrl}/api/specimens/`

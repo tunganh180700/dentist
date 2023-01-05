@@ -14,7 +14,7 @@ import {
 import PatientProfile from "../PatientManagementComponent/PatientProfile";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
-import { Divider } from "antd";
+import { Divider, Modal } from "antd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { Link, useParams } from "react-router-dom";
@@ -34,6 +34,7 @@ import {
   StyledTableRow,
   StyledTable,
 } from "../../ui/TableElements";
+import SpecimenRecord from "../PatientManagementComponent/SpecimenRecord";
 const RecordManagementContent = () => {
   const dispatch = useDispatch();
 
@@ -47,6 +48,7 @@ const RecordManagementContent = () => {
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [modalDetailOpen, setModalDetailOpen] = useState(false);
   const [modalDetailRecordOpen, setModalDetailRecordOpen] = useState(false);
+  const [modalDetailSpecimen, setModalDetailSpecimen] = useState(false);
 
   const patientName = useSelector((state) => state.choosenPatient.patientName);
 
@@ -123,34 +125,38 @@ const RecordManagementContent = () => {
           >
             <span className="leading-none">Thêm hồ sơ</span>
           </Button>
+          <Button
+            variant="contained"
+            color="info"
+            endIcon={<RemoveRedEyeIcon />}
+            onClick={() => {
+              setModalDetailSpecimen(true);
+            }}
+          >
+            <span className="leading-none">Danh sách mẫu vật</span>
+          </Button>
+          <Button
+            variant="contained"
+            color="info"
+            endIcon={<RemoveRedEyeIcon />}
+            onClick={() => {
+              setModalAddOpen(true);
+            }}
+          >
+            <span className="leading-none">Sản phẩm đã mua</span>
+          </Button>
         </Box>
         <StyledTable className="shadow-md" size="small">
           <TableHead>
             <StyledTableRow>
-              <StyledTableCell>
-                <div className="attibute">Lý do đến khám</div>
-              </StyledTableCell>
-              <StyledTableCell>
-                <div className="attibute">Chẩn đoán</div>
-              </StyledTableCell>
-              <StyledTableCell>
-                <div className="attibute">Nguyên nhân</div>
-              </StyledTableCell>
-              <StyledTableCell>
-                <div className="attibute">Ngày khám</div>
-              </StyledTableCell>
-              <StyledTableCell>
-                <div className="attibute">Lưu ý về tủy</div>
-              </StyledTableCell>
-              <StyledTableCell>
-                <div className="attibute">Ghi chú</div>
-              </StyledTableCell>
-              <StyledTableCell>
-                <div className="attibute">Điều trị</div>
-              </StyledTableCell>
-              <StyledTableCell>
-                <div className="attibute">Đơn thuốc</div>
-              </StyledTableCell>
+              <StyledTableCell>Lý do đến khám</StyledTableCell>
+              <StyledTableCell>Chẩn đoán</StyledTableCell>
+              <StyledTableCell>Nguyên nhân</StyledTableCell>
+              <StyledTableCell>Ngày khám</StyledTableCell>
+              <StyledTableCell>Lưu ý về tủy</StyledTableCell>
+              <StyledTableCell>Ghi chú</StyledTableCell>
+              <StyledTableCell>Điều trị</StyledTableCell>
+              <StyledTableCell>Đơn thuốc</StyledTableCell>
               <StyledTableCell></StyledTableCell>
               <StyledTableCell></StyledTableCell>
             </StyledTableRow>
@@ -243,6 +249,12 @@ const RecordManagementContent = () => {
           ) : null}
         </div>
       </Box>
+
+      <SpecimenRecord
+        isShow={modalDetailSpecimen}
+        setIsShow={setModalDetailSpecimen}
+        patientId={Number(id)}
+      />
 
       <ModalDetailRecord
         modalDetailRecordOpen={modalDetailRecordOpen}

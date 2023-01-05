@@ -1,62 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import 'antd/dist/antd.css';
-import { Modal } from 'antd';
-import { TextField, Button } from '@mui/material';
-import "./../style.css"
-import Typography from '@mui/material/Typography';
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import "antd/dist/antd.css";
+import { Modal } from "antd";
+import "./../style.css";
 import { useFormik } from "formik";
-import { reportSpecimen } from '../../../redux/SpecimenSlice/listSpecimenSlice';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import { reportSpecimen } from "../../../redux/SpecimenSlice/listSpecimenSlice";
 
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import InputDentist from "../../ui/input";
+import * as yup from "yup";
 
+const ModalReportSpecimen = ({ isShow, setIsShow, submit, specimenId }) => {
+  const dispatch = useDispatch();
+  // const specimenId = useSelector(state => state.modal.specimenId);
+  const validationSchema = yup.object({
+    description: yup
+      .string("Nhập nguyên nhân lỗi")
+      .required("Vui lòng nhập nguyên nhân lỗi"),
+  });
+  const formik = useFormik({
+    initialValues: {
+      description: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      dispatch(reportSpecimen(specimenId, values));
+      formik.handleReset();
+      setIsShow(false);
+      submit(true)
+    },
+  });
 
-const ModalReportSpecimen = ({ reportOpen, setReportOpen, specimenId }) => {
-    const dispatch = useDispatch();
-    // const specimenId = useSelector(state => state.modal.specimenId);
+  return (
+    <>
+      <Modal
+        title="Báo cáo lỗi mẫu vật"
+        open={isShow}
+        onOk={formik.handleSubmit}
+        onCancel={() => {
+          setIsShow(false);
+          formik.handleReset();
+        }}
+      >
+        <InputDentist
+          required
+          id="description"
+          label="Nguyên nhân mẫu lỗi"
+          value={formik.values.description}
+          onChange={formik.handleChange}
+          error={{
+            message: formik.errors.description,
+            touched: formik.touched.description,
+          }}
+        />
+      </Modal>
+    </>
+  );
+};
 
-    const formik = useFormik({
-        initialValues: {
-            description: "",
-        },
-        // validationSchema: validationSchema,
-        onSubmit: (values) => {
-            dispatch(reportSpecimen(specimenId,values));
-            setReportOpen(false);
-        }
-    })
-
-    return (
-        <>
-            <Modal
-                title="Cập nhật mẫu thử nghiệm"
-                open={reportOpen}
-                onOk={formik.handleSubmit}
-                onCancel={() => setReportOpen(false)}
-            >
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="description"
-                    label="Nguyên nhân mẫu lỗi"
-                    name="description"
-                    autoComplete="description"
-                    value={formik.values.description}
-                    autoFocus
-                    onChange={formik.handleChange}
-                />
-                {formik.errors.description && <Typography style={{ color: 'red' }}>{formik.errors.description}</Typography>}
-            </Modal>
-        </>
-    )
-}
-
-export default ModalReportSpecimen
+export default ModalReportSpecimen;

@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Pagination, Typography, IconButton, TextField } from "@mui/material";
+import {
+  Pagination,
+  Typography,
+  IconButton,
+  TextField,
+  Chip,
+} from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
@@ -31,6 +37,7 @@ import {
   StyledTableRow,
   StyledTable,
 } from "../../ui/TableElements";
+import { statusLaboColor, statusLaboFormatter } from "../../style-config/index";
 
 const SpecimenManagementContent = () => {
   const dispatch = useDispatch();
@@ -78,22 +85,6 @@ const SpecimenManagementContent = () => {
   const [searchValue, setSearchValue] = useState(emptySearchValue);
 
   let styleText = {};
-
-  function changeColor(status) {
-    if (status === 0) {
-      styleText = {
-        color: "green",
-      };
-    } else if (status === 1) {
-      styleText = {
-        color: "red",
-      };
-    } else {
-      styleText = {
-        color: "blue",
-      };
-    }
-  }
 
   const loadSpecimenList = () => {
     setLoading(true);
@@ -169,24 +160,6 @@ const SpecimenManagementContent = () => {
   useEffect(() => {
     handleSearchDebounce(searchValue);
   }, [searchValue]);
-
-  const getStatusStr = (status) => {
-    if (status === 1) {
-      return "Chuẩn bị mẫu vật";
-    } else if (status === 2) {
-      return "Labo nhận mẫu";
-    } else if (status === 3) {
-      return "Labo giao mẫu";
-    } else if (status === 4) {
-      return "Bệnh nhân đã sử dụng";
-    } else if (status === 5) {
-      return "Mẫu lỗi gửi lại cho labo";
-    } else if (status == 6) {
-      return "Hoàn thành";
-    } else {
-      return "";
-    }
-  };
 
   return (
     <>
@@ -396,7 +369,14 @@ const SpecimenManagementContent = () => {
                     {item.patientName}
                   </StyledTableCell>
                   <StyledTableCell style={styleText}>
-                    {getStatusStr(item.status)}
+                    <Chip
+                     size="small"
+                      style={{
+                        backgroundColor: `${statusLaboColor(item.status)}`,
+                        color: "#fff",
+                      }}
+                      label={statusLaboFormatter(item.status)}
+                    />
                   </StyledTableCell>
                   <StyledTableCell style={styleText}>
                     <IconButton

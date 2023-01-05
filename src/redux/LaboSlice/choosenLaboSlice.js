@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getLaboByIdAPI, getListPrepareByIdAPI, updatePrepareAPI } from "../../config/baseAPI";
+import {
+  getLaboByIdAPI,
+  getListPrepareByIdAPI,
+  getListReceiveByIdAPI,
+  updatePrepareAPI,
+  updateReceiveAPI
+} from "../../config/baseAPI";
 import axiosInstance from "../../config/customAxios";
 
 const initState = {
@@ -13,6 +19,7 @@ const initState = {
   totalMoney: "",
   specimensDTOS: [],
   prepareSample: [],
+  receiveSamples:[]
 };
 const choosenLaboSlice = createSlice({
   name: "choosenLabo",
@@ -36,6 +43,15 @@ const choosenLaboSlice = createSlice({
       .addCase(fetchLabo.pending, (state, action) => {
         state.status = true;
       })
+      .addCase(fetchPrepareSample.pending, (state, action) => {
+        state.status = true;
+      })
+      .addCase(updatePrepareSample.pending, (state, action) => {
+        state.status = true;
+      })
+      .addCase(fetchListReceive.pending, (state, action) => {
+        state.status = true;
+      })
       .addCase(fetchLabo.fulfilled, (state, action) => {
         state.choosenLabo = action.payload;
         state.laboName = action.payload.laboName;
@@ -43,11 +59,13 @@ const choosenLaboSlice = createSlice({
         state.totalMoney = action.payload.totalMoney;
         state.specimensDTOS = action.payload.specimensDTOS;
       })
-      .addCase(fetchPrepareSample.pending, (state, action) => {
-        state.status = true;
-      })
       .addCase(fetchPrepareSample.fulfilled, (state, action) => {
-        state.prepareSample = action.payload
+        state.prepareSample = action.payload;
+      })
+      .addCase(updatePrepareSample.fulfilled, (state, action) => {})
+      .addCase(updateReceiveSample.fulfilled, (state, action) => {})
+      .addCase(fetchListReceive.fulfilled, (state, action) => {
+        state.receiveSamples = action.payload;
       });
   },
 });
@@ -73,11 +91,35 @@ export const fetchPrepareSample = createAsyncThunk(
   }
 );
 
+export const fetchListReceive = createAsyncThunk(
+  "labos/fetchListReceive",
+  async (laboId) => {
+    try {
+      const res = await axiosInstance.get(getListReceiveByIdAPI + laboId);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 export const updatePrepareSample = createAsyncThunk(
-  "labos/fetchPrepareSample",
+  "labos/updatePrepareSample",
   async (payload) => {
     try {
       const res = await axiosInstance.put(updatePrepareAPI, payload);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const updateReceiveSample = createAsyncThunk(
+  "labos/updateReceiveSample",
+  async (payload) => {
+    try {
+      const res = await axiosInstance.put(updateReceiveAPI, payload);
       return res.data;
     } catch (error) {
       console.log(error);

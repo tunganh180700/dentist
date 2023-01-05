@@ -60,7 +60,7 @@ const ModalDetailLabo = () => {
     <>
       {loading && <Loading />}
       <>
-        <StyledTable>
+        <StyledTable className="shadow-md">
           <TableHead>
             <StyledTableRow>
               <StyledTableCell>Mẫu thử nghiệm</StyledTableCell>
@@ -69,6 +69,7 @@ const ModalDetailLabo = () => {
               <StyledTableCell>Ngày giao hàng</StyledTableCell>
               <StyledTableCell>Số lượng</StyledTableCell>
               <StyledTableCell>Giá</StyledTableCell>
+              <StyledTableCell>Trạng thái</StyledTableCell>
               <StyledTableCell></StyledTableCell>
             </StyledTableRow>
           </TableHead>
@@ -81,6 +82,7 @@ const ModalDetailLabo = () => {
                 <StyledTableCell>{item.deliveryDate}</StyledTableCell>
                 <StyledTableCell>{item.amount}</StyledTableCell>
                 <StyledTableCell>{item.unitPrice}</StyledTableCell>
+                <StyledTableCell>{item.status}</StyledTableCell>
                 {/* <StyledTableCell>
                     <IconButton
                       aria-label="edit"

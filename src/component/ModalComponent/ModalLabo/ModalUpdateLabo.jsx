@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 import { Modal } from "antd";
@@ -13,7 +13,7 @@ import { getLaboByIdAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
 import InputDentist from "../../ui/input";
 
-const ModalUpdateLabo = ({ setModalUpdateOpen }) => {
+const ModalUpdateLabo = ({ isShow, setModalUpdateOpen }) => {
   const dispatch = useDispatch();
   const laboId = useSelector((state) => state.modal.laboId);
   const [loading, setLoading] = useState();
@@ -60,6 +60,13 @@ const ModalUpdateLabo = ({ setModalUpdateOpen }) => {
     if (laboId) fetchLabo(laboId);
   }, [laboId]);
 
+  const disabledBtnOk = useMemo(() => {
+    return (
+      formik.values?.laboName === oldData?.laboName &&
+      formik.values?.phone === oldData?.phone
+    );
+  }, [formik.values]);
+
   const handleCancel = () => {
     formik.values.laboName = oldData.laboName;
     formik.values.phone = oldData.phone;
@@ -77,42 +84,41 @@ const ModalUpdateLabo = ({ setModalUpdateOpen }) => {
     <>
       <Modal
         title="Thông tin Labo"
-        open={true}
+        open={isShow}
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
+        okButtonProps={{ disabled: disabledBtnOk }}
       >
-        {loading === false && (
-          <>
-            <InputDentist
-              required
-              isEdit
-              id="laboName"
-              label="Labo"
-              name="laboName"
-              value={formik.values.laboName}
-              onChange={formik.handleChange}
-            />
-            {formik.errors.laboName && formik.touched.laboName && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.laboName}
-              </Typography>
-            )}
-            <InputDentist
-              required
-              isEdit
-              id="phone"
-              label="Số điện thoại"
-              name="phone"
-              value={formik.values.phone}
-              onChange={formik.handleChange}
-            />
-            {formik.errors.phone && formik.touched.phone && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.phone}
-              </Typography>
-            )}
-          </>
-        )}
+        <>
+          <InputDentist
+            required
+            isEdit
+            id="laboName"
+            label="Labo"
+            name="laboName"
+            value={formik.values.laboName}
+            onChange={formik.handleChange}
+          />
+          {formik.errors.laboName && formik.touched.laboName && (
+            <Typography style={{ color: "red" }}>
+              {formik.errors.laboName}
+            </Typography>
+          )}
+          <InputDentist
+            required
+            isEdit
+            id="phone"
+            label="Số điện thoại"
+            name="phone"
+            value={formik.values.phone}
+            onChange={formik.handleChange}
+          />
+          {formik.errors.phone && formik.touched.phone && (
+            <Typography style={{ color: "red" }}>
+              {formik.errors.phone}
+            </Typography>
+          )}
+        </>
       </Modal>
     </>
   );

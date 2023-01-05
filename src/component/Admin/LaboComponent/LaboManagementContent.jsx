@@ -16,6 +16,7 @@ import ModalAddLabo from "../../ModalComponent/ModalLabo/ModalAddLabo";
 import DetailLaboRecord from "./DetailLaboRecord";
 import InputDentist from "../../ui/input";
 import ModalSendSample from "../../ModalComponent/ModalLabo/ModalSendSample";
+import ModalReceivedSample from "../../ModalComponent/ModalLabo/ModalReceivedSample";
 
 const LaboManagementContent = () => {
   const dispatch = useDispatch();
@@ -33,6 +34,7 @@ const LaboManagementContent = () => {
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [modalSendSample, setModalSendSample] = useState(false);
+  const [modalReceiveSample, setModalReceiveSample] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -90,7 +92,7 @@ const LaboManagementContent = () => {
           color="success"
           endIcon={<AssignmentReturnedIcon />}
           onClick={() => {
-            setModalDeleteOpen(true);
+            setModalReceiveSample(true);
           }}
         >
           <span className="leading-none">Nhận mẫu vật</span>
@@ -151,12 +153,18 @@ const LaboManagementContent = () => {
         </Box>
       </Box>
 
-      {modalSendSample && <ModalSendSample setIsShow={setModalSendSample} />}
-      {modalUpdateOpen && (
-        <ModalUpdateLabo
-          setModalUpdateOpen={setModalUpdateOpen}
-        />
-      )}
+      <ModalSendSample
+        isShow={modalSendSample}
+        setIsShow={setModalSendSample}
+      />
+      <ModalReceivedSample
+        isShow={modalReceiveSample}
+        setIsShow={setModalReceiveSample}
+      />
+      <ModalUpdateLabo
+        isShow={modalUpdateOpen}
+        setModalUpdateOpen={setModalUpdateOpen}
+      />
 
       <ModalDeleteLabo
         modalDeleteOpen={modalDeleteOpen}
