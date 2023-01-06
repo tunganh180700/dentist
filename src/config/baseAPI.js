@@ -51,6 +51,7 @@ export const addListMaterialImportAPI = `${baseUrl}/api/materials_imports/add_li
 export const listServiceAndCategoryAPI = `${baseUrl}/api/categories/get_list_service`
 
 export const listMaterialExportAPI = `${baseUrl}/api/material_export/get_list_export`
+export const patientMaterialExportAPI = `${baseUrl}/api/material_export/get_list_material_export_of_patient/`
 export const getMaterialExportByIdAPI = `${baseUrl}/api/material_export/`
 export const updateMaterialExportAPI = `${baseUrl}/api/material_export/`
 export const addMaterialExportAPI = `${baseUrl}/api/material_export/`

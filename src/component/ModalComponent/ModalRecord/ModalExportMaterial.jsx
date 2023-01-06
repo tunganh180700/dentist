@@ -1,162 +1,185 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Row, Col, Input, Radio } from 'antd';
-import PropsTypes from 'prop-types';
-import { unwrapResult } from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import {
-    Button,
-    IconButton,
-    MenuItem,
-    Select
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Modal } from "antd";
+import { useDispatch } from "react-redux";
+import TableBody from "@mui/material/TableBody";
+import TableHead from "@mui/material/TableHead";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { Button, IconButton, MenuItem, TextField, Select } from "@mui/material";
 import axiosInstance from "../../../config/customAxios";
 import { listAllMaterialAPI } from "../../../config/baseAPI";
 import _ from "lodash";
 import ClearIcon from "@mui/icons-material/Clear";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
+const ModalExportMaterial = ({
+  modalExportOpen,
+  setModalExportOpen,
+  exportMaterial,
+  materialExportDTOS,
+}) => {
+  const dispatch = useDispatch();
+  const [material, setMaterial] = useState([]);
+  const [materialExport, setMaterialExport] = useState([]);
+  //   const [amountTotalMaterial, setAmountTotalMaterial] = useState(0);
 
-const ModalExportMaterial = ({ modalExportOpen, setModalExportOpen, exportMaterial, materialExportDTOS }) => {
-    const dispatch = useDispatch();
-    const [material, setMaterial] = useState([])
-    const [materialExport, setMaterialExport] = useState([])
-
-    const getMaterials = async () => {
-        try {
-            const { data } = await axiosInstance.get(listAllMaterialAPI);
-            setMaterial(data)
-        } catch (error) {
-            console.log(error)
-        }
+  const getMaterials = async () => {
+    try {
+      let { data } = await axiosInstance.get(listAllMaterialAPI);
+      data = data.filter((item) => item.amount > 0);
+      setMaterial(data);
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    useEffect(() => {
-        console.log('1', materialExportDTOS)
-        getMaterials()
-        setMaterialExport(materialExportDTOS)
-    }, [modalExportOpen]);
+  const formatter = new Intl.NumberFormat({
+    style: "currency",
+    currency: "VND",
+  });
 
-    return (
-        <>
-            <Modal
-                okText={'Lưu'}
-                title="Bán sản phẩm"
-                open={modalExportOpen}
-                width="65%"
-                
-                onOk={() => { setModalExportOpen(false); exportMaterial(materialExport) }}
-                onCancel={() => setModalExportOpen(false)}
-            >
-                <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
-                    setMaterialExport((prev) => [...prev, { materialId: null, amount: null, unitPrice: null, total: null }])
-                }}>
-                    Thêm mới
-                </IconButton>
-                <Table size="small" style={{ marginTop: "15px" }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell style={{ width: "25%" }}>
-                                Tên sản phẩm
-                            </TableCell>
-                            <TableCell>
-                                Số lượng
-                            </TableCell>
-                            <TableCell>
-                                Đơn giá
-                            </TableCell>
-                            <TableCell>
-                                Tổng giá
-                            </TableCell>
-                            <TableCell>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {
-                            materialExport?.map((materialExport, index) => (
-                                <TableRow key={index}>
-                                    <TableCell style={{paddingTop: '1.5rem'}}>
-                                        <Select
-                                            id="materialId"
-                                            value={materialExport?.materialId}
-                                            onChange={(e) => {
-                                                const m = material.find((s) => s.materialId === e.target.value)
-                                                setMaterialExport(prev => {
-                                                    const total = (prev[index]?.amount || 0) * (m?.price)
-                                                    prev[index] = { ...prev[index], unitPrice: m?.price, materialId: m?.materialId, total }
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                            }
-                                        >
-                                            {material?.map(item => (
-                                                <MenuItem key={item.materialId} value={item.materialId}>{item.materialName}</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </TableCell>
-                                    <TableCell padding="none">
-                                        <input
-                                            value={materialExport.amount}
-                                            name="amount"
-                                            type={"number"}
-                                            onChange={(e) =>
-                                                setMaterialExport((prev) => {
-                                                    prev[index].amount = e.target.value
-                                                    prev[index].total = (e.target.value || 0) * (prev[index].unitPrice || 0)
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                        />
-                                    </TableCell>
-                                    <TableCell padding="none">
-                                        <input
-                                            value={materialExport.unitPrice}
-                                            name="unitPrice"
-                                            onChange={(e) =>
-                                                setMaterialExport((prev) => {
-                                                    prev[index].unitPrice = e.target.value;
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                            disabled={true}
-                                        />
-                                    </TableCell>
-                                    <TableCell padding="none">
-                                        <input
-                                            value={materialExport.total}
-                                            name="total"
-                                            onChange={(e) =>
-                                                setMaterialExport((prev) => {
-                                                    prev[index].total = e.target.value;
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                            disabled={true}
-                                        />
-                                    </TableCell>
-                                    <TableCell padding="none">
-                                        <Button className="mr10" onClick={
-                                            () => {
-                                                setMaterialExport((prev) => {
-                                                    prev.splice(index, 1)
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                        } >
-                                            <ClearIcon />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            )
-                            )
-                        }
-                    </TableBody>
-                </Table>
-            </Modal>
-        </>
-    )
-}
+  const maxAmount = (materialId) => {
+    return material.find((item) => item.materialId === materialId)?.amount || 0;
+  };
+
+  useEffect(() => {
+    getMaterials();
+    setMaterialExport(materialExportDTOS);
+  }, [modalExportOpen]);
+
+  return (
+    <>
+      <Modal
+        title="Bán sản phẩm"
+        open={modalExportOpen}
+        width="65%"
+        onOk={() => {
+          setModalExportOpen(false);
+          exportMaterial(materialExport);
+        }}
+        onCancel={() => setModalExportOpen(false)}
+      >
+        <Button
+          className="mb-3 float-right"
+          variant="contained"
+          color="success"
+          endIcon={<AddCircleIcon />}
+          onClick={() => {
+            setMaterialExport((prev) => [
+              ...prev,
+              {
+                materialId: material[0]?.materialId,
+                amount: 1,
+                unitPrice: material[0]?.price,
+                total: material[0]?.price,
+              },
+            ]);
+          }}
+        >
+          <span className="leading-none">Thêm mới</span>
+        </Button>
+        <p className="font-bold text-lg mb-0">
+          Đang có ({materialExport.length}) thêm mới
+        </p>
+        <StyledTable
+          className="shadow-md"
+          size="small"
+          style={{ marginTop: "15px" }}
+        >
+          <TableHead>
+            <StyledTableRow>
+              <StyledTableCell style={{ width: "25%" }}>
+                Tên sản phẩm
+              </StyledTableCell>
+              <StyledTableCell>Số lượng</StyledTableCell>
+              <StyledTableCell>Đơn giá</StyledTableCell>
+              <StyledTableCell>Tổng giá</StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+            </StyledTableRow>
+          </TableHead>
+          <TableBody>
+            {materialExport?.map((materialExport, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell>
+                  <Select
+                    id="materialId"
+                    fullWidth
+                    value={materialExport?.materialId}
+                    className="bg-white h-[30px]"
+                    onChange={(e) => {
+                      const m = material.find(
+                        (s) => s.materialId === e.target.value
+                      );
+                      setMaterialExport((prev) => {
+                        const total = (prev[index]?.amount || 0) * m?.price;
+                        prev[index] = {
+                          ...prev[index],
+                          unitPrice: m?.price,
+                          materialId: m?.materialId,
+                          total,
+                        };
+                        return _.cloneDeep(prev);
+                      });
+                    }}
+                  >
+                    {material?.map((item) => (
+                      <MenuItem key={item.materialId} value={item.materialId}>
+                        {item.materialName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </StyledTableCell>
+                <StyledTableCell padding="none">
+                  <TextField
+                    endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
+                    size="small"
+                    id="amount"
+                    type="number"
+                    InputProps={{
+                      inputProps: {
+                        min: 1,
+                        max: maxAmount(materialExport?.materialId),
+                      },
+                    }}
+                    value={materialExport.amount}
+                    className="h-[30px] bg-white"
+                    onChange={(e) =>
+                      setMaterialExport((prev) => {
+                        prev[index].amount = e.target.value;
+                        prev[index].total =
+                          (e.target.value || 0) * (prev[index].unitPrice || 0);
+                        return _.cloneDeep(prev);
+                      })
+                    }
+                  />
+                </StyledTableCell>
+                <StyledTableCell padding="none">
+                  {formatter.format(materialExport.unitPrice) || 0} VND
+                </StyledTableCell>
+                <StyledTableCell padding="none">
+                  {formatter.format(materialExport.total) || 0} VND
+                </StyledTableCell>
+                <StyledTableCell padding="none">
+                  <Button
+                    className="mr10"
+                    onClick={() => {
+                      setMaterialExport((prev) => {
+                        prev.splice(index, 1);
+                        return _.cloneDeep(prev);
+                      });
+                    }}
+                  >
+                    <ClearIcon />
+                  </Button>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </StyledTable>
+      </Modal>
+    </>
+  );
+};
 export default ModalExportMaterial;

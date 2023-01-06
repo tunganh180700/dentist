@@ -60,7 +60,6 @@ export const fetchPatient = createAsyncThunk(
   async (patientId) => {
     try {
       const res = await axiosInstance.get(getPatientByIdAPI + patientId);
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error);

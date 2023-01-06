@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   FormControl,
   MenuItem,
@@ -16,7 +15,7 @@ import {
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Modal } from "antd";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
@@ -120,8 +119,10 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   };
 
   useEffect(() => {
-    loadServiceOption();
-  }, []);
+    if (modalAddOpen) {
+      loadServiceOption();
+    }
+  }, [modalAddOpen]);
 
   useEffect(() => {
     if (rows.length + listTreatingService.length) {
@@ -139,6 +140,17 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     setSpecimenDTOS(specimen);
   };
 
+  const disableAddSpecimen = useMemo(() => {
+    if (!rows.length && !listTreatingService.length) {
+      return false;
+    }
+    let flagCheckRow = rows.some((item) => item.status === 1);
+    const flagCheckTreatingService = listTreatingService.some(
+      (item) => item.status === 1
+    );
+    return flagCheckRow || flagCheckTreatingService;
+  }, [rows, listTreatingService]);
+
   const formik = useFormik({
     initialValues: {
       reason: "",
@@ -151,7 +163,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      if (!rows.length) {
+      if (!listTreatingService.length) {
         setErrorUpdateMess("Vui lòng thêm dịch vụ!");
         return;
       }
@@ -181,7 +193,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
       setTimeout(() => {
         getServiceTreating(id);
         isSubmitForm(true);
-      }, 1000);
+      }, 1500);
     },
   });
 
@@ -386,35 +398,43 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
             </Box>
           </Box>
           <Box className="w-2/3">
-            <Box className="flex gap-3 float-right mb-3">
-              <Button
-                variant="contained"
-                color="success"
-                endIcon={<AddCircleIcon className="p-0 border-0" />}
-                onClick={isEdit ? handleAdd : handleEdit}
-              >
-                <span className="leading-none">Thêm dịch vụ</span>
-              </Button>
-              <Button
-                variant="contained"
-                color="success"
-                endIcon={<AddCircleIcon className="p-0 border-0" />}
-                onClick={() => {
-                  setModalSpecimenOpen(true);
-                }}
-              >
-                <span className="leading-none">Thêm mẫu vật</span>
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                endIcon={<SellIcon className="p-0 border-0" />}
-                onClick={() => {
-                  setModalExportOpen(true);
-                }}
-              >
-                <span className="leading-none">Bán sản phẩm</span>
-              </Button>
+            <Box className="flex justify-between">
+              <p className="font-bold text-lg mb-0">
+                Đang có ({rows.length}) thêm mới
+              </p>
+              <Box className="flex gap-3 mb-3">
+                <Button
+                  variant="contained"
+                  color="success"
+                  endIcon={<AddCircleIcon className="p-0 border-0" />}
+                  onClick={isEdit ? handleAdd : handleEdit}
+                >
+                  <span className="leading-none">Thêm dịch vụ</span>
+                </Button>
+                {disableAddSpecimen && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    endIcon={<AddCircleIcon className="p-0 border-0" />}
+                    onClick={() => {
+                      setModalSpecimenOpen(true);
+                    }}
+                  >
+                    <span className="leading-none">Thêm mẫu vật</span>
+                  </Button>
+                )}
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  endIcon={<SellIcon className="p-0 border-0" />}
+                  onClick={() => {
+                    setModalExportOpen(true);
+                  }}
+                >
+                  <span className="leading-none">Bán sản phẩm</span>
+                </Button>
+              </Box>
             </Box>
             <StyledTable className="shadow-md" size="small">
               <TableHead>
@@ -470,7 +490,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                         <>
                           <StyledTableCell>
                             <Box sx={{ minWidth: 120 }}>
-                              <FormControl fullWidth>
+                              <FormControl fullWidth className="items-center">
                                 <Select
                                   labelId="permisstion"
                                   id="permisstionSelect"
@@ -493,36 +513,26 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                             </Box>
                           </StyledTableCell>
                           <StyledTableCell>
-                            <input
-                              id={i?.serviceId || 1}
-                              disabled
-                              value={formatter.format(i?.price) || 0}
-                              name="price"
-                              style={styleInput}
-                              // onChange={(e) => handleInputChange(e, i)}
-                            />
+                            {formatter.format(i?.price) || 0} VND
                           </StyledTableCell>
                           <StyledTableCell>
                             <OutlinedInput
                               id="discount"
+                              className="h-[30px] bg-white w-[170px]"
                               value={formatter.format(i?.discount)}
                               endAdornment={
                                 <p className="mb-0 leading-0 text-xs">VND</p>
                               }
-                              onChange={
-                                (e) => {
-                                  const value = e.target.value.replaceAll(
-                                    ",",
-                                    ""
-                                  );
-                                  setRows((prev) => {
-                                    prev[index].discount = value;
-                                    return _.cloneDeep(prev);
-                                  });
-                                }
-                                // setServiceDiscount(e.target.value)
-                              }
-                              className="h-[30px] bg-white"
+                              onChange={(e) => {
+                                const value = e.target.value.replaceAll(
+                                  ",",
+                                  ""
+                                );
+                                setRows((prev) => {
+                                  prev[index].discount = value;
+                                  return _.cloneDeep(prev);
+                                });
+                              }}
                             />
                           </StyledTableCell>
                           <StyledTableCell>

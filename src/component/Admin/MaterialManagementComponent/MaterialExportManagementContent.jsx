@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import { Pagination, Typography, IconButton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMaterialExportId } from "../../../redux/modalSlice";

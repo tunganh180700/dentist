@@ -89,19 +89,7 @@ const AccountManagementContent = () => {
             <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
-        {totalPages === 0 ? (
-          <>
-            <Typography
-              component="h1"
-              variant="h5"
-              color="inherit"
-              noWrap
-              textAlign="center"
-            >
-              Không có toàn khoản nào
-            </Typography>
-          </>
-        ) : (
+        
           <>
             <TableBody>
               {listAccount.map((item) => (
@@ -138,7 +126,6 @@ const AccountManagementContent = () => {
               ))}
             </TableBody>
           </>
-        )}
       </StyledTable>
       <div
         style={{

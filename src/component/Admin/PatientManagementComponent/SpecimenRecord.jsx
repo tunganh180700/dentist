@@ -8,7 +8,7 @@ import { fetchPatientSpecimen } from "../../../redux/SpecimenSlice/listSpecimenS
 import { setSpecimenId } from "../../../redux/modalSlice";
 import ErrorIcon from "@mui/icons-material/Error";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
-import ModalUpdateSpecimens from "../../ModalComponent/ModalSpecimens/ModalUpdateSpecimens";
+// import ModalUpdateSpecimens from "../../ModalComponent/ModalSpecimens/ModalUpdateSpecimens";
 import { statusLaboColor, statusLaboFormatter } from "../../style-config/index";
 import { Modal } from "antd";
 import moment from "moment";
@@ -33,7 +33,7 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
   //     (state) => state.listSpecimen.totalElements
   //   );
   //   const [currentPage, setCurrentPage] = useState(0);
-  const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
+  // const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [specimenId, setSpecimenId] = useState();
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
@@ -55,8 +55,6 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
   //     (state) => state.listSpecimen.isSearchSpecimen
   //   );
   const [loading, setLoading] = useState(false);
-
-  let styleText = {};
 
   const loadSpecimenList = () => {
     setLoading(true);
@@ -96,7 +94,6 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
                 <StyledTableCell>Loại dịch vụ</StyledTableCell>
                 <StyledTableCell>Labo</StyledTableCell>
                 <StyledTableCell>Trạng thái</StyledTableCell>
-                <StyledTableCell></StyledTableCell>
                 <StyledTableCell></StyledTableCell>
                 <StyledTableCell></StyledTableCell>
               </StyledTableRow>
@@ -164,7 +161,7 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
                       </Button>
                     )}
                   </StyledTableCell>
-                  <StyledTableCell>
+                  {/* <StyledTableCell>
                     <IconButton
                       aria-label="edit"
                       onClick={() => {
@@ -173,8 +170,8 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
                       }}
                     >
                       <EditIcon />
-                    </IconButton>
-                  </StyledTableCell>
+                    </IconButton> 
+                  </StyledTableCell>*/}
                 </StyledTableRow>
               ))}
             </TableBody>
@@ -204,12 +201,12 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
         submit={setIsSubmit}
       />
       <Modal
-        title="Xóa mẫu vật"
+        title="Sử dụng mẫu vật"
         onOk={() => {
           dispatch(confirmUsedSpecimen(specimenId));
           setTimeout(() => {
             setIsSubmit(true);
-            setModalDeleteOpen(false)
+            setModalDeleteOpen(false);
           }, 1000);
         }}
         open={modalDeleteOpen}
@@ -217,12 +214,12 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
           setModalDeleteOpen(false);
         }}
       >
-        <p>"Bạn có chắc chắn muốn xóa mẫu vật này không ?"</p>
+        <p>"Bạn có chắc chắn muốn dùng mẫu vật này không ?"</p>
       </Modal>
-      <ModalUpdateSpecimens
+      {/* <ModalUpdateSpecimens
         modalUpdateOpen={modalUpdateOpen}
         setModalUpdateOpen={setModalUpdateOpen}
-      />
+      /> */}
     </Modal>
   );
 };

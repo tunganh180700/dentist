@@ -1,181 +1,223 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Row, Col, Input, Radio } from 'antd';
-import PropsTypes from 'prop-types';
-import { unwrapResult } from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import {
-    Button,
-    IconButton,
-    MenuItem,
-    Select
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Modal } from "antd";
+import { useDispatch } from "react-redux";
+import TableBody from "@mui/material/TableBody";
+import TableHead from "@mui/material/TableHead";
+import { Button, MenuItem, OutlinedInput, Select } from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import axiosInstance from "../../../config/customAxios";
 import { getAllLaboAPI } from "../../../config/baseAPI";
 import _ from "lodash";
 import ClearIcon from "@mui/icons-material/Clear";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
 
-const ModalSpecimen = ({ modalSpecimenOpen, setModalSpecimenOpen, showModalSpecimen, specimens, specimenDTOS, serviceDTOS }) => {
-    const dispatch = useDispatch();
-    const [labo, setLabo] = useState([])
-    const [specimen, setSpecimen] = useState([])
+const ModalSpecimen = ({
+  modalSpecimenOpen,
+  setModalSpecimenOpen,
+  showModalSpecimen,
+  specimens,
+  specimenDTOS,
+  serviceDTOS,
+}) => {
+  const dispatch = useDispatch();
+  const [labo, setLabo] = useState([]);
+  const [specimen, setSpecimen] = useState([]);
 
-    const getLabos = async () => {
-        try {
-            const { data } = await axiosInstance.get(getAllLaboAPI);
-            setLabo(data)
-        } catch (error) {
-            console.log(error)
-        }
+  const formatter = new Intl.NumberFormat({
+    style: "currency",
+    currency: "VND",
+  });
+
+  const getLabos = async () => {
+    try {
+      const { data } = await axiosInstance.get(getAllLaboAPI);
+      setLabo(data);
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    useEffect(() => {
-        getLabos();
-        setSpecimen(specimenDTOS)
-    }, [modalSpecimenOpen]);
+  useEffect(() => {
+    if (modalSpecimenOpen) {
+      getLabos();
+      setSpecimen(specimenDTOS);
+      console.log(serviceDTOS);
+    }
+  }, [modalSpecimenOpen]);
 
-    return (
-        <>
-            <Modal
-                okText={'Lưu'}
-                title="Tạo mẫu vật"
-                open={modalSpecimenOpen}
-                width="72%"
+  return (
+    <>
+      <Modal
+        title="Tạo mẫu vật"
+        open={modalSpecimenOpen}
+        width="72%"
+        onOk={() => {
+          setModalSpecimenOpen(false);
+          specimens(specimen);
+        }}
+        onCancel={() => setModalSpecimenOpen(false)}
+      >
+        <Button
+          className="mb-3 float-right"
+          variant="contained"
+          color="success"
+          endIcon={<AddCircleIcon />}
+          onClick={() => {
+            setSpecimen((prev) => [
+              ...prev,
+              {
+                specimenName: null,
+                amount: 1,
+                unitPrice: serviceDTOS[0]?.price,
+                laboId: labo[0]?.laboId,
+                serviceId: serviceDTOS[0]?.serviceId,
+              },
+            ]);
+          }}
+        >
+          <span className="leading-none">Thêm mới</span>
+        </Button>
+        <p className="font-bold text-lg mb-0">
+          Đang có ({specimen.length}) thêm mới
+        </p>
+        <StyledTable size="small" className="shadow-md">
+          <TableHead>
+            <StyledTableRow>
+              <StyledTableCell>Tên mẫu vật</StyledTableCell>
+              <StyledTableCell>Số lượng</StyledTableCell>
+              <StyledTableCell>Đơn giá</StyledTableCell>
+              <StyledTableCell>Tên labo</StyledTableCell>
+              <StyledTableCell>Dịch vụ</StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+            </StyledTableRow>
+          </TableHead>
+          <TableBody>
+            {specimen?.map((specimen, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell padding="none">
+                  <OutlinedInput
+                    endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
+                    id="specimenName"
+                    placeholder="Tên mẫu vật"
+                    value={specimen.specimenName}
+                    className="h-[30px] bg-white"
+                    onChange={(e) =>
+                      setSpecimen((prev) => {
+                        prev[index].specimenName = e.target.value;
+                        return _.cloneDeep(prev);
+                      })
+                    }
+                  />
+                </StyledTableCell>
+                <StyledTableCell padding="none">
+                  <OutlinedInput
+                    endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
+                    size="small"
+                    id="amount"
+                    value={specimen.amount}
+                    type="number"
+                    inputProps={{ min: 1 }}
+                    className="h-[30px] bg-white"
+                    onChange={(e) =>
+                      setSpecimen((prev) => {
+                        prev[index].amount = e.target.value;
+                        return _.cloneDeep(prev);
+                      })
+                    }
+                  />
+                </StyledTableCell>
+                <StyledTableCell padding="none">
+                  {formatter.format(specimen.unitPrice) || 0} VND
+                  {/* <OutlinedInput
+                    endAdornment={<p className="mb-0 leading-0 text-xs">VND</p>}
+                    id="discount"
+                    value={specimen.unitPrice || 0}
+                    className="h-[30px] bg-white"
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    // onChange={(e) =>
+                    //   setSpecimen((prev) => {
+                    //     prev[index].unitPrice = e.target.value;
+                    //     return _.cloneDeep(prev);
+                    //   })
+                    // }
+                  /> */}
+                </StyledTableCell>
+                <StyledTableCell>
+                  <Select
+                    className="h-[30px] bg-white"
+                    fullWidth
+                    id="laboId"
+                    value={specimen?.laboId}
+                    onChange={(e) => {
+                      const m = labo.find((l) => l.laboId === e.target.value);
+                      setSpecimen((prev) => {
+                        prev[index] = { ...prev[index], laboId: m?.laboId };
+                        return _.cloneDeep(prev);
+                      });
+                    }}
+                  >
+                    {labo?.map((item) => (
+                      <MenuItem key={item.laboId} value={item.laboId}>
+                        {item.laboName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <Select
+                    className="h-[30px] bg-white"
+                    fullWidth
+                    id="serviceId"
+                    value={specimen?.serviceId}
+                    onChange={(e) => {
+                      const m = serviceDTOS.find(
+                        (s) => s.serviceId === e.target.value
+                      );
+                      setSpecimen((prev) => {
+                        prev[index] = {
+                          ...prev[index],
+                          serviceId: m?.serviceId,
+                          unitPrice: m?.price,
+                        };
+                        return _.cloneDeep(prev);
+                      });
+                    }}
+                  >
+                    {serviceDTOS
+                      ?.filter((i) => i.status === 1)
+                      .map((item) => (
+                        <MenuItem key={item.serviceId} value={item.serviceId}>
+                          {item.serviceName}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </StyledTableCell>
 
-                onOk={() => { setModalSpecimenOpen(false); specimens(specimen) }}
-                onCancel={() => setModalSpecimenOpen(false)}
-            >
-                <IconButton style={{ fontSize: 'larger', borderRadius: '5%' }} aria-label="add" onClick={() => {
-                    setSpecimen((prev) => [...prev, { specimenName: null, amount: null, unitPrice: null, laboId: null, serviceId: null }])
-                }}>
-                    Thêm mới
-                </IconButton>
-                <Table size="small" style={{ marginTop: "15px" }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell style={{ width: "19%" }}>
-                                Tên mẫu vật
-                            </TableCell>
-                            <TableCell>
-                                Số lượng
-                            </TableCell>
-                            <TableCell>
-                                Đơn giá
-                            </TableCell>
-                            <TableCell>
-                                Tên labo
-                            </TableCell>
-                            <TableCell>
-                                Dịch vụ
-                            </TableCell>
-                            <TableCell>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {
-                            specimen?.map((specimen, index) => (
-                                <TableRow key={index}>
-                                    <TableCell padding="none">
-                                        <input
-                                            value={specimen.specimenName}                                           
-                                            name="specimenName"
-                                            onChange={(e) =>
-                                                setSpecimen((prev) => {
-                                                    prev[index].specimenName = e.target.value
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                        />
-                                    </TableCell>
-                                    <TableCell padding="none">
-                                        <input
-                                            value={specimen.amount}
-                                            name="amount"
-                                            type={"number"}
-                                            onChange={(e) =>
-                                                setSpecimen((prev) => {
-                                                    prev[index].amount = e.target.value
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                        />
-                                    </TableCell>
-                                    <TableCell padding="none">
-                                        <input
-                                            value={specimen.unitPrice}
-                                            name="unitPrice"
-                                            type={"number"}
-                                            onChange={(e) =>
-                                                setSpecimen((prev) => {
-                                                    prev[index].unitPrice = e.target.value;
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                        />
-                                    </TableCell>
-                                    <TableCell style={{ paddingTop: '1.5rem' }}>
-                                        <Select
-                                            id="laboId"
-                                            value={specimen?.laboId}
-                                            onChange={(e) => {
-                                                const m = labo.find((l) => l.laboId === e.target.value)
-                                                console.log("e", e.target.value)
-                                                setSpecimen(prev => {
-                                                    prev[index] = { ...prev[index], laboId: m?.laboId }
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                            }
-                                        >
-                                            {labo?.map(item => (
-                                                <MenuItem key={item.laboId} value={item.laboId}>{item.laboName}</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </TableCell>
-                                    <TableCell style={{ paddingTop: '1.5rem' }}>
-                                        <Select
-                                            id="serviceId"
-                                            value={specimen?.serviceId}
-                                            onChange={(e) => {
-                                                const m = serviceDTOS.find((s) => s.serviceId === e.target.value)
-                                                setSpecimen(prev => {
-                                                    prev[index] = { ...prev[index], serviceId: m?.serviceId }
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                            }
-                                        >
-                                            {serviceDTOS?.filter(i => i.status === 1).map(item => (
-                                                <MenuItem key={item.serviceId} value={item.serviceId}>{item.serviceName}</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </TableCell>
-
-                                    <TableCell padding="none">
-                                        <Button className="mr10" onClick={
-                                            () => {
-                                                setSpecimen((prev) => {
-                                                    prev.splice(index, 1)
-                                                    return _.cloneDeep(prev)
-                                                })
-                                            }
-                                        } >
-                                            <ClearIcon />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            )
-                            )
-                        }
-                    </TableBody>
-                </Table>
-            </Modal>
-        </>
-    )
-}
+                <StyledTableCell padding="none">
+                  <Button
+                    className="mr10"
+                    onClick={() => {
+                      setSpecimen((prev) => {
+                        prev.splice(index, 1);
+                        return _.cloneDeep(prev);
+                      });
+                    }}
+                  >
+                    <ClearIcon />
+                  </Button>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </StyledTable>
+      </Modal>
+    </>
+  );
+};
 export default ModalSpecimen;

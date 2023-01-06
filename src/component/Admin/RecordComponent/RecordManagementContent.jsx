@@ -35,6 +35,7 @@ import {
   StyledTable,
 } from "../../ui/TableElements";
 import SpecimenRecord from "../PatientManagementComponent/SpecimenRecord";
+import ProductsSoldRecord from "../PatientManagementComponent/ProductsSoldRecord";
 const RecordManagementContent = () => {
   const dispatch = useDispatch();
 
@@ -49,6 +50,7 @@ const RecordManagementContent = () => {
   const [modalDetailOpen, setModalDetailOpen] = useState(false);
   const [modalDetailRecordOpen, setModalDetailRecordOpen] = useState(false);
   const [modalDetailSpecimen, setModalDetailSpecimen] = useState(false);
+  const [modalProducstSold, setModalProducstSold] = useState(false);
 
   const patientName = useSelector((state) => state.choosenPatient.patientName);
 
@@ -140,7 +142,7 @@ const RecordManagementContent = () => {
             color="info"
             endIcon={<RemoveRedEyeIcon />}
             onClick={() => {
-              setModalAddOpen(true);
+              setModalProducstSold(true);
             }}
           >
             <span className="leading-none">Sản phẩm đã mua</span>
@@ -253,6 +255,12 @@ const RecordManagementContent = () => {
       <SpecimenRecord
         isShow={modalDetailSpecimen}
         setIsShow={setModalDetailSpecimen}
+        patientId={Number(id)}
+      />
+
+      <ProductsSoldRecord
+        isShow={modalProducstSold}
+        setIsShow={setModalProducstSold}
         patientId={Number(id)}
       />
 
