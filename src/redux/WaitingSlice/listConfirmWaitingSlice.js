@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { listConfirmWaitingAPI } from "../../config/baseAPI"
+import { listConfirmWaitingAPI,confirmWaitingAPI } from "../../config/baseAPI"
 import axiosInstance from "../../config/customAxios"
+import { toast } from 'react-toastify';
 
 const initState = {
     listConfirmWaiting: [],
@@ -10,7 +11,9 @@ const initState = {
     // pageSize: 3,
     // totalPage: 0,
     // totalElements: 0,
-    message: ''
+    message: '',
+    isConfirmed: false,
+    statusConfirmed: false,
 }
 
 const listConfirmWaitingSlice = createSlice({
@@ -32,7 +35,15 @@ const listConfirmWaitingSlice = createSlice({
                 // state.pageNumber = action.payload.pageNumber;
                 // state.totalPage = action.payload.totalPages;
                 // state.totalElements = action.payload.totalElements;
-                state.message = action.payload.message
+                state.message = action.payload.message;
+                state.isConfirmed = false;
+                state.statusConfirmed = false;
+            })
+            .addCase(confirmWaiting.pending, (state, action) => {
+                state.statusConfirmed = true
+            })
+            .addCase(confirmWaiting.fulfilled, (state, action) => {
+                state.isConfirmed = true
             })
     }
 })
@@ -44,6 +55,16 @@ export const fetchAllConfirmWaiting = createAsyncThunk('listConfirmWaiting/fetch
     } catch (error) {
         console.log('error = ',error)
     }
+})
+
+export const confirmWaiting = createAsyncThunk('listConfirmWaiting/confirmWaiting', async (data) => {
+    await axiosInstance.post(confirmWaitingAPI + data.id + '?isAttend=' + data.isAttend)
+    .then(res => {
+        toast("Xác nhận khám thành công");
+    })
+    .catch(err => {
+        toast("Xác nhận khám không thành công");
+    });
 })
 
 export const { setListConfirmWaiting } = listConfirmWaitingSlice.actions;

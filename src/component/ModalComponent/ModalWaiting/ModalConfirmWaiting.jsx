@@ -6,7 +6,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { fetchAllConfirmWaiting } from '../../../redux/WaitingSlice/listConfirmWaitingSlice';
+import { fetchAllConfirmWaiting, confirmWaiting } from '../../../redux/WaitingSlice/listConfirmWaitingSlice';
 import { confirmWaitingAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
 import { ToastContainer, toast } from 'react-toastify';
@@ -32,6 +32,7 @@ const ModalConfirmWaiting = ({ modalConfirmWaitingOpen, setModalConfirmWaitingOp
     // const totalPages = useSelector(state => state.listConfirmWaiting.totalPage);
     // const [currentPage, setCurrentPage] = useState(0);
     // const totalElements = useSelector(state => state.listConfirmWaiting.totalElements);
+    const isConfirmed = useSelector((state) => state.listConfirmWaiting.isConfirmed);
 
     const loadConfirmWatingList = () => {
         dispatch(fetchAllConfirmWaiting());
@@ -39,19 +40,12 @@ const ModalConfirmWaiting = ({ modalConfirmWaitingOpen, setModalConfirmWaitingOp
 
     useEffect(() => {
         loadConfirmWatingList();
+      }, [isConfirmed]);
+
+    useEffect(() => {
+        loadConfirmWatingList();
     }, [triggerGetList])
     // }, [currentPage])
-
-    const confirmWaiting = async (waitingId, isAttend) => {
-        await axiosInstance.post(confirmWaitingAPI + waitingId + '?isAttend=' + isAttend)
-            .then(res => {
-                loadConfirmWatingList();
-                toast("Xác nhận khám thành công");
-            })
-            .catch(err => {
-                toast("Xác nhận khám không thành công");
-            });
-    }
 
     return (
         <>
@@ -69,14 +63,14 @@ const ModalConfirmWaiting = ({ modalConfirmWaitingOpen, setModalConfirmWaitingOp
                                     <TableCell>Bệnh nhân {item.patientName}</TableCell>
                                     <TableCell>
                                         <IconButton aria-label="edit" onClick={() => {
-                                            confirmWaiting(item.waitingRoomId, 1)
+                                            dispatch(confirmWaiting({id: item.waitingRoomId, isAttend: 1}))
                                         }}>
                                             Có khám
                                         </IconButton>
                                     </TableCell>
                                     <TableCell>
                                         <IconButton aria-label="edit" onClick={() => {
-                                            confirmWaiting(item.waitingRoomId, 0)
+                                            dispatch(confirmWaiting({id: item.waitingRoomId, isAttend: 0}))
                                         }}>
                                             Không khám
                                         </IconButton>
