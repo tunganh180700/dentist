@@ -361,6 +361,18 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               }}
             />
 
+            <InputDentist
+              id="treatment"
+              label="Điều trị"
+              required
+              value={formik.values.treatment}
+              onChange={formik.handleChange}
+              error={{
+                message: formik.errors.treatment,
+                touched: formik.touched.treatment,
+              }}
+            />
+
             <Box className="mb-2">
               <p className="mb-1 font-bold">Ghi chú</p>
               <TextField
@@ -373,17 +385,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 onChange={formik.handleChange}
               />
             </Box>
-            <InputDentist
-              id="treatment"
-              label="Điều trị"
-              required
-              value={formik.values.treatment}
-              onChange={formik.handleChange}
-              error={{
-                message: formik.errors.treatment,
-                touched: formik.touched.treatment,
-              }}
-            />
+
             <Box className="mb-2">
               <p className="mb-1 font-bold">Đơn thuốc</p>
               <TextField

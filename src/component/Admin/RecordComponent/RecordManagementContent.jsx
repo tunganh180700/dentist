@@ -161,6 +161,7 @@ const RecordManagementContent = () => {
               <StyledTableCell>Đơn thuốc</StyledTableCell>
               <StyledTableCell></StyledTableCell>
               <StyledTableCell></StyledTableCell>
+              <StyledTableCell></StyledTableCell>
             </StyledTableRow>
           </TableHead>
           {totalPages === 0 ? null : (
@@ -201,6 +202,18 @@ const RecordManagementContent = () => {
                       }}
                     >
                       <span className="leading-none">Chi tiết</span>
+                    </Button>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Button
+                      variant="contained"
+                      color="warning"
+                      onClick={() => {
+                        setModalAddOpen(true);
+                        dispatch(setUserId(el.patientRecordId));
+                      }}
+                    >
+                      <span className="leading-none">Sửa</span>
                     </Button>
                   </StyledTableCell>
                   <StyledTableCell>

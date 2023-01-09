@@ -17,6 +17,7 @@ import DetailLaboRecord from "./DetailLaboRecord";
 import InputDentist from "../../ui/input";
 import ModalSendSample from "../../ModalComponent/ModalLabo/ModalSendSample";
 import ModalReceivedSample from "../../ModalComponent/ModalLabo/ModalReceivedSample";
+import Loading from "../../ui/Loading";
 
 const LaboManagementContent = () => {
   const dispatch = useDispatch();
@@ -35,13 +36,18 @@ const LaboManagementContent = () => {
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [modalSendSample, setModalSendSample] = useState(false);
   const [modalReceiveSample, setModalReceiveSample] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     dispatch(
       fetchAllLabo({
         size: pageSize,
       })
     );
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   }, [isUpdateLabo, isDeleteLabo, isAddLabo]);
 
   useEffect(() => {
@@ -66,6 +72,7 @@ const LaboManagementContent = () => {
 
   return (
     <>
+      {loading && <Loading />}
       <h2 className="font-bold mb-2"> Quản Lý Labo</h2>
       {/* <IconButton
         aria-label="add"
@@ -130,11 +137,11 @@ const LaboManagementContent = () => {
               }}
             />
           </Box>
-          <Box className="bg-white py-4 rounded-lg shadow-md overflow-y-scroll max-h-[610px]">
+          <Box className="bg-white py-4 rounded-lg shadow-md text-center  w-[300px]">
             <p className="font-bold text-center">
               Có ( {listLabo.length} ) kết quả
             </p>
-            <div className="flex flex-col gap-2 px-3">
+            <div className="flex flex-col gap-2 px-3  overflow-y-scroll max-h-[515px] text-left">
               {listLabo.map((item, index) => (
                 <Box
                   className={`whitespace-nowrap p-2 rounded-md cursor-pointer hover:bg-slate-100 ${
@@ -146,6 +153,15 @@ const LaboManagementContent = () => {
                 </Box>
               ))}
             </div>
+            <Button
+              color="success"
+              className="fixed bottom-0 top-3"
+              onClick={() => {
+                setModalAddOpen(true);
+              }}
+            >
+              Thêm dịch vụ
+            </Button>
           </Box>
         </div>
         <Box className="w-full">
@@ -171,10 +187,10 @@ const LaboManagementContent = () => {
         setModalDeleteOpen={setModalDeleteOpen}
       />
 
-      {/* <ModalAddLabo
+      <ModalAddLabo
         modalAddOpen={modalAddOpen}
         setModalAddOpen={setModalAddOpen}
-      /> */}
+      />
     </>
   );
 };

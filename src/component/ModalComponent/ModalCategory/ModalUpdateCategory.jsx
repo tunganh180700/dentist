@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Modal } from "antd";
 import "antd/dist/antd.css";
 import { Typography, TextField } from "@mui/material";
@@ -16,7 +16,7 @@ const ModalUpdateCategory = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     (state) => state.modal.categoryServiceId
   );
   const [loading, setLoading] = useState();
-  const [value, setValue] = useState(null);
+  const [nameOriginCategory, setNameOriginCategory] = useState("");
 
   const validationSchema = yup.object({
     categoryServiceName: yup
@@ -39,8 +39,8 @@ const ModalUpdateCategory = ({ modalUpdateOpen, setModalUpdateOpen }) => {
       const res = await axiosInstance.get(
         getCategoryByIdAPI + categoryServiceId
       );
-      console.log(res.data);
       formik.setValues(res.data);
+      setNameOriginCategory(res.data.categoryServiceName);
     } catch (error) {
       console.log(error);
     }
@@ -48,8 +48,14 @@ const ModalUpdateCategory = ({ modalUpdateOpen, setModalUpdateOpen }) => {
   };
 
   useEffect(() => {
-    if (categoryServiceId > 0) fetchCategory(categoryServiceId);
-  }, [categoryServiceId]);
+    if (categoryServiceId && modalUpdateOpen) {
+      fetchCategory(categoryServiceId);
+    }
+  }, [categoryServiceId, modalUpdateOpen]);
+
+  const disabledBtnOk = useMemo(() => {
+    return formik.values?.categoryServiceName === nameOriginCategory;
+  }, [formik.values]);
 
   return (
     <>
@@ -57,16 +63,15 @@ const ModalUpdateCategory = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         title="Cập nhật loại dịch vụ"
         open={modalUpdateOpen}
         onOk={formik.handleSubmit}
+        okButtonProps={{ disabled: disabledBtnOk }}
         onCancel={() => setModalUpdateOpen(false)}
       >
         <InputDentist
-          margin="normal"
           required
           id="categoryServiceName"
           label="Loại dịch vụ"
           isEdit
           value={formik.values.categoryServiceName}
-          autoFocus
           onChange={formik.handleChange}
           error={{
             message: formik.errors.categoryServiceName,

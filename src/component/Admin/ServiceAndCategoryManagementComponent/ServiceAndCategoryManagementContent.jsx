@@ -6,9 +6,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { Pagination, Typography, IconButton, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCategoryServicedId,
-} from "../../../redux/modalSlice";
+import { setCategoryServicedId } from "../../../redux/modalSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
@@ -38,6 +36,7 @@ import {
   StyledTable,
 } from "../../ui/TableElements";
 import InputDentist from "../../ui/input";
+import Loading from "../../ui/Loading";
 
 const color = {
   border: "rgba(0, 0, 0, 0.2)",
@@ -84,15 +83,12 @@ const ServiceAndCategoryManagementContent = () => {
   const [searchCategory, setSearchCategory] = useState("");
   const [categorySelected, setCategorySelected] = useState();
 
-  console.log("list: ", listCategory);
-
   const loadCategory = async () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get(listAllCategoryAPI);
       setCategoryServiceId(res.data[0].categoryServiceId);
       setOriginData(res.data);
-      setCategoryId(listCategory[0]?.categoryServiceId);
     } catch (error) {
       console.log(error);
     }
@@ -124,6 +120,7 @@ const ServiceAndCategoryManagementContent = () => {
       );
       setServiceId(res.data.categoryServiceId);
       setServiceIds(res.data);
+      setIsSubmitFormService(false);
     } catch (error) {
       console.log(error);
     }
@@ -137,16 +134,9 @@ const ServiceAndCategoryManagementContent = () => {
   // console.log('haha', listServiceAndCategory)
   return (
     <>
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-        style={{ marginBottom: "20px" }}
-      >
-        Bảng Giá Dịch Vụ Nha Khoa
-      </Typography>
+      {loading && <Loading />}
+      <h2 className="font-bold mb-2"> Bảng Giá Dịch Vụ Nha Khoa</h2>
+
       {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ maxWidth: 250, minWidth: 250 }}>
           <FormControl fullWidth>
@@ -224,6 +214,30 @@ const ServiceAndCategoryManagementContent = () => {
           </IconButton>
         </div>
       </div> */}
+      <div className="flex gap-3 justify-end mb-3">
+        <Button
+          variant="contained"
+          color="info"
+          onClick={() => {
+            setModalUpdateOpen(true);
+            dispatch(setCategoryServicedId(categoryServiceId));
+          }}
+        >
+          <span className="leading-none">Cập nhật loại dịch vụ</span>
+        </Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => {
+            setModalAddServiceOpen(true);
+          }}
+        >
+          <span className="leading-none">Thêm mới</span>
+        </Button>
+        <Button variant="contained" color="error" endIcon={<DeleteIcon />}>
+          <span className="leading-none">Xóa dịch vụ</span>
+        </Button>
+      </div>
       <Box className="flex gap-3">
         <div>
           <Box className="bg-white p-4 rounded-lg shadow-md mb-3">
@@ -236,11 +250,11 @@ const ServiceAndCategoryManagementContent = () => {
               }}
             />
           </Box>
-          <Box className="bg-white py-4 rounded-lg shadow-md overflow-y-scroll max-h-[610px]">
+          <Box className="bg-white py-4 rounded-lg shadow-md text-center w-[300px]">
             <p className="font-bold text-center">
               Có ( {categoryServiceIds.length} ) kết quả
             </p>
-            <div className="flex flex-col gap-2 px-3">
+            <div className="flex flex-col gap-2 px-3 max-h-[515px] overflow-y-scroll text-left">
               {categoryServiceIds.map((item, index) => (
                 <Box
                   className={`whitespace-nowrap p-2 rounded-md cursor-pointer hover:bg-slate-100 ${
@@ -248,47 +262,25 @@ const ServiceAndCategoryManagementContent = () => {
                     "bg-sky-100 text-sky-600"
                   }`}
                   onClick={() => {
-                    setCategoryServiceId(item.categoryServiceId)
+                    setCategoryServiceId(item.categoryServiceId);
                   }}
                 >
                   {item.categoryServiceName}
                 </Box>
               ))}
             </div>
+            <Button
+              color="success"
+              className="fixed bottom-0 top-3"
+              onClick={() => {
+                setModalAddCategoryOpen(true);
+              }}
+            >
+              Thêm dịch vụ
+            </Button>
           </Box>
         </div>
         <Box className="w-full text-center">
-          <div className="flex gap-3 justify-end mb-3">
-            <Button
-              variant="contained"
-              color="info"
-              onClick={() => {
-                setModalUpdateOpen(true);
-                dispatch(setCategoryServicedId(categoryServiceId));
-              }}
-            >
-              <span className="leading-none">Cập nhật loại dịch vụ</span>
-            </Button>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => {
-                setModalAddServiceOpen(true);
-              }}
-            >
-              <span className="leading-none">Thêm mới Dịch vụ</span>
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              endIcon={<DeleteIcon />}
-              onClick={() => {
-                setModalDeleteOpen(true);
-              }}
-            >
-              <span className="leading-none">Xóa labo</span>
-            </Button>
-          </div>
           <StyledTable className="shadow-md text-center" size="small">
             <TableHead>
               <StyledTableRow>
@@ -325,8 +317,8 @@ const ServiceAndCategoryManagementContent = () => {
                     <IconButton
                       aria-label="edit"
                       onClick={() => {
-                        setModalUpdateServiceOpen(true);
                         dispatch(setServicedId(item.serviceId));
+                        setModalUpdateServiceOpen(true);
                       }}
                     >
                       <EditIcon />
@@ -380,6 +372,8 @@ const ServiceAndCategoryManagementContent = () => {
 
       <div>
         <ModalAddService
+          listCategoryService={categoryServiceIds}
+          categoryServiceId={categoryServiceId}
           modalAddOpen={modalAddServiceOpen}
           setModalAddOpen={setModalAddServiceOpen}
           isSubmitForm={setIsSubmitFormService}

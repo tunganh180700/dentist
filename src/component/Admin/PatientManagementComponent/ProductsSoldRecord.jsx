@@ -31,7 +31,7 @@ const ProductsSoldRecord = ({ patientId, isShow, setIsShow }) => {
   const [listMaterialExport, setListMaterialExport] = useState([]);
 
   useEffect(() => {
-    if (patientId || isShow) {
+    if (patientId && isShow) {
       dispatch(fetchPatientMaterialExport(patientId));
     }
   }, [patientId, isShow]);

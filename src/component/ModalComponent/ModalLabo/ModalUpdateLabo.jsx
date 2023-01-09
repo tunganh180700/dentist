@@ -57,8 +57,10 @@ const ModalUpdateLabo = ({ isShow, setModalUpdateOpen }) => {
   };
 
   useEffect(() => {
-    if (laboId) fetchLabo(laboId);
-  }, [laboId]);
+    if (laboId && isShow) {
+      fetchLabo(laboId);
+    }
+  }, [laboId, isShow]);
 
   const disabledBtnOk = useMemo(() => {
     return (
