@@ -18,12 +18,11 @@ import {
 const ModalSpecimen = ({
   modalSpecimenOpen,
   setModalSpecimenOpen,
-  showModalSpecimen,
   specimens,
   specimenDTOS,
   serviceDTOS,
+  isEdit = false,
 }) => {
-  const dispatch = useDispatch();
   const [labo, setLabo] = useState([]);
   const [specimen, setSpecimen] = useState([]);
 
@@ -44,10 +43,35 @@ const ModalSpecimen = ({
   useEffect(() => {
     if (modalSpecimenOpen) {
       getLabos();
-      setSpecimen(specimenDTOS);
-      console.log(serviceDTOS);
     }
   }, [modalSpecimenOpen]);
+
+  useEffect(() => {
+    setSpecimen([]);
+    if (specimenDTOS.length) {
+      const dataDTOS = specimenDTOS.map((item) => ({
+        specimenName: item.specimenName,
+        amount: item.amount,
+        unitPrice: item.unitPrice,
+        laboId: item.laboId,
+        serviceId: item.serviceId,
+        statusChange: isEdit ? "edit" : "add",
+      }));
+      setSpecimen(dataDTOS);
+    }
+  }, [specimenDTOS]);
+
+  // useEffect(() => {
+  //   if (isEdit) {
+  //     console.log(12312312);
+  //     setLoading(true);
+  //     try {
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //     setLoading(false);
+  //   }
+  // }, [isEdit,modalSpecimenOpen]);
 
   return (
     <>
@@ -75,6 +99,7 @@ const ModalSpecimen = ({
                 unitPrice: serviceDTOS[0]?.price,
                 laboId: labo[0]?.laboId,
                 serviceId: serviceDTOS[0]?.serviceId,
+                statusChange: "add",
               },
             ]);
           }}

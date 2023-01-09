@@ -41,7 +41,11 @@ import { useDispatch, useSelector } from "react-redux";
 import ModalExportMaterial from "./ModalExportMaterial";
 import ModalSpecimen from "./ModalSpecimen";
 import { addRecord } from "../../../redux/RecordSlice/listRecordSlice";
-import DatePickerDentist from "../../ui/date-picker/DatePickerDentist";
+import {
+  fetchPatientSpecimen,
+  setListSpecimen,
+} from "../../../redux/SpecimenSlice/listSpecimenSlice";
+import { fetchPatientMaterialExport } from "../../../redux/MaterialSlice/listMaterialExportSlice";
 import InputDentist from "../../ui/input";
 import {
   StyledTableCell,
@@ -51,7 +55,12 @@ import {
 import "./style.css";
 import _ from "lodash";
 
-const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
+const ModalAddRecord = ({
+  modalAddOpen,
+  setModalAddOpen,
+  isSubmitForm,
+  isEditRecord = false,
+}) => {
   const dispatch = useDispatch();
   const valueDate = moment().format(validationDate);
   const { id } = useParams();
@@ -61,10 +70,14 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   const [errorUpdateMess, setErrorUpdateMess] = useState("");
   const [serviceIds, setServiceIds] = useState([]);
   const [showModalExportMaterial, setShowModalExportMaterial] = useState(0);
-  const [showModalSpecimen, setShowModalSpecimen] = useState(0);
   const [modalExportOpen, setModalExportOpen] = useState(false);
   const [modalSpecimenOpen, setModalSpecimenOpen] = useState(false);
-
+  const listPatientSpecimens = useSelector(
+    (state) => state.listSpecimen.listPatientSpecimens
+  );
+  const listPatientMaterialExport = useSelector(
+    (state) => state.listMaterialExport.listPatientMaterialExport
+  );
   // const [newPrice, setNewPrice] = useState();
   // const [servicePrice, setServicePrice] = useState();
   // const [serviceDiscount, setServiceDiscount] = useState();
@@ -121,8 +134,25 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   useEffect(() => {
     if (modalAddOpen) {
       loadServiceOption();
+      if (isEditRecord) {
+        dispatch(fetchPatientSpecimen(id));
+        dispatch(fetchPatientMaterialExport(id));
+        return;
+      }
+      setSpecimenDTOS([]);
+      setMaterialExportDTOS([]);
     }
   }, [modalAddOpen]);
+
+  useEffect(() => {
+    if (isEditRecord) {
+      setSpecimenDTOS(listPatientSpecimens);
+      setMaterialExportDTOS(listPatientMaterialExport);
+      return;
+    }
+    setMaterialExportDTOS([]);
+    setSpecimenDTOS([]);
+  }, [listPatientSpecimens, listPatientMaterialExport]);
 
   useEffect(() => {
     if (rows.length + listTreatingService.length) {
@@ -461,26 +491,23 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                       {formatter.format(item.discount)} VND
                     </StyledTableCell>
                     <StyledTableCell>
-                      <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                          <Select
-                            labelId="status"
-                            id="status"
-                            value={item.status || ""}
-                            onChange={
-                              (e) =>
-                                setListTreatingService((prev) => {
-                                  prev[index].status = e.target.value;
-                                  return _.cloneDeep(prev);
-                                })
-                              // setStatus(e.target.value)
-                            }
-                          >
-                            <MenuItem value={1}>Đang chữa trị</MenuItem>
-                            <MenuItem value={2}>Đã xong</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Box>
+                      <Select
+                        className="mb-0"
+                        labelId="status"
+                        id="status"
+                        value={item.status || ""}
+                        onChange={
+                          (e) =>
+                            setListTreatingService((prev) => {
+                              prev[index].status = e.target.value;
+                              return _.cloneDeep(prev);
+                            })
+                          // setStatus(e.target.value)
+                        }
+                      >
+                        <MenuItem value={1}>Đang chữa trị</MenuItem>
+                        <MenuItem value={2}>Đã xong</MenuItem>
+                      </Select>
                     </StyledTableCell>
                     <StyledTableCell></StyledTableCell>
                   </StyledTableRow>
@@ -538,24 +565,21 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                             />
                           </StyledTableCell>
                           <StyledTableCell>
-                            <Box sx={{ minWidth: 120 }}>
-                              <FormControl fullWidth>
-                                <Select
-                                  labelId="status"
-                                  id="status"
-                                  value={i?.status || ""}
-                                  onChange={(e) => {
-                                    setRows((prev) => {
-                                      prev[index].status = e.target.value;
-                                      return _.cloneDeep(prev);
-                                    });
-                                  }}
-                                >
-                                  <MenuItem value={1}>Đang chữa trị</MenuItem>
-                                  <MenuItem value={2}>Đã xong</MenuItem>
-                                </Select>
-                              </FormControl>
-                            </Box>
+                            <Select
+                            className="mb-0"
+                              labelId="status"
+                              id="status"
+                              value={i?.status || ""}
+                              onChange={(e) => {
+                                setRows((prev) => {
+                                  prev[index].status = e.target.value;
+                                  return _.cloneDeep(prev);
+                                });
+                              }}
+                            >
+                              <MenuItem value={1}>Đang chữa trị</MenuItem>
+                              <MenuItem value={2}>Đã xong</MenuItem>
+                            </Select>
                           </StyledTableCell>
                           <StyledTableCell>
                             <Button
@@ -622,20 +646,21 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
             </Box>
           </Box>
         </Box>
+        <ModalSpecimen
+          isEdit={isEditRecord}
+          modalSpecimenOpen={modalSpecimenOpen}
+          setModalSpecimenOpen={setModalSpecimenOpen}
+          specimens={handleSpecimen}
+          specimenDTOS={specimenDTOS}
+          serviceDTOS={serviceDTOS}
+        />
         <ModalExportMaterial
+          isEdit={isEditRecord}
           modalExportOpen={modalExportOpen}
           setModalExportOpen={setModalExportOpen}
           showModalExportMaterial={showModalExportMaterial}
           exportMaterial={handleExportMaterial}
           materialExportDTOS={materialExportDTOS}
-        />
-        <ModalSpecimen
-          modalSpecimenOpen={modalSpecimenOpen}
-          setModalSpecimenOpen={setModalSpecimenOpen}
-          showModalSpecimen={showModalSpecimen}
-          specimens={handleSpecimen}
-          specimenDTOS={specimenDTOS}
-          serviceDTOS={serviceDTOS}
         />
       </Modal>
     </>

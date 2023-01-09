@@ -136,6 +136,7 @@ export const fetchPatientSpecimen = createAsyncThunk(
   async (patientId) => {
     try {
       const res = await axiosInstance.get(patientSpecimenAPI + patientId);
+      console.log('here', res);
       return res.data;
     } catch (error) {
       console.log(error);

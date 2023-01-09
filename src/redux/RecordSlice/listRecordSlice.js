@@ -145,7 +145,6 @@ export const updateRecord = createAsyncThunk('listRecord/updateRecord', async (d
 export const fetchRecord = createAsyncThunk('listRecord/fetchRecord', async (patientRecordId) => {
     try {
         const res = await axiosInstance.get(patientRecordAPI + patientRecordId)
-        console.log("list", res.data)
         return res.data
     } catch (error) {
         console.log(error)

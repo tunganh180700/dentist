@@ -62,7 +62,7 @@ const ModalDetailRecord = ({
   useEffect(() => {
     setLoading(true);
     try {
-      if (recordId > 0) {
+      if (recordId && modalDetailRecordOpen) {
         dispatch(fetchRecord(recordId));
         dispatch(fetchRecord(patientRecordId));
       }
@@ -70,7 +70,7 @@ const ModalDetailRecord = ({
       console.log(error);
     }
     setLoading(false);
-  }, [recordId]);
+  }, [recordId,modalDetailRecordOpen ]);
 
   const detailRecord = (
     <Box>

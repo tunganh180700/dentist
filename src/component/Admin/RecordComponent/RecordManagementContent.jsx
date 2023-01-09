@@ -36,6 +36,8 @@ import {
 } from "../../ui/TableElements";
 import SpecimenRecord from "../PatientManagementComponent/SpecimenRecord";
 import ProductsSoldRecord from "../PatientManagementComponent/ProductsSoldRecord";
+import moment from "moment";
+import { useMemo } from "react";
 const RecordManagementContent = () => {
   const dispatch = useDispatch();
 
@@ -44,6 +46,7 @@ const RecordManagementContent = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isSubmitForm, setIsSubmitForm] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
+  const [isEditRecord, setIsEditRecord] = useState(false);
 
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
@@ -51,6 +54,7 @@ const RecordManagementContent = () => {
   const [modalDetailRecordOpen, setModalDetailRecordOpen] = useState(false);
   const [modalDetailSpecimen, setModalDetailSpecimen] = useState(false);
   const [modalProducstSold, setModalProducstSold] = useState(false);
+  const [isShowCanotAdd, setIsShowCanotAdd] = useState(false);
 
   const patientName = useSelector((state) => state.choosenPatient.patientName);
 
@@ -96,6 +100,12 @@ const RecordManagementContent = () => {
     }
   }, [isSubmitForm]);
 
+  const disableAddButton = useMemo(() => {
+    return recordList.some(
+      (item) => item.date === moment().format("YYYY-MM-DD")
+    );
+  }, [recordList]);
+
   return (
     <>
       <Box className="flex items-center gap-3 mb-4">
@@ -117,16 +127,27 @@ const RecordManagementContent = () => {
         </Divider>
         <Box className="flex gap-3 mb-3">
           <p className="font-bold text-lg mb-0">Có ({totalElements}) hồ sơ</p>
+          {/* {!disableAddButton ? (
+        
+          ) : <Box>
+
+            </Box>} */}
           <Button
             variant="contained"
             color="success"
             endIcon={<AddCircleIcon />}
             onClick={() => {
-              setModalAddOpen(true);
+              if (!disableAddButton) {
+                setIsEditRecord(false);
+                setModalAddOpen(true);
+                return;
+              }
+              setIsShowCanotAdd(true);
             }}
           >
             <span className="leading-none">Thêm hồ sơ</span>
           </Button>
+
           <Button
             variant="contained"
             color="info"
@@ -205,16 +226,19 @@ const RecordManagementContent = () => {
                     </Button>
                   </StyledTableCell>
                   <StyledTableCell>
-                    <Button
-                      variant="contained"
-                      color="warning"
-                      onClick={() => {
-                        setModalAddOpen(true);
-                        dispatch(setUserId(el.patientRecordId));
-                      }}
-                    >
-                      <span className="leading-none">Sửa</span>
-                    </Button>
+                    {moment().format("YYYY-MM-DD") === el.date && (
+                      <Button
+                        variant="contained"
+                        color="warning"
+                        onClick={() => {
+                          dispatch(setUserId(el.patientRecordId));
+                          setIsEditRecord(true);
+                          setModalAddOpen(true);
+                        }}
+                      >
+                        <span className="leading-none">Sửa</span>
+                      </Button>
+                    )}
                   </StyledTableCell>
                   <StyledTableCell>
                     <IconButton
@@ -270,7 +294,12 @@ const RecordManagementContent = () => {
         setIsShow={setModalDetailSpecimen}
         patientId={Number(id)}
       />
-
+      <Modal open={isShowCanotAdd} onCancel={() =>setIsShowCanotAdd(false)} footer={null} title="Thông báo">
+        <Box className="text-center text-lg text-red-600">
+          <p>Ngày {moment().format("DD-MM-YYYY")} đã có hồ sơ.</p>
+          <p> Vui lòng chỉnh sửa ở danh sách dưới!</p>
+        </Box>
+      </Modal>
       <ProductsSoldRecord
         isShow={modalProducstSold}
         setIsShow={setModalProducstSold}
@@ -283,6 +312,7 @@ const RecordManagementContent = () => {
       />
 
       <ModalAddRecord
+        isEditRecord={isEditRecord}
         modalAddOpen={modalAddOpen}
         setModalAddOpen={setModalAddOpen}
         isSubmitForm={setIsSubmitForm}

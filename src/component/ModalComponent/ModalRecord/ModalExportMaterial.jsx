@@ -4,7 +4,14 @@ import { useDispatch } from "react-redux";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { Button, IconButton, MenuItem, TextField, Select } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  MenuItem,
+  TextField,
+  Select,
+  OutlinedInput,
+} from "@mui/material";
 import axiosInstance from "../../../config/customAxios";
 import { listAllMaterialAPI } from "../../../config/baseAPI";
 import _ from "lodash";
@@ -19,6 +26,7 @@ const ModalExportMaterial = ({
   setModalExportOpen,
   exportMaterial,
   materialExportDTOS,
+  isEdit = false,
 }) => {
   const dispatch = useDispatch();
   const [material, setMaterial] = useState([]);
@@ -45,9 +53,26 @@ const ModalExportMaterial = ({
   };
 
   useEffect(() => {
-    getMaterials();
-    setMaterialExport(materialExportDTOS);
+    if(modalExportOpen){
+      getMaterials();
+    }
+    // setMaterialExport(materialExportDTOS);
   }, [modalExportOpen]);
+
+  useEffect(() => {
+    setMaterialExport([]);
+    if (materialExportDTOS.length) {
+      const dataDTOS = materialExportDTOS.map((item) => ({
+        materialId: item.materialId,
+        materialName: item.materialName,
+        amount: item.amount,
+        unitPrice: item.unitPrice,
+        total: item.unitPrice * item.amount,
+        statusChange: isEdit ? "edit" : "add",
+      }));
+      setMaterialExport(dataDTOS);
+    }
+  }, [materialExportDTOS]);
 
   return (
     <>
@@ -74,6 +99,7 @@ const ModalExportMaterial = ({
                 amount: 1,
                 unitPrice: material[0]?.price,
                 total: material[0]?.price,
+                statusChange: "add",
               },
             ]);
           }}
@@ -131,7 +157,7 @@ const ModalExportMaterial = ({
                     ))}
                   </Select>
                 </StyledTableCell>
-                <StyledTableCell padding="none">
+                {/* <StyledTableCell padding="none">
                   <TextField
                     endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
                     size="small"
@@ -144,6 +170,30 @@ const ModalExportMaterial = ({
                       },
                     }}
                     value={materialExport.amount}
+                    className="h-[30px] bg-white"
+                    onChange={(e) =>
+                      setMaterialExport((prev) => {
+                        prev[index].amount = e.target.value;
+                        prev[index].total =
+                          (e.target.value || 0) * (prev[index].unitPrice || 0);
+                        return _.cloneDeep(prev);
+                      })
+                    }
+                  />
+                </StyledTableCell> */}
+                <StyledTableCell padding="none">
+                  <OutlinedInput
+                    endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
+                    size="small"
+                    id="amount"
+                    value={materialExport.amount}
+                    type="number"
+                    InputProps={{
+                      inputProps: {
+                        min: 1,
+                        max: maxAmount(materialExport?.materialId),
+                      },
+                    }}
                     className="h-[30px] bg-white"
                     onChange={(e) =>
                       setMaterialExport((prev) => {
