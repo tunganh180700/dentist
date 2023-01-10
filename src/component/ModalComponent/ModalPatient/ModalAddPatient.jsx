@@ -166,13 +166,8 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
         <InputDentist
           id="email"
           label="Email"
-          required
           value={formik.values.email}
           onChange={formik.handleChange}
-          error={{
-            message: formik.errors.email,
-            touched: formik.touched.email,
-          }}
         />
         <InputDentist
           id="bodyPrehistory"

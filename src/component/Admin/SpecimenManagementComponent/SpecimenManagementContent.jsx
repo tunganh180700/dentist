@@ -42,7 +42,7 @@ import { statusLaboColor, statusLaboFormatter } from "../../style-config/index";
 const SpecimenManagementContent = () => {
   const dispatch = useDispatch();
   const listSpecimen = useSelector((state) => state.listSpecimen.listSpecimen);
-  const pageSize = 10;
+  const pageSize = 12;
   const totalPages = useSelector((state) => state.listSpecimen.totalPage);
   const totalElements = useSelector(
     (state) => state.listSpecimen.totalElements
@@ -163,16 +163,7 @@ const SpecimenManagementContent = () => {
 
   return (
     <>
-      <ToastContainer />
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        Quản lý mẫu vật
-      </Typography>
+      <h2 className="font-bold mb-2">Quản lý mẫu vật</h2>
       {/* <IconButton
         aria-label="add"
         style={{ borderRadius: "20%" }}
@@ -187,7 +178,6 @@ const SpecimenManagementContent = () => {
           <StyledTable size="small" style={{ marginTop: "15px" }}>
             <TableHead>
               <StyledTableRow>
-                <StyledTableCell></StyledTableCell>
                 <StyledTableCell>
                   <div className="attibute">Tên mẫu vật</div>
                   {/* <div style={{ width: "160px" }}>
@@ -325,17 +315,6 @@ const SpecimenManagementContent = () => {
               {listSpecimen.map((item) => (
                 <StyledTableRow key={item.specimenId}>
                   <StyledTableCell style={styleText}>
-                    <IconButton
-                      aria-label="detail"
-                      onClick={() => {
-                        setModalDetailOpen(true);
-                        dispatch(setSpecimenId(item.specimenId));
-                      }}
-                    >
-                      <RemoveRedEyeIcon />
-                    </IconButton>
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
                     {item.specimenName}
                   </StyledTableCell>
                   <StyledTableCell style={styleText}>
@@ -370,7 +349,7 @@ const SpecimenManagementContent = () => {
                   </StyledTableCell>
                   <StyledTableCell style={styleText}>
                     <Chip
-                     size="small"
+                      size="small"
                       style={{
                         backgroundColor: `${statusLaboColor(item.status)}`,
                         color: "#fff",

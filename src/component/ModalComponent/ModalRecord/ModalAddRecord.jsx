@@ -46,6 +46,7 @@ import {
   setListSpecimen,
 } from "../../../redux/SpecimenSlice/listSpecimenSlice";
 import { fetchPatientMaterialExport } from "../../../redux/MaterialSlice/listMaterialExportSlice";
+import { fetchRecord } from "../../../redux/RecordSlice/listRecordSlice";
 import InputDentist from "../../ui/input";
 import {
   StyledTableCell,
@@ -54,6 +55,7 @@ import {
 } from "../../ui/TableElements";
 import "./style.css";
 import _ from "lodash";
+import Loading from "../../ui/Loading";
 
 const ModalAddRecord = ({
   modalAddOpen,
@@ -66,6 +68,7 @@ const ModalAddRecord = ({
   const { id } = useParams();
   const [listTreatingService, setListTreatingService] = useState([]);
 
+  const [loading, setLoading] = useState(false);
   const [serviceId, setServiceId] = useState();
   const [errorUpdateMess, setErrorUpdateMess] = useState("");
   const [serviceIds, setServiceIds] = useState([]);
@@ -78,6 +81,7 @@ const ModalAddRecord = ({
   const listPatientMaterialExport = useSelector(
     (state) => state.listMaterialExport.listPatientMaterialExport
   );
+  const infoRecord = useSelector((state) => state.listRecord.infoRecord);
   // const [newPrice, setNewPrice] = useState();
   // const [servicePrice, setServicePrice] = useState();
   // const [serviceDiscount, setServiceDiscount] = useState();
@@ -89,6 +93,8 @@ const ModalAddRecord = ({
   const [isEdit, setEdit] = useState(false);
 
   const isAddRecord = useSelector((state) => state.listRecord.isAddRecord);
+  const recordId = useSelector((state) => state.modal.recordSelected);
+
   const [rows, setRows] = useState([]);
   const [countRow, setCountRow] = useState({
     statusCount: "up",
@@ -122,7 +128,7 @@ const ModalAddRecord = ({
   const loadServiceOption = async () => {
     try {
       const res = await axiosInstance.get(listAllServiceAPI);
-      setServiceId(res.data[0].serviceId);
+      // setServiceId(res.data[0].serviceId);
       setServiceIds(res.data);
       // setServicePrice(res.data[0].price);
       // setServiceDiscount(res.data[0].discount);
@@ -133,14 +139,19 @@ const ModalAddRecord = ({
 
   useEffect(() => {
     if (modalAddOpen) {
+      setLoading(true);
       loadServiceOption();
-      if (isEditRecord) {
-        dispatch(fetchPatientSpecimen(id));
-        dispatch(fetchPatientMaterialExport(id));
-        return;
-      }
+      getServiceTreating(id);
       setSpecimenDTOS([]);
       setMaterialExportDTOS([]);
+      if (isEditRecord) {
+        dispatch(fetchRecord(recordId));
+        // dispatch(fetchPatientSpecimen(id));
+        // dispatch(fetchPatientMaterialExport(id));
+      }
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     }
   }, [modalAddOpen]);
 
@@ -181,6 +192,12 @@ const ModalAddRecord = ({
     return flagCheckRow || flagCheckTreatingService;
   }, [rows, listTreatingService]);
 
+  useEffect(() => {
+    if (modalAddOpen) {
+      formik.setValues(infoRecord);
+    }
+  }, [infoRecord]);
+
   const formik = useFormik({
     initialValues: {
       reason: "",
@@ -193,7 +210,7 @@ const ModalAddRecord = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      if (!listTreatingService.length) {
+      if (!rows.length && !listTreatingService.length) {
         setErrorUpdateMess("Vui lòng thêm dịch vụ!");
         return;
       }
@@ -204,7 +221,11 @@ const ModalAddRecord = ({
       const listB = rows.filter((a) => {
         return Object.keys(a).length !== 0;
       });
-      formatValue.serviceDTOS = listA.concat(listB);
+      formatValue.serviceDTOS = listA.concat(listB).map((item) => ({
+        ...item,
+        isNew: isEditRecord ? false : true,
+      }));
+
       formatValue.materialExportDTOS = materialExportDTOS;
       formatValue.specimensDTOS = specimenDTOS;
       formatValue.date = valueDate;
@@ -317,6 +338,14 @@ const ModalAddRecord = ({
   const getServiceTreating = async (id) => {
     try {
       const res = await axiosInstance.get(listTreatingServiceAPI + id);
+      if (isEditRecord) {
+        const oldListTreatingService = res.data.filter((item) => !item.isNew);
+        const newListTreatingService = res.data.filter((item) => item.isNew);
+        setRows(newListTreatingService);
+        setListTreatingService(oldListTreatingService);
+        return;
+      }
+      setRows([]);
       setListTreatingService(res.data);
     } catch (error) {
       console.log(error);
@@ -328,12 +357,12 @@ const ModalAddRecord = ({
     currency: "VND",
   });
 
-  useEffect(() => {
-    getServiceTreating(id);
-  }, [id, serviceId, isAddRecord]);
+  // useEffect(() => {
+  // }, [id, serviceId, isAddRecord]);
 
   return (
     <>
+      {loading && <Loading />}
       <Modal
         title={`Ngày ${moment(valueDate).format("DD-MM-YYYY")}`}
         open={modalAddOpen}
@@ -566,7 +595,7 @@ const ModalAddRecord = ({
                           </StyledTableCell>
                           <StyledTableCell>
                             <Select
-                            className="mb-0"
+                              className="mb-0"
                               labelId="status"
                               id="status"
                               value={i?.status || ""}

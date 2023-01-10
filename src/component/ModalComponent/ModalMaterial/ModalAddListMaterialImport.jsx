@@ -17,7 +17,11 @@ import { Button, IconButton } from "@mui/material";
 import _ from "lodash";
 import ClearIcon from "@mui/icons-material/Clear";
 import { addListMaterialImportAPI } from "../../../config/baseAPI";
-import axios from "axios";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
 import { toast } from "react-toastify";
 import { toastCss } from "../../../redux/toastCss";
 
@@ -85,33 +89,11 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
       toast.error("thêm lỗi", toastCss);
     }
   };
-
-  // const handleCancel = () => {
-  //     setModalAddOpen(false)
-
-  //     // formik.errors.supplyName = ""
-  //     // formik.touched.supplyName = ""
-
-  //     // formik.errors.amount = ""
-  //     // formik.touched.amount = ""
-
-  //     // formik.errors.unitPrice = ""
-  //     // formik.touched.unitPrice = ""
-
-  //     formik.resetForm()
-  // }
-
-  // useEffect(() => {
-  //     const price = (formik.values.unitPrice || 0) * (formik.values.amount || 0)
-
-  //     setMaterialPrice(price)
-  // }, [formik.values.unitPrice, formik.values.amount])
-
   return (
     <>
       <Modal
         okText={"Lưu"}
-        title="Bán sản phẩm"
+        title="Nhập vật liệu"
         open={modalAddOpen}
         width="70%"
         onOk={() => {
@@ -138,21 +120,27 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
         >
           Thêm mới
         </IconButton>
-        <Table size="small" style={{ marginTop: "15px" }}>
+        <StyledTable
+          size="small"
+          className="mb-3 shadow-md"
+          style={{ marginTop: "15px" }}
+        >
           <TableHead>
-            <TableRow>
-              <TableCell style={{ width: "20%" }}>Tên sản phẩm</TableCell>
-              <TableCell>Hãng cung cấp</TableCell>
-              <TableCell>Số lương</TableCell>
-              <TableCell>Đơn Giá</TableCell>
-              <TableCell>Tổng giá</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
+            <StyledTableRow>
+              <StyledTableCell style={{ width: "20%" }}>
+                Tên sản phẩm
+              </StyledTableCell>
+              <StyledTableCell>Hãng cung cấp</StyledTableCell>
+              <StyledTableCell>Số lương</StyledTableCell>
+              <StyledTableCell>Đơn Giá</StyledTableCell>
+              <StyledTableCell>Tổng giá</StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+            </StyledTableRow>
           </TableHead>
           <TableBody>
             {materialExport?.map((materialExport, index) => (
-              <TableRow key={index}>
-                <TableCell style={{ paddingTop: "1.5rem" }}>
+              <StyledTableRow key={index}>
+                <StyledTableCell style={{ paddingTop: "1.5rem" }}>
                   <Select
                     id="materialId"
                     value={materialExport?.materialId}
@@ -169,8 +157,8 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                </TableCell>
-                <TableCell padding="none">
+                </StyledTableCell>
+                <StyledTableCell padding="none">
                   <input
                     value={materialExport.supplyName}
                     name="supplyName"
@@ -181,8 +169,8 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                       })
                     }
                   />
-                </TableCell>
-                <TableCell padding="none">
+                </StyledTableCell>
+                <StyledTableCell padding="none">
                   <input
                     value={materialExport.amount}
                     name="amount"
@@ -196,8 +184,8 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                       })
                     }
                   />
-                </TableCell>
-                <TableCell padding="none">
+                </StyledTableCell>
+                <StyledTableCell padding="none">
                   <input
                     value={materialExport.unitPrice}
                     name="unitPrice"
@@ -209,8 +197,8 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                       })
                     }
                   />
-                </TableCell>
-                <TableCell padding="none">
+                </StyledTableCell>
+                <StyledTableCell padding="none">
                   <input
                     value={materialExport.total}
                     name="total"
@@ -221,8 +209,8 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     }
                     disabled={true}
                   />
-                </TableCell>
-                <TableCell padding="none">
+                </StyledTableCell>
+                <StyledTableCell padding="none">
                   <Button
                     className="mr10"
                     onClick={() => {
@@ -234,11 +222,11 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                   >
                     <ClearIcon />
                   </Button>
-                </TableCell>
-              </TableRow>
+                </StyledTableCell>
+              </StyledTableRow>
             ))}
           </TableBody>
-        </Table>
+        </StyledTable>
       </Modal>
     </>
   );

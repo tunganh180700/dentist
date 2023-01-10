@@ -5,7 +5,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Pagination, Typography, IconButton } from "@mui/material";
+import { Pagination, Typography, IconButton, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMaterialImportId } from "../../../redux/modalSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -21,6 +21,7 @@ import ModalUpdateMaterialImport from "../../ModalComponent/ModalMaterial/ModalU
 import ModalDeleteMaterialImport from "../../ModalComponent/ModalMaterial/ModalDeleteMaterialImport";
 import ModalAddMaterialImport from "../../ModalComponent/ModalMaterial/ModalAddMaterialImport";
 import ModalAddListMaterialImport from "../../ModalComponent/ModalMaterial/ModalAddListMaterialImport";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 const MaterialImportManagementContent = () => {
   const listMaterialImport = useSelector(
@@ -49,7 +50,7 @@ const MaterialImportManagementContent = () => {
   useEffect(() => {
     dispatch(
       fetchAllMaterialImport({
-        size: pageSize,
+        size: 12,
         page: currentPage,
       })
     );
@@ -62,26 +63,20 @@ const MaterialImportManagementContent = () => {
 
   return (
     <>
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        Quản Lý Nhập Vật Liệu
-      </Typography>
-      <IconButton
-        aria-label="add"
-        style={{ borderRadius: "5%" }}
+      <h2 className="font-bold mb-2">Quản Lý Nhập Vật Liệu</h2>
+      <Button
+        className="float-right mb-3"
+        variant="contained"
+        color="success"
+        endIcon={<AddCircleIcon />}
         onClick={() => {
           // setModalAddOpen(true)
           setModalAddListOpen(true);
         }}
       >
-        <AddIcon /> Thêm mới
-      </IconButton>
-      <StyledTable className="shadow-md" size="small">
+        <span className="leading-none"> Thêm mới</span>
+      </Button>
+      <StyledTable className="shadow-md mb-3" size="small">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell style={{ fontWeight: "bold" }}>
@@ -103,64 +98,61 @@ const MaterialImportManagementContent = () => {
               Tổng giá
             </StyledTableCell>
             <StyledTableCell></StyledTableCell>
-            <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
-        {totalPages === 0 ? (
-          <>
-            <Typography
-              component="h1"
-              variant="h5"
-              color="inherit"
-              noWrap
-              textAlign="center"
-            >
-              Không có vật liệu nào
-            </Typography>
-          </>
-        ) : (
-          <TableBody>
-            {listMaterialImport.map((item, index) => (
-              <StyledTableRow key={item.materialImportId}>
-                <StyledTableCell>{item.materialName}</StyledTableCell>
-                <StyledTableCell>{item.supplyName}</StyledTableCell>
-                <StyledTableCell>{item.date}</StyledTableCell>
-                <StyledTableCell>{item.amount}</StyledTableCell>
-                <StyledTableCell>{item.unitPrice}</StyledTableCell>
-                <StyledTableCell>
-                  {item.amount * item.unitPrice}
-                </StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="edit"
-                    onClick={() => {
-                      setModalUpdateOpen(true);
-                      dispatch(setMaterialImportId(item.materialImportId));
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => {
-                      setModalDeleteOpen(true);
-                      dispatch(setMaterialImportId(item.materialImportId));
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        )}
+
+        <TableBody>
+          {listMaterialImport.map((item, index) => (
+            <StyledTableRow key={item.materialImportId}>
+              <StyledTableCell>{item.materialName}</StyledTableCell>
+              <StyledTableCell>{item.supplyName}</StyledTableCell>
+              <StyledTableCell>{item.date}</StyledTableCell>
+              <StyledTableCell>{item.amount}</StyledTableCell>
+              <StyledTableCell>{item.unitPrice}</StyledTableCell>
+              <StyledTableCell>{item.amount * item.unitPrice}</StyledTableCell>
+              <StyledTableCell>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => {
+                    setModalDeleteOpen(true);
+                    dispatch(setMaterialImportId(item.materialImportId));
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <IconButton
+                  aria-label="edit"
+                  onClick={() => {
+                    setModalUpdateOpen(true);
+                    dispatch(setMaterialImportId(item.materialImportId));
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
       </StyledTable>
+
+      {totalPages === 0 && (
+        <>
+          <Typography
+            component="h1"
+            variant="h5"
+            color="inherit"
+            noWrap
+            textAlign="center"
+          >
+            Không có vật liệu nào
+          </Typography>
+        </>
+      )}
+
       <div style={{ display: "flex", justifyContent: "center" }}>
         {totalPages > 1 ? (
           <Pagination
-          color="primary"
+            color="primary"
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);

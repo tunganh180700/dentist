@@ -44,7 +44,7 @@ const MaterialExportManagementContent = () => {
   useEffect(() => {
     dispatch(
       fetchAllMaterialExport({
-        size: pageSize,
+        size: 12,
         page: currentPage,
       })
     );
@@ -57,25 +57,8 @@ const MaterialExportManagementContent = () => {
 
   return (
     <>
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        Quản Lý Xuất Vật Liệu
-      </Typography>
-      <IconButton
-        aria-label="add"
-        style={{ borderRadius: "5%" }}
-        onClick={() => {
-          setModalAddOpen(true);
-        }}
-      >
-        <AddIcon /> Thêm mới
-      </IconButton>
-      <StyledTable className="shadow-md" size="small">
+      <h2 className="font-bold mb-5">Quản Lý Xuất Vật Liệu</h2>
+      <StyledTable className="shadow-md mb-3" size="small">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell style={{ fontWeight: "bold" }}>
@@ -94,60 +77,58 @@ const MaterialExportManagementContent = () => {
               Date
             </StyledTableCell>
             <StyledTableCell></StyledTableCell>
-            <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
-        {totalPages === 0 ? (
-          <>
-            <Typography
-              component="h1"
-              variant="h5"
-              color="inherit"
-              noWrap
-              textAlign="center"
-            >
-              Không có vật liệu nào
-            </Typography>
-          </>
-        ) : (
-          <TableBody>
-            {listMaterialExport.map((item, index) => (
-              <StyledTableRow key={item.materialExportId}>
-                <StyledTableCell>{item.materialName}</StyledTableCell>
-                <StyledTableCell>{item.amount}</StyledTableCell>
-                <StyledTableCell>{item.unitPrice}</StyledTableCell>
-                <StyledTableCell>{item.patientName}</StyledTableCell>
-                <StyledTableCell>{item.date}</StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="edit"
-                    onClick={() => {
-                      setModalUpdateOpen(true);
-                      dispatch(setMaterialExportId(item.materialExportId));
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => {
-                      setModalDeleteOpen(true);
-                      dispatch(setMaterialExportId(item.materialExportId));
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        )}
+
+        <TableBody>
+          {listMaterialExport.map((item, index) => (
+            <StyledTableRow key={item.materialExportId}>
+              <StyledTableCell>{item.materialName}</StyledTableCell>
+              <StyledTableCell>{item.amount}</StyledTableCell>
+              <StyledTableCell>{item.unitPrice}</StyledTableCell>
+              <StyledTableCell>{item.patientName}</StyledTableCell>
+              <StyledTableCell>{item.date}</StyledTableCell>
+              <StyledTableCell>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => {
+                    setModalDeleteOpen(true);
+                    dispatch(setMaterialExportId(item.materialExportId));
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <IconButton
+                  aria-label="edit"
+                  onClick={() => {
+                    setModalUpdateOpen(true);
+                    dispatch(setMaterialExportId(item.materialExportId));
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
       </StyledTable>
+      {totalPages === 0 && (
+        <>
+          <Typography
+            component="h1"
+            variant="h5"
+            color="inherit"
+            noWrap
+            textAlign="center"
+          >
+            Không có vật liệu nào
+          </Typography>
+        </>
+      )}
       <div style={{ display: "flex", justifyContent: "center" }}>
         {totalPages > 1 ? (
           <Pagination
+            color="primary"
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);
@@ -167,12 +148,12 @@ const MaterialExportManagementContent = () => {
           setModalDeleteOpen={setModalDeleteOpen}
         />
       </div>
-      <div>
+      {/* <div>
         <ModalAddMaterialExport
           modalAddOpen={modalAddOpen}
           setModalAddOpen={setModalAddOpen}
         />
-      </div>
+      </div> */}
     </>
   );
 };

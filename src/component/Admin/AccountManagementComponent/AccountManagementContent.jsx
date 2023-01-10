@@ -16,7 +16,11 @@ import { fetchAllAccount } from "../../../redux/AccountSlice/listAccountSlice";
 import ModalUpdateAccount from "../../ModalComponent/ModalAccount/ModalUpdateAccount";
 import ModalDeleteAccount from "../../ModalComponent/ModalAccount/ModalDeleteAccount";
 import ModalAddAcount from "../../ModalComponent/ModalAccount/ModalAddAccount";
-import { StyledTableCell, StyledTableRow,StyledTable } from "../../ui/TableElements";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 const AccountManagementContent = () => {
@@ -73,10 +77,7 @@ const AccountManagementContent = () => {
           <span className="leading-none">Tạo tài khoản</span>
         </Button>
       </Box>
-      <StyledTable
-        size="small"
-        className="shadow-md"
-      >
+      <StyledTable size="small" className="shadow-md">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell>Họ tên</StyledTableCell>
@@ -86,46 +87,43 @@ const AccountManagementContent = () => {
             <StyledTableCell>Ngày sinh</StyledTableCell>
             <StyledTableCell>Quyền hạn</StyledTableCell>
             <StyledTableCell></StyledTableCell>
-            <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
-        
-          <>
-            <TableBody>
-              {listAccount.map((item) => (
-                <StyledTableRow key={item.userId}>
-                  <StyledTableCell>{item.fullName}</StyledTableCell>
-                  <StyledTableCell>{item.userName}</StyledTableCell>
-                  <StyledTableCell>{item.phone}</StyledTableCell>
-                  <StyledTableCell>{item.email}</StyledTableCell>
-                  <StyledTableCell>{item.birthdate}</StyledTableCell>
-                  <StyledTableCell>{item.roleName}</StyledTableCell>
-                  <StyledTableCell>
-                    <IconButton
-                      aria-label="edit"
-                      onClick={() => {
-                        setModalUpdateOpen(true);
-                        dispatch(setUserId(item.userId));
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => {
-                        setModalDeleteOpen(true);
-                        dispatch(setUserId(item.userId));
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </>
+
+        <>
+          <TableBody>
+            {listAccount.map((item) => (
+              <StyledTableRow key={item.userId}>
+                <StyledTableCell>{item.fullName}</StyledTableCell>
+                <StyledTableCell>{item.userName}</StyledTableCell>
+                <StyledTableCell>{item.phone}</StyledTableCell>
+                <StyledTableCell>{item.email}</StyledTableCell>
+                <StyledTableCell>{item.birthdate}</StyledTableCell>
+                <StyledTableCell>{item.roleName}</StyledTableCell>
+                <StyledTableCell>
+                  <IconButton
+                    aria-label="delete"
+                    onClick={() => {
+                      setModalDeleteOpen(true);
+                      dispatch(setUserId(item.userId));
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="edit"
+                    onClick={() => {
+                      setModalUpdateOpen(true);
+                      dispatch(setUserId(item.userId));
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </>
       </StyledTable>
       <div
         style={{

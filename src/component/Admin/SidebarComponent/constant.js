@@ -5,16 +5,10 @@ import AddHomeWorkIcon from "@mui/icons-material/AddHomeWork";
 import RoomPreferencesIcon from "@mui/icons-material/RoomPreferences";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import BiotechIcon from '@mui/icons-material/Biotech';
+import BiotechIcon from "@mui/icons-material/Biotech";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 export const menu = [
-  {
-    icon: <CalendarMonthIcon />,
-    iconActive: <CalendarMonthIcon color="info" />,
-    title: " Quản lý chấm công",
-    href: "/timekeeping",
-  },
   {
     icon: <GroupsIcon />,
     iconActive: <GroupsIcon color="info" />,
@@ -100,5 +94,11 @@ export const menu = [
     title: "Quản lý hoá đơn",
     href: "/bill",
     permissionDeny: ["Doctor", "Receptionist", "Nurse"],
+  },
+  {
+    icon: <CalendarMonthIcon />,
+    iconActive: <CalendarMonthIcon color="info" />,
+    title: " Quản lý chấm công",
+    href: "/timekeeping",
   },
 ];

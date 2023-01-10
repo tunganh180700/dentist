@@ -24,7 +24,7 @@ import { allPatientRecordAPI } from "../../../config/baseAPI";
 import ModalAddRecord from "../../ModalComponent/ModalRecord/ModalAddRecord";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserId } from "../../../redux/modalSlice";
+import { setRecordSelected } from "../../../redux/modalSlice";
 import ModalDeleteRecord from "../../ModalComponent/ModalRecord/ModalDeleteRecord";
 import ModalDetailService from "../../ModalComponent/ModalRecord/ModalDetailService";
 import ModalDetailRecord from "../../ModalComponent/ModalRecord/ModalDetailRecord";
@@ -38,10 +38,12 @@ import SpecimenRecord from "../PatientManagementComponent/SpecimenRecord";
 import ProductsSoldRecord from "../PatientManagementComponent/ProductsSoldRecord";
 import moment from "moment";
 import { useMemo } from "react";
+import Loading from "../../ui/Loading";
 const RecordManagementContent = () => {
   const dispatch = useDispatch();
 
   const pageSize = useSelector((state) => state.listRecord.pageSize);
+  const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [isSubmitForm, setIsSubmitForm] = useState(false);
@@ -56,12 +58,12 @@ const RecordManagementContent = () => {
   const [modalProducstSold, setModalProducstSold] = useState(false);
   const [isShowCanotAdd, setIsShowCanotAdd] = useState(false);
 
-  const patientName = useSelector((state) => state.choosenPatient.patientName);
+  // const patientName = useSelector((state) => state.choosenPatient.patientName);
 
-  const isAddRecord = useSelector((state) => state.listRecord.isAddRecord);
-  const isDeleteRecord = useSelector(
-    (state) => state.listRecord.isDeleteRecord
-  );
+  // const isAddRecord = useSelector((state) => state.listRecord.isAddRecord);
+  // const isDeleteRecord = useSelector(
+  //   (state) => state.listRecord.isDeleteRecord
+  // );
 
   const { id } = useParams();
   const [recordList, setRecordList] = useState([]);
@@ -76,6 +78,7 @@ const RecordManagementContent = () => {
 
   const getDetail = async (id) => {
     try {
+      setLoading(true);
       const res = await axiosInstance.get(allPatientRecordAPI + id, {
         params: {
           size: pageSize,
@@ -86,6 +89,7 @@ const RecordManagementContent = () => {
       setTotalPages(res?.data?.totalPages || 0);
       setRecordList(res?.data?.content || []);
       setIsSubmitForm(false);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -108,6 +112,7 @@ const RecordManagementContent = () => {
 
   return (
     <>
+    {loading && <Loading />}
       <Box className="flex items-center gap-3 mb-4">
         <Link className="text-decoration-none flex" to={"/patient-management"}>
           <ArrowBackIosNewIcon />
@@ -127,11 +132,6 @@ const RecordManagementContent = () => {
         </Divider>
         <Box className="flex gap-3 mb-3">
           <p className="font-bold text-lg mb-0">Có ({totalElements}) hồ sơ</p>
-          {/* {!disableAddButton ? (
-        
-          ) : <Box>
-
-            </Box>} */}
           <Button
             variant="contained"
             color="success"
@@ -219,7 +219,7 @@ const RecordManagementContent = () => {
                       color="info"
                       onClick={() => {
                         setModalDetailRecordOpen(true);
-                        dispatch(setUserId(el.patientRecordId));
+                        dispatch(setRecordSelected(el.patientRecordId));
                       }}
                     >
                       <span className="leading-none">Chi tiết</span>
@@ -231,7 +231,7 @@ const RecordManagementContent = () => {
                         variant="contained"
                         color="warning"
                         onClick={() => {
-                          dispatch(setUserId(el.patientRecordId));
+                          dispatch(setRecordSelected(el.patientRecordId));
                           setIsEditRecord(true);
                           setModalAddOpen(true);
                         }}
@@ -245,7 +245,7 @@ const RecordManagementContent = () => {
                       aria-label="delete"
                       onClick={() => {
                         setModalDeleteOpen(true);
-                        dispatch(setUserId(el.patientRecordId));
+                        dispatch(setRecordSelected(el.patientRecordId));
                       }}
                     >
                       <DeleteIcon />
@@ -294,7 +294,12 @@ const RecordManagementContent = () => {
         setIsShow={setModalDetailSpecimen}
         patientId={Number(id)}
       />
-      <Modal open={isShowCanotAdd} onCancel={() =>setIsShowCanotAdd(false)} footer={null} title="Thông báo">
+      <Modal
+        open={isShowCanotAdd}
+        onCancel={() => setIsShowCanotAdd(false)}
+        footer={null}
+        title="Thông báo"
+      >
         <Box className="text-center text-lg text-red-600">
           <p>Ngày {moment().format("DD-MM-YYYY")} đã có hồ sơ.</p>
           <p> Vui lòng chỉnh sửa ở danh sách dưới!</p>

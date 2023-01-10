@@ -20,7 +20,10 @@ import {
   listServiceByCategoryIdAPI,
 } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
-import { fetchAllCategory } from "../../../redux/ServiceAndCategorySlice/listCategorySlice";
+import {
+  setIsAddCategory,
+  setIsUpdateCategory,
+} from "../../../redux/ServiceAndCategorySlice/listCategorySlice";
 import DesignServicesIcon from "@mui/icons-material/DesignServices";
 // import ModalUpdateMaterialImport from '../../ModalComponent/ModalMaterial/ModalUpdateMaterialImport';
 import ModalAddCategory from "../../ModalComponent/ModalCategory/ModalAddCategory";
@@ -78,10 +81,10 @@ const ServiceAndCategoryManagementContent = () => {
   const [serviceIds, setServiceIds] = useState([]);
   const [isSubmitFormService, setIsSubmitFormService] = useState(false);
 
-  const [serviceId, setServiceId] = useState();
-  const [categoryId, setCategoryId] = useState();
+  // const [serviceId, setServiceId] = useState();
+  // const [categoryId, setCategoryId] = useState();
+  // const [categorySelected, setCategorySelected] = useState();
   const [searchCategory, setSearchCategory] = useState("");
-  const [categorySelected, setCategorySelected] = useState();
 
   const loadCategory = async () => {
     setLoading(true);
@@ -97,6 +100,13 @@ const ServiceAndCategoryManagementContent = () => {
 
   useEffect(() => {
     loadCategory();
+  }, []);
+  useEffect(() => {
+    if (isAddCategory || isUpdateCategory) {
+      loadCategory();
+      dispatch(setIsAddCategory(false));
+      dispatch(setIsUpdateCategory(false));
+    }
   }, [isAddCategory, isUpdateCategory]);
 
   useEffect(() => {
@@ -118,7 +128,7 @@ const ServiceAndCategoryManagementContent = () => {
       const res = await axiosInstance.get(
         listServiceByCategoryIdAPI + categoryServiceId
       );
-      setServiceId(res.data.categoryServiceId);
+      // setServiceId(res.data.categoryServiceId);
       setServiceIds(res.data);
       setIsSubmitFormService(false);
     } catch (error) {
@@ -128,92 +138,21 @@ const ServiceAndCategoryManagementContent = () => {
   };
 
   useEffect(() => {
-    if (categoryServiceId) loadServiceByCategoryId(categoryServiceId);
-  }, [categoryServiceId, isSubmitFormService]);
+    if (categoryServiceId) {
+      loadServiceByCategoryId(categoryServiceId);
+    }
+  }, [categoryServiceId]);
 
-  // console.log('haha', listServiceAndCategory)
+  useEffect(() => {
+    if (isSubmitFormService) {
+      loadServiceByCategoryId(categoryServiceId);
+    }
+  }, [isSubmitFormService]);
+
   return (
     <>
       {loading && <Loading />}
-      <h2 className="font-bold mb-2"> Bảng Giá Dịch Vụ Nha Khoa</h2>
-
-      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Box sx={{ maxWidth: 250, minWidth: 250 }}>
-          <FormControl fullWidth>
-            <InputLabel id="material">Category</InputLabel>
-            <Select
-              style={{
-                padding: "25px 0",
-                paddingRight: "10px",
-                width: "100%",
-              }}
-              labelId="material"
-              id="materialSelect"
-              label="Vật liệu"
-              value={categoryServiceId}
-              onChange={(e) => setCategoryServiceId(e.target.value)}
-            >
-              <div>
-                <IconButton
-                  aria-label="add"
-                  style={{
-                    borderRadius: "5%",
-                    width: "100%",
-                    fontSize: "16px",
-                  }}
-                  onClick={() => {
-                    setModalAddCategoryOpen(true);
-                  }}
-                >
-                  <AddIcon />
-                  Thêm loại dịch vụ
-                </IconButton>
-              </div>
-              {categoryServiceIds?.map((item) => (
-                <MenuItem
-                  selected={categoryServiceId}
-                  key={item.categoryServiceId}
-                  value={item.categoryServiceId}
-                >
-                  {item.categoryServiceName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-        <div>
-          <IconButton
-            aria-label="add"
-            style={{
-              borderRadius: "6px",
-              border: `1px solid ${color.border}`,
-              fontSize: "16px",
-            }}
-            onClick={() => {
-              setModalAddServiceOpen(true);
-            }}
-          >
-            <AddIcon />
-            Thêm mới Dịch vụ
-          </IconButton>
-          <IconButton
-            aria-label="edit-service"
-            style={{
-              borderRadius: "6px",
-              border: `1px solid ${color.border}`,
-              marginRight: "10px",
-              fontSize: "16px",
-            }}
-            onClick={() => {
-              setModalUpdateOpen(true);
-              dispatch(setCategoryServicedId(categoryServiceId));
-            }}
-          >
-            <DesignServicesIcon />
-            Cập nhật loại dịch vụ
-          </IconButton>
-        </div>
-      </div> */}
+      <h2 className="font-bold mb-2"> Dịch Vụ Nha Khoa</h2>
       <div className="flex gap-3 justify-end mb-3">
         <Button
           variant="contained"
@@ -232,10 +171,10 @@ const ServiceAndCategoryManagementContent = () => {
             setModalAddServiceOpen(true);
           }}
         >
-          <span className="leading-none">Thêm mới</span>
+          <span className="leading-none">Thêm mới dịch vụ</span>
         </Button>
         <Button variant="contained" color="error" endIcon={<DeleteIcon />}>
-          <span className="leading-none">Xóa dịch vụ</span>
+          <span className="leading-none">Xóa loại dịch vụ</span>
         </Button>
       </div>
       <Box className="flex gap-3">
@@ -276,7 +215,7 @@ const ServiceAndCategoryManagementContent = () => {
                 setModalAddCategoryOpen(true);
               }}
             >
-              Thêm dịch vụ
+              Thêm loại dịch vụ
             </Button>
           </Box>
         </div>

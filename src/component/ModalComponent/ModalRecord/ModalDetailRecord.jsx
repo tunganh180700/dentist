@@ -16,24 +16,36 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRecord } from "../../../redux/RecordSlice/listRecordSlice";
 import moment from "moment";
+import Loading from "../../ui/Loading";
 
 const ModalDetailRecord = ({
   modalDetailRecordOpen,
   setModalDetailRecordOpen,
 }) => {
   const [loading, setLoading] = useState();
-  const recordId = useSelector((state) => state.modal.userId);
+  const [defaultActiveKey, setDefaultActiveKey] = useState("1");
+  const recordId = useSelector((state) => state.modal.recordSelected);
   const dispatch = useDispatch();
-  const reason = useSelector((state) => state.listRecord.reason);
-  const diagnostic = useSelector((state) => state.listRecord.diagnostic);
-  const causal = useSelector((state) => state.listRecord.causal);
-  const date = useSelector((state) => state.listRecord.date);
-  const marrowRecord = useSelector((state) => state.listRecord.marrowRecord);
-  const note = useSelector((state) => state.listRecord.note);
-  const treatment = useSelector((state) => state.listRecord.treatment);
-  const prescription = useSelector((state) => state.listRecord.prescription);
-  const listService = useSelector((state) => state.listRecord.listService);
-  const patientRecordId = useSelector((state) => state.modal.userId);
+  // const reason = useSelector((state) => state.listRecord.reason);
+  // const diagnostic = useSelector((state) => state.listRecord.diagnostic);
+  // const causal = useSelector((state) => state.listRecord.causal);
+  // const date = useSelector((state) => state.listRecord.date);
+  // const marrowRecord = useSelector((state) => state.listRecord.marrowRecord);
+  // const note = useSelector((state) => state.listRecord.note);
+  // const treatment = useSelector((state) => state.listRecord.treatment);
+  // const prescription = useSelector((state) => state.listRecord.prescription);
+  // const listService = useSelector((state) => state.listRecord.listService);
+  const {
+    reason,
+    diagnostic,
+    causal,
+    date,
+    marrowRecord,
+    note,
+    treatment,
+    prescription,
+    listService,
+  } = useSelector((state) => state.listRecord.infoRecord);
 
   const style = {
     position: "absolute",
@@ -60,17 +72,19 @@ const ModalDetailRecord = ({
   };
 
   useEffect(() => {
-    setLoading(true);
-    try {
-      if (recordId && modalDetailRecordOpen) {
+    if (modalDetailRecordOpen) {
+      setLoading(true);
+      try {
+        setDefaultActiveKey("1");
         dispatch(fetchRecord(recordId));
-        dispatch(fetchRecord(patientRecordId));
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     }
-    setLoading(false);
-  }, [recordId,modalDetailRecordOpen ]);
+  }, [recordId, modalDetailRecordOpen]);
 
   const detailRecord = (
     <Box>
@@ -218,6 +232,7 @@ const ModalDetailRecord = ({
 
   return (
     <>
+      {loading && <Loading />}
       <Modal
         title={`Ngày ${moment(date).format("DD-MM-YYYY")}`}
         open={modalDetailRecordOpen}
@@ -226,18 +241,18 @@ const ModalDetailRecord = ({
         footer={null}
       >
         <Tabs
-          defaultActiveKey={1}
+          defaultActiveKey={defaultActiveKey}
           centered
           type="card"
           items={[
             {
               label: "Chi tiết",
-              key: 1,
+              key: "1",
               children: detailRecord,
             },
             {
               label: "Dịch vụ",
-              key: 2,
+              key: "2",
               children: servicesBlock,
             },
           ]}

@@ -12,7 +12,7 @@ const ModalDeleteRecord = ({
   isSubmitForm,
 }) => {
   const dispatch = useDispatch();
-  const recordId = useSelector((state) => state.modal.userId);
+  const recordId = useSelector((state) => state.modal.recordSelected);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState(
     "Bạn có chắc chắn muốn xóa không ?"
