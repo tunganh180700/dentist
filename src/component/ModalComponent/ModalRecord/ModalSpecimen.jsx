@@ -21,7 +21,6 @@ const ModalSpecimen = ({
   specimens,
   specimenDTOS,
   serviceDTOS,
-  isEdit = false,
 }) => {
   const [labo, setLabo] = useState([]);
   const [specimen, setSpecimen] = useState([]);
@@ -50,12 +49,14 @@ const ModalSpecimen = ({
     setSpecimen([]);
     if (specimenDTOS.length) {
       const dataDTOS = specimenDTOS.map((item) => ({
+        patientRecordId: item.patientRecordId,
+        specimenId: item.specimenId,
         specimenName: item.specimenName,
         amount: item.amount,
         unitPrice: item.unitPrice,
         laboId: item.laboId,
         serviceId: item.serviceId,
-        statusChange: isEdit ? "edit" : "add",
+        statusChange: item.statusChange,
       }));
       setSpecimen(dataDTOS);
     }

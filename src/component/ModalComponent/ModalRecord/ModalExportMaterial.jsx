@@ -26,7 +26,6 @@ const ModalExportMaterial = ({
   setModalExportOpen,
   exportMaterial,
   materialExportDTOS,
-  isEdit = false,
 }) => {
   const dispatch = useDispatch();
   const [material, setMaterial] = useState([]);
@@ -53,7 +52,7 @@ const ModalExportMaterial = ({
   };
 
   useEffect(() => {
-    if(modalExportOpen){
+    if (modalExportOpen) {
       getMaterials();
     }
     // setMaterialExport(materialExportDTOS);
@@ -63,12 +62,14 @@ const ModalExportMaterial = ({
     setMaterialExport([]);
     if (materialExportDTOS.length) {
       const dataDTOS = materialExportDTOS.map((item) => ({
+        patientRecordId: item.patientRecordId,
+        materialExportId: item.materialExportId,
         materialId: item.materialId,
         materialName: item.materialName,
         amount: item.amount,
         unitPrice: item.unitPrice,
         total: item.unitPrice * item.amount,
-        statusChange: isEdit ? "edit" : "add",
+        statusChange: item.statusChange,
       }));
       setMaterialExport(dataDTOS);
     }

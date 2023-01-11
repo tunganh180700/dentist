@@ -17,7 +17,7 @@ import axiosInstance from "../../config/customAxios";
 import { toastCss } from "../toastCss";
 
 const initState = {
-  listRecord: [],
+  listRecord: {},
   pagination: [],
   index: 0,
   pageSize: 3,
@@ -75,10 +75,10 @@ const listRecordSlice = createSlice({
           prescription: action.payload.prescription,
         };
       })
-      .addCase(addRecord.pending, (state, action) => {
+      .addCase(addAndUpdateRecord.pending, (state, action) => {
         state.statusAddRecord = true;
       })
-      .addCase(addRecord.fulfilled, (state, action) => {
+      .addCase(addAndUpdateRecord.fulfilled, (state, action) => {
         state.isAddRecord = true;
       })
       .addCase(deleteRecord.pending, (state, action) => {
@@ -96,17 +96,21 @@ const listRecordSlice = createSlice({
   },
 });
 
-export const addRecord = createAsyncThunk(
-  "listRecord/addRecord",
-  async ({ id, values }) => {
+export const addAndUpdateRecord = createAsyncThunk(
+  "listRecord/addAndUpdateRecord",
+  async ({ payload, type }) => {
     try {
-      const res = await axiosInstance.post(addRecordAPI + id, values);
-      toast.success("Thêm mới thành công !!!!!", toastCss);
-      // console.log(patientRecordId)
+      const res =
+        type === "add"
+          ? await axiosInstance.post(addRecordAPI + payload.id, payload.values)
+          : await axiosInstance.put(addRecordAPI + payload.id, payload.values);
+      toast.success(
+        type === "add" ? "Thêm mới thành công!" : "Cập nhật thành công!",
+        toastCss
+      );
       return res.data;
     } catch (error) {
-      console.log(error);
-      toast.error("Thêm mới thất bại :(", toastCss);
+      toast.error( type === "add" ? "Thêm mới thất bại!" : "Cập nhật thất bại!", toastCss);
     }
   }
 );

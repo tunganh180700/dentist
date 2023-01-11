@@ -89,7 +89,6 @@ export const updateAccount = createAsyncThunk('listAccount/updateAccount', async
         const res = await axiosInstance.put(
             updateAccountAPI + data.userId, data
         )
-        console.log(res)
         toast.success(UPDATE_SUCCESS, toastCss)
         return res.data
     } catch (error) {

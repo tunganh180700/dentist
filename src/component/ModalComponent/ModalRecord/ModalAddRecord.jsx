@@ -40,7 +40,7 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import ModalExportMaterial from "./ModalExportMaterial";
 import ModalSpecimen from "./ModalSpecimen";
-import { addRecord } from "../../../redux/RecordSlice/listRecordSlice";
+import { addAndUpdateRecord } from "../../../redux/RecordSlice/listRecordSlice";
 import {
   fetchPatientSpecimen,
   setListSpecimen,
@@ -75,13 +75,12 @@ const ModalAddRecord = ({
   const [showModalExportMaterial, setShowModalExportMaterial] = useState(0);
   const [modalExportOpen, setModalExportOpen] = useState(false);
   const [modalSpecimenOpen, setModalSpecimenOpen] = useState(false);
-  const listPatientSpecimens = useSelector(
-    (state) => state.listSpecimen.listPatientSpecimens
-  );
-  const listPatientMaterialExport = useSelector(
-    (state) => state.listMaterialExport.listPatientMaterialExport
-  );
+  const listRecord = useSelector((state) => state.listRecord.listRecord);
+  // const listPatientMaterialExport = useSelector(
+  //   (state) => state.listMaterialExport.listPatientMaterialExport
+  // );
   const infoRecord = useSelector((state) => state.listRecord.infoRecord);
+  const listService = useSelector((state) => state.listRecord.listService);
   // const [newPrice, setNewPrice] = useState();
   // const [servicePrice, setServicePrice] = useState();
   // const [serviceDiscount, setServiceDiscount] = useState();
@@ -141,11 +140,11 @@ const ModalAddRecord = ({
     if (modalAddOpen) {
       setLoading(true);
       loadServiceOption();
-      getServiceTreating(id);
       setSpecimenDTOS([]);
       setMaterialExportDTOS([]);
       if (isEditRecord) {
         dispatch(fetchRecord(recordId));
+        // getServiceTreating(id);
         // dispatch(fetchPatientSpecimen(id));
         // dispatch(fetchPatientMaterialExport(id));
       }
@@ -156,14 +155,22 @@ const ModalAddRecord = ({
   }, [modalAddOpen]);
 
   useEffect(() => {
-    if (isEditRecord) {
-      setSpecimenDTOS(listPatientSpecimens);
-      setMaterialExportDTOS(listPatientMaterialExport);
+    if (isEditRecord && listRecord) {
+      const exsistSpecimen = listRecord.specimensDTOS.map((item) => ({
+        ...item,
+        statusChange: "edit",
+      }));
+      const exsistMaterial = listRecord.materialExportDTOS.map((item) => ({
+        ...item,
+        statusChange: "edit",
+      }));
+      setSpecimenDTOS(exsistSpecimen);
+      setMaterialExportDTOS(exsistMaterial);
       return;
     }
     setMaterialExportDTOS([]);
     setSpecimenDTOS([]);
-  }, [listPatientSpecimens, listPatientMaterialExport]);
+  }, [listRecord]);
 
   useEffect(() => {
     if (rows.length + listTreatingService.length) {
@@ -214,26 +221,28 @@ const ModalAddRecord = ({
         setErrorUpdateMess("Vui lòng thêm dịch vụ!");
         return;
       }
-      const formatValue = values;
+      const formatValue = { ...values };
       const listA = listTreatingService.filter((a) => {
-        return Object.keys(a).length !== 0;
+        return Object.keys(a)?.length !== 0;
       });
       const listB = rows.filter((a) => {
-        return Object.keys(a).length !== 0;
+        return Object.keys(a)?.length !== 0;
       });
-      formatValue.serviceDTOS = listA.concat(listB).map((item) => ({
-        ...item,
-        isNew: isEditRecord ? false : true,
-      }));
-
       formatValue.materialExportDTOS = materialExportDTOS;
+      formatValue.serviceDTOS = listA.concat(listB);
       formatValue.specimensDTOS = specimenDTOS;
       formatValue.date = valueDate;
       const addValue = {
         id: id,
         values: formatValue,
       };
-      dispatch(addRecord(addValue));
+      console.log("formatValue", formatValue);
+      dispatch(
+        addAndUpdateRecord({
+          payload: addValue,
+          type: isEditRecord ? "edit" : "add",
+        })
+      );
       setRows([]);
       setCountRow({
         statusCount: "up",
@@ -242,7 +251,7 @@ const ModalAddRecord = ({
       setModalAddOpen(false);
       formik.handleReset();
       setTimeout(() => {
-        getServiceTreating(id);
+        // getServiceTreating(id);
         isSubmitForm(true);
       }, 1500);
     },
@@ -278,7 +287,7 @@ const ModalAddRecord = ({
           ...prev[countRow.value - 1],
           ...serviceInfo,
         };
-        prev[countRow.value - 1].isNew = 1;
+        prev[countRow.value - 1].isNew = true;
         prev[countRow.value - 1].status = 1;
         return _.cloneDeep(prev);
       });
@@ -329,28 +338,46 @@ const ModalAddRecord = ({
     const serviceInfo = serviceIds.find((s) => s.serviceId === newsServiceId);
     setRows((prev) => {
       prev[index] = { ...prev[index], ...serviceInfo };
-      prev[index].isNew = 1;
       prev[index].status = 1;
       return _.cloneDeep(prev);
     });
   };
 
-  const getServiceTreating = async (id) => {
-    try {
-      const res = await axiosInstance.get(listTreatingServiceAPI + id);
-      if (isEditRecord) {
-        const oldListTreatingService = res.data.filter((item) => !item.isNew);
-        const newListTreatingService = res.data.filter((item) => item.isNew);
-        setRows(newListTreatingService);
-        setListTreatingService(oldListTreatingService);
-        return;
-      }
-      setRows([]);
-      setListTreatingService(res.data);
-    } catch (error) {
-      console.log(error);
+  // const getServiceTreating = async (id) => {
+  //   try {
+  //     // const res = await axiosInstance.get(listTreatingServiceAPI + id);
+  //     if (isEditRecord) {
+  //       const oldListTreatingService = res.data.filter((item) => !item.isNew);
+  //       const newListTreatingService = res.data.filter((item) => item.isNew);
+  //       console.log(res.data);
+  //       setRows(newListTreatingService);
+  //       setListTreatingService(oldListTreatingService);
+  //       return;
+  //     }
+  //     setRows([]);
+  //     setListTreatingService(res.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  useEffect(() => {
+    if (isEditRecord && listService.length) {
+      const oldListTreatingService = [
+        ...listService.filter((item) => !item.isNew),
+      ];
+      const newListTreatingService = [
+        ...listService.filter((item) => item.isNew),
+      ];
+      setRows(newListTreatingService);
+      setListTreatingService(oldListTreatingService);
+      setCountRow({
+        statusCount: "down",
+        value: newListTreatingService.length,
+      });
+      return;
     }
-  };
+  }, [listService]);
 
   const formatter = new Intl.NumberFormat({
     style: "currency",
@@ -525,13 +552,11 @@ const ModalAddRecord = ({
                         labelId="status"
                         id="status"
                         value={item.status || ""}
-                        onChange={
-                          (e) =>
-                            setListTreatingService((prev) => {
-                              prev[index].status = e.target.value;
-                              return _.cloneDeep(prev);
-                            })
-                          // setStatus(e.target.value)
+                        onChange={(e) =>
+                          setListTreatingService((prev) => {
+                            prev[index].status = e.target.value;
+                            return _.cloneDeep(prev);
+                          })
                         }
                       >
                         <MenuItem value={1}>Đang chữa trị</MenuItem>
@@ -587,7 +612,10 @@ const ModalAddRecord = ({
                                   ""
                                 );
                                 setRows((prev) => {
-                                  prev[index].discount = value;
+                                  prev[index] = {
+                                    ...prev[index],
+                                    discount: value,
+                                  };
                                   return _.cloneDeep(prev);
                                 });
                               }}
@@ -601,7 +629,10 @@ const ModalAddRecord = ({
                               value={i?.status || ""}
                               onChange={(e) => {
                                 setRows((prev) => {
-                                  prev[index].status = e.target.value;
+                                  prev[index] = {
+                                    ...prev[index],
+                                    status: e.target.value,
+                                  };
                                   return _.cloneDeep(prev);
                                 });
                               }}
@@ -676,7 +707,6 @@ const ModalAddRecord = ({
           </Box>
         </Box>
         <ModalSpecimen
-          isEdit={isEditRecord}
           modalSpecimenOpen={modalSpecimenOpen}
           setModalSpecimenOpen={setModalSpecimenOpen}
           specimens={handleSpecimen}
@@ -684,7 +714,6 @@ const ModalAddRecord = ({
           serviceDTOS={serviceDTOS}
         />
         <ModalExportMaterial
-          isEdit={isEditRecord}
           modalExportOpen={modalExportOpen}
           setModalExportOpen={setModalExportOpen}
           showModalExportMaterial={showModalExportMaterial}
