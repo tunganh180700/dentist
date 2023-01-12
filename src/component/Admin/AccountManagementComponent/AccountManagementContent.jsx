@@ -134,6 +134,7 @@ const AccountManagementContent = () => {
       >
         {totalPages > 1 ? (
           <Pagination
+          color="primary"
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);

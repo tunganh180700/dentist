@@ -20,13 +20,15 @@ import {
 import { updateAccount } from "../../../redux/AccountSlice/listAccountSlice";
 import { profileAPI } from "../../../config/baseAPI";
 
-const BlockUpdateProfile = ({ setIsEdit, userInfo, submit }) => {
+const BlockUpdateProfile = ({ setIsEdit, userInfo }) => {
   const dispatch = useDispatch();
   const [valueDate, setValueDate] = useState(moment(userInfo.birthdate));
   const isUpdateAccount = useSelector(
     (state) => state.userProfile.isUpdateAccount
   );
-  const { userId, roleId } = useSelector((state) => state.userProfile.userProfile);
+  const { userId, roleId } = useSelector(
+    (state) => state.userProfile.userProfile
+  );
 
   //   useEffect(() => {
   //     try {
@@ -65,20 +67,23 @@ const BlockUpdateProfile = ({ setIsEdit, userInfo, submit }) => {
     email: yup
       .string("Nhập email")
       .matches(regexEmail, "Email không đúng với định dạng."),
-    address: yup
-      .string("Nhập địa chỉ")
-      .required("Vui lòng nhập địa chỉ")
-      .max(255, "Địa chỉ không thể quá 255 kí tự."),
   });
 
   const formik = useFormik({
     initialValues: userInfo,
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      // values.birthdate = moment(value.$d).format(validationDate);
-      dispatch(updateAccount({ ...values, userId, roleId }));
-      setIsEdit(false)
-      submit(true)
+      dispatch(
+        updateAccount({
+          ...values,
+          userId,
+          roleId,
+          birthdate: moment(valueDate).format(validationDate),
+        })
+      );
+      setTimeout(() => {
+        setIsEdit(false);
+      }, 500);
     },
   });
 
@@ -89,6 +94,7 @@ const BlockUpdateProfile = ({ setIsEdit, userInfo, submit }) => {
         isFlex
         validate
         label="Họ và tên:"
+        disabled
         value={formik.values.fullName}
         onChange={formik.handleChange}
         error={{
@@ -131,19 +137,6 @@ const BlockUpdateProfile = ({ setIsEdit, userInfo, submit }) => {
           touched: formik.touched.email,
         }}
       />
-      <InputDentist
-        id="address"
-        isFlex
-        validate
-        label="Địa chỉ:"
-        value={formik.values.address}
-        onChange={formik.handleChange}
-        error={{
-          message: formik.errors.address,
-          touched: formik.touched.address,
-        }}
-      />
-
       <Box className="flex justify-end gap-3">
         <Button variant="contained" color="info" onClick={formik.handleSubmit}>
           <span className="leading-none">Lưu</span>

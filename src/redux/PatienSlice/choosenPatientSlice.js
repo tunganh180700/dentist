@@ -26,6 +26,7 @@ const initState = {
   bodyPrehistory: "",
   teethPrehistory: "",
   isDeleted: null,
+  isUpdatePatient: false,
 };
 const choosenPatientSlice = createSlice({
   name: "choosenPatient",
@@ -33,6 +34,9 @@ const choosenPatientSlice = createSlice({
   reducers: {
     setChoosenPatient: (state, action) => {
       state.choosenPatient = action.payload;
+    },
+    setIsUpdatePatient: (state, { payload }) => {
+      state.isUpdatePatient = payload;
     },
   },
   extraReducers: (builder) => {
@@ -52,6 +56,9 @@ const choosenPatientSlice = createSlice({
         state.teethPrehistory = payload.teethPrehistory;
         state.status = payload.status;
         state.isDeleted = payload.isDeleted;
+      })
+      .addCase(updatePatient.fulfilled, (state, action) => {
+        state.isUpdatePatient = true;
       });
   },
 });
@@ -96,5 +103,5 @@ export const updatePatient = createAsyncThunk(
     }
   }
 );
-export const { setChoosenPatient } = choosenPatientSlice.actions;
+export const { setChoosenPatient, setIsUpdatePatient } = choosenPatientSlice.actions;
 export default choosenPatientSlice.reducer;

@@ -18,10 +18,10 @@ import ModalDetailBill from "../../ModalComponent/ModalBill/ModalDetailBill";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import ModalListReceipt from "../../ModalComponent/ModalBill/ModalListReceipt";
 import {
-    StyledTableCell,
-    StyledTableRow,
-    StyledTable,
-  } from "../../ui/TableElements";
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
 const BillManagementContent = () => {
   const listBill = useSelector((state) => state.listBill.listBill);
 
@@ -39,7 +39,7 @@ const BillManagementContent = () => {
   useEffect(() => {
     dispatch(
       fetchAllBill({
-        size: pageSize,
+        size: 12,
         page: currentPage,
       })
     );
@@ -48,74 +48,83 @@ const BillManagementContent = () => {
   return (
     <>
       <h2 className="font-bold mb-4">Danh Sách Hóa Đơn</h2>
-      <StyledTable size="small" className="shadow-md">
+      <StyledTable size="small" className="shadow-md mb-4">
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Tên bệnh nhân</StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Số điện thoại</StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Giá gốc</StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Giảm giá</StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Tổng tiền</StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Tên bệnh nhân
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Số điện thoại
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Giá gốc
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Giảm giá
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Tổng tiền
+            </StyledTableCell>
             <StyledTableCell></StyledTableCell>
             <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
-        {totalPages === 0 ? (
-          <Typography
-            component="h1"
-            variant="h5"
-            color="inherit"
-            noWrap
-            textAlign="center"
-          >
-            Không có đơn giá nào
-          </Typography>
-        ) : (
-          <TableBody>
-            {listBill.map((item, index) => (
-              <StyledTableRow size="medium" key={item.treatmentId}>
-                <StyledTableCell>{item.patientName}</StyledTableCell>
-                <StyledTableCell>{item.phone}</StyledTableCell>
-                <StyledTableCell>{item.totalPrice}</StyledTableCell>
-                <StyledTableCell>{item.totalDiscount}</StyledTableCell>
-                <StyledTableCell>{item.realCost}</StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="receipt-list"
-                    onClick={() => {
-                      setModalReceiptOpen(true);
-                      dispatch(setTreatmentId(item.treatmentId));
-                    }}
-                  >
-                    <ReceiptIcon />
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="detail"
-                    onClick={() => {
-                      setModalDetailOpen(true);
-                      dispatch(setTreatmentId(item.treatmentId));
-                    }}
-                  >
-                    <RemoveRedEyeIcon />
-                  </IconButton>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        )}
+
+        <TableBody>
+          {listBill.map((item, index) => (
+            <StyledTableRow size="medium" key={item.treatmentId}>
+              <StyledTableCell>{item.patientName}</StyledTableCell>
+              <StyledTableCell>{item.phone}</StyledTableCell>
+              <StyledTableCell>{item.totalPrice}</StyledTableCell>
+              <StyledTableCell>{item.totalDiscount}</StyledTableCell>
+              <StyledTableCell>{item.realCost}</StyledTableCell>
+              <StyledTableCell>
+                <IconButton
+                  aria-label="receipt-list"
+                  onClick={() => {
+                    setModalReceiptOpen(true);
+                    dispatch(setTreatmentId(item.treatmentId));
+                  }}
+                >
+                  <ReceiptIcon />
+                </IconButton>
+              </StyledTableCell>
+              <StyledTableCell>
+                <IconButton
+                  aria-label="detail"
+                  onClick={() => {
+                    setModalDetailOpen(true);
+                    dispatch(setTreatmentId(item.treatmentId));
+                  }}
+                >
+                  <RemoveRedEyeIcon />
+                </IconButton>
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
       </StyledTable>
+      {totalPages === 0 && (
+        <Typography
+          component="h1"
+          variant="h5"
+          color="inherit"
+          noWrap
+          textAlign="center"
+        >
+          Không có đơn giá nào
+        </Typography>
+      )}
       <div
         style={{
           display: "flex",
           justifyContent: "center",
-          padding: "14px 16px",
         }}
       >
         {totalPages > 1 ? (
           <Pagination
-          color="primary"
+            color="primary"
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);

@@ -54,6 +54,12 @@ const listRecordSlice = createSlice({
     setListRecord: (state, action) => {
       state.listPatient = action.payload;
     },
+    setIsAddRecord: (state, action) => {
+      state.isAddRecord = action.payload;
+    },
+    setIsDeleteRecord: (state, action) => {
+      state.isDeleteRecord = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -73,6 +79,7 @@ const listRecordSlice = createSlice({
           note: action.payload.note,
           treatment: action.payload.treatment,
           prescription: action.payload.prescription,
+          listService: action.payload.serviceDTOS
         };
       })
       .addCase(addAndUpdateRecord.pending, (state, action) => {
@@ -176,5 +183,5 @@ export const fetchRecord = createAsyncThunk(
   }
 );
 
-export const { setListRecord } = listRecordSlice.actions;
+export const { setListRecord, setIsAddRecord,setIsDeleteRecord } = listRecordSlice.actions;
 export default listRecordSlice.reducer;

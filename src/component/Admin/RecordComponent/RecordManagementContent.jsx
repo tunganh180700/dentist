@@ -39,14 +39,23 @@ import ProductsSoldRecord from "../PatientManagementComponent/ProductsSoldRecord
 import moment from "moment";
 import { useMemo } from "react";
 import Loading from "../../ui/Loading";
+import {
+  setIsAddRecord,
+  setIsDeleteRecord,
+} from "../../../redux/RecordSlice/listRecordSlice";
+
 const RecordManagementContent = () => {
   const dispatch = useDispatch();
 
   const pageSize = useSelector((state) => state.listRecord.pageSize);
+  const isAddRecord = useSelector((state) => state.listRecord.isAddRecord);
+  const isDeleteRecord = useSelector(
+    (state) => state.listRecord.isDeleteRecord
+  );
+
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const [isSubmitForm, setIsSubmitForm] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [isEditRecord, setIsEditRecord] = useState(false);
 
@@ -58,20 +67,13 @@ const RecordManagementContent = () => {
   const [modalProducstSold, setModalProducstSold] = useState(false);
   const [isShowCanotAdd, setIsShowCanotAdd] = useState(false);
 
-  // const patientName = useSelector((state) => state.choosenPatient.patientName);
-
-  // const isAddRecord = useSelector((state) => state.listRecord.isAddRecord);
-  // const isDeleteRecord = useSelector(
-  //   (state) => state.listRecord.isDeleteRecord
-  // );
-
   const { id } = useParams();
   const [recordList, setRecordList] = useState([]);
 
   const styleTxt = {
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
-    width: "100px",
+    width: "150px",
     display: "block",
     overflow: "hidden",
   };
@@ -88,7 +90,8 @@ const RecordManagementContent = () => {
       setTotalElements(res?.data?.totalElements || 0);
       setTotalPages(res?.data?.totalPages || 0);
       setRecordList(res?.data?.content || []);
-      setIsSubmitForm(false);
+      dispatch(setIsAddRecord(false));
+      dispatch(setIsDeleteRecord(false));
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -99,10 +102,10 @@ const RecordManagementContent = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    if (isSubmitForm) {
+    if (isAddRecord || isDeleteRecord) {
       getDetail(id);
     }
-  }, [isSubmitForm]);
+  }, [isAddRecord, isDeleteRecord]);
 
   const disableAddButton = useMemo(() => {
     return recordList.some(
@@ -112,7 +115,7 @@ const RecordManagementContent = () => {
 
   return (
     <>
-    {loading && <Loading />}
+      {loading && <Loading />}
       <Box className="flex items-center gap-3 mb-4">
         <Link className="text-decoration-none flex" to={"/patient-management"}>
           <ArrowBackIosNewIcon />
@@ -190,7 +193,7 @@ const RecordManagementContent = () => {
               {recordList?.map((el) => (
                 <StyledTableRow key={el.patientRecordId}>
                   <StyledTableCell>
-                    <div style={{ ...styleTxt, width: "200px" }}>
+                    <div style={{ ...styleTxt }}>
                       {el.reason}
                     </div>
                   </StyledTableCell>
@@ -320,12 +323,10 @@ const RecordManagementContent = () => {
         isEditRecord={isEditRecord}
         modalAddOpen={modalAddOpen}
         setModalAddOpen={setModalAddOpen}
-        isSubmitForm={setIsSubmitForm}
       />
       <ModalDeleteRecord
         modalDeleteOpen={modalDeleteOpen}
         setModalDeleteOpen={setModalDeleteOpen}
-        isSubmitForm={setIsSubmitForm}
       />
       <ModalDetailService
         modalDetailOpen={modalDetailOpen}

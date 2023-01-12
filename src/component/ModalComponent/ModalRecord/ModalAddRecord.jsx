@@ -91,7 +91,6 @@ const ModalAddRecord = ({
   const [showConfirm, setShowConfirm] = useState(-1);
   const [isEdit, setEdit] = useState(false);
 
-  const isAddRecord = useSelector((state) => state.listRecord.isAddRecord);
   const recordId = useSelector((state) => state.modal.recordSelected);
 
   const [rows, setRows] = useState([]);
@@ -144,9 +143,10 @@ const ModalAddRecord = ({
       setMaterialExportDTOS([]);
       if (isEditRecord) {
         dispatch(fetchRecord(recordId));
-        // getServiceTreating(id);
         // dispatch(fetchPatientSpecimen(id));
         // dispatch(fetchPatientMaterialExport(id));
+      } else {
+        getServiceTreating(id);
       }
       setTimeout(() => {
         setLoading(false);
@@ -228,15 +228,18 @@ const ModalAddRecord = ({
       const listB = rows.filter((a) => {
         return Object.keys(a)?.length !== 0;
       });
+      if (isEditRecord) {
+        formatValue.patientRecordId = recordId;
+      }
       formatValue.materialExportDTOS = materialExportDTOS;
       formatValue.serviceDTOS = listA.concat(listB);
       formatValue.specimensDTOS = specimenDTOS;
       formatValue.date = valueDate;
+   
       const addValue = {
-        id: id,
+        id: isEditRecord ? recordId : id,
         values: formatValue,
       };
-      console.log("formatValue", formatValue);
       dispatch(
         addAndUpdateRecord({
           payload: addValue,
@@ -250,10 +253,9 @@ const ModalAddRecord = ({
       });
       setModalAddOpen(false);
       formik.handleReset();
-      setTimeout(() => {
-        // getServiceTreating(id);
-        isSubmitForm(true);
-      }, 1500);
+      // setTimeout(() => {
+      //   isSubmitForm(true);
+      // }, 1500);
     },
   });
 
@@ -337,29 +339,23 @@ const ModalAddRecord = ({
   const handleServiceChange = (index, newsServiceId) => {
     const serviceInfo = serviceIds.find((s) => s.serviceId === newsServiceId);
     setRows((prev) => {
+      // const tempIsNew = prev[index].isNew
       prev[index] = { ...prev[index], ...serviceInfo };
+      prev[index].isNew = true;
       prev[index].status = 1;
+      console.log(prev[index]);
       return _.cloneDeep(prev);
     });
   };
 
-  // const getServiceTreating = async (id) => {
-  //   try {
-  //     // const res = await axiosInstance.get(listTreatingServiceAPI + id);
-  //     if (isEditRecord) {
-  //       const oldListTreatingService = res.data.filter((item) => !item.isNew);
-  //       const newListTreatingService = res.data.filter((item) => item.isNew);
-  //       console.log(res.data);
-  //       setRows(newListTreatingService);
-  //       setListTreatingService(oldListTreatingService);
-  //       return;
-  //     }
-  //     setRows([]);
-  //     setListTreatingService(res.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const getServiceTreating = async (id) => {
+    try {
+      const res = await axiosInstance.get(listTreatingServiceAPI + id);
+      setListTreatingService(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (isEditRecord && listService.length) {

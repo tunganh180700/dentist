@@ -368,13 +368,6 @@ const SpecimenManagementContent = () => {
                       <EditIcon />
                     </IconButton>
                   </StyledTableCell>
-                  {/* <StyledTableCell style={styleText}>
-                                    <IconButton aria-label="delete" onClick={() => {
-                                        
-                                    }}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </StyledTableCell> */}
                 </StyledTableRow>
               ))}
             </TableBody>
@@ -390,6 +383,7 @@ const SpecimenManagementContent = () => {
       >
         {totalPages > 1 ? (
           <Pagination
+          color="primary"
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);

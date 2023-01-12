@@ -3,7 +3,10 @@ import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPatient } from "../../../redux/PatienSlice/choosenPatientSlice";
+import {
+  fetchPatient,
+  setIsUpdatePatient,
+} from "../../../redux/PatienSlice/choosenPatientSlice";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -34,7 +37,9 @@ const PatientProfile = () => {
     phone: useSelector((state) => state.choosenPatient.phone),
     email: useSelector((state) => state.choosenPatient.email),
     bodyPrehistory: useSelector((state) => state.choosenPatient.bodyPrehistory),
-    teethPrehistory: useSelector((state) => state.choosenPatient.teethPrehistory),
+    teethPrehistory: useSelector(
+      (state) => state.choosenPatient.teethPrehistory
+    ),
     status: useSelector((state) => state.choosenPatient.status),
     isDeleted: useSelector((state) => state.choosenPatient.isDeleted),
   };
@@ -44,6 +49,8 @@ const PatientProfile = () => {
   const teethPrehistory = useSelector(
     (state) => state.choosenPatient.teethPrehistory
   );
+  const isUpdatePatient= useSelector((state) => state.choosenPatient.isUpdatePatient)
+
 
   const styleTxt = {
     whiteSpace: "nowrap",
@@ -69,10 +76,11 @@ const PatientProfile = () => {
 
   useEffect(() => {
     try {
-      if (id && isSubmitForm) {
+      if (id && isUpdatePatient) {
         setLoading(true);
         dispatch(fetchPatient(id));
-        setIsEdit(false)
+        dispatch(setIsUpdatePatient(false));
+        setIsEdit(false);
       }
     } catch (error) {
       console.log(error);
@@ -81,7 +89,7 @@ const PatientProfile = () => {
       setIsSubmitForm(false);
       setLoading(false);
     }, 500);
-  }, [isSubmitForm]);
+  }, [isUpdatePatient]);
 
   useEffect(() => {
     if (isDelete) {
@@ -110,7 +118,6 @@ const PatientProfile = () => {
                   <BlockUpdatePatient
                     setIsEdit={setIsEdit}
                     userInfo={userInfo}
-                    submit={setIsSubmitForm}
                   />
                 </Box>
               ) : (

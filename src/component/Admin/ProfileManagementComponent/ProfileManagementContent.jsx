@@ -11,35 +11,43 @@ import Loading from "../../ui/Loading";
 import { useEffect } from "react";
 import { profileAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
+import { setIsUpdateAccount } from "../../../redux/AccountSlice/listAccountSlice";
 
 const ProfileManagementContent = () => {
   const dispatch = useDispatch();
-  let userInfo = {
-    fullName: useSelector((state) => state.userProfile.fullName),
-    roleName: useSelector((state) => state.userProfile.roleName),
-    birthdate: useSelector((state) => state.userProfile.birthdate),
-    phone: useSelector((state) => state.userProfile.phone),
-    email: useSelector((state) => state.userProfile.email),
-    salary: useSelector((state) => state.userProfile.salary),
-    userName: useSelector((state) => state.userProfile.userName),
-  };
+  const isUpdateAccount = useSelector(
+    (state) => state.listAccount.isUpdateAccount
+  );
+  // let userInfo = {
+  //   fullName: useSelector((state) => state.userProfile.fullName),
+  //   roleName: useSelector((state) => state.userProfile.roleName),
+  //   birthdate: useSelector((state) => state.userProfile.birthdate),
+  //   phone: useSelector((state) => state.userProfile.phone),
+  //   email: useSelector((state) => state.userProfile.email),
+  //   salary: useSelector((state) => state.userProfile.salary),
+  //   userName: useSelector((state) => state.userProfile.userName),
+  // };
 
   const [loading, setLoading] = useState();
   const [isEdit, setEdit] = useState(false);
-  const [isSubmitForm, setIsSubmitForm] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
-    if (isSubmitForm) {
+    fetchUserProf();
+  }, []);
+
+  useEffect(() => {
+    if (isUpdateAccount) {
       fetchUserProf();
-      setIsSubmitForm(false);
     }
-  }, [isSubmitForm]);
+  }, [isUpdateAccount]);
 
   const fetchUserProf = async () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get(profileAPI);
-      userInfo = res.data;
+      setUserInfo(res.data)
+      dispatch(setIsUpdateAccount(false))
     } catch (error) {
       console.log(error);
     }
@@ -65,11 +73,7 @@ const ProfileManagementContent = () => {
               </Box>
               {isEdit ? (
                 <Box className="w-3/5">
-                  <BlockUpdateProfile
-                    setIsEdit={setEdit}
-                    userInfo={userInfo}
-                    submit={setIsSubmitForm}
-                  />
+                  <BlockUpdateProfile setIsEdit={setEdit} userInfo={userInfo} />
                 </Box>
               ) : (
                 <Box className="flex flex-col gap-3 w-3/5">
@@ -107,12 +111,12 @@ const ProfileManagementContent = () => {
                       {userInfo.email}
                     </Typography>
                   </div>
-                  <div className="attribute flex gap-3">
+                  {/* <div className="attribute flex gap-3">
                     <p className="mb-1 font-bold w-1/6">Địa chỉ:</p>
                     <Typography component="h1" color="inherit" noWrap>
                       {userInfo.address}
                     </Typography>
-                  </div>
+                  </div> */}
                   <div className="attribute flex gap-3">
                     <p className="mb-1 font-bold w-1/6">Quyền hạn:</p>
                     <Typography component="h1" color="inherit" noWrap>

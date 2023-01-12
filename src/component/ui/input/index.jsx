@@ -18,7 +18,7 @@ const InputDentist = ({
   const [selfDisable, setSelfDisable] = useState(true);
   return (
     <div>
-      <Box className={`mb-2 ${isFlex && "flex items-center"}`}>
+      <Box className={`mb-2 text-left ${isFlex && "flex items-center"}`}>
         <p className={`mb-1 font-bold ${isFlex && "w-1/3"}`}>
           {label} {required && <span className="text-red-600">*</span>}
         </p>

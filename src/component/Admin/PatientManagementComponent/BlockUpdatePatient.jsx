@@ -18,7 +18,7 @@ import {
   validationDate,
 } from "../../../config/validation";
 
-const BlockUpdatePatient = ({ setIsEdit, userInfo, submit }) => {
+const BlockUpdatePatient = ({ setIsEdit, userInfo }) => {
   const dispatch = useDispatch();
   const [gender, setGender] = useState(userInfo.gender);
   const [valueDate, setValueDate] = useState(moment(userInfo.birthdate));
@@ -47,12 +47,11 @@ const BlockUpdatePatient = ({ setIsEdit, userInfo, submit }) => {
   const formik = useFormik({
     initialValues: userInfo,
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       const valueForm = { ...values };
       valueForm.birthdate = moment(valueDate).format(validationDate);
       valueForm.gender = gender;
-      await dispatch(updatePatient(valueForm));
-      submit(true);
+       dispatch(updatePatient(valueForm));
     },
   });
 
