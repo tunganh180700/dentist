@@ -73,7 +73,7 @@ const RecordManagementContent = () => {
   const styleTxt = {
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
-    width: "150px",
+    width: "130px",
     display: "block",
     overflow: "hidden",
   };

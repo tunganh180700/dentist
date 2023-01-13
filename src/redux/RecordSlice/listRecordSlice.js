@@ -35,6 +35,7 @@ const initState = {
   statusPatient: 0,
   listService: [],
   status: "",
+  treatmentId: 0,
   infoRecord: {
     reason: "",
     diagnostic: "",
@@ -70,6 +71,7 @@ const listRecordSlice = createSlice({
         state.listRecord = action.payload;
         state.listService = action.payload.serviceDTOS;
         state.totalPage = action.payload.totalPages;
+        state.treatmentId = action.payload.treatmentId
         state.infoRecord = {
           reason: action.payload.reason,
           diagnostic: action.payload.diagnostic,

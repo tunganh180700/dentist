@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Modal } from "antd";
 import { useDispatch } from "react-redux";
 import TableBody from "@mui/material/TableBody";
@@ -75,6 +75,12 @@ const ModalExportMaterial = ({
     }
   }, [materialExportDTOS]);
 
+  const listOptionMaterialEnable = useMemo(() => {
+    const selected = materialExport.map((item) => item.materialId);
+    const list = material.filter((item) => !selected.includes(item.materialId));
+    return list;
+  }, [materialExport, material]);
+
   return (
     <>
       <Modal
@@ -90,22 +96,25 @@ const ModalExportMaterial = ({
         <Button
           className="mb-3 float-right"
           variant="contained"
+          disabled={!listOptionMaterialEnable.length}
           color="success"
           endIcon={<AddCircleIcon />}
           onClick={() => {
             setMaterialExport((prev) => [
               ...prev,
               {
-                materialId: material[0]?.materialId,
+                materialId: listOptionMaterialEnable[0]?.materialId,
                 amount: 1,
-                unitPrice: material[0]?.price,
-                total: material[0]?.price,
+                unitPrice: listOptionMaterialEnable[0]?.price,
+                total: listOptionMaterialEnable[0]?.price,
                 statusChange: "add",
               },
             ]);
           }}
         >
-          <span className="leading-none">Thêm mới</span>
+          <span className="leading-none">
+            {listOptionMaterialEnable.length ? "Thêm mới" : "Đã hết sản phẩm"}
+          </span>
         </Button>
         <p className="font-bold text-lg mb-0">
           Đang có ({materialExport.length}) thêm mới
@@ -127,13 +136,13 @@ const ModalExportMaterial = ({
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {materialExport?.map((materialExport, index) => (
+            {materialExport?.map((materialExportItem, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell>
                   <Select
                     id="materialId"
                     fullWidth
-                    value={materialExport?.materialId}
+                    value={materialExportItem?.materialId}
                     className="bg-white h-[30px]"
                     onChange={(e) => {
                       const m = material.find(
@@ -152,7 +161,13 @@ const ModalExportMaterial = ({
                     }}
                   >
                     {material?.map((item) => (
-                      <MenuItem key={item.materialId} value={item.materialId}>
+                      <MenuItem
+                        hidden={materialExport
+                          .map((item_material) => item_material.materialId)
+                          .includes(item.materialId)}
+                        key={item.materialId}
+                        value={item.materialId}
+                      >
                         {item.materialName}
                       </MenuItem>
                     ))}
@@ -187,12 +202,12 @@ const ModalExportMaterial = ({
                     endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
                     size="small"
                     id="amount"
-                    value={materialExport.amount}
+                    value={materialExportItem.amount}
                     type="number"
                     InputProps={{
                       inputProps: {
                         min: 1,
-                        max: maxAmount(materialExport?.materialId),
+                        max: maxAmount(materialExportItem?.materialId),
                       },
                     }}
                     className="h-[30px] bg-white"
@@ -207,10 +222,10 @@ const ModalExportMaterial = ({
                   />
                 </StyledTableCell>
                 <StyledTableCell padding="none">
-                  {formatter.format(materialExport.unitPrice) || 0} VND
+                  {formatter.format(materialExportItem.unitPrice) || 0} VND
                 </StyledTableCell>
                 <StyledTableCell padding="none">
-                  {formatter.format(materialExport.total) || 0} VND
+                  {formatter.format(materialExportItem.total) || 0} VND
                 </StyledTableCell>
                 <StyledTableCell padding="none">
                   <Button

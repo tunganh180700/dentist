@@ -72,26 +72,19 @@ const ModalAddRecord = ({
   const [serviceId, setServiceId] = useState();
   const [errorUpdateMess, setErrorUpdateMess] = useState("");
   const [serviceIds, setServiceIds] = useState([]);
+  const [originListService, setOriginListService] = useState([]);
   const [showModalExportMaterial, setShowModalExportMaterial] = useState(0);
   const [modalExportOpen, setModalExportOpen] = useState(false);
   const [modalSpecimenOpen, setModalSpecimenOpen] = useState(false);
   const listRecord = useSelector((state) => state.listRecord.listRecord);
-  // const listPatientMaterialExport = useSelector(
-  //   (state) => state.listMaterialExport.listPatientMaterialExport
-  // );
   const infoRecord = useSelector((state) => state.listRecord.infoRecord);
   const listService = useSelector((state) => state.listRecord.listService);
-  // const [newPrice, setNewPrice] = useState();
-  // const [servicePrice, setServicePrice] = useState();
-  // const [serviceDiscount, setServiceDiscount] = useState();
-  // const [status, setStatus] = useState();
 
-  // const [open, setOpen] = useState(false);
-  // const [disable, setDisable] = useState(true);
   const [showConfirm, setShowConfirm] = useState(-1);
   const [isEdit, setEdit] = useState(false);
 
   const recordId = useSelector((state) => state.modal.recordSelected);
+  const treatmentId = useSelector((state) => state.listRecord.treatmentId);
 
   const [rows, setRows] = useState([]);
   const [countRow, setCountRow] = useState({
@@ -126,10 +119,8 @@ const ModalAddRecord = ({
   const loadServiceOption = async () => {
     try {
       const res = await axiosInstance.get(listAllServiceAPI);
-      // setServiceId(res.data[0].serviceId);
+      setOriginListService(res.data);
       setServiceIds(res.data);
-      // setServicePrice(res.data[0].price);
-      // setServiceDiscount(res.data[0].discount);
     } catch (error) {
       console.log(error);
     }
@@ -143,8 +134,6 @@ const ModalAddRecord = ({
       setMaterialExportDTOS([]);
       if (isEditRecord) {
         dispatch(fetchRecord(recordId));
-        // dispatch(fetchPatientSpecimen(id));
-        // dispatch(fetchPatientMaterialExport(id));
       } else {
         getServiceTreating(id);
       }
@@ -176,6 +165,13 @@ const ModalAddRecord = ({
     if (rows.length + listTreatingService.length) {
       setErrorUpdateMess("");
     }
+    const dataServiceTreating = originListService.filter(
+      (item) =>
+        !formatToDTOS(listTreatingService, rows)
+          .map((item_service) => item_service.serviceId)
+          .includes(item.serviceId)
+    );
+    setServiceIds(dataServiceTreating);
     setServiceDTOS(formatToDTOS(listTreatingService, rows));
     setEdit(true);
   }, [rows, listTreatingService]);
@@ -230,12 +226,13 @@ const ModalAddRecord = ({
       });
       if (isEditRecord) {
         formatValue.patientRecordId = recordId;
+        formatValue.treatmentId = treatmentId;
       }
       formatValue.materialExportDTOS = materialExportDTOS;
       formatValue.serviceDTOS = listA.concat(listB);
       formatValue.specimensDTOS = specimenDTOS;
       formatValue.date = valueDate;
-   
+
       const addValue = {
         id: isEditRecord ? recordId : id,
         values: formatValue,
@@ -253,9 +250,6 @@ const ModalAddRecord = ({
       });
       setModalAddOpen(false);
       formik.handleReset();
-      // setTimeout(() => {
-      //   isSubmitForm(true);
-      // }, 1500);
     },
   });
 
@@ -281,9 +275,7 @@ const ModalAddRecord = ({
 
   useEffect(() => {
     if (countRow.value && countRow.statusCount === "up") {
-      const serviceInfo = serviceIds.find(
-        (s) => s.serviceId === serviceIds[0].serviceId
-      );
+      const serviceInfo = serviceIds[0];
       setRows((prev) => {
         prev[countRow.value - 1] = {
           ...prev[countRow.value - 1],
@@ -343,15 +335,16 @@ const ModalAddRecord = ({
       prev[index] = { ...prev[index], ...serviceInfo };
       prev[index].isNew = true;
       prev[index].status = 1;
-      console.log(prev[index]);
       return _.cloneDeep(prev);
     });
   };
 
   const getServiceTreating = async (id) => {
     try {
-      const res = await axiosInstance.get(listTreatingServiceAPI + id);
-      setListTreatingService(res.data);
+      const res_serviceTreating = await axiosInstance.get(
+        listTreatingServiceAPI + id
+      );
+      setListTreatingService(res_serviceTreating.data);
     } catch (error) {
       console.log(error);
     }
@@ -382,6 +375,13 @@ const ModalAddRecord = ({
 
   // useEffect(() => {
   // }, [id, serviceId, isAddRecord]);
+  const listOptionServiceEnable = useMemo(() => {
+    const selected = serviceIds.map((item) => item.serviceId);
+    const list = originListService.filter((item) =>
+      selected.includes(item.serviceId)
+    );
+    return list;
+  }, [serviceIds, originListService]);
 
   return (
     <>
@@ -490,23 +490,27 @@ const ModalAddRecord = ({
                 <Button
                   variant="contained"
                   color="success"
+                  disabled={!listOptionServiceEnable.length}
                   endIcon={<AddCircleIcon className="p-0 border-0" />}
                   onClick={isEdit ? handleAdd : handleEdit}
                 >
-                  <span className="leading-none">Thêm dịch vụ</span>
+                  <span className="leading-none">
+                    {listOptionServiceEnable.length
+                      ? "Thêm dịch vụ"
+                      : "Đã hết dịch vụ"}
+                  </span>
                 </Button>
-                {disableAddSpecimen && (
-                  <Button
-                    variant="contained"
-                    color="success"
-                    endIcon={<AddCircleIcon className="p-0 border-0" />}
-                    onClick={() => {
-                      setModalSpecimenOpen(true);
-                    }}
-                  >
-                    <span className="leading-none">Thêm mẫu vật</span>
-                  </Button>
-                )}
+                <Button
+                  variant="contained"
+                  disabled={!disableAddSpecimen}
+                  color="success"
+                  endIcon={<AddCircleIcon className="p-0 border-0" />}
+                  onClick={() => {
+                    setModalSpecimenOpen(true);
+                  }}
+                >
+                  <span className="leading-none">Thêm mẫu vật</span>
+                </Button>
 
                 <Button
                   variant="contained"
@@ -550,7 +554,10 @@ const ModalAddRecord = ({
                         value={item.status || ""}
                         onChange={(e) =>
                           setListTreatingService((prev) => {
-                            prev[index].status = e.target.value;
+                            prev[index] = {
+                              ...prev[index],
+                              status: e.target.value,
+                            };
                             return _.cloneDeep(prev);
                           })
                         }
@@ -573,14 +580,21 @@ const ModalAddRecord = ({
                                 <Select
                                   labelId="permisstion"
                                   id="permisstionSelect"
-                                  value={i?.serviceId || 1}
+                                  value={i?.serviceId}
                                   onChange={(e) => {
-                                    setServiceId(e.target.value);
                                     handleServiceChange(index, e.target.value);
                                   }}
                                 >
-                                  {serviceIds?.map((item) => (
+                                  {originListService?.map((item) => (
                                     <MenuItem
+                                      hidden={
+                                        !serviceIds
+                                          .map(
+                                            (item_service) =>
+                                              item_service.serviceId
+                                          )
+                                          .includes(item.serviceId)
+                                      }
                                       key={item.serviceId}
                                       value={item.serviceId}
                                     >

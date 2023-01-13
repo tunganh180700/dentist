@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Modal } from "antd";
 import { useDispatch } from "react-redux";
 import TableBody from "@mui/material/TableBody";
@@ -48,6 +48,10 @@ const ModalSpecimen = ({
   useEffect(() => {
     setSpecimen([]);
     if (specimenDTOS.length) {
+      const enableServiceDTOS = serviceDTOS
+      .filter((item) => item.status !== 2)
+      .map((item) => item.serviceId);
+
       const dataDTOS = specimenDTOS.map((item) => ({
         patientRecordId: item.patientRecordId,
         specimenId: item.specimenId,
@@ -57,10 +61,18 @@ const ModalSpecimen = ({
         laboId: item.laboId,
         serviceId: item.serviceId,
         statusChange: item.statusChange,
-      }));
+      })).filter(item => enableServiceDTOS.includes(item.serviceId))
       setSpecimen(dataDTOS);
     }
-  }, [specimenDTOS]);
+  }, [specimenDTOS, modalSpecimenOpen]);
+
+  const listOptionServiceEnable = useMemo(() => {
+    const selected = specimen.map((item) => item.serviceId);
+    const list = serviceDTOS.filter(
+      (item) => !selected.includes(item.serviceId) && item.status !== 2
+    );
+    return list;
+  }, [specimen, serviceDTOS]);
 
   // useEffect(() => {
   //   if (isEdit) {
@@ -84,12 +96,16 @@ const ModalSpecimen = ({
           setModalSpecimenOpen(false);
           specimens(specimen);
         }}
-        onCancel={() => setModalSpecimenOpen(false)}
+        onCancel={() => {
+          setSpecimen([]);
+          setModalSpecimenOpen(false);
+        }}
       >
         <Button
           className="mb-3 float-right"
           variant="contained"
           color="success"
+          disabled={!listOptionServiceEnable.length}
           endIcon={<AddCircleIcon />}
           onClick={() => {
             setSpecimen((prev) => [
@@ -97,15 +113,17 @@ const ModalSpecimen = ({
               {
                 specimenName: null,
                 amount: 1,
-                unitPrice: serviceDTOS[0]?.price,
+                unitPrice: listOptionServiceEnable[0]?.price,
                 laboId: labo[0]?.laboId,
-                serviceId: serviceDTOS[0]?.serviceId,
+                serviceId: listOptionServiceEnable[0]?.serviceId,
                 statusChange: "add",
               },
             ]);
           }}
         >
-          <span className="leading-none">Thêm mới</span>
+          <span className="leading-none">
+            {listOptionServiceEnable.length ? "Thêm mới" : "Đã hết dịch vụ"}
+          </span>
         </Button>
         <p className="font-bold text-lg mb-0">
           Đang có ({specimen.length}) thêm mới
@@ -122,14 +140,14 @@ const ModalSpecimen = ({
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {specimen?.map((specimen, index) => (
+            {specimen?.map((specimenItem, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell padding="none">
                   <OutlinedInput
                     endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
                     id="specimenName"
                     placeholder="Tên mẫu vật"
-                    value={specimen.specimenName}
+                    value={specimenItem.specimenName}
                     className="h-[30px] bg-white"
                     onChange={(e) =>
                       setSpecimen((prev) => {
@@ -144,7 +162,7 @@ const ModalSpecimen = ({
                     endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
                     size="small"
                     id="amount"
-                    value={specimen.amount}
+                    value={specimenItem.amount}
                     type="number"
                     inputProps={{ min: 1 }}
                     className="h-[30px] bg-white"
@@ -157,7 +175,7 @@ const ModalSpecimen = ({
                   />
                 </StyledTableCell>
                 <StyledTableCell padding="none">
-                  {formatter.format(specimen.unitPrice) || 0} VND
+                  {formatter.format(specimenItem.unitPrice) || 0} VND
                   {/* <OutlinedInput
                     endAdornment={<p className="mb-0 leading-0 text-xs">VND</p>}
                     id="discount"
@@ -179,7 +197,7 @@ const ModalSpecimen = ({
                     className="h-[30px] bg-white"
                     fullWidth
                     id="laboId"
-                    value={specimen?.laboId}
+                    value={specimenItem?.laboId}
                     onChange={(e) => {
                       const m = labo.find((l) => l.laboId === e.target.value);
                       setSpecimen((prev) => {
@@ -200,7 +218,7 @@ const ModalSpecimen = ({
                     className="h-[30px] bg-white"
                     fullWidth
                     id="serviceId"
-                    value={specimen?.serviceId}
+                    value={specimenItem?.serviceId}
                     onChange={(e) => {
                       const m = serviceDTOS.find(
                         (s) => s.serviceId === e.target.value
@@ -218,7 +236,13 @@ const ModalSpecimen = ({
                     {serviceDTOS
                       ?.filter((i) => i.status === 1)
                       .map((item) => (
-                        <MenuItem key={item.serviceId} value={item.serviceId}>
+                        <MenuItem
+                          hidden={specimen
+                            .map((item_service) => item_service.serviceId)
+                            .includes(item.serviceId)}
+                          key={item.serviceId}
+                          value={item.serviceId}
+                        >
                           {item.serviceName}
                         </MenuItem>
                       ))}
