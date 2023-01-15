@@ -22,6 +22,7 @@ import {
   StyledTable,
 } from "../../ui/TableElements";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import RoleTag from "../../ui/RoleTag";
 
 const AccountManagementContent = () => {
   const listAccount = useSelector((state) => state.listAccount.listAccount);
@@ -99,7 +100,9 @@ const AccountManagementContent = () => {
                 <StyledTableCell>{item.phone}</StyledTableCell>
                 <StyledTableCell>{item.email}</StyledTableCell>
                 <StyledTableCell>{item.birthdate}</StyledTableCell>
-                <StyledTableCell>{item.roleName}</StyledTableCell>
+                <StyledTableCell>
+                  <RoleTag role={item.roleName} />
+                </StyledTableCell>
                 <StyledTableCell>
                   <IconButton
                     aria-label="delete"
@@ -134,7 +137,7 @@ const AccountManagementContent = () => {
       >
         {totalPages > 1 ? (
           <Pagination
-          color="primary"
+            color="primary"
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);

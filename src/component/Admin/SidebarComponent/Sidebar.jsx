@@ -23,15 +23,11 @@ const Sidebar = ({ isOpenSideBar = false }) => {
     setRole(role);
   }, []);
 
-  useEffect(() => {
-    const role = localStorage.getItem("role");
-    setRole(role);
-  }, []);
   const location = useLocation();
 
   const activeTab = useCallback(
     (item) => {
-      return `/${location.pathname.split('/')[1]}` === item.href;
+      return `/${location.pathname.split("/")[1]}` === item.href;
     },
     [location]
   );
@@ -49,7 +45,7 @@ const Sidebar = ({ isOpenSideBar = false }) => {
 
       <Box className="flex flex-col gap-2 h-full">
         {menu.map((item) => (
-          <Box>
+          <Box hidden={!item.permission.includes(role)}>
             {item?.subItem ? (
               <Box>
                 <ListItemButton
@@ -60,12 +56,17 @@ const Sidebar = ({ isOpenSideBar = false }) => {
                   onClick={handleClickCollapse}
                 >
                   <ListItemIcon className="ml-2">{item.icon}</ListItemIcon>
-                  {item.title}
-                  {isOpenCollapse ? <ExpandLess /> : <ExpandMore />}
+                  <Box className="flex justify-between w-full">
+                    {item.title}
+                    {isOpenCollapse ? <ExpandLess /> : <ExpandMore />}
+                  </Box>
                 </ListItemButton>
                 <Collapse in={isOpenCollapse} timeout="auto" unmountOnExit>
                   {item.subItem.map((sub) => (
-                    <Box className="ml-5">
+                    <Box
+                      hidden={!sub.permission.includes(role)}
+                      className="ml-5"
+                    >
                       <Link
                         to={sub.href}
                         className={`decoration-transparent  ${
@@ -80,8 +81,7 @@ const Sidebar = ({ isOpenSideBar = false }) => {
                             boxShadow: `${activeTab(sub) ? "#CAF8FF" : ""}`,
                           }}
                         >
-                          <ListItemIcon>
-                            {" "}
+                          <ListItemIcon className="ml-[-2px]">
                             {activeTab(sub) ? sub.iconActive : sub.icon}
                           </ListItemIcon>
                           {sub.title}
@@ -100,7 +100,7 @@ const Sidebar = ({ isOpenSideBar = false }) => {
               >
                 <Tooltip
                   arrow
-                  title={!isOpenSideBar ? item.title : ''}
+                  title={!isOpenSideBar ? item.title : ""}
                   placement="left"
                 >
                   <ListItemButton

@@ -85,18 +85,14 @@ const PatientManagementContent = () => {
   useEffect(() => {
     if (isSubmitFormPatient) {
       setLoading(true);
-      //   const page = currentPage;
-      //   if (isDeletePatient == true && totalElements % pageSize == 1) {
-      //     setCurrentPage(page - 1);
-      //   }
+      dispatch(
+        fetchAllPatient({
+          ...searchValue,
+          size: pageSize,
+          page: currentPage,
+        })
+      );
       setTimeout(() => {
-        dispatch(
-          fetchAllPatient({
-            ...searchValue,
-            size: pageSize,
-            page: currentPage,
-          })
-        );
         setLoading(false);
       }, 500);
       setIsSubmitFormPatient(false);
@@ -122,7 +118,7 @@ const PatientManagementContent = () => {
     setCurrentPage(0);
     try {
       if (currentPage === 0) {
-        await dispatch(
+        dispatch(
           searchPatient({
             ...search,
             size: pageSize,

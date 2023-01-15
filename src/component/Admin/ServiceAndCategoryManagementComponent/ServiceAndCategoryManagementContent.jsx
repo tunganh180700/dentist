@@ -236,7 +236,6 @@ const ServiceAndCategoryManagementContent = () => {
                   Giá tại nha khoa Nguyễn Trần
                 </StyledTableCell>
                 <StyledTableCell />
-                <StyledTableCell />
               </StyledTableRow>
             </TableHead>
             <TableBody size="medium">
@@ -253,6 +252,15 @@ const ServiceAndCategoryManagementContent = () => {
                   <StyledTableCell>{item.marketPrice}</StyledTableCell>
                   <StyledTableCell>{item.price}</StyledTableCell>
                   <StyledTableCell>
+                  <IconButton
+                      aria-label="delete"
+                      onClick={() => {
+                        setModalDeleteOpen(true);
+                        dispatch(setServicedId(item.serviceId));
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                     <IconButton
                       aria-label="edit"
                       onClick={() => {
@@ -261,17 +269,6 @@ const ServiceAndCategoryManagementContent = () => {
                       }}
                     >
                       <EditIcon />
-                    </IconButton>
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => {
-                        setModalDeleteOpen(true);
-                        dispatch(setServicedId(item.serviceId));
-                      }}
-                    >
-                      <DeleteIcon />
                     </IconButton>
                   </StyledTableCell>
                 </StyledTableRow>

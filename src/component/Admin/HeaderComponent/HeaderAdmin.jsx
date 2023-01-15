@@ -10,7 +10,8 @@ import { Avatar } from "@mui/material";
 import Dropdown from "react-bootstrap/Dropdown";
 import { fetchUserProfile } from "../../../redux/ProfileSlice/userProfileSlice";
 import { Link } from "react-router-dom";
-import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import RoleTag from "../../ui/RoleTag";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -39,17 +40,11 @@ const HeaderAdmin = () => {
       <Dropdown>
         <Dropdown.Toggle
           id="dropdown-basic"
-          className="bg-transparent border-0 gap-2"
+          className="bg-transparent border-0 gap-2 relative"
           style={{ display: "flex", alignItems: "center" }}
-          drop="none"
         >
-          <Avatar
-            alt={fullName}
-            src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80"
-            id="dropdown-basic"
-          />
+          <RoleTag className="absolute" title={fullName} role={roleName} />
         </Dropdown.Toggle>
-
         <Dropdown.Menu className="border-0 shadow-md">
           <Dropdown.Item>
             <Link to="/profile" className="decoration-white text-black">
@@ -63,7 +58,10 @@ const HeaderAdmin = () => {
           </Dropdown.Item>
           <Dropdown.Divider />
           <Dropdown.Item>
-            <Link to="/login" className="decoration-white text-black flex items-center gap-2">
+            <Link
+              to="/login"
+              className="decoration-white text-black flex items-center gap-2"
+            >
               <PowerSettingsNewIcon fontSize="12px" />
               <span> Đăng xuất</span>
             </Link>

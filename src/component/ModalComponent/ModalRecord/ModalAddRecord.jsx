@@ -281,6 +281,7 @@ const ModalAddRecord = ({
           ...prev[countRow.value - 1],
           ...serviceInfo,
         };
+        prev[countRow.value - 1].amount = 1;
         prev[countRow.value - 1].isNew = true;
         prev[countRow.value - 1].status = 1;
         return _.cloneDeep(prev);
@@ -389,12 +390,12 @@ const ModalAddRecord = ({
       <Modal
         title={`Ngày ${moment(valueDate).format("DD-MM-YYYY")}`}
         open={modalAddOpen}
-        width="70%"
+        width="75%"
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
       >
         <Box
-          className="container"
+          className=""
           style={{ display: "flex", justifyContent: "space-between" }}
         >
           <Box className="form-input" style={{ width: "30%" }}>
@@ -530,6 +531,7 @@ const ModalAddRecord = ({
                   <StyledTableCell style={{ width: "25%" }}>
                     Dich vụ
                   </StyledTableCell>
+                  <StyledTableCell>Số lượng</StyledTableCell>
                   <StyledTableCell>Giá tiền</StyledTableCell>
                   <StyledTableCell>Giảm giá</StyledTableCell>
                   <StyledTableCell>Trạng thái</StyledTableCell>
@@ -540,7 +542,8 @@ const ModalAddRecord = ({
                 {listTreatingService?.map((item, index) => (
                   <StyledTableRow key={item.serviceId}>
                     <StyledTableCell>{item.serviceName}</StyledTableCell>
-                    <StyledTableCell>
+                    <StyledTableCell>{item.amount}</StyledTableCell>
+                    <StyledTableCell className="max-w-[150px]">
                       {formatter.format(item.price)} VND
                     </StyledTableCell>
                     <StyledTableCell>
@@ -605,13 +608,32 @@ const ModalAddRecord = ({
                               </FormControl>
                             </Box>
                           </StyledTableCell>
+                          <StyledTableCell padding="none">
+                            <OutlinedInput
+                              endAdornment={
+                                <p className="mb-0 leading-0 text-xs"></p>
+                              }
+                              size="small"
+                              id="amount"
+                              value={i.amount}
+                              type="number"
+                              inputProps={{ min: 1 }}
+                              className="h-[30px] w-[70px] text-center bg-white"
+                              onChange={(e) =>
+                                setRows((prev) => {
+                                  prev[index].amount = Number(e.target.value);
+                                  return _.cloneDeep(prev);
+                                })
+                              }
+                            />
+                          </StyledTableCell>
                           <StyledTableCell>
                             {formatter.format(i?.price) || 0} VND
                           </StyledTableCell>
                           <StyledTableCell>
                             <OutlinedInput
                               id="discount"
-                              className="h-[30px] bg-white w-[170px]"
+                              className="h-[30px] bg-white w-[150px]"
                               value={formatter.format(i?.discount)}
                               endAdornment={
                                 <p className="mb-0 leading-0 text-xs">VND</p>
@@ -653,7 +675,6 @@ const ModalAddRecord = ({
                           </StyledTableCell>
                           <StyledTableCell>
                             <Button
-                              className="mr10"
                               onClick={() => handleConfirm(index)}
                             >
                               <ClearIcon />

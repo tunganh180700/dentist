@@ -58,6 +58,7 @@ const RecordManagementContent = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [isEditRecord, setIsEditRecord] = useState(false);
+  const [role, setRole] = useState(null);
 
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
@@ -77,6 +78,11 @@ const RecordManagementContent = () => {
     display: "block",
     overflow: "hidden",
   };
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    setRole(role);
+  }, []);
 
   const getDetail = async (id) => {
     try {
@@ -135,21 +141,23 @@ const RecordManagementContent = () => {
         </Divider>
         <Box className="flex gap-3 mb-3">
           <p className="font-bold text-lg mb-0">Có ({totalElements}) hồ sơ</p>
-          <Button
-            variant="contained"
-            color="success"
-            endIcon={<AddCircleIcon />}
-            onClick={() => {
-              if (!disableAddButton) {
-                setIsEditRecord(false);
-                setModalAddOpen(true);
-                return;
-              }
-              setIsShowCanotAdd(true);
-            }}
-          >
-            <span className="leading-none">Thêm hồ sơ</span>
-          </Button>
+          {role !== "Receptionist" && (
+            <Button
+              variant="contained"
+              color="success"
+              endIcon={<AddCircleIcon />}
+              onClick={() => {
+                if (!disableAddButton) {
+                  setIsEditRecord(false);
+                  setModalAddOpen(true);
+                  return;
+                }
+                setIsShowCanotAdd(true);
+              }}
+            >
+              <span className="leading-none">Thêm hồ sơ</span>
+            </Button>
+          )}
 
           <Button
             variant="contained"
@@ -193,9 +201,7 @@ const RecordManagementContent = () => {
               {recordList?.map((el) => (
                 <StyledTableRow key={el.patientRecordId}>
                   <StyledTableCell>
-                    <div style={{ ...styleTxt }}>
-                      {el.reason}
-                    </div>
+                    <div style={{ ...styleTxt }}>{el.reason}</div>
                   </StyledTableCell>
                   <StyledTableCell>
                     <div style={styleTxt}>{el.diagnostic}</div>
@@ -229,19 +235,20 @@ const RecordManagementContent = () => {
                     </Button>
                   </StyledTableCell>
                   <StyledTableCell>
-                    {moment().format("YYYY-MM-DD") === el.date && (
-                      <Button
-                        variant="contained"
-                        color="warning"
-                        onClick={() => {
-                          dispatch(setRecordSelected(el.patientRecordId));
-                          setIsEditRecord(true);
-                          setModalAddOpen(true);
-                        }}
-                      >
-                        <span className="leading-none">Sửa</span>
-                      </Button>
-                    )}
+                    {moment().format("YYYY-MM-DD") === el.date &&
+                      role !== "Receptionist" && (
+                        <Button
+                          variant="contained"
+                          color="warning"
+                          onClick={() => {
+                            dispatch(setRecordSelected(el.patientRecordId));
+                            setIsEditRecord(true);
+                            setModalAddOpen(true);
+                          }}
+                        >
+                          <span className="leading-none">Sửa</span>
+                        </Button>
+                      )}
                   </StyledTableCell>
                   <StyledTableCell>
                     <IconButton

@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { profileAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
 import { setIsUpdateAccount } from "../../../redux/AccountSlice/listAccountSlice";
+import RoleTag from "../../ui/RoleTag";
 
 const ProfileManagementContent = () => {
   const dispatch = useDispatch();
@@ -46,8 +47,8 @@ const ProfileManagementContent = () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get(profileAPI);
-      setUserInfo(res.data)
-      dispatch(setIsUpdateAccount(false))
+      setUserInfo(res.data);
+      dispatch(setIsUpdateAccount(false));
     } catch (error) {
       console.log(error);
     }
@@ -111,17 +112,11 @@ const ProfileManagementContent = () => {
                       {userInfo.email}
                     </Typography>
                   </div>
-                  {/* <div className="attribute flex gap-3">
-                    <p className="mb-1 font-bold w-1/6">Địa chỉ:</p>
-                    <Typography component="h1" color="inherit" noWrap>
-                      {userInfo.address}
-                    </Typography>
-                  </div> */}
                   <div className="attribute flex gap-3">
                     <p className="mb-1 font-bold w-1/6">Quyền hạn:</p>
-                    <Typography component="h1" color="inherit" noWrap>
-                      {userInfo.roleName}
-                    </Typography>
+                    <Box>
+                    <RoleTag left role={userInfo.roleName} />
+                    </Box>
                   </div>
                   <div className="attribute flex gap-3">
                     <p className="mb-1 font-bold w-1/6">Lương:</p>
