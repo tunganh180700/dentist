@@ -27,6 +27,7 @@ const initState = {
   index: 0,
   pageSize: 3,
   totalPage: 0,
+  totalExportMaterial: 0,
   statusPatientMaterialExport: false,
   statusUpdateMaterialExport: false,
   isUpdateMaterialExport: false,
@@ -54,6 +55,7 @@ const listMaterialExportSlice = createSlice({
       .addCase(fetchAllMaterialExport.fulfilled, (state, action) => {
         state.listMaterialExport = action.payload.content;
         state.status = false;
+        state.totalExportMaterial = action.payload.totalElements;
         state.pageNumber = action.payload.pageNumber;
         state.totalPage = action.payload.totalPages;
         state.isUpdateMaterialExport = false;

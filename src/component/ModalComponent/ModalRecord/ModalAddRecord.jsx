@@ -621,7 +621,10 @@ const ModalAddRecord = ({
                               className="h-[30px] w-[70px] text-center bg-white"
                               onChange={(e) =>
                                 setRows((prev) => {
-                                  prev[index].amount = Number(e.target.value);
+                                  prev[index] = {
+                                    ...prev[index],
+                                    amount:  Number(e.target.value),
+                                  };
                                   return _.cloneDeep(prev);
                                 })
                               }

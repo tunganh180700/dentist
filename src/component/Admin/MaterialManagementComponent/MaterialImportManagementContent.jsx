@@ -5,7 +5,15 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Pagination, Typography, IconButton, Button } from "@mui/material";
+import {
+  Pagination,
+  Typography,
+  IconButton,
+  Button,
+  SwipeableDrawer,
+  Box,
+  TextField,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMaterialImportId } from "../../../redux/modalSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -22,6 +30,8 @@ import ModalDeleteMaterialImport from "../../ModalComponent/ModalMaterial/ModalD
 import ModalAddMaterialImport from "../../ModalComponent/ModalMaterial/ModalAddMaterialImport";
 import ModalAddListMaterialImport from "../../ModalComponent/ModalMaterial/ModalAddListMaterialImport";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import Loading from "../../ui/Loading";
 
 const MaterialImportManagementContent = () => {
   const listMaterialImport = useSelector(
@@ -31,7 +41,6 @@ const MaterialImportManagementContent = () => {
   const pageSize = useSelector((state) => state.listMaterialImport.pageSize);
   const totalPages = useSelector((state) => state.listMaterialImport.totalPage);
   const [currentPage, setCurrentPage] = useState(0);
-  // const userId = useSelector(state=>state.modal.userId);
   const isUpdateMaterialImport = useSelector(
     (state) => state.listMaterialImport.isUpdateMaterialImport
   );
@@ -41,19 +50,30 @@ const MaterialImportManagementContent = () => {
   const isAddMaterialImport = useSelector(
     (state) => state.listMaterialImport.isAddMaterialImport
   );
+  const totalImportMaterial = useSelector(
+    (state) => state.listMaterialImport.totalImportMaterial
+  );
 
   const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [modalAddListOpen, setModalAddListOpen] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
+    setLoading(true);
     dispatch(
       fetchAllMaterialImport({
         size: 12,
         page: currentPage,
+        materialName: searchValue,
       })
     );
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   }, [
     currentPage,
     isUpdateMaterialImport,
@@ -61,21 +81,57 @@ const MaterialImportManagementContent = () => {
     isAddMaterialImport,
   ]);
 
+  const handleSearch = (searchValue) => {
+    setLoading(true);
+    if (currentPage === 0) {
+      dispatch(
+        fetchAllMaterialImport({
+          size: 12,
+          page: 0,
+          materialName: searchValue,
+        })
+      );
+    } else {
+      setCurrentPage(0);
+    }
+    setOpenFilter(false)
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  };
+
+  const onResetFilter = () => {
+    setSearchValue("");
+    handleSearch("");
+  };
+
   return (
     <>
-      <h2 className="font-bold mb-2">Quản Lý Nhập Vật Liệu</h2>
-      <Button
-        className="float-right mb-3"
-        variant="contained"
-        color="success"
-        endIcon={<AddCircleIcon />}
-        onClick={() => {
-          // setModalAddOpen(true)
-          setModalAddListOpen(true);
-        }}
-      >
-        <span className="leading-none"> Thêm mới</span>
-      </Button>
+      {loading && <Loading />}
+      <h2 className="font-bold mb-4">Quản Lý Nhập Vật Liệu</h2>
+      <Box className="flex items-center gap-3 mb-3">
+        <p className="font-bold text-lg mb-0">
+          Có ({totalImportMaterial}) bản ghi
+        </p>
+        <Button
+          variant="contained"
+          color="success"
+          endIcon={<AddCircleIcon />}
+          onClick={() => {
+            setModalAddListOpen(true);
+          }}
+        >
+          <span className="leading-none">Thêm mới</span>
+        </Button>
+        <Button
+          variant="contained"
+          color="info"
+          endIcon={<FilterAltIcon />}
+          onClick={() => setOpenFilter(true)}
+        >
+          <span className="leading-none">Lọc</span>
+        </Button>
+      </Box>
       <StyledTable className="shadow-md mb-3" size="small">
         <TableHead>
           <StyledTableRow>
@@ -153,6 +209,7 @@ const MaterialImportManagementContent = () => {
         {totalPages > 1 ? (
           <Pagination
             color="primary"
+            page={currentPage + 1}
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);
@@ -160,6 +217,44 @@ const MaterialImportManagementContent = () => {
           />
         ) : null}
       </div>
+
+      <SwipeableDrawer
+        anchor="right"
+        open={openFilter}
+        onClose={() => setOpenFilter(false)}
+        PaperProps={{ elevation: 0, style: { backgroundColor: "transparent" } }}
+      >
+        <Box className="p-3 w-[300px] bg-white h-full rounded-tl-lg rounded-bl-lg">
+          <h3 className="mb-3">Lọc</h3>
+          <Box className="mb-3">
+            <p className="mb-1">Tên vật liệu</p>
+            <TextField
+              required
+              value={searchValue}
+              onChange={(newValue) => setSearchValue(newValue.target.value)}
+            />
+          </Box>
+          <Box display="flex" gap={2} justifyContent="center">
+            <Button
+              variant="contained"
+              className="mr-3"
+              onClick={() => handleSearch(searchValue)}
+              disabled={!searchValue}
+            >
+              Đồng ý
+            </Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={onResetFilter}
+              disabled={!searchValue}
+            >
+              Đặt lại
+            </Button>
+          </Box>
+        </Box>
+      </SwipeableDrawer>
+
       <div>
         <ModalUpdateMaterialImport
           modalUpdateOpen={modalUpdateOpen}

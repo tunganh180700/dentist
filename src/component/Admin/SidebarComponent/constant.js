@@ -2,12 +2,17 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import GroupsIcon from "@mui/icons-material/Groups";
 import AddHomeWorkIcon from "@mui/icons-material/AddHomeWork";
-import RoomPreferencesIcon from "@mui/icons-material/RoomPreferences";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import BiotechIcon from "@mui/icons-material/Biotech";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import StoreIcon from '@mui/icons-material/Store';
+import UnarchiveIcon from '@mui/icons-material/Unarchive';
+import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import InventoryIcon from '@mui/icons-material/Inventory';
 export const menu = [
   {
     icon: <GroupsIcon />,
@@ -38,29 +43,28 @@ export const menu = [
     permission: ["Admin", "Doctor", "LeaderNurse", "Nurse", "Receptionist"],
   },
   {
-    icon: <RoomPreferencesIcon />,
+    icon: <InventoryIcon />,
     title: "Quản lý vật liệu",
     href: "",
     permission: ["Admin", "Doctor", "LeaderNurse", "Nurse", "Receptionist"],
-
     subItem: [
       {
-        icon: <RoomPreferencesIcon />,
-        iconActive: <RoomPreferencesIcon color="info" />,
+        icon: <NoteAltIcon />,
+        iconActive: <NoteAltIcon color="info" />,
         title: "Vật liệu",
         href: "/materialmanagement",
         permission: ["Admin", "Doctor", "LeaderNurse", "Nurse", "Receptionist"],
       },
       {
-        icon: <RoomPreferencesIcon />,
-        iconActive: <RoomPreferencesIcon color="info" />,
+        icon: <ArchiveIcon />,
+        iconActive: <ArchiveIcon color="info" />,
         title: "Nhập vật liệu",
         href: "/materialimport",
         permission: ["Admin", "LeaderNurse"],
       },
       {
-        icon: <RoomPreferencesIcon />,
-        iconActive: <RoomPreferencesIcon color="info" />,
+        icon: <UnarchiveIcon />,
+        iconActive: <UnarchiveIcon color="info" />,
         title: "Xuất vật liệu",
         href: "/materialexport",
         permission: ["Admin", "Doctor", "LeaderNurse", "Nurse", "Receptionist"],
@@ -68,22 +72,22 @@ export const menu = [
     ],
   },
   {
-    icon: <MeetingRoomIcon />,
-    iconActive: <MeetingRoomIcon color="info" />,
+    icon: <BiotechIcon />,
+    iconActive: <BiotechIcon color="info" />,
     title: "Mẫu vật",
     href: "/specimen",
     permission: ["Admin", "Doctor", "Nurse", "LeaderNurse"],
   },
   {
-    icon: <BiotechIcon />,
-    iconActive: <BiotechIcon color="info" />,
+    icon: <MeetingRoomIcon />,
+    iconActive: <MeetingRoomIcon color="info" />,
     title: "Quản lý Labo",
     href: "/labo",
     permission: ["Admin", "LeaderNurse"],
   },
   {
-    icon: <ScheduleIcon />,
-    iconActive: <ScheduleIcon color="info" />,
+    icon: <MedicalInformationIcon />,
+    iconActive: <MedicalInformationIcon color="info" />,
     title: "Quản lý dịch vụ",
     href: "/serviceandcategory",
     permission: ["Admin"],

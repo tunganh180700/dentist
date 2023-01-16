@@ -13,6 +13,7 @@ const initState = {
     index: 0,
     pageSize: 3,
     totalPage: 0,
+    totalImportMaterial: 0,
     statusUpdateMaterialImport: false,
     isUpdateMaterialImport: false,
     statusDeleteMaterialImport: false,
@@ -44,6 +45,7 @@ const listMaterialImportSlice = createSlice({
                 state.isDeleteMaterialImport = false;
                 state.isAddMaterialImport = false;
                 state.message = action.payload.message
+                state.totalImportMaterial = action.payload.totalElements
             })
             .addCase(updateMaterialImport.pending, (state, action) => {
                 state.statusUpdateMaterialImport = true

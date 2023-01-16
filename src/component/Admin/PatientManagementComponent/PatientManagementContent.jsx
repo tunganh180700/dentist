@@ -115,7 +115,6 @@ const PatientManagementContent = () => {
 
   const handleSearch = async (search = searchValue) => {
     setLoading(true);
-    setCurrentPage(0);
     try {
       if (currentPage === 0) {
         dispatch(
@@ -125,11 +124,17 @@ const PatientManagementContent = () => {
             page: 0,
           })
         );
-        setLoading(false);
-        setOpenFilter(false);
+      } else {
+        setCurrentPage(0);
       }
+      setOpenFilter(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     } catch (error) {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
       console.log(error);
     }
   };

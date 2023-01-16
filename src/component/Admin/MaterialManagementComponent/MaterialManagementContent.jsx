@@ -4,12 +4,20 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
-import { Pagination, Typography, IconButton, Button } from "@mui/material";
+import {
+  Pagination,
+  Typography,
+  IconButton,
+  Button,
+  SwipeableDrawer,
+  Box,
+  TextField,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMaterialId } from "../../../redux/modalSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import {
   StyledTableCell,
   StyledTableRow,
@@ -20,6 +28,7 @@ import ModalUpdateMaterial from "../../ModalComponent/ModalMaterial/ModalUpdateM
 import ModalDeleteMaterial from "../../ModalComponent/ModalMaterial/ModalDeleteMaterial";
 import ModalAddMaterial from "../../ModalComponent/ModalMaterial/ModalAddMaterial";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import Loading from "../../ui/Loading";
 
 const MaterialManagementContent = () => {
   const listMaterial = useSelector((state) => state.listMaterial.listMaterial);
@@ -37,34 +46,79 @@ const MaterialManagementContent = () => {
   const isAddMaterial = useSelector(
     (state) => state.listMaterial.isAddMaterial
   );
-
+  const totalMaterials = useSelector(
+    (state) => state.listMaterial.totalMaterials
+  );
   const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [modalAddOpen, setModalAddOpen] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
+    setLoading(true);
     dispatch(
       fetchAllMaterial({
         size: 12,
         page: currentPage,
+        name: searchValue,
       })
     );
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   }, [currentPage, isUpdateMaterial, isDeleteMaterial, isAddMaterial]);
+
+  const handleSearch = (searchValue) => {
+    setLoading(true);
+    if (currentPage === 0) {
+      dispatch(
+        fetchAllMaterial({
+          size: 12,
+          page: 0,
+          name: searchValue,
+        })
+      );
+    } else {
+      setCurrentPage(0);
+    }
+    setOpenFilter(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  };
+
+  const onResetFilter = () => {
+    setSearchValue("");
+    handleSearch("");
+  };
 
   return (
     <>
-      <h2 className="font-bold mb-2">Danh Sách Vật Liệu</h2>
-      <Button
-        className="float-right mb-3"
-        variant="contained"
-        color="success"
-        endIcon={<AddCircleIcon />}
-        onClick={() => {
-          setModalAddOpen(true);
-        }}
-      >
-        <span className="leading-none"> Thêm mới</span>
-      </Button>
+      {loading && <Loading />}
+      <h2 className="font-bold mb-4">Danh Sách Vật Liệu</h2>
+      <Box className="flex items-center gap-3 mb-3">
+        <p className="font-bold text-lg mb-0">Có ({totalMaterials}) bản ghi</p>
+        <Button
+          variant="contained"
+          color="success"
+          endIcon={<AddCircleIcon />}
+          onClick={() => {
+            setModalAddOpen(true);
+          }}
+        >
+          <span className="leading-none">Thêm mới</span>
+        </Button>
+        <Button
+          variant="contained"
+          color="info"
+          endIcon={<FilterAltIcon />}
+          onClick={() => setOpenFilter(true)}
+        >
+          <span className="leading-none">Lọc</span>
+        </Button>
+      </Box>
       <StyledTable size="small" className="shadow-md mb-3">
         <TableHead>
           <StyledTableRow>
@@ -137,12 +191,49 @@ const MaterialManagementContent = () => {
           <Pagination
             color="primary"
             count={totalPages}
+            page={currentPage + 1}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);
             }}
           />
         ) : null}
       </div>
+      <SwipeableDrawer
+        anchor="right"
+        open={openFilter}
+        onClose={() => setOpenFilter(false)}
+        PaperProps={{ elevation: 0, style: { backgroundColor: "transparent" } }}
+      >
+        <Box className="p-3 w-[300px] bg-white h-full rounded-tl-lg rounded-bl-lg">
+          <h3 className="mb-3">Lọc</h3>
+          <Box className="mb-3">
+            <p className="mb-1">Tên vật liệu</p>
+            <TextField
+              required
+              value={searchValue}
+              onChange={(newValue) => setSearchValue(newValue.target.value)}
+            />
+          </Box>
+          <Box display="flex" gap={2} justifyContent="center">
+            <Button
+              variant="contained"
+              className="mr-3"
+              onClick={() => handleSearch(searchValue)}
+              disabled={!searchValue}
+            >
+              Đồng ý
+            </Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={onResetFilter}
+              disabled={!searchValue}
+            >
+              Đặt lại
+            </Button>
+          </Box>
+        </Box>
+      </SwipeableDrawer>
       <div>
         <ModalUpdateMaterial
           modalUpdateOpen={modalUpdateOpen}

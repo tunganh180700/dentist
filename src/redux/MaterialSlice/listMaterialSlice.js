@@ -13,6 +13,7 @@ const initState = {
     index: 0,
     pageSize: 3,
     totalPage: 0,
+    totalMaterials: 0,
     statusUpdateMaterial: false,
     isUpdateMaterial: false,
     statusDeleteMaterial: false,
@@ -40,6 +41,7 @@ const listMaterialSlice = createSlice({
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
                 state.totalPage = action.payload.totalPages;
+                state.totalMaterials =action.payload.totalElements
                 state.isUpdateMaterial = false;
                 state.isDeleteMaterial = false;
                 state.isAddMaterial = false;
