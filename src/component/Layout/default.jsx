@@ -124,7 +124,7 @@ function LayoutDefault({ component }) {
           >
             <Box className="relative h-full flex flex-col justify-between">
               <Sidebar isOpenSideBar={open} />
-              <Box role="button" className="text-center" onClick={toggleDrawer}>
+              <Box role="button" className="text-center z-10 bg-white" onClick={toggleDrawer}>
                 {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
               </Box>
             </Box>

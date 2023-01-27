@@ -43,7 +43,7 @@ const Sidebar = ({ isOpenSideBar = false }) => {
         />
       </div>
 
-      <Box className="flex flex-col gap-2 h-full pb-10 overflow-x-hidden  overflow-y-scroll">
+      <Box className="flex flex-col gap-2 h-full pb-5 overflow-x-hidden overflow-y-scroll">
         {menu.map((item) => (
           <Box hidden={!item.permission.includes(role)}>
             {item?.subItem ? (
