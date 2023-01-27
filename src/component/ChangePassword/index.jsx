@@ -1,0 +1,120 @@
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  OutlinedInput,
+} from "@mui/material";
+import React from "react";
+import { useFormik } from "formik";
+import InputDentist from "../ui/input";
+import * as yup from "yup";
+import { useMemo } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useState } from "react";
+import { Typography } from "antd";
+
+export default function ChangePassword() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRePassword, setShowRePassword] = useState(false);
+  const validationSchema = yup.object().shape({
+    newPass: yup.string().required("Vui lòng nhập mật khẩu mới"),
+    reEnter: yup
+      .string()
+      .oneOf(
+        [yup.ref("newPass"), null],
+        "Mật khẩu mới phải trùng với mật khẩu cũ"
+      ),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      newPass: "",
+      reEnter: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {},
+  });
+
+  return (
+    <div>
+      <Box className="py-5 mx-auto w-1/2">
+        <Box className="bg-white rounded-lg shadow-md p-3">
+          <Box className="text-center mb-5">
+            <h2 className="font-bold"> Đổi mật khẩu </h2>
+          </Box>
+          <Box className="mb-3">
+            <p className={`mb-1 font-bold`}>
+              Mật khẩu mới <span className="text-red-600">*</span>
+            </p>
+            <OutlinedInput
+              id="newPass"
+              className="w-full"
+              type={showPassword ? "text" : "password"}
+              value={formik.values.newPass}
+              onChange={formik.handleChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            {formik.errors.newPass && formik.touched.newPass && (
+              <Typography
+                style={{ color: "red", fontStyle: "italic", fontSize: "14px" }}
+              >
+                {formik.errors.newPass}
+              </Typography>
+            )}
+          </Box>
+          <Box className="mb-3">
+            <p className={`mb-1 font-bold`}>
+              Nhập lại mật khẩu <span className="text-red-600">*</span>
+            </p>
+            <OutlinedInput
+              id="reEnter"
+              className="w-full"
+              type={showRePassword ? "text" : "password"}
+              value={formik.values.reEnter}
+              onChange={formik.handleChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowRePassword(!showRePassword)}
+                    edge="end"
+                  >
+                    {showRePassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            {formik.errors.reEnter && formik.touched.reEnter && (
+              <Typography
+                style={{ color: "red", fontStyle: "italic", fontSize: "14px" }}
+              >
+                {formik.errors.reEnter}
+              </Typography>
+            )}
+          </Box>
+          <Box className="text-right">
+            <Button
+              variant="contained"
+              color="success"
+              className=""
+              onClick={formik.handleSubmit}
+            >
+              Thay đổi
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </div>
+  );
+}

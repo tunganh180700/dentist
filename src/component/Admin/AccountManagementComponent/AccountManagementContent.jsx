@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import { Pagination, Typography, IconButton, Button, Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserId } from "../../../redux/modalSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
-
+import Loading from "../../ui/Loading";
 import { fetchAllAccount } from "../../../redux/AccountSlice/listAccountSlice";
 import ModalUpdateAccount from "../../ModalComponent/ModalAccount/ModalUpdateAccount";
 import ModalDeleteAccount from "../../ModalComponent/ModalAccount/ModalDeleteAccount";
@@ -42,8 +38,10 @@ const AccountManagementContent = () => {
   const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [modalAddOpen, setModalAddOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     if (isDeleteAccount && totalElements % pageSize == 1) {
       const newCurrentPage = currentPage - 1;
       setCurrentPage((prev) => prev - 1);
@@ -60,10 +58,14 @@ const AccountManagementContent = () => {
         page: currentPage,
       })
     );
+    setTimeout(()=>{
+      setLoading(false);
+    }, 500)
   }, [currentPage, isUpdateAccount, isDeleteAccount, isAddAccount]);
 
   return (
     <>
+      {loading && <Loading />}
       <h2 className="font-bold mb-4">Danh Sách Tài Khoản</h2>
       <Box className="flex items-center gap-3 mb-3">
         <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>

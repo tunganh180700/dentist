@@ -1,4 +1,4 @@
-import { Box, OutlinedInput, Typography, InputAdornment } from "@mui/material"
+import { Box, OutlinedInput, Typography, InputAdornment } from "@mui/material";
 import { Modal } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -77,7 +77,6 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
         values: values,
       };
 
-      console.log("hien thi values", values.patientId);
       dispatch(addNewReceipt(addValue));
       setModalAddReceiptOpen(false);
       formik.handleReset();
@@ -89,18 +88,6 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
 
   const handleCancel = () => {
     setModalAddReceiptOpen(false);
-    // formik.errors.serviceName = ""
-    // formik.touched.serviceName = ""
-
-    // formik.errors.unit = ""
-    // formik.touched.unit = ""
-
-    // formik.errors.marketPrice = ""
-    // formik.touched.marketPrice = ""
-
-    // formik.errors.price = ""
-    // formik.touched.price = ""
-
     formik.resetForm();
   };
 

@@ -38,6 +38,7 @@ import moment from "moment";
 const PatientManagementContent = () => {
   const dispatch = useDispatch();
   const listPatient = useSelector((state) => state.listPatient.listPatient);
+  const isAddPatient = useSelector((state) => state.listPatient.isAddPatient);
   const pageSize = useSelector((state) => state.listPatient.pageSize);
   const totalPages = useSelector((state) => state.listPatient.totalPage);
   const totalElements = useSelector((state) => state.listPatient.totalElements);
@@ -83,7 +84,7 @@ const PatientManagementContent = () => {
   };
 
   useEffect(() => {
-    if (isSubmitFormPatient) {
+    if (isAddPatient) {
       setLoading(true);
       dispatch(
         fetchAllPatient({
@@ -95,9 +96,8 @@ const PatientManagementContent = () => {
       setTimeout(() => {
         setLoading(false);
       }, 500);
-      setIsSubmitFormPatient(false);
     }
-  }, [isSubmitFormPatient]);
+  }, [isAddPatient]);
 
   useEffect(() => {
     setLoading(true);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "antd";
 import "antd/dist/antd.css";
-import { Typography, TextField } from "@mui/material";
+import { Typography, TextField, Box } from "@mui/material";
 import { useDispatch } from "react-redux";
 // import { useFormik } from "formik";
 import { listAllMaterialAPI } from "../../../config/baseAPI";
@@ -17,6 +17,8 @@ import { Button, IconButton } from "@mui/material";
 import _ from "lodash";
 import ClearIcon from "@mui/icons-material/Clear";
 import { addListMaterialImportAPI } from "../../../config/baseAPI";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+
 import {
   StyledTableCell,
   StyledTableRow,
@@ -24,11 +26,13 @@ import {
 } from "../../ui/TableElements";
 import { toast } from "react-toastify";
 import { toastCss } from "../../../redux/toastCss";
+import { addMaterialImport } from "../../../redux/MaterialSlice/listMaterialImportSlice";
 
 const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
   const dispatch = useDispatch();
+
   const [materialIds, setMaterialIds] = useState([]);
-  const [materialExport, setMaterialExport] = useState([]);
+  const [materialImport, setMaterialImport] = useState([]);
 
   // const [listMaterialPrice, setListMaterialPrice] = useState([]);
 
@@ -78,17 +82,6 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
   //     }
   // });
 
-  const handleAddList = async () => {
-    try {
-      const res = await axiosInstance.post(
-        addListMaterialImportAPI,
-        materialExport
-      );
-      console.log("res", res);
-    } catch (error) {
-      toast.error("thêm lỗi", toastCss);
-    }
-  };
   return (
     <>
       <Modal
@@ -98,28 +91,31 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
         width="70%"
         onOk={() => {
           setModalAddOpen(false);
-          dispatch(handleAddList());
+          dispatch(addMaterialImport(materialImport));
         }}
         onCancel={() => setModalAddOpen(false)}
       >
-        <IconButton
-          style={{ fontSize: "larger", borderRadius: "5%" }}
-          aria-label="add"
-          onClick={() => {
-            setMaterialExport((prev) => [
-              ...prev,
-              {
-                materialId: null,
-                supplyName: null,
-                amount: null,
-                unitPrice: null,
-                total: null,
-              },
-            ]);
-          }}
-        >
-          Thêm mới
-        </IconButton>
+        <Box className="text-right">
+          <Button
+            variant="contained"
+            color="success"
+            endIcon={<AddCircleIcon />}
+            onClick={() => {
+              setMaterialImport((prev) => [
+                ...prev,
+                {
+                  materialId: materialIds?.[0].materialId,
+                  supplyName: null,
+                  amount: 1,
+                  unitPrice: 0,
+                  total: 0,
+                },
+              ]);
+            }}
+          >
+            <span className="leading-none">Thêm mới</span>
+          </Button>
+        </Box>
         <StyledTable
           size="small"
           className="mb-3 shadow-md"
@@ -138,14 +134,14 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {materialExport?.map((materialExport, index) => (
+            {materialImport?.map((materialImportItem, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell style={{ paddingTop: "1.5rem" }}>
                   <Select
                     id="materialId"
-                    value={materialExport?.materialId}
+                    value={materialImportItem?.materialId}
                     onChange={(e) => {
-                      setMaterialExport((prev) => {
+                      setMaterialImport((prev) => {
                         prev[index].materialId = e.target.value;
                         return _.cloneDeep(prev);
                       });
@@ -160,10 +156,10 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 </StyledTableCell>
                 <StyledTableCell padding="none">
                   <input
-                    value={materialExport.supplyName}
+                    value={materialImportItem.supplyName}
                     name="supplyName"
                     onChange={(e) =>
-                      setMaterialExport((prev) => {
+                      setMaterialImport((prev) => {
                         prev[index].supplyName = e.target.value;
                         return _.cloneDeep(prev);
                       })
@@ -172,12 +168,12 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 </StyledTableCell>
                 <StyledTableCell padding="none">
                   <input
-                    value={materialExport.amount}
+                    value={materialImportItem.amount}
                     name="amount"
                     type={"number"}
                     onChange={(e) =>
-                      setMaterialExport((prev) => {
-                        prev[index].amount = e.target.value;
+                      setMaterialImport((prev) => {
+                        prev[index].amount = +e.target.value;
                         prev[index].total =
                           e.target.value * prev[index].unitPrice;
                         return _.cloneDeep(prev);
@@ -187,10 +183,10 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 </StyledTableCell>
                 <StyledTableCell padding="none">
                   <input
-                    value={materialExport.unitPrice}
+                    value={materialImportItem.unitPrice}
                     name="unitPrice"
                     onChange={(e) =>
-                      setMaterialExport((prev) => {
+                      setMaterialImport((prev) => {
                         prev[index].unitPrice = e.target.value;
                         prev[index].total = e.target.value * prev[index].amount;
                         return _.cloneDeep(prev);
@@ -200,10 +196,10 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 </StyledTableCell>
                 <StyledTableCell padding="none">
                   <input
-                    value={materialExport.total}
+                    value={materialImportItem.total}
                     name="total"
                     onChange={(e) =>
-                      setMaterialExport((prev) => {
+                      setMaterialImport((prev) => {
                         return _.cloneDeep(prev);
                       })
                     }
@@ -214,7 +210,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                   <Button
                     className="mr10"
                     onClick={() => {
-                      setMaterialExport((prev) => {
+                      setMaterialImport((prev) => {
                         prev.splice(index, 1);
                         return _.cloneDeep(prev);
                       });

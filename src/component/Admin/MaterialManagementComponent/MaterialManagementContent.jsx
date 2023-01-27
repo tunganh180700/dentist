@@ -68,7 +68,23 @@ const MaterialManagementContent = () => {
     setTimeout(() => {
       setLoading(false);
     }, 500);
-  }, [currentPage, isUpdateMaterial, isDeleteMaterial, isAddMaterial]);
+  }, [currentPage]);
+  
+  useEffect(() => {
+    if (isUpdateMaterial || isDeleteMaterial || isAddMaterial) {
+      setLoading(true);
+      dispatch(
+        fetchAllMaterial({
+          size: 12,
+          page: currentPage,
+          name: searchValue,
+        })
+      );
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    }
+  }, [isUpdateMaterial, isDeleteMaterial, isAddMaterial]);
 
   const handleSearch = (searchValue) => {
     setLoading(true);
@@ -128,15 +144,15 @@ const MaterialManagementContent = () => {
             <StyledTableCell style={{ fontWeight: "bold" }}>
               Đơn vị
             </StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>
+            {/* <StyledTableCell style={{ fontWeight: "bold" }}>
               Số lượng
-            </StyledTableCell>
+            </StyledTableCell> */}
             <StyledTableCell style={{ fontWeight: "bold" }}>
               Giá tiền
             </StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>
+            {/* <StyledTableCell style={{ fontWeight: "bold" }}>
               Tổng tiền
-            </StyledTableCell>
+            </StyledTableCell> */}
             <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
@@ -146,9 +162,9 @@ const MaterialManagementContent = () => {
             <StyledTableRow key={item.materialId}>
               <StyledTableCell>{item.materialName}</StyledTableCell>
               <StyledTableCell>{item.unit}</StyledTableCell>
-              <StyledTableCell>{item.amount}</StyledTableCell>
+              {/* <StyledTableCell>{item.amount}</StyledTableCell> */}
               <StyledTableCell>{item.price}</StyledTableCell>
-              <StyledTableCell>{item.amount * item.price}</StyledTableCell>
+              {/* <StyledTableCell>{item.amount * item.price}</StyledTableCell> */}
               <StyledTableCell>
                 <IconButton
                   aria-label="delete"

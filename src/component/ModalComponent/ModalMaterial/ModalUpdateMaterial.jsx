@@ -52,7 +52,6 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     setLoading(true);
     try {
       const res = await axiosInstance.get(getMaterialByIdAPI + materialId);
-      console.log(res.data);
       formik.setValues(res.data);
       setOldData(res.data);
     } catch (error) {

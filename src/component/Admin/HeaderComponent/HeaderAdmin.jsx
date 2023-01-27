@@ -52,7 +52,7 @@ const HeaderAdmin = () => {
             </Link>
           </Dropdown.Item>
           <Dropdown.Item>
-            <Link to="/" className="decoration-white text-black">
+            <Link to="/change-password" className="decoration-white text-black">
               <span>Đổi mật khẩu</span>
             </Link>
           </Dropdown.Item>

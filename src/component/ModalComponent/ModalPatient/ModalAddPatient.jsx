@@ -65,6 +65,7 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
       dispatch(addPatient(values));
       setModalAddOpen(false);
       isSubmitForm(true);
+      setValue(null);
       formik.handleReset();
     },
   });
@@ -72,32 +73,10 @@ const ModalAddPatient = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   const handleCancel = () => {
     setModalAddOpen(false);
     isSubmitForm(false);
-    // formik.values.patientName = ""
-    // formik.errors.patientName = ""
-
-    // formik.values.phone = ""
-    // formik.errors.phone = ""
-
-    // formik.values.address = ""
-    // formik.errors.address = ""
-
-    // formik.values.email = ""
-    // formik.errors.email = ""
-
-    // formik.values.bodyPrehistory = ""
-    // formik.errors.bodyPrehistory = ""
-
-    // formik.values.teethPrehistory = ""
-    // formik.errors.teethPrehistory = ""
-
     setGender(true);
     setValue(null);
     formik.resetForm();
   };
-
-  // useEffect(() => {
-  //   setGender(ture);
-  // }, []);
 
   return (
     <>

@@ -74,7 +74,6 @@ const ModalListReceipt = ({ modalReceiptOpen, setModalReceiptOpen }) => {
               <StyledTableCell>Thanh toán (VND)</StyledTableCell>
               <StyledTableCell>Date</StyledTableCell>
               <StyledTableCell>Ghi nợ (VND)</StyledTableCell>
-              <StyledTableCell>Ghi nợ cũ (VND)</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
@@ -83,7 +82,6 @@ const ModalListReceipt = ({ modalReceiptOpen, setModalReceiptOpen }) => {
                 <StyledTableCell>{item.payment}</StyledTableCell>
                 <StyledTableCell>{item.date}</StyledTableCell>
                 <StyledTableCell>{item.debit}</StyledTableCell>
-                <StyledTableCell>{item.oldDebit}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

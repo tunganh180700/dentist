@@ -21,6 +21,7 @@ import ProfileManagement from "../component/Admin/ProfileManagementComponent/Pro
 import SpecimenManagement from "../component/Admin/SpecimenManagementComponent/SpecimenManagement";
 import ScheduleManagement from "../component/Admin/ScheduleManagementComponent/ScheduleManagement";
 import DefaultLayout from "../component/Layout/default";
+import ChangePassword from "../component/ChangePassword";
 
 const Routing = () => {
   return (
@@ -31,6 +32,7 @@ const Routing = () => {
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/" element={<DefaultLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="change-password" element={<ChangePassword />} />
           <Route path="accmanagement" element={<AccountManagement />} />
           <Route path="labo" element={<LaboManagement />} />
           <Route path="meetingroom" element={<WaitingRoomManagement />} />

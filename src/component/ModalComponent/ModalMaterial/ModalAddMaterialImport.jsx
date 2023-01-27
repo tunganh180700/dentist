@@ -78,7 +78,6 @@ const ModalAddMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
             values.date = moment(value.$d).format(validationDate);
             values.materialId = materialId;
             values.totalPrice = materialPrice;
-            console.log(values);
             dispatch(addMaterialImport(values))
             setModalAddOpen(false)
             formik.handleReset()

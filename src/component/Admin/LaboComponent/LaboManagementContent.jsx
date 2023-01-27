@@ -160,7 +160,7 @@ const LaboManagementContent = () => {
                 setModalAddOpen(true);
               }}
             >
-              Thêm dịch vụ
+              Thêm labo
             </Button>
           </Box>
         </div>

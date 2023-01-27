@@ -30,6 +30,9 @@ const listMaterialImportSlice = createSlice({
         setListMaterialImport: (state, action) => {
             state.listMaterialImport = action.payload
         },
+        setIsAddMaterialImport: (state, action) => {
+            state.isAddMaterialImport = action.payload
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -109,11 +112,8 @@ export const deleteMaterialImport = createAsyncThunk('listMaterialImport/deleteM
 
 export const addMaterialImport = createAsyncThunk('listMaterialImport/addMaterialImport', async (values) => {
     try {
-
-        console.log(values)
         const res = await axiosInstance.post(addMaterialImportAPI, values)
         toast.success("Thêm vật liệu thành công !!!!!", toastCss)
-        console.log(res.data)
         return res.data
     } catch (error) {
         console.log(error)
@@ -121,5 +121,5 @@ export const addMaterialImport = createAsyncThunk('listMaterialImport/addMateria
     }
 })
 
-export const { setListMaterialImport } = listMaterialImportSlice.actions;
+export const { setListMaterialImport, setIsAddMaterialImport } = listMaterialImportSlice.actions;
 export default listMaterialImportSlice.reducer;

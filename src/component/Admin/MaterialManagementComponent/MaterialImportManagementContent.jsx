@@ -74,13 +74,26 @@ const MaterialImportManagementContent = () => {
     setTimeout(() => {
       setLoading(false);
     }, 500);
-  }, [
-    currentPage,
-    isUpdateMaterialImport,
-    isDeleteMaterialImport,
-    isAddMaterialImport,
-  ]);
-
+  }, [currentPage]);
+  useEffect(() => {
+    if (
+      isUpdateMaterialImport &&
+      isDeleteMaterialImport &&
+      isAddMaterialImport
+    ) {
+      setLoading(true);
+      dispatch(
+        fetchAllMaterialImport({
+          size: 12,
+          page: currentPage,
+          materialName: searchValue,
+        })
+      );
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    }
+  }, [isUpdateMaterialImport, isDeleteMaterialImport, isAddMaterialImport]);
   const handleSearch = (searchValue) => {
     setLoading(true);
     if (currentPage === 0) {
@@ -94,7 +107,7 @@ const MaterialImportManagementContent = () => {
     } else {
       setCurrentPage(0);
     }
-    setOpenFilter(false)
+    setOpenFilter(false);
     setTimeout(() => {
       setLoading(false);
     }, 500);
