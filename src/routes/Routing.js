@@ -21,6 +21,7 @@ import ProfileManagement from "../component/Admin/ProfileManagementComponent/Pro
 import SpecimenManagement from "../component/Admin/SpecimenManagementComponent/SpecimenManagement";
 import ScheduleManagement from "../component/Admin/ScheduleManagementComponent/ScheduleManagement";
 import DefaultLayout from "../component/Layout/default";
+import ChangePassword from "../component/ChangePassword";
 
 const Routing = () => {
   return (
@@ -31,12 +32,13 @@ const Routing = () => {
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/" element={<DefaultLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="change-password" element={<ChangePassword />} />
           <Route path="accmanagement" element={<AccountManagement />} />
           <Route path="labo" element={<LaboManagement />} />
           <Route path="meetingroom" element={<WaitingRoomManagement />} />
           <Route path="patient-management">
             <Route index  element={<PatientManagement />} />
-            <Route path="record/:id" element={<RecordManagement />} />
+            <Route path="profile/:id" element={<RecordManagement />} />
           </Route>
           <Route path="timekeeping" element={<TimekeepingManagement />} />
           <Route path="materialmanagement" element={<MaterialManagement />} />
@@ -46,6 +48,7 @@ const Routing = () => {
             path="serviceandcategory"
             element={<ServiceAndCategoryManagement />}
           />
+          <Route path='/serviceandcategory' element={<ServiceAndCategoryManagement />} />
           <Route path="income" element={<IncomeManagement />} />
           <Route path="bill" element={<BillManagement />} />
           <Route path="forgot-password" element={<ForgotPassword />} />

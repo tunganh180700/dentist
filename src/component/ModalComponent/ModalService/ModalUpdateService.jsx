@@ -9,6 +9,7 @@ import axiosInstance from "../../../config/customAxios";
 import { updateService } from "../../../redux/ServiceAndCategorySlice/listCategorySlice";
 import { getServiceByIdAPI } from "../../../config/baseAPI";
 import { regexNumber } from "../../../config/validation";
+import InputDentist from "../../ui/input";
 
 const ModalUpdateService = ({
   modalUpdateOpen,
@@ -56,7 +57,9 @@ const ModalUpdateService = ({
       values.categoryServiceId = categoryServiceId;
       dispatch(updateService(values));
       setModalUpdateOpen(false);
-      isSubmitForm(true);
+      setTimeout(() => {
+        isSubmitForm(true);
+      }, 1000);
       // formik.handleReset()
     },
   });
@@ -67,8 +70,6 @@ const ModalUpdateService = ({
       const res = await axiosInstance.get(getServiceByIdAPI + serviceId);
       formik.setValues(res.data);
       setCategoryId(res.data.categoryServiceId);
-      //   console.log("hihihaha:", res.data.categoryServiceId);
-      //   console.log("dataService: ", res.data);
     } catch (error) {
       console.log(error);
     }
@@ -78,7 +79,6 @@ const ModalUpdateService = ({
   useEffect(() => {
     if (serviceId) fetchService(serviceId);
   }, [serviceId]);
-
 
   return (
     <>
@@ -90,93 +90,55 @@ const ModalUpdateService = ({
       >
         {loading === false && (
           <>
-            <TextField
-              margin="normal"
-              hidden
+            <InputDentist
               required
-              fullWidth
               id="serviceName"
               label="Dịch vụ"
-              name="serviceName"
-              autoComplete="serviceName"
-              value={categoryServiceId}
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="serviceName"
-              label="Dịch vụ"
-              name="serviceName"
-              autoComplete="serviceName"
               value={formik.values.serviceName}
-              autoFocus
               onChange={formik.handleChange}
+              error={{
+                message: formik.errors.serviceName,
+                touched: formik.touched.serviceName,
+              }}
             />
-            {formik.errors.serviceName && formik.touched.serviceName && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.serviceName}
-              </Typography>
-            )}
 
-            <TextField
-              margin="normal"
+            <InputDentist
               required
-              fullWidth
               id="unit"
               label="Đơn vị"
-              name="unit"
-              autoComplete="unit"
               value={formik.values.unit}
-              autoFocus
               onChange={formik.handleChange}
+              error={{
+                message: formik.errors.unit,
+                touched: formik.touched.unit,
+              }}
             />
-            {formik.errors.unit && formik.touched.unit && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.unit}
-              </Typography>
-            )}
 
-            <TextField
-              margin="normal"
+            <InputDentist
               required
-              fullWidth
               id="marketPrice"
-              type={"number"}
-              min={0}
-              label="giá thị trường"
-              name="marketPrice"
-              autoComplete="categoryName"
+              label="Giá thị trường"
+              type="number"
               value={formik.values.marketPrice}
-              autoFocus
               onChange={formik.handleChange}
+              error={{
+                message: formik.errors.marketPrice,
+                touched: formik.touched.marketPrice,
+              }}
             />
-            {formik.errors.marketPrice && formik.touched.marketPrice && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.marketPrice}
-              </Typography>
-            )}
 
-            <TextField
-              margin="normal"
+            <InputDentist
               required
-              fullWidth
               id="price"
-              min={0}
-              type={"number"}
               label="Giá nha khoa Nguyễn Trần"
-              name="price"
-              autoComplete="price"
+              type="number"
               value={formik.values.price}
-              autoFocus
               onChange={formik.handleChange}
+              error={{
+                message: formik.errors.price,
+                touched: formik.touched.price,
+              }}
             />
-            {formik.errors.price && formik.touched.price && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.price}
-              </Typography>
-            )}
           </>
         )}
       </Modal>

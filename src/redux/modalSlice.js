@@ -6,6 +6,7 @@ const initState = {
     isOpenDeletePatient: false,
     isOpenDeleteRecord: false,
     userId: 0,
+    recordSelected:0,
 
     isOpenUpdateLabo: false,
     isOpenDeleteLabo: false,
@@ -65,8 +66,10 @@ const modalSlice = createSlice({
         },
         setUserId: (state, action) => {
             state.userId = action.payload
+        }, 
+         setRecordSelected: (state, action) => {
+            state.recordSelected = action.payload
         },
-
         setIsOpenDeleteMaterial: (state, action) => {
             state.isOpenDeleteMaterial = action.payload
         },
@@ -124,7 +127,7 @@ const modalSlice = createSlice({
         },
     }
 })
-export const { setUserId } = modalSlice.actions;
+export const { setUserId, setRecordSelected } = modalSlice.actions;
 export const { setLaboId } = modalSlice.actions;
 export const { setMaterialId } = modalSlice.actions;
 export const { setMaterialImportId } = modalSlice.actions;

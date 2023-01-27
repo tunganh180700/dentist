@@ -2,15 +2,11 @@ import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Pagination, Typography, IconButton } from "@mui/material";
+import { Pagination, Typography, IconButton, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCategoryServicedId,
-  setCategoryServiceId,
-} from "../../../redux/modalSlice";
+import { setCategoryServicedId } from "../../../redux/modalSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
@@ -24,7 +20,10 @@ import {
   listServiceByCategoryIdAPI,
 } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
-import { fetchAllCategory } from "../../../redux/ServiceAndCategorySlice/listCategorySlice";
+import {
+  setIsAddCategory,
+  setIsUpdateCategory,
+} from "../../../redux/ServiceAndCategorySlice/listCategorySlice";
 import DesignServicesIcon from "@mui/icons-material/DesignServices";
 // import ModalUpdateMaterialImport from '../../ModalComponent/ModalMaterial/ModalUpdateMaterialImport';
 import ModalAddCategory from "../../ModalComponent/ModalCategory/ModalAddCategory";
@@ -34,6 +33,13 @@ import ModalDeleteService from "../../ModalComponent/ModalService/ModalDeleteSer
 import ModalAddService from "../../ModalComponent/ModalService/ModalAddService";
 import ModalUpdateService from "../../ModalComponent/ModalService/ModalUpdateService";
 import { setServicedId } from "../../../redux/modalSlice";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
+import InputDentist from "../../ui/input";
+import Loading from "../../ui/Loading";
 
 const color = {
   border: "rgba(0, 0, 0, 0.2)",
@@ -68,25 +74,24 @@ const ServiceAndCategoryManagementContent = () => {
   const id = useSelector((state) => state.listCategory.id);
   const [loading, setLoading] = useState();
 
+  const [originData, setOriginData] = useState([]);
   const [categoryServiceIds, setCategoryServiceIds] = useState([]);
   const [categoryServiceId, setCategoryServiceId] = useState();
 
   const [serviceIds, setServiceIds] = useState([]);
   const [isSubmitFormService, setIsSubmitFormService] = useState(false);
 
-  const [serviceId, setServiceId] = useState();
-  const [categoryId, setCategoryId] = useState();
-
-  console.log("list: ", listCategory);
+  // const [serviceId, setServiceId] = useState();
+  // const [categoryId, setCategoryId] = useState();
+  // const [categorySelected, setCategorySelected] = useState();
+  const [searchCategory, setSearchCategory] = useState("");
 
   const loadCategory = async () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get(listAllCategoryAPI);
-      console.log("du lieu check: ", res.data);
       setCategoryServiceId(res.data[0].categoryServiceId);
-      setCategoryServiceIds(res.data);
-      setCategoryId(listCategory[0].categoryServiceId);
+      setOriginData(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -95,7 +100,27 @@ const ServiceAndCategoryManagementContent = () => {
 
   useEffect(() => {
     loadCategory();
+  }, []);
+  useEffect(() => {
+    if (isAddCategory || isUpdateCategory) {
+      loadCategory();
+      dispatch(setIsAddCategory(false));
+      dispatch(setIsUpdateCategory(false));
+    }
   }, [isAddCategory, isUpdateCategory]);
+
+  useEffect(() => {
+    if (originData.length) {
+      setCategoryServiceIds(
+        originData.filter(
+          (item) =>
+            item?.categoryServiceName
+              .toUpperCase()
+              .indexOf(searchCategory.toUpperCase()) !== -1
+        )
+      );
+    }
+  }, [searchCategory, originData]);
 
   const loadServiceByCategoryId = async (categoryServiceId) => {
     setLoading(true);
@@ -103,8 +128,9 @@ const ServiceAndCategoryManagementContent = () => {
       const res = await axiosInstance.get(
         listServiceByCategoryIdAPI + categoryServiceId
       );
-      setServiceId(res.data.categoryServiceId);
+      // setServiceId(res.data.categoryServiceId);
       setServiceIds(res.data);
+      setIsSubmitFormService(false);
     } catch (error) {
       console.log(error);
     }
@@ -112,206 +138,183 @@ const ServiceAndCategoryManagementContent = () => {
   };
 
   useEffect(() => {
-    if (categoryServiceId) loadServiceByCategoryId(categoryServiceId);
-  }, [categoryServiceId, isSubmitFormService]);
+    if (categoryServiceId) {
+      loadServiceByCategoryId(categoryServiceId);
+    }
+  }, [categoryServiceId]);
 
-  // console.log('haha', listServiceAndCategory)
+  useEffect(() => {
+    if (isSubmitFormService) {
+      loadServiceByCategoryId(categoryServiceId);
+    }
+  }, [isSubmitFormService]);
+
   return (
     <>
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-        style={{ marginBottom: "20px" }}
-      >
-        Bảng Giá Dịch Vụ Nha Khoa
-      </Typography>
-      {loading === false && (
-        <>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Box sx={{ maxWidth: 250, minWidth: 250 }}>
-              <FormControl fullWidth>
-                <InputLabel id="material">Category</InputLabel>
-                <Select
-                  style={{
-                    padding: "25px 0",
-                    paddingRight: "10px",
-                    width: "100%",
+      {loading && <Loading />}
+      <h2 className="font-bold mb-2"> Dịch Vụ Nha Khoa</h2>
+      <div className="flex gap-3 justify-end mb-3">
+        <Button
+          variant="contained"
+          color="info"
+          onClick={() => {
+            setModalUpdateOpen(true);
+            dispatch(setCategoryServicedId(categoryServiceId));
+          }}
+        >
+          <span className="leading-none">Cập nhật loại dịch vụ</span>
+        </Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => {
+            setModalAddServiceOpen(true);
+          }}
+        >
+          <span className="leading-none">Thêm mới dịch vụ</span>
+        </Button>
+        <Button variant="contained" color="error" endIcon={<DeleteIcon />}>
+          <span className="leading-none">Xóa loại dịch vụ</span>
+        </Button>
+      </div>
+      <Box className="flex gap-3">
+        <div>
+          <Box className="bg-white p-4 rounded-lg shadow-md mb-3">
+            <InputDentist
+              id="labo"
+              label="Tìm Dịch Vụ"
+              value={searchCategory}
+              onChange={(e) => {
+                setSearchCategory(e.target.value);
+              }}
+            />
+          </Box>
+          <Box className="bg-white py-4 rounded-lg shadow-md text-center w-[300px]">
+            <p className="font-bold text-center">
+              Có ( {categoryServiceIds.length} ) kết quả
+            </p>
+            <div className="flex flex-col gap-2 px-3 max-h-[515px] overflow-y-scroll text-left">
+              {categoryServiceIds.map((item, index) => (
+                <Box
+                  className={`whitespace-nowrap p-2 rounded-md cursor-pointer hover:bg-slate-100 ${
+                    categoryServiceId === item.categoryServiceId &&
+                    "bg-sky-100 text-sky-600"
+                  }`}
+                  onClick={() => {
+                    setCategoryServiceId(item.categoryServiceId);
                   }}
-                  labelId="material"
-                  id="materialSelect"
-                  label="Vật liệu"
-                  value={categoryServiceId}
-                  onChange={(e) => setCategoryServiceId(e.target.value)}
                 >
-                  <div>
-                    <IconButton
-                      aria-label="add"
-                      style={{
-                        borderRadius: "5%",
-                        width: "100%",
-                        fontSize: "16px",
-                      }}
-                      onClick={() => {
-                        setModalAddCategoryOpen(true);
-                      }}
-                    >
-                      <AddIcon />
-                      Thêm loại dịch vụ
-                    </IconButton>
-                  </div>
-                  {categoryServiceIds?.map((item) => (
-                    <MenuItem
-                      selected={categoryServiceId}
-                      key={item.categoryServiceId}
-                      value={item.categoryServiceId}
-                    >
-                      {item.categoryServiceName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-            <div>
-              <IconButton
-                aria-label="add"
-                style={{
-                  borderRadius: "6px",
-                  border: `1px solid ${color.border}`,
-                  fontSize: "16px",
-                }}
-                onClick={() => {
-                  setModalAddServiceOpen(true);
-                }}
-              >
-                <AddIcon />
-                Thêm mới Dịch vụ
-              </IconButton>
-              <IconButton
-                aria-label="edit-service"
-                style={{
-                  borderRadius: "6px",
-                  border: `1px solid ${color.border}`,
-                  marginRight: "10px",
-                  fontSize: "16px",
-                }}
-                onClick={() => {
-                  setModalUpdateOpen(true);
-                  dispatch(setCategoryServicedId(categoryServiceId));
-                }}
-              >
-                <DesignServicesIcon />
-                Cập nhật loại dịch vụ
-              </IconButton>
+                  {item.categoryServiceName}
+                </Box>
+              ))}
             </div>
-          </div>
-          <div
-            className="table"
-            style={{
-              marginTop: "15px",
-              textAlign: "center",
-              borderRadius: "8px",
-              padding: "20px",
-              border: `1px solid ${color.border}`,
-            }}
-          >
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell style={{ fontWeight: "bold" }}>Dịch vụ</TableCell>
-                  <TableCell style={{ fontWeight: "bold" }}>Đơn vị</TableCell>
-                  <TableCell style={{ fontWeight: "bold" }}>
-                    Giá trên thị trường
-                  </TableCell>
-                  <TableCell style={{ fontWeight: "bold" }}>
-                    Giá tại nha khoa Nguyễn Trần
-                  </TableCell>
-                  <TableCell />
-                  <TableCell />
-                </TableRow>
-              </TableHead>
-              <TableBody size="medium">
-                {serviceIds?.map((item, index) => (
-                  <TableRow
-                    style={{ textAlign: "center" }}
-                    key={item.serviceId}
-                    size="medium"
-                  >
-                    <TableCell size="medium">
-                      <div style={{width:'300px', overflowX: `${item.serviceName.length > 20 ? 'scroll' : 'unset'} `}}>
-                        <span>{item.serviceName}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>{item.unit}</TableCell>
-                    <TableCell>{item.marketPrice}</TableCell>
-                    <TableCell>{item.price}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        aria-label="edit"
-                        onClick={() => {
-                          setModalUpdateServiceOpen(true);
-                          dispatch(setServicedId(item.serviceId));
-                        }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => {
-                          setModalDeleteOpen(true);
-                          dispatch(setServicedId(item.serviceId));
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+            <Button
+              color="success"
+              className="fixed bottom-0 top-3"
+              onClick={() => {
+                setModalAddCategoryOpen(true);
+              }}
+            >
+              Thêm loại dịch vụ
+            </Button>
+          </Box>
+        </div>
+        <Box className="w-full text-center">
+          <StyledTable className="shadow-md text-center" size="small">
+            <TableHead>
+              <StyledTableRow>
+                <StyledTableCell style={{ fontWeight: "bold" }}>
+                  Dịch vụ
+                </StyledTableCell>
+                <StyledTableCell style={{ fontWeight: "bold" }}>
+                  Đơn vị
+                </StyledTableCell>
+                <StyledTableCell style={{ fontWeight: "bold" }}>
+                  Giá trên thị trường
+                </StyledTableCell>
+                <StyledTableCell style={{ fontWeight: "bold" }}>
+                  Giá tại nha khoa Nguyễn Trần
+                </StyledTableCell>
+                <StyledTableCell />
+              </StyledTableRow>
+            </TableHead>
+            <TableBody size="medium">
+              {serviceIds?.map((item, index) => (
+                <StyledTableRow
+                  style={{ textAlign: "center" }}
+                  key={item.serviceId}
+                  size="medium"
+                >
+                  <StyledTableCell size="medium">
+                    {item.serviceName}
+                  </StyledTableCell>
+                  <StyledTableCell>{item.unit}</StyledTableCell>
+                  <StyledTableCell>{item.marketPrice}</StyledTableCell>
+                  <StyledTableCell>{item.price}</StyledTableCell>
+                  <StyledTableCell>
+                  <IconButton
+                      aria-label="delete"
+                      onClick={() => {
+                        setModalDeleteOpen(true);
+                        dispatch(setServicedId(item.serviceId));
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                    <IconButton
+                      aria-label="edit"
+                      onClick={() => {
+                        dispatch(setServicedId(item.serviceId));
+                        setModalUpdateServiceOpen(true);
+                      }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </StyledTable>
+        </Box>
+      </Box>
 
-          <div>
-            <ModalUpdateCategory
-              modalUpdateOpen={modalUpdateOpen}
-              setModalUpdateOpen={setModalUpdateOpen}
-            />
-          </div>
+      <div>
+        <ModalUpdateCategory
+          modalUpdateOpen={modalUpdateOpen}
+          setModalUpdateOpen={setModalUpdateOpen}
+        />
+      </div>
 
-          <div>
-            <ModalUpdateService
-              modalUpdateOpen={modalUpdateServiceOpen}
-              setModalUpdateOpen={setModalUpdateServiceOpen}
-              isSubmitForm={setIsSubmitFormService}
-            />
-          </div>
-          <div>
-            <ModalDeleteService
-              modalDeleteOpen={modalDeleteOpen}
-              setModalDeleteOpen={setModalDeleteOpen}
-              isSubmitForm={setIsSubmitFormService}
-            />
-          </div>
-          <div>
-            <ModalAddCategory
-              modalAddCategoryOpen={modalAddCategoryOpen}
-              setModalAddCategoryOpen={setModalAddCategoryOpen}
-            />
-          </div>
+      <div>
+        <ModalUpdateService
+          modalUpdateOpen={modalUpdateServiceOpen}
+          setModalUpdateOpen={setModalUpdateServiceOpen}
+          isSubmitForm={setIsSubmitFormService}
+        />
+      </div>
+      <div>
+        <ModalDeleteService
+          modalDeleteOpen={modalDeleteOpen}
+          setModalDeleteOpen={setModalDeleteOpen}
+          isSubmitForm={setIsSubmitFormService}
+        />
+      </div>
+      <div>
+        <ModalAddCategory
+          modalAddCategoryOpen={modalAddCategoryOpen}
+          setModalAddCategoryOpen={setModalAddCategoryOpen}
+        />
+      </div>
 
-          <div>
-            <ModalAddService
-              modalAddOpen={modalAddServiceOpen}
-              setModalAddOpen={setModalAddServiceOpen}
-              isSubmitForm={setIsSubmitFormService}
-            />
-          </div>
-        </>
-      )}
+      <div>
+        <ModalAddService
+          listCategoryService={categoryServiceIds}
+          categoryServiceId={categoryServiceId}
+          modalAddOpen={modalAddServiceOpen}
+          setModalAddOpen={setModalAddServiceOpen}
+          isSubmitForm={setIsSubmitFormService}
+        />
+      </div>
     </>
   );
 };

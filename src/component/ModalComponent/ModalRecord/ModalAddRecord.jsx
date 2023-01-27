@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   FormControl,
   MenuItem,
@@ -16,7 +15,7 @@ import {
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Modal } from "antd";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
@@ -41,8 +40,13 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import ModalExportMaterial from "./ModalExportMaterial";
 import ModalSpecimen from "./ModalSpecimen";
-import { addRecord } from "../../../redux/RecordSlice/listRecordSlice";
-import DatePickerDentist from "../../ui/date-picker/DatePickerDentist";
+import { addAndUpdateRecord } from "../../../redux/RecordSlice/listRecordSlice";
+import {
+  fetchPatientSpecimen,
+  setListSpecimen,
+} from "../../../redux/SpecimenSlice/listSpecimenSlice";
+import { fetchPatientMaterialExport } from "../../../redux/MaterialSlice/listMaterialExportSlice";
+import { fetchRecord } from "../../../redux/RecordSlice/listRecordSlice";
 import InputDentist from "../../ui/input";
 import {
   StyledTableCell,
@@ -51,32 +55,37 @@ import {
 } from "../../ui/TableElements";
 import "./style.css";
 import _ from "lodash";
+import Loading from "../../ui/Loading";
 
-const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
+const ModalAddRecord = ({
+  modalAddOpen,
+  setModalAddOpen,
+  isSubmitForm,
+  isEditRecord = false,
+}) => {
   const dispatch = useDispatch();
-  const [valueDate, setValueDate] = useState(null);
+  const valueDate = moment().format(validationDate);
   const { id } = useParams();
   const [listTreatingService, setListTreatingService] = useState([]);
 
+  const [loading, setLoading] = useState(false);
   const [serviceId, setServiceId] = useState();
-  // const [serviceName, setServiceName] = useState();
+  const [errorUpdateMess, setErrorUpdateMess] = useState("");
   const [serviceIds, setServiceIds] = useState([]);
+  const [originListService, setOriginListService] = useState([]);
   const [showModalExportMaterial, setShowModalExportMaterial] = useState(0);
   const [modalExportOpen, setModalExportOpen] = useState(false);
-  const [showModalSpecimen, setShowModalSpecimen] = useState(0);
   const [modalSpecimenOpen, setModalSpecimenOpen] = useState(false);
+  const listRecord = useSelector((state) => state.listRecord.listRecord);
+  const infoRecord = useSelector((state) => state.listRecord.infoRecord);
+  const listService = useSelector((state) => state.listRecord.listService);
 
-  // const [newPrice, setNewPrice] = useState();
-  // const [servicePrice, setServicePrice] = useState();
-  // const [serviceDiscount, setServiceDiscount] = useState();
-  // const [status, setStatus] = useState();
-
-  // const [open, setOpen] = useState(false);
-  // const [disable, setDisable] = useState(true);
   const [showConfirm, setShowConfirm] = useState(-1);
   const [isEdit, setEdit] = useState(false);
 
-  const isAddRecord = useSelector((state) => state.listRecord.isAddRecord);
+  const recordId = useSelector((state) => state.modal.recordSelected);
+  const treatmentId = useSelector((state) => state.listRecord.treatmentId);
+
   const [rows, setRows] = useState([]);
   const [countRow, setCountRow] = useState({
     statusCount: "up",
@@ -110,20 +119,59 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   const loadServiceOption = async () => {
     try {
       const res = await axiosInstance.get(listAllServiceAPI);
-      setServiceId(res.data[0].serviceId);
+      setOriginListService(res.data);
       setServiceIds(res.data);
-      // setServicePrice(res.data[0].price);
-      // setServiceDiscount(res.data[0].discount);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    loadServiceOption();
-  }, []);
+    if (modalAddOpen) {
+      setLoading(true);
+      loadServiceOption();
+      setSpecimenDTOS([]);
+      setMaterialExportDTOS([]);
+      if (isEditRecord) {
+        dispatch(fetchRecord(recordId));
+      } else {
+        getServiceTreating(id);
+      }
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
+  }, [modalAddOpen]);
 
   useEffect(() => {
+    if (isEditRecord && listRecord) {
+      const exsistSpecimen = listRecord.specimensDTOS.map((item) => ({
+        ...item,
+        statusChange: "edit",
+      }));
+      const exsistMaterial = listRecord.materialExportDTOS.map((item) => ({
+        ...item,
+        statusChange: "edit",
+      }));
+      setSpecimenDTOS(exsistSpecimen);
+      setMaterialExportDTOS(exsistMaterial);
+      return;
+    }
+    setMaterialExportDTOS([]);
+    setSpecimenDTOS([]);
+  }, [listRecord]);
+
+  useEffect(() => {
+    if (rows.length + listTreatingService.length) {
+      setErrorUpdateMess("");
+    }
+    const dataServiceTreating = originListService.filter(
+      (item) =>
+        !formatToDTOS(listTreatingService, rows)
+          .map((item_service) => item_service.serviceId)
+          .includes(item.serviceId)
+    );
+    setServiceIds(dataServiceTreating);
     setServiceDTOS(formatToDTOS(listTreatingService, rows));
     setEdit(true);
   }, [rows, listTreatingService]);
@@ -135,6 +183,23 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   const handleSpecimen = (specimen) => {
     setSpecimenDTOS(specimen);
   };
+
+  const disableAddSpecimen = useMemo(() => {
+    if (!rows.length && !listTreatingService.length) {
+      return false;
+    }
+    let flagCheckRow = rows.some((item) => item.status === 1);
+    const flagCheckTreatingService = listTreatingService.some(
+      (item) => item.status === 1
+    );
+    return flagCheckRow || flagCheckTreatingService;
+  }, [rows, listTreatingService]);
+
+  useEffect(() => {
+    if (modalAddOpen) {
+      formik.setValues(infoRecord);
+    }
+  }, [infoRecord]);
 
   const formik = useFormik({
     initialValues: {
@@ -148,35 +213,43 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const formatValue = values;
-
+      if (!rows.length && !listTreatingService.length) {
+        setErrorUpdateMess("Vui lòng thêm dịch vụ!");
+        return;
+      }
+      const formatValue = { ...values };
       const listA = listTreatingService.filter((a) => {
-        return Object.keys(a).length !== 0;
+        return Object.keys(a)?.length !== 0;
       });
       const listB = rows.filter((a) => {
-        return Object.keys(a).length !== 0;
+        return Object.keys(a)?.length !== 0;
       });
-      formatValue.serviceDTOS = listA.concat(listB);
+      if (isEditRecord) {
+        formatValue.patientRecordId = recordId;
+        formatValue.treatmentId = treatmentId;
+      }
       formatValue.materialExportDTOS = materialExportDTOS;
+      formatValue.serviceDTOS = listA.concat(listB);
       formatValue.specimensDTOS = specimenDTOS;
       formatValue.date = valueDate;
+
       const addValue = {
-        id: id,
+        id: isEditRecord ? recordId : id,
         values: formatValue,
       };
-      dispatch(addRecord(addValue));
+      dispatch(
+        addAndUpdateRecord({
+          payload: addValue,
+          type: isEditRecord ? "edit" : "add",
+        })
+      );
       setRows([]);
       setCountRow({
         statusCount: "up",
         value: 0,
       });
       setModalAddOpen(false);
-      setValueDate(null);
       formik.handleReset();
-      setTimeout(() => {
-        getServiceTreating(id);
-        isSubmitForm(true);
-      }, 1000);
     },
   });
 
@@ -202,15 +275,14 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
 
   useEffect(() => {
     if (countRow.value && countRow.statusCount === "up") {
-      const serviceInfo = serviceIds.find(
-        (s) => s.serviceId === serviceIds[0].serviceId
-      );
+      const serviceInfo = serviceIds[0];
       setRows((prev) => {
         prev[countRow.value - 1] = {
           ...prev[countRow.value - 1],
           ...serviceInfo,
         };
-        prev[countRow.value - 1].isNew = 1;
+        prev[countRow.value - 1].amount = 1;
+        prev[countRow.value - 1].isNew = true;
         prev[countRow.value - 1].status = 1;
         return _.cloneDeep(prev);
       });
@@ -227,14 +299,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   const handleEdit = (e) => {
     setEdit(!isEdit);
   };
-
-  // const handleInputChange = (e, index) => {
-  //   setDisable(false);
-  //   const { name, value } = e.target;
-  //   const list = [...rows];
-  //   list[index][name] = value;
-  //   setRows(list);
-  // };
 
   const handleConfirm = (index) => {
     setShowConfirm(index);
@@ -260,35 +324,50 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
       statusCount: "up",
       value: 0,
     });
-    setModalAddOpen(false);
-    setValueDate(null);
     formik.handleReset();
     formik.resetForm();
+    setModalAddOpen(false);
   };
 
   const handleServiceChange = (index, newsServiceId) => {
     const serviceInfo = serviceIds.find((s) => s.serviceId === newsServiceId);
     setRows((prev) => {
+      // const tempIsNew = prev[index].isNew
       prev[index] = { ...prev[index], ...serviceInfo };
-      prev[index].isNew = 1;
+      prev[index].isNew = true;
       prev[index].status = 1;
       return _.cloneDeep(prev);
     });
   };
 
-  // const handleStatusForItem = (row, value) => {
-  //   console.log(value);
-  //   row.status = value;
-  // };
-
   const getServiceTreating = async (id) => {
     try {
-      const res = await axiosInstance.get(listTreatingServiceAPI + id);
-      setListTreatingService(res.data);
+      const res_serviceTreating = await axiosInstance.get(
+        listTreatingServiceAPI + id
+      );
+      setListTreatingService(res_serviceTreating.data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (isEditRecord && listService.length) {
+      const oldListTreatingService = [
+        ...listService.filter((item) => !item.isNew),
+      ];
+      const newListTreatingService = [
+        ...listService.filter((item) => item.isNew),
+      ];
+      setRows(newListTreatingService);
+      setListTreatingService(oldListTreatingService);
+      setCountRow({
+        statusCount: "down",
+        value: newListTreatingService.length,
+      });
+      return;
+    }
+  }, [listService]);
 
   const formatter = new Intl.NumberFormat({
     style: "currency",
@@ -296,30 +375,27 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
   });
 
   // useEffect(() => {
-  //     const price = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.price
-  //     const discount = serviceIds?.filter(e => e.serviceId === serviceId)[0]?.discount
-  //     setServicePrice(price)
-  //     setServiceDiscount(discount)
-  // }, [serviceId])
-
-  useEffect(() => {
-    // const price = serviceIds?.filter((e) => e.serviceId === serviceId)[0]
-    //   ?.price;
-    // setServicePrice(price);
-    getServiceTreating(id);
-  }, [id, serviceId, isAddRecord]);
+  // }, [id, serviceId, isAddRecord]);
+  const listOptionServiceEnable = useMemo(() => {
+    const selected = serviceIds.map((item) => item.serviceId);
+    const list = originListService.filter((item) =>
+      selected.includes(item.serviceId)
+    );
+    return list;
+  }, [serviceIds, originListService]);
 
   return (
     <>
+      {loading && <Loading />}
       <Modal
-        title="Thêm Hồ Sơ"
+        title={`Ngày ${moment(valueDate).format("DD-MM-YYYY")}`}
         open={modalAddOpen}
-        width="70%"
+        width="75%"
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
       >
         <Box
-          className="container"
+          className=""
           style={{ display: "flex", justifyContent: "space-between" }}
         >
           <Box className="form-input" style={{ width: "30%" }}>
@@ -356,31 +432,6 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 touched: formik.touched.causal,
               }}
             />
-            <Box className="mb-2">
-              <p className="mb-1 font-bold">
-                Ngày khám<span className="text-red-600">*</span>
-              </p>
-              <DatePickerDentist
-                value={valueDate}
-                placeholder="Ngày khám"
-                onChange={(value) => {
-                  setValueDate(
-                    value ? moment(value).format(validationDate) : ""
-                  );
-                }}
-              />
-              {/* {formik.touched && !valueDate && (
-                <Typography
-                  style={{
-                    color: "red",
-                    fontStyle: "italic",
-                    fontSize: "14px",
-                  }}
-                >
-                  Ngày khám bắt buộc
-                </Typography>
-              )} */}
-            </Box>
             <InputDentist
               id="marrowRecord"
               label="Lưu ý về tủy"
@@ -390,6 +441,18 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
               error={{
                 message: formik.errors.marrowRecord,
                 touched: formik.touched.marrowRecord,
+              }}
+            />
+
+            <InputDentist
+              id="treatment"
+              label="Điều trị"
+              required
+              value={formik.values.treatment}
+              onChange={formik.handleChange}
+              error={{
+                message: formik.errors.treatment,
+                touched: formik.touched.treatment,
               }}
             />
 
@@ -405,17 +468,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 onChange={formik.handleChange}
               />
             </Box>
-            <InputDentist
-              id="treatment"
-              label="Điều trị"
-              required
-              value={formik.values.treatment}
-              onChange={formik.handleChange}
-              error={{
-                message: formik.errors.treatment,
-                touched: formik.touched.treatment,
-              }}
-            />
+
             <Box className="mb-2">
               <p className="mb-1 font-bold">Đơn thuốc</p>
               <TextField
@@ -430,35 +483,47 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
             </Box>
           </Box>
           <Box className="w-2/3">
-            <Box className="flex gap-3 float-right mb-3">
-              <Button
-                variant="contained"
-                color="success"
-                endIcon={<AddCircleIcon className="p-0 border-0" />}
-                onClick={isEdit ? handleAdd : handleEdit}
-              >
-                <span className="leading-none">Thêm dịch vụ</span>
-              </Button>
-              <Button
-                variant="contained"
-                color="success"
-                endIcon={<AddCircleIcon className="p-0 border-0" />}
-                onClick={() => {
-                  setModalSpecimenOpen(true);
-                }}
-              >
-                <span className="leading-none">Thêm mẫu vật</span>
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                endIcon={<SellIcon className="p-0 border-0" />}
-                onClick={() => {
-                  setModalExportOpen(true);
-                }}
-              >
-                <span className="leading-none">Bán sản phẩm</span>
-              </Button>
+            <Box className="flex justify-between">
+              <p className="font-bold text-lg mb-0">
+                Đang có ({rows.length}) thêm mới
+              </p>
+              <Box className="flex gap-3 mb-3">
+                <Button
+                  variant="contained"
+                  color="success"
+                  disabled={!listOptionServiceEnable.length}
+                  endIcon={<AddCircleIcon className="p-0 border-0" />}
+                  onClick={isEdit ? handleAdd : handleEdit}
+                >
+                  <span className="leading-none">
+                    {listOptionServiceEnable.length
+                      ? "Thêm dịch vụ"
+                      : "Đã hết dịch vụ"}
+                  </span>
+                </Button>
+                <Button
+                  variant="contained"
+                  disabled={!disableAddSpecimen}
+                  color="success"
+                  endIcon={<AddCircleIcon className="p-0 border-0" />}
+                  onClick={() => {
+                    setModalSpecimenOpen(true);
+                  }}
+                >
+                  <span className="leading-none">Thêm mẫu vật</span>
+                </Button>
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  endIcon={<SellIcon className="p-0 border-0" />}
+                  onClick={() => {
+                    setModalExportOpen(true);
+                  }}
+                >
+                  <span className="leading-none">Bán sản phẩm</span>
+                </Button>
+              </Box>
             </Box>
             <StyledTable className="shadow-md" size="small">
               <TableHead>
@@ -466,6 +531,7 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                   <StyledTableCell style={{ width: "25%" }}>
                     Dich vụ
                   </StyledTableCell>
+                  <StyledTableCell>Số lượng</StyledTableCell>
                   <StyledTableCell>Giá tiền</StyledTableCell>
                   <StyledTableCell>Giảm giá</StyledTableCell>
                   <StyledTableCell>Trạng thái</StyledTableCell>
@@ -476,33 +542,32 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 {listTreatingService?.map((item, index) => (
                   <StyledTableRow key={item.serviceId}>
                     <StyledTableCell>{item.serviceName}</StyledTableCell>
-                    <StyledTableCell>
+                    <StyledTableCell>{item.amount}</StyledTableCell>
+                    <StyledTableCell className="max-w-[150px]">
                       {formatter.format(item.price)} VND
                     </StyledTableCell>
                     <StyledTableCell>
                       {formatter.format(item.discount)} VND
                     </StyledTableCell>
                     <StyledTableCell>
-                      <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                          <Select
-                            labelId="status"
-                            id="status"
-                            value={item.status || ""}
-                            onChange={
-                              (e) =>
-                                setListTreatingService((prev) => {
-                                  prev[index].status = e.target.value;
-                                  return _.cloneDeep(prev);
-                                })
-                              // setStatus(e.target.value)
-                            }
-                          >
-                            <MenuItem value={1}>Đang chữa trị</MenuItem>
-                            <MenuItem value={2}>Đã xong</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Box>
+                      <Select
+                        className="mb-0"
+                        labelId="status"
+                        id="status"
+                        value={item.status || ""}
+                        onChange={(e) =>
+                          setListTreatingService((prev) => {
+                            prev[index] = {
+                              ...prev[index],
+                              status: e.target.value,
+                            };
+                            return _.cloneDeep(prev);
+                          })
+                        }
+                      >
+                        <MenuItem value={1}>Đang chữa trị</MenuItem>
+                        <MenuItem value={2}>Đã xong</MenuItem>
+                      </Select>
                     </StyledTableCell>
                     <StyledTableCell></StyledTableCell>
                   </StyledTableRow>
@@ -513,30 +578,26 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                       {isEdit ? (
                         <>
                           <StyledTableCell>
-                            {/* <select
-                                                            name="cars"
-                                                            id="cars"
-                                                            value={serviceId}
-                                                            style={{ styleInput, justifyContent: "center" }}
-                                                            onChange={(e) => setServiceId(e.target.value)}
-                                                        >
-                                                            {serviceIds?.map(item => (
-                                                                <option key={item.serviceId} value={item.serviceId}>{item.serviceName}</option>
-                                                            ))}
-                                                        </select> */}
                             <Box sx={{ minWidth: 120 }}>
-                              <FormControl fullWidth>
+                              <FormControl fullWidth className="items-center">
                                 <Select
                                   labelId="permisstion"
                                   id="permisstionSelect"
-                                  value={i?.serviceId || 1}
+                                  value={i?.serviceId}
                                   onChange={(e) => {
-                                    setServiceId(e.target.value);
                                     handleServiceChange(index, e.target.value);
                                   }}
                                 >
-                                  {serviceIds?.map((item) => (
+                                  {originListService?.map((item) => (
                                     <MenuItem
+                                      hidden={
+                                        !serviceIds
+                                          .map(
+                                            (item_service) =>
+                                              item_service.serviceId
+                                          )
+                                          .includes(item.serviceId)
+                                      }
                                       key={item.serviceId}
                                       value={item.serviceId}
                                     >
@@ -547,62 +608,76 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                               </FormControl>
                             </Box>
                           </StyledTableCell>
-                          <StyledTableCell>
-                            <input
-                              id={i?.serviceId || 1}
-                              disabled
-                              value={formatter.format(i?.price) || 0}
-                              name="price"
-                              style={styleInput}
-                              // onChange={(e) => handleInputChange(e, i)}
+                          <StyledTableCell padding="none">
+                            <OutlinedInput
+                              endAdornment={
+                                <p className="mb-0 leading-0 text-xs"></p>
+                              }
+                              size="small"
+                              id="amount"
+                              value={i.amount}
+                              type="number"
+                              inputProps={{ min: 1 }}
+                              className="h-[30px] w-[70px] text-center bg-white"
+                              onChange={(e) =>
+                                setRows((prev) => {
+                                  prev[index] = {
+                                    ...prev[index],
+                                    amount:  Number(e.target.value),
+                                  };
+                                  return _.cloneDeep(prev);
+                                })
+                              }
                             />
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            {formatter.format(i?.price) || 0} VND
                           </StyledTableCell>
                           <StyledTableCell>
                             <OutlinedInput
                               id="discount"
+                              className="h-[30px] bg-white w-[150px]"
                               value={formatter.format(i?.discount)}
                               endAdornment={
                                 <p className="mb-0 leading-0 text-xs">VND</p>
                               }
-                              onChange={
-                                (e) => {
-                                  const value = e.target.value.replaceAll(
-                                    ",",
-                                    ""
-                                  );
-                                  setRows((prev) => {
-                                    prev[index].discount = value;
-                                    return _.cloneDeep(prev);
-                                  });
-                                }
-                                // setServiceDiscount(e.target.value)
-                              }
-                              className="h-[30px] bg-white"
+                              onChange={(e) => {
+                                const value = e.target.value.replaceAll(
+                                  ",",
+                                  ""
+                                );
+                                setRows((prev) => {
+                                  prev[index] = {
+                                    ...prev[index],
+                                    discount: value,
+                                  };
+                                  return _.cloneDeep(prev);
+                                });
+                              }}
                             />
                           </StyledTableCell>
                           <StyledTableCell>
-                            <Box sx={{ minWidth: 120 }}>
-                              <FormControl fullWidth>
-                                <Select
-                                  labelId="status"
-                                  id="status"
-                                  value={i?.status || ""}
-                                  onChange={(e) => {
-                                    setRows((prev) => {
-                                      prev[index].status = e.target.value;
-                                      return _.cloneDeep(prev);
-                                    });
-                                  }}
-                                >
-                                  <MenuItem value={1}>Đang chữa trị</MenuItem>
-                                  <MenuItem value={2}>Đã xong</MenuItem>
-                                </Select>
-                              </FormControl>
-                            </Box>
+                            <Select
+                              className="mb-0"
+                              labelId="status"
+                              id="status"
+                              value={i?.status || ""}
+                              onChange={(e) => {
+                                setRows((prev) => {
+                                  prev[index] = {
+                                    ...prev[index],
+                                    status: e.target.value,
+                                  };
+                                  return _.cloneDeep(prev);
+                                });
+                              }}
+                            >
+                              <MenuItem value={1}>Đang chữa trị</MenuItem>
+                              <MenuItem value={2}>Đã xong</MenuItem>
+                            </Select>
                           </StyledTableCell>
                           <StyledTableCell>
                             <Button
-                              className="mr10"
                               onClick={() => handleConfirm(index)}
                             >
                               <ClearIcon />
@@ -650,22 +725,34 @@ const ModalAddRecord = ({ modalAddOpen, setModalAddOpen, isSubmitForm }) => {
                 })}
               </TableBody>
             </StyledTable>
+            <Box className="text-center mt-4">
+              {errorUpdateMess && (
+                <Typography
+                  style={{
+                    color: "red",
+                    fontStyle: "italic",
+                    fontSize: "14px",
+                  }}
+                >
+                  {errorUpdateMess}
+                </Typography>
+              )}
+            </Box>
           </Box>
         </Box>
+        <ModalSpecimen
+          modalSpecimenOpen={modalSpecimenOpen}
+          setModalSpecimenOpen={setModalSpecimenOpen}
+          specimens={handleSpecimen}
+          specimenDTOS={specimenDTOS}
+          serviceDTOS={serviceDTOS}
+        />
         <ModalExportMaterial
           modalExportOpen={modalExportOpen}
           setModalExportOpen={setModalExportOpen}
           showModalExportMaterial={showModalExportMaterial}
           exportMaterial={handleExportMaterial}
           materialExportDTOS={materialExportDTOS}
-        />
-        <ModalSpecimen
-          modalSpecimenOpen={modalSpecimenOpen}
-          setModalSpecimenOpen={setModalSpecimenOpen}
-          showModalSpecimen={showModalSpecimen}
-          specimens={handleSpecimen}
-          specimenDTOS={specimenDTOS}
-          serviceDTOS={serviceDTOS}
         />
       </Modal>
     </>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 // import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
+import TableBody from "@mui/material/TableBody";
 // import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
+import TableHead from "@mui/material/TableHead";
 // import TableRow from '@mui/material/TableRow';
 import { setScheduleId } from "../../../redux/modalSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -50,8 +50,8 @@ const ScheduleManagementContent = () => {
 
   return (
     <>
-      <h2 className="font-bold mb-5">Lịch hẹn</h2>
-      <Button
+      <h2 className="font-bold mb-4">Lịch hẹn</h2>
+      {/* <Button
         aria-label="add"
         variant="success"
         style={{ float: "right", marginBottom: "1rem" }}
@@ -60,7 +60,7 @@ const ScheduleManagementContent = () => {
         }}
       >
         <AddIcon /> Thêm mới
-      </Button>
+      </Button> */}
 
       <StyledTable size="small" className="shadow-md">
         <TableHead>
@@ -80,22 +80,25 @@ const ScheduleManagementContent = () => {
               <StyledTableCell>{item.date}</StyledTableCell>
               <StyledTableCell>{item.note}</StyledTableCell>
               <StyledTableCell>
-                <Button
+                <IconButton aria-label="edit">
+                  <DeleteIcon />
+                </IconButton>
+                <IconButton
                   aria-label="edit"
-                  variant="info"
                   onClick={() => {
                     setModalUpdateOpen(true);
                     dispatch(setScheduleId(item.waitingRoomId));
                   }}
                 >
                   <EditIcon />
-                </Button>
+                </IconButton>
               </StyledTableCell>
-              <StyledTableCell>
-                <Button aria-label="delete" variant="danger" disabled>
+              {/* <StyledTableCell>
+                <Button aria-label="delete" disabled>
                   <DeleteIcon />
                 </Button>
-              </StyledTableCell>
+          
+              </StyledTableCell> */}
             </StyledTableRow>
           ))}
         </TableBody>

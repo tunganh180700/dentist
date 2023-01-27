@@ -5,7 +5,15 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Pagination, Typography, IconButton } from "@mui/material";
+import {
+  Pagination,
+  Typography,
+  IconButton,
+  SwipeableDrawer,
+  Box,
+  TextField,
+  Button,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setIncomeId } from "../../../redux/modalSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -17,11 +25,14 @@ import { setTreatmentId } from "../../../redux/modalSlice";
 import ModalDetailBill from "../../ModalComponent/ModalBill/ModalDetailBill";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import ModalListReceipt from "../../ModalComponent/ModalBill/ModalListReceipt";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import {
-    StyledTableCell,
-    StyledTableRow,
-    StyledTable,
-  } from "../../ui/TableElements";
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
+import { useMemo } from "react";
+import Loading from "../../ui/Loading";
 const BillManagementContent = () => {
   const listBill = useSelector((state) => state.listBill.listBill);
 
@@ -33,89 +44,156 @@ const BillManagementContent = () => {
   const [modalDetailOpen, setModalDetailOpen] = useState(false);
   const [modalReceiptOpen, setModalReceiptOpen] = useState(false);
 
-  console.log("bill: ", listBill);
-  console.log("page: ", pageSize);
-  //dung roi, total pages trong api dang co 1 thoi
+  const [loading, setLoading] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
+  const [searchValue, setSearchValue] = useState({
+    patientName: "",
+    phone: "",
+  });
+
   useEffect(() => {
+    setLoading(true);
     dispatch(
       fetchAllBill({
-        size: pageSize,
+        ...searchValue,
+        size: 12,
         page: currentPage,
       })
     );
+    setTimeout(()=>{
+      setLoading(false);
+    }, 500)
   }, [currentPage]);
+
+  const handleSearch = async (search = searchValue) => {
+    setLoading(true);
+    try {
+      if (currentPage === 0) {
+        dispatch(
+          fetchAllBill({
+            ...search,
+            size: pageSize,
+            page: 0,
+          })
+        );
+      } else {
+        setCurrentPage(0)
+      }
+      setOpenFilter(false);
+    } catch (error) {
+      console.log(error);
+    }
+    setTimeout(()=>{
+      setLoading(false);
+    }, 500)
+  };
+
+  const enableButtonSearch = useMemo(
+    () => searchValue.patientName || searchValue.phone , [searchValue]
+  );
+
+  const onResetFilter = () => {
+    const newSearchValue = {
+      patientName: "",
+      phone: "",
+    };
+    setSearchValue(newSearchValue);
+    handleSearch(newSearchValue);
+  };
 
   return (
     <>
-      <h2 className="font-bold mb-5">Danh Sách Hóa Đơn</h2>
-      <StyledTable size="small" className="shadow-md">
+    {loading && <Loading />}
+      <h2 className="font-bold mb-4">Danh Sách Hóa Đơn</h2>
+      <Box className="flex items-center gap-3 mb-3">
+        <p className="font-bold text-lg mb-0">Có ({0}) bản ghi</p>
+        <Button
+          variant="contained"
+          color="info"
+          endIcon={<FilterAltIcon />}
+          onClick={() => setOpenFilter(true)}
+        >
+          <span className="leading-none">Lọc</span>
+        </Button>
+      </Box>
+      <StyledTable size="small" className="shadow-md mb-4">
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Tên bệnh nhân</StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Số điện thoại</StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Giá gốc</StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Giảm giá</StyledTableCell>
-            <StyledTableCell style={{ fontWeight: "bold" }}>Tổng tiền</StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Tên bệnh nhân
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Số điện thoại
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Giá gốc
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Giảm giá
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Tổng tiền
+            </StyledTableCell>
             <StyledTableCell></StyledTableCell>
             <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
-        {totalPages === 0 ? (
-          <Typography
-            component="h1"
-            variant="h5"
-            color="inherit"
-            noWrap
-            textAlign="center"
-          >
-            Không có đơn giá nào
-          </Typography>
-        ) : (
-          <TableBody>
-            {listBill.map((item, index) => (
-              <StyledTableRow size="medium" key={item.treatmentId}>
-                <StyledTableCell>{item.patientName}</StyledTableCell>
-                <StyledTableCell>{item.phone}</StyledTableCell>
-                <StyledTableCell>{item.totalPrice}</StyledTableCell>
-                <StyledTableCell>{item.totalDiscount}</StyledTableCell>
-                <StyledTableCell>{item.realCost}</StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="receipt-list"
-                    onClick={() => {
-                      setModalReceiptOpen(true);
-                      dispatch(setTreatmentId(item.treatmentId));
-                    }}
-                  >
-                    <ReceiptIcon />
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="detail"
-                    onClick={() => {
-                      setModalDetailOpen(true);
-                      dispatch(setTreatmentId(item.treatmentId));
-                    }}
-                  >
-                    <RemoveRedEyeIcon />
-                  </IconButton>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        )}
+
+        <TableBody>
+          {listBill.map((item, index) => (
+            <StyledTableRow size="medium" key={item.treatmentId}>
+              <StyledTableCell>{item.patientName}</StyledTableCell>
+              <StyledTableCell>{item.phone}</StyledTableCell>
+              <StyledTableCell>{item.totalPrice}</StyledTableCell>
+              <StyledTableCell>{item.totalDiscount}</StyledTableCell>
+              <StyledTableCell>{item.realCost}</StyledTableCell>
+              <StyledTableCell>
+                <IconButton
+                  aria-label="receipt-list"
+                  onClick={() => {
+                    setModalReceiptOpen(true);
+                    dispatch(setTreatmentId(item.treatmentId));
+                  }}
+                >
+                  <ReceiptIcon />
+                </IconButton>
+              </StyledTableCell>
+              <StyledTableCell>
+                <IconButton
+                  aria-label="detail"
+                  onClick={() => {
+                    setModalDetailOpen(true);
+                    dispatch(setTreatmentId(item.treatmentId));
+                  }}
+                >
+                  <RemoveRedEyeIcon />
+                </IconButton>
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
       </StyledTable>
+      {totalPages === 0 && (
+        <Typography
+          component="h1"
+          variant="h5"
+          color="inherit"
+          noWrap
+          textAlign="center"
+        >
+          Không có đơn giá nào
+        </Typography>
+      )}
       <div
         style={{
           display: "flex",
           justifyContent: "center",
-          padding: "14px 16px",
         }}
       >
         {totalPages > 1 ? (
           <Pagination
-          color="primary"
+            color="primary"
+            page={currentPage + 1}
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);
@@ -123,6 +201,60 @@ const BillManagementContent = () => {
           />
         ) : null}
       </div>
+      <SwipeableDrawer
+        anchor="right"
+        open={openFilter}
+        onClose={() => setOpenFilter(false)}
+        PaperProps={{ elevation: 0, style: { backgroundColor: "transparent" } }}
+      >
+        <Box className="p-3 w-[300px] bg-white h-full rounded-tl-lg rounded-bl-lg">
+          <h3 className="mb-3">Lọc</h3>
+          <Box className="mb-3">
+            <p className="mb-1">Tên bệnh nhân</p>
+            <TextField
+              required
+              value={searchValue.patientName}
+              onChange={(newValue) =>
+                setSearchValue({
+                  ...searchValue,
+                  patientName: newValue.target.value,
+                })
+              }
+            />
+          </Box>
+          <Box className="mb-3">
+            <p className="mb-1">Số điện thoại</p>
+            <TextField
+              required
+              value={searchValue.phone}
+              onChange={(newValue) =>
+                setSearchValue({
+                  ...searchValue,
+                  phone: newValue.target.value,
+                })
+              }
+            />
+          </Box>
+          <Box display="flex" gap={2} justifyContent="center">
+            <Button
+              variant="contained"
+              className="mr-3"
+              onClick={() => handleSearch(searchValue)}
+              disabled={!enableButtonSearch}
+            >
+              Đồng ý
+            </Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={onResetFilter}
+              disabled={!enableButtonSearch}
+            >
+              Đặt lại
+            </Button>
+          </Box>
+        </Box>
+      </SwipeableDrawer>
       <div>
         <ModalDetailBill
           modalDetailOpen={modalDetailOpen}

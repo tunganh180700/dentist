@@ -42,20 +42,44 @@ a {
   background-color: #0288d1;
 }
 .ant-modal-title {
+  color: #fff !important;
   text-align: center;
   font-weight: 700;
   text-transform: uppercase;
   font-size: 20px !important;
 }
+.ant-modal-header{
+  background-color: #000000ba !important;
+}
 .ant-modal-content {
   border-radius: 10px !important;
   overflow: hidden;
+}
+.ant-modal-close-x{
+  color: #fff !important;
 }
 .ant-btn {
   border-radius: 10px !important;
   overflow: hidden;
 }
+.ant-tabs-tab{
+  border-radius: 10px 10px 0 0 !important;
+}
+::-webkit-scrollbar {
+  width: 3px;
+}
 
+/* Track */
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(168, 168, 168); 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #9c9c9c; 
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

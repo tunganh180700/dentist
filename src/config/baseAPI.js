@@ -19,11 +19,16 @@ export const listRoleAPI = `${baseUrl}/api/roles/get_list_roles`
 
 export const listLaboAPI = `${baseUrl}/api/labos/get_list_labos`
 export const getLaboByIdAPI = `${baseUrl}/api/labos/`
+export const getListPrepareByIdAPI = `${baseUrl}/api/labos/get_list_prepare/`
+export const updatePrepareAPI = `${baseUrl}/api/specimens/labo_receive`
+export const updateReceiveAPI = `${baseUrl}/api/specimens/labo_delivery`
+export const getListReceiveByIdAPI = `${baseUrl}/api/labos/get_list_receive/`
 export const updateLaboAPI = `${baseUrl}/api/labos/`
 export const deleteLaboAPI = `${baseUrl}/api/labos/`
 export const addLaboAPI = `${baseUrl}/api/labos/`
 
 export const getSpecimensByIdAPI = `${baseUrl}/api/specimens/`
+export const patientSpecimenAPI = `${baseUrl}/api/specimens/get_list_specimens_of_patient/`
 export const addSpecimensAPI = `${baseUrl}/api/specimens/`
 export const updateSpecimensAPI = `${baseUrl}/api/specimens/`
 export const deleteSpecimensAPI = `${baseUrl}/api/specimens/`
@@ -46,6 +51,7 @@ export const addListMaterialImportAPI = `${baseUrl}/api/materials_imports/add_li
 export const listServiceAndCategoryAPI = `${baseUrl}/api/categories/get_list_service`
 
 export const listMaterialExportAPI = `${baseUrl}/api/material_export/get_list_export`
+export const patientMaterialExportAPI = `${baseUrl}/api/material_export/get_list_material_export_of_patient/`
 export const getMaterialExportByIdAPI = `${baseUrl}/api/material_export/`
 export const updateMaterialExportAPI = `${baseUrl}/api/material_export/`
 export const addMaterialExportAPI = `${baseUrl}/api/material_export/`

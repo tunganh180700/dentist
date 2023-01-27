@@ -17,7 +17,7 @@ const disabledDate = (current) => {
 const DatePickerDentist = ({
   value,
   range = false,
-  placeholder = "Select date",
+  placeholder,
   onChange,
 }) => {
   return (
@@ -26,6 +26,7 @@ const DatePickerDentist = ({
         <RangePicker
           value={value}
           onChange={onChange}
+          placeholder={placeholder}
           disabledDate={disabledDate}
           presets={[
             { label: "Yesterday", value: dayjs().add(-1, "d") },
@@ -37,7 +38,7 @@ const DatePickerDentist = ({
         <DatePicker
           value={value ? moment(value) : null}
           onChange={onChange}
-          placeholder={placeholder}
+          placeholder="Chọn ngày"
           disabledDate={disabledDate}
         />
       )}

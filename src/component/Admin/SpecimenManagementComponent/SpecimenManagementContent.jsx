@@ -1,6 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Pagination, Typography, IconButton, TextField } from "@mui/material";
+import {
+  Pagination,
+  Typography,
+  IconButton,
+  TextField,
+  Chip,
+  SwipeableDrawer,
+  Box,
+  Button,
+} from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
@@ -31,11 +40,13 @@ import {
   StyledTableRow,
   StyledTable,
 } from "../../ui/TableElements";
+import { statusLaboColor, statusLaboFormatter } from "../../style-config/index";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 const SpecimenManagementContent = () => {
   const dispatch = useDispatch();
   const listSpecimen = useSelector((state) => state.listSpecimen.listSpecimen);
-  const pageSize = useSelector((state) => state.listSpecimen.pageSize);
+  const pageSize = 12;
   const totalPages = useSelector((state) => state.listSpecimen.totalPage);
   const totalElements = useSelector(
     (state) => state.listSpecimen.totalElements
@@ -62,366 +73,166 @@ const SpecimenManagementContent = () => {
     (state) => state.listSpecimen.isSearchSpecimen
   );
   const [loading, setLoading] = useState(false);
-  const statusList = [null, 1, 2, 3, 4, 5, 6];
-  const [statusId, setStatusId] = useState(false);
-
-  const emptySearchValue = {
-    specimenName: "",
-    patientName: "",
-    receiveDate: "",
-    usedDate: "",
-    deliveryDate: "",
-    laboName: "",
-    serviceName: "",
-    status: null,
-  };
-  const [searchValue, setSearchValue] = useState(emptySearchValue);
+  const [openFilter, setOpenFilter] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   let styleText = {};
-
-  function changeColor(status) {
-    if (status === 0) {
-      styleText = {
-        color: "green",
-      };
-    } else if (status === 1) {
-      styleText = {
-        color: "red",
-      };
-    } else {
-      styleText = {
-        color: "blue",
-      };
-    }
-  }
 
   const loadSpecimenList = () => {
     setLoading(true);
     try {
-      if (searchValue === emptySearchValue) {
-        dispatch(
-          fetchAllSpecimen({
-            size: pageSize,
-            page: currentPage,
-          })
-        );
-      } else {
-        dispatch(
-          searchSpecimen({
-            ...searchValue,
-            size: pageSize,
-            page: currentPage,
-          })
-        );
-      }
+      dispatch(
+        fetchAllSpecimen({
+          size: pageSize,
+          page: currentPage,
+          patientName: searchValue,
+        })
+      );
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   };
 
   useEffect(() => {
     loadSpecimenList();
   }, [currentPage, isAddSpecimen, isUpdateSpecimen, isUseSpecimen]);
 
-  // useEffect(() => {
-  //     if (isDeleteSpecimen == true && totalElements % pageSize == 1) {
-  //         setCurrentPage(currentPage - 1)
-  //         dispatch(fetchAllSpecimen({
-  //             size: pageSize,
-  //             page: currentPage,
-  //         }))
-  //     }
-  // }, [isDeleteSpecimen])
-
-  const handleSearchDebounce = useRef(
-    _.debounce(async (formValues) => {
-      setLoading(true);
+  const handleSearch = (searchValue) => {
+    setLoading(true);
+    if (currentPage === 0) {
+      dispatch(
+        fetchAllSpecimen({
+          size: pageSize,
+          page: 0,
+          patientName: searchValue,
+        })
+      );
+    } else {
       setCurrentPage(0);
-      try {
-        dispatch(
-          searchSpecimen({
-            ...formValues,
-            size: pageSize,
-            page: 0,
-          })
-        );
-      } catch (error) {
-        console.log(error);
-      }
+    }
+    setOpenFilter(false);
+    setTimeout(() => {
       setLoading(false);
-    }, 500)
-  ).current;
-
-  const handleSearch = (e) => {
-    setSearchValue((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
+    }, 500);
   };
 
-  useEffect(() => {
-    return () => {
-      handleSearchDebounce.cancel();
-    };
-  }, [handleSearchDebounce]);
-
-  useEffect(() => {
-    handleSearchDebounce(searchValue);
-  }, [searchValue]);
-
-  const getStatusStr = (status) => {
-    if (status === 1) {
-      return "Chuẩn bị mẫu vật";
-    } else if (status === 2) {
-      return "Labo nhận mẫu";
-    } else if (status === 3) {
-      return "Labo giao mẫu";
-    } else if (status === 4) {
-      return "Bệnh nhân đã sử dụng";
-    } else if (status === 5) {
-      return "Mẫu lỗi gửi lại cho labo";
-    } else if (status == 6) {
-      return "Hoàn thành";
-    } else {
-      return "";
-    }
+  const onResetFilter = () => {
+    setSearchValue("");
+    handleSearch("");
   };
 
   return (
     <>
-      <ToastContainer />
-      <Typography
-        component="h1"
-        variant="h5"
-        color="inherit"
-        noWrap
-        fontWeight="bold"
-      >
-        Quản lý mẫu vật
-      </Typography>
-      <IconButton
-        aria-label="add"
-        style={{ borderRadius: "20%" }}
-        onClick={() => {
-          setModalAddOpen(true);
-        }}
-      >
-        <AddIcon /> Thêm mới
-      </IconButton>
-      {loading === false && (
-        <>
-          <StyledTable size="small" style={{ marginTop: "15px" }}>
-            <TableHead>
-              <StyledTableRow>
-                <StyledTableCell></StyledTableCell>
-                <StyledTableCell>
-                  <div className="attibute">Tên mẫu vật</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      label="Tìm kiếm"
-                      name="specimenName"
-                      value={searchValue.specimenName}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div className="attibute">Ngày nhận</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      label="Tìm kiếm"
-                      name="receiveDate"
-                      value={searchValue.receiveDate}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div className="attibute">Ngày sử dụng</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      label="Tìm kiếm"
-                      name="usedDate"
-                      value={searchValue.usedDate}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div className="attibute">Ngày giao</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      label="Tìm kiếm"
-                      name="deliveryDate"
-                      value={searchValue.deliveryDate}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div className="attibute">Số lượng</div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div className="attibute">Đơn giá</div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div className="attibute">Loại dịch vụ</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      label="Tìm kiếm"
-                      name="serviceName"
-                      value={searchValue.serviceName}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div className="attibute">Labo</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      label="Tìm kiếm"
-                      name="laboName"
-                      value={searchValue.laboName}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div className="attibute">Bệnh nhân</div>
-                  <div style={{ width: "160px" }}>
-                    <TextField
-                      margin="normal"
-                      required
-                      label="Tìm kiếm"
-                      name="patientName"
-                      value={searchValue.patientName}
-                      autoFocus
-                      onChange={handleSearch}
-                    />
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div className="attibute">Trạng thái</div>
-                  <div style={{ width: "200px" }}>
-                    <br></br>
-                    <Select
-                      labelId="statusSearch"
-                      id="statusSearch"
-                      label="statusSearch"
-                      value={searchValue.status}
-                      style={{ width: "100%" }}
-                      onChange={(e) => {
-                        setSearchValue((prevState) => ({
-                          ...prevState,
-                          status: e.target.value,
-                        }));
-                      }}
-                    >
-                      {statusList?.map((status) => (
-                        <MenuItem key={status} value={status}>
-                          {getStatusStr(status)}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell></StyledTableCell>
-                {/* <StyledTableCell></StyledTableCell> */}
-              </StyledTableRow>
-            </TableHead>
-            <TableBody>
-              {listSpecimen.map((item) => (
-                <StyledTableRow key={item.specimenId}>
-                  <StyledTableCell style={styleText}>
-                    <IconButton
-                      aria-label="detail"
-                      onClick={() => {
-                        setModalDetailOpen(true);
-                        dispatch(setSpecimenId(item.specimenId));
-                      }}
-                    >
-                      <RemoveRedEyeIcon />
-                    </IconButton>
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    {item.specimenName}
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    {item.receiveDate
-                      ? moment(item.receiveDate).format("DD/MM/YYYY")
-                      : ""}
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    {item.usedDate
-                      ? moment(item.usedDate).format("DD/MM/YYYY")
-                      : ""}
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    {item.deliveryDate
-                      ? moment(item.deliveryDate).format("DD/MM/YYYY")
-                      : ""}
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    {item.amount}
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    {item.unitPrice}
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    {item.serviceName}
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    {item.laboName}
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    {item.patientName}
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    {getStatusStr(item.status)}
-                  </StyledTableCell>
-                  <StyledTableCell style={styleText}>
-                    <IconButton
-                      aria-label="edit"
-                      onClick={() => {
-                        setModalUpdateOpen(true);
-                        dispatch(setSpecimenId(item.specimenId));
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </StyledTableCell>
-                  {/* <StyledTableCell style={styleText}>
-                                    <IconButton aria-label="delete" onClick={() => {
-                                        
-                                    }}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </StyledTableCell> */}
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </StyledTable>
-        </>
-      )}
+      <h2 className="font-bold mb-4">Quản lý mẫu vật</h2>
+      <Box className="flex items-center gap-3 mb-3">
+        <p className="font-bold text-lg mb-0">Có ({0}) bản ghi</p>
+        <Button
+          variant="contained"
+          color="info"
+          endIcon={<FilterAltIcon />}
+          onClick={() => setOpenFilter(true)}
+        >
+          <span className="leading-none">Lọc</span>
+        </Button>
+      </Box>
+      <StyledTable size="small" style={{ marginTop: "15px" }}>
+        <TableHead>
+          <StyledTableRow>
+            <StyledTableCell>
+              <div className="attibute">Tên mẫu vật</div>
+            </StyledTableCell>
+            <StyledTableCell>
+              <div className="attibute">Ngày nhận</div>
+            </StyledTableCell>
+            <StyledTableCell>
+              <div className="attibute">Ngày sử dụng</div>
+            </StyledTableCell>
+            <StyledTableCell>
+              <div className="attibute">Ngày giao</div>
+            </StyledTableCell>
+            <StyledTableCell>
+              <div className="attibute">Số lượng</div>
+            </StyledTableCell>
+            <StyledTableCell>
+              <div className="attibute">Đơn giá</div>
+            </StyledTableCell>
+            <StyledTableCell>
+              <div className="attibute">Loại dịch vụ</div>
+            </StyledTableCell>
+            <StyledTableCell>
+              <div className="attibute">Labo</div>
+            </StyledTableCell>
+            <StyledTableCell>
+              <div className="attibute">Bệnh nhân</div>
+            </StyledTableCell>
+            <StyledTableCell>
+              <div className="attibute">Trạng thái</div>
+            </StyledTableCell>
+            <StyledTableCell></StyledTableCell>
+          </StyledTableRow>
+        </TableHead>
+        <TableBody>
+          {listSpecimen.map((item) => (
+            <StyledTableRow key={item.specimenId}>
+              <StyledTableCell style={styleText}>
+                {item.specimenName}
+              </StyledTableCell>
+              <StyledTableCell style={styleText}>
+                {item.receiveDate
+                  ? moment(item.receiveDate).format("DD/MM/YYYY")
+                  : ""}
+              </StyledTableCell>
+              <StyledTableCell style={styleText}>
+                {item.usedDate
+                  ? moment(item.usedDate).format("DD/MM/YYYY")
+                  : ""}
+              </StyledTableCell>
+              <StyledTableCell style={styleText}>
+                {item.deliveryDate
+                  ? moment(item.deliveryDate).format("DD/MM/YYYY")
+                  : ""}
+              </StyledTableCell>
+              <StyledTableCell style={styleText}>{item.amount}</StyledTableCell>
+              <StyledTableCell style={styleText}>
+                {item.unitPrice}
+              </StyledTableCell>
+              <StyledTableCell style={styleText}>
+                {item.serviceName}
+              </StyledTableCell>
+              <StyledTableCell style={styleText}>
+                {item.laboName}
+              </StyledTableCell>
+              <StyledTableCell style={styleText}>
+                {item.patientName}
+              </StyledTableCell>
+              <StyledTableCell style={styleText}>
+                <Chip
+                  size="small"
+                  style={{
+                    backgroundColor: `${statusLaboColor(item.status)}`,
+                    color: "#fff",
+                  }}
+                  label={statusLaboFormatter(item.status)}
+                />
+              </StyledTableCell>
+              <StyledTableCell style={styleText}>
+                <IconButton 
+                  aria-label="edit"
+                  onClick={() => {
+                    setModalUpdateOpen(true);
+                    dispatch(setSpecimenId(item.specimenId));
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </StyledTable>
       <div
         style={{
           display: "flex",
@@ -431,6 +242,8 @@ const SpecimenManagementContent = () => {
       >
         {totalPages > 1 ? (
           <Pagination
+            color="primary"
+            page={currentPage + 1}
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);
@@ -438,15 +251,49 @@ const SpecimenManagementContent = () => {
           />
         ) : null}
       </div>
+
+      <SwipeableDrawer
+        anchor="right"
+        open={openFilter}
+        onClose={() => setOpenFilter(false)}
+        PaperProps={{ elevation: 0, style: { backgroundColor: "transparent" } }}
+      >
+        <Box className="p-3 w-[300px] bg-white h-full rounded-tl-lg rounded-bl-lg">
+          <h3 className="mb-3">Lọc</h3>
+          <Box className="mb-3">
+            <p className="mb-1">Tên bệnh nhân</p>
+            <TextField
+              required
+              value={searchValue}
+              onChange={(newValue) => setSearchValue(newValue.target.value)}
+            />
+          </Box>
+          <Box display="flex" gap={2} justifyContent="center">
+            <Button
+              variant="contained"
+              className="mr-3"
+              onClick={() => handleSearch(searchValue)}
+              disabled={!searchValue}
+            >
+              Đồng ý
+            </Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={onResetFilter}
+              disabled={!searchValue}
+            >
+              Đặt lại
+            </Button>
+          </Box>
+        </Box>
+      </SwipeableDrawer>
       <div>
         <ModalAddSpecimens
           modalAddOpen={modalAddOpen}
           setModalAddOpen={setModalAddOpen}
         />
       </div>
-      {/* <div>
-                <ModalDeleteSpecimens modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
-            </div> */}
       <div>
         <ModalUpdateSpecimens
           modalUpdateOpen={modalUpdateOpen}

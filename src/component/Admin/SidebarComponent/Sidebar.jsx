@@ -2,22 +2,11 @@ import React, { useEffect, useCallback } from "react";
 import ListItemButton from "@mui/material/ListItemButton";
 import Box from "@mui/material/Box";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import CategoryIcon from "@mui/icons-material/Category";
-import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
-import PaidIcon from "@mui/icons-material/Paid";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import DescriptionIcon from "@mui/icons-material/Description";
 import { Link } from "react-router-dom";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
-import List from "@mui/material/List";
-import StarBorder from "@mui/icons-material/StarBorder";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import { useState } from "react";
-import ScheduleIcon from "@mui/icons-material/Schedule";
 import Logo from "../../../img/logo.png";
 import { menu } from "./constant";
 import { useLocation } from "react-router-dom";
@@ -34,15 +23,11 @@ const Sidebar = ({ isOpenSideBar = false }) => {
     setRole(role);
   }, []);
 
-  useEffect(() => {
-    const role = localStorage.getItem("role");
-    setRole(role);
-  }, []);
   const location = useLocation();
 
   const activeTab = useCallback(
     (item) => {
-      return location.pathname === item.href;
+      return `/${location.pathname.split("/")[1]}` === item.href;
     },
     [location]
   );
@@ -58,9 +43,9 @@ const Sidebar = ({ isOpenSideBar = false }) => {
         />
       </div>
 
-      <Box className="flex flex-col gap-2 h-full">
+      <Box className="flex flex-col gap-2 h-full pb-10 overflow-x-hidden  overflow-y-scroll">
         {menu.map((item) => (
-          <Box>
+          <Box hidden={!item.permission.includes(role)}>
             {item?.subItem ? (
               <Box>
                 <ListItemButton
@@ -71,12 +56,17 @@ const Sidebar = ({ isOpenSideBar = false }) => {
                   onClick={handleClickCollapse}
                 >
                   <ListItemIcon className="ml-2">{item.icon}</ListItemIcon>
-                  {item.title}
-                  {isOpenCollapse ? <ExpandLess /> : <ExpandMore />}
+                  <Box className="flex justify-between w-full">
+                    {item.title}
+                    {isOpenCollapse ? <ExpandLess /> : <ExpandMore />}
+                  </Box>
                 </ListItemButton>
                 <Collapse in={isOpenCollapse} timeout="auto" unmountOnExit>
                   {item.subItem.map((sub) => (
-                    <Box className="ml-5">
+                    <Box
+                      hidden={!sub.permission.includes(role)}
+                      className="ml-5"
+                    >
                       <Link
                         to={sub.href}
                         className={`decoration-transparent  ${
@@ -91,8 +81,7 @@ const Sidebar = ({ isOpenSideBar = false }) => {
                             boxShadow: `${activeTab(sub) ? "#CAF8FF" : ""}`,
                           }}
                         >
-                          <ListItemIcon>
-                            {" "}
+                          <ListItemIcon className="ml-[-2px]">
                             {activeTab(sub) ? sub.iconActive : sub.icon}
                           </ListItemIcon>
                           {sub.title}
@@ -111,7 +100,7 @@ const Sidebar = ({ isOpenSideBar = false }) => {
               >
                 <Tooltip
                   arrow
-                  title={!isOpenSideBar ? item.title : ''}
+                  title={!isOpenSideBar ? item.title : ""}
                   placement="left"
                 >
                   <ListItemButton
@@ -137,205 +126,3 @@ const Sidebar = ({ isOpenSideBar = false }) => {
 };
 
 export default Sidebar;
-// //  {role === "Receptionist" ? (
-//     <></>
-//     ) : (
-//       <ListItemButton>
-//         <Link
-//           to={"/patient-management"}
-//           className="decoration-white text-black flex justify-center"
-//         >
-//           <ListItemIcon>
-//             <StarBorder />
-//           </ListItemIcon>
-//           Bệnh nhân
-//         </Link>
-//       </ListItemButton>
-//       //      <Box className="flex justify-center gap-3">
-//       //      <MeetingRoomIcon />
-//       //      {isOpenSideBar && (
-//       //        <Link to={"/timekeeping"} className="decoration-white text-black">
-//       //          Bệnh nhân
-//       //        </Link>
-//       //      )}
-//       //    </Box>
-//     )}
-
-//     {/* <ListItemButton>
-//       <ListItemIcon>
-//         <MeetingRoomIcon />
-//       </ListItemIcon>
-//       <Link to={"/meetingroom"} className="decoration-white text-black">
-//         Quản lý phòng chờ
-//       </Link>
-//     </ListItemButton> */}
-
-//     {role === "LeaderNurse" ||
-//     role === "Doctor" ||
-//     role === "Receptionist" ||
-//     role === "Nurse" ? (
-//       <></>
-//     ) : (
-//       <ListItemButton>
-//         <ListItemIcon>
-//           <MeetingRoomIcon />
-//         </ListItemIcon>
-//         <Link to={"/accmanagement"} className="decoration-white text-black">
-//           Quản lý tài khoản
-//         </Link>
-//       </ListItemButton>
-//     )}
-//     <ListItemButton>
-//       <ListItemIcon>
-//         <ScheduleIcon />
-//       </ListItemIcon>
-//       <Link to={"/schedule"} className="decoration-white text-black">
-//         Quản lý lịch hẹn
-//       </Link>
-//     </ListItemButton>
-
-//     {role === "Doctor" || role === "Receptionist" ? (
-//       <></>
-//     ) : (
-//       <ListItemButton onClick={handleClickCollapse}>
-//         <ListItemIcon>
-//           <CategoryIcon />
-//         </ListItemIcon>
-//         Quản lý vật liệu
-//         {open ? <ExpandLess /> : <ExpandMore />}
-//       </ListItemButton>
-//     )}
-
-//     {role === "Doctor" || role === "Receptionist" ? (
-//       <></>
-//     ) : (
-//       <Collapse in={open} timeout="auto" unmountOnExit>
-//         <List component="div" disablePadding>
-//           {role === "Nurse" ? (
-//             <></>
-//           ) : (
-//             <ListItemButton sx={{ pl: 4 }}>
-//               <ListItemIcon>
-//                 <StarBorder />
-//               </ListItemIcon>
-
-//               <Link
-//                 to={"/materialmanagement"}
-//                 className="decoration-white text-black"
-//               >
-//                 Vật liệu
-//               </Link>
-//             </ListItemButton>
-//           )}
-
-//           {role === "Nurse" ? (
-//             <></>
-//           ) : (
-//             <ListItemButton sx={{ pl: 4 }}>
-//               <ListItemIcon>
-//                 <StarBorder />
-//               </ListItemIcon>
-
-//               <Link
-//                 to={"/materialimport"}
-//                 className="decoration-white text-black"
-//               >
-//                 Nhập vật liệu
-//               </Link>
-//             </ListItemButton>
-//           )}
-
-//           <ListItemButton sx={{ pl: 4 }}>
-//             <ListItemIcon>
-//               <StarBorder />
-//             </ListItemIcon>
-
-//             <Link
-//               to={"/materialexport"}
-//               className="decoration-white text-black"
-//             >
-//               Xuất vật liệu
-//             </Link>
-//           </ListItemButton>
-//         </List>
-//       </Collapse>
-//     )}
-
-//     {role === "Admin" ||
-//     role === "Doctor" ||
-//     role === "Nurse" ||
-//     role === "LeaderNurse" ? (
-//       <ListItemButton>
-//         <ListItemIcon>
-//           <CategoryIcon />
-//         </ListItemIcon>
-
-//         <Link to={"/specimen"} className="decoration-white text-black">
-//           Mẫu vật
-//         </Link>
-//       </ListItemButton>
-//     ) : (
-//       <></>
-//     )}
-
-//     {role === "Doctor" || role === "Receptionist" || role === "Nurse" ? (
-//       <></>
-//     ) : (
-//       <ListItemButton>
-//         <ListItemIcon>
-//           <AccountCircleIcon />
-//         </ListItemIcon>
-
-//         <Link to={"/labo"} className="decoration-white text-black">
-//           Quản lý Labo
-//         </Link>
-//       </ListItemButton>
-//     )}
-
-//     {role === "Doctor" ||
-//     role === "Receptionist" ||
-//     role === "Nurse" ||
-//     role === "LeaderNurse" ? (
-//       <></>
-//     ) : (
-//       <ListItemButton>
-//         <ListItemIcon>
-//           <AccountCircleIcon />
-//         </ListItemIcon>
-//         <Link
-//           to={"/serviceandcategory"}
-//           className="decoration-white text-black"
-//         >
-//           Quản lý dịch vụ
-//         </Link>
-//       </ListItemButton>
-//     )}
-
-//     {role === "Doctor" ||
-//     role === "Receptionist" ||
-//     role === "Nurse" ||
-//     role === "LeaderNurse" ? (
-//       <></>
-//     ) : (
-//       <ListItemButton>
-//         <ListItemIcon>
-//           <PointOfSaleIcon />
-//         </ListItemIcon>
-//         <Link to={"/income"} className="decoration-white text-black">
-//           Thu nhập
-//         </Link>
-//       </ListItemButton>
-//     )}
-
-//     {role === "Doctor" || role === "Receptionist" || role === "Nurse" ? (
-//       <></>
-//     ) : (
-//       <ListItemButton>
-//         <ListItemIcon>
-//           <ReceiptLongIcon />
-//         </ListItemIcon>
-//         <Link to={"/bill"} className="decoration-white text-black">
-//           Quản lý hoá đơn
-//         </Link>
-//       </ListItemButton>
-//     )}

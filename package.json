@@ -33,6 +33,7 @@
     "sockjs": "^0.3.24",
     "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4",
+    "yarn": "^1.22.19",
     "yup": "^0.32.11"
   },
   "scripts": {

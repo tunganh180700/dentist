@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { Modal } from "antd";
 import "./../style.css";
-import { deletePatient } from "../../../redux/PatienSlice/listPatientSlice";
-import { fetchPatient } from "../../../redux/PatienSlice/choosenPatientSlice";
+import { deletePatient } from "../../../redux/PatienSlice/choosenPatientSlice";
 
 const ModalDeletePatient = ({
   modalDeleteOpen,
@@ -19,15 +19,15 @@ const ModalDeletePatient = ({
   const [modalText, setModalText] = useState(
     "Bạn có chắc chắn muốn xóa không ?"
   );
+  const { id } = useParams();
 
   const handleOk = () => {
-    setModalText("Đang xóa bệnh nhân");
-    handleDelete(patientId);
+    handleDelete();
     setConfirmLoading(true);
     setTimeout(() => {
       setModalDeleteOpen(false);
       setConfirmLoading(false);
-      isSubmitForm(true);
+      // isSubmitForm(true);
     }, 2000);
   };
 
@@ -35,16 +35,17 @@ const ModalDeletePatient = ({
     setModalDeleteOpen(false);
   };
 
-  const handleDelete = (patientId) => {
-    dispatch(deletePatient(patientId));
+  const handleDelete = () => {
+    dispatch(deletePatient(id)).then((res) => {
+      isSubmitForm(res.payload);
+    });
   };
 
-  useEffect(() => {
-    if (patientId > 0 && modalDeleteOpen) {
-      dispatch(fetchPatient(patientId));
-      isSubmitForm(false);
-    }
-  }, [isOpenDeletePatient]);
+  // useEffect(() => {
+  //   if (patientId > 0 && modalDeleteOpen) {
+  //     dispatch(fetchPatient(patientId));
+  //   }
+  // }, [isOpenDeletePatient]);
 
   return (
     <>

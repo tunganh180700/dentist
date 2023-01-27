@@ -184,7 +184,7 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
   return (
     <>
       <Modal
-        title="Thông tin vật liệu nhập khẩu"
+        title="Thông tin vật liệu"
         open={modalUpdateOpen}
         onOk={formik.handleSubmit}
         onCancel={handleCancel}

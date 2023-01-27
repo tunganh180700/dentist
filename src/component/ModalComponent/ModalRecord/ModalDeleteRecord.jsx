@@ -6,13 +6,9 @@ import { allPatientRecordAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
 import { deleteRecord } from "../../../redux/RecordSlice/listRecordSlice";
 
-const ModalDeleteRecord = ({
-  modalDeleteOpen,
-  setModalDeleteOpen,
-  isSubmitForm,
-}) => {
+const ModalDeleteRecord = ({ modalDeleteOpen, setModalDeleteOpen }) => {
   const dispatch = useDispatch();
-  const recordId = useSelector((state) => state.modal.userId);
+  const recordId = useSelector((state) => state.modal.recordSelected);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState(
     "Bạn có chắc chắn muốn xóa không ?"
@@ -34,14 +30,11 @@ const ModalDeleteRecord = ({
   };
 
   const handleOk = () => {
-    setModalText("Đang xóa bệnh nhân");
+    setModalText("Đang xóa hồ sơ");
     handleDelete(recordId);
     setConfirmLoading(true);
-    setTimeout(() => {
-      isSubmitForm(true);
-      setModalDeleteOpen(false);
-      setConfirmLoading(false);
-    }, 2000);
+    setModalDeleteOpen(false);
+    setConfirmLoading(false);
   };
 
   const handleDelete = (recordId) => {

@@ -1,4 +1,4 @@
-import Dashboard from '../Dashboard/Dashboard';
+ 
 import React from 'react';
 import PatientManagementContent from './PatientManagementContent';
 

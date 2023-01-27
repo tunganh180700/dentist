@@ -5,39 +5,39 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Chip
+  Chip,
 } from "@mui/material";
 import { Modal } from "antd";
 import e from "cors";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {
-  listTreatingServiceAPI,
-  patientRecordAPI,
-} from "../../../config/baseAPI";
-import axiosInstance from "../../../config/customAxios";
-import { fetchRecord } from "../../../redux/RecordSlice/listRecordSlice";
+// import {
+//   listTreatingServiceAPI,
+//   patientRecordAPI,
+// } from "../../../config/baseAPI";
+// import axiosInstance from "../../../config/customAxios";
+// import { fetchRecord } from "../../../redux/RecordSlice/listRecordSlice";
 
 const ModalDetailService = ({ modalDetailOpen, setModalDetailOpen }) => {
   const dispatch = useDispatch();
-  const patientRecordId = useSelector((state) => state.modal.userId);
+  // const patientRecordId = useSelector((state) => state.modal.userId);
   const listService = useSelector((state) => state.listRecord.listService);
 
   const handleCancel = () => {
     setModalDetailOpen(false);
   };
 
-  useEffect(() => {
-    if (patientRecordId > 0) dispatch(fetchRecord(patientRecordId));
-  }, [patientRecordId]);
+  // useEffect(() => {
+  //   if (patientRecordId > 0) dispatch(fetchRecord(patientRecordId));
+  // }, [patientRecordId]);
 
   const renderColor = (status) => {
-    let color = "#59995c";
+    let color = "#2e7d32";
     if (status === 0) {
       color = "#e18220";
     } else if (status === 1) {
-      color = "#418eed";
+      color = "#0288d1";
     }
     return color;
   };
@@ -63,17 +63,18 @@ const ModalDetailService = ({ modalDetailOpen, setModalDetailOpen }) => {
             {listService?.map((item) => {
               return (
                 <TableRow key={item.serviceId}>
-                  <TableCell className="text-center">{item.serviceName}</TableCell>
+                  <TableCell className="text-center">
+                    {item.serviceName}
+                  </TableCell>
                   <TableCell className="text-center py-3">
-                    {/* {item.status === 1 ? "Đang chữa trị" : "Đã xong"} */}
                     <Chip
-                    size="small"
-                    label={statusFormatter(item.status)}
-                    style={{
-                      background: `${renderColor(item.status)}`,
-                      color: "#fff",
-                    }}
-                  />
+                      size="small"
+                      label={statusFormatter(item.status)}
+                      style={{
+                        background: `${renderColor(item.status)}`,
+                        color: "#fff",
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               );

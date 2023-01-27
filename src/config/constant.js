@@ -2,7 +2,7 @@ export const INPUT_EMPTY = 'Không được để trống'
 export const INPUT_PHONE = 'Số điện thoại không đúng cú pháp'
 
 export const UPDATE_SUCCESS = 'Cập nhập thông tin thành công.'
-export const UPDATE_FAIL = 'Cập nhật thất bại :('
+export const UPDATE_FAIL = 'Cập nhật thất bại'
 
 export const DELETE_SUCCESS = 'Xoá thành công.'
 export const DELETE_FAIL = 'Không được xóa bệnh nhân khi đã có lịch sử thăm khám.'

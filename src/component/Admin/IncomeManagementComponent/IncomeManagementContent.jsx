@@ -175,7 +175,7 @@ const IncomeManagementContent = () => {
 
   return (
     <>
-      <h2 className="font-bold mb-5">Quản lý Thu nhập</h2>
+      <h2 className="font-bold mb-4">Quản lý Thu nhập</h2>
       <ChartIncome data={dataChart} onChangeDateRange={onFetchDataByDate} />
       <Tabs
         defaultActiveKey="1"

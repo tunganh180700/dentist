@@ -3,21 +3,18 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Pagination,
   Typography,
-  IconButton,
   SwipeableDrawer,
   Button,
   TextField,
   Box,
   Chip,
 } from "@mui/material";
-import Table from "@mui/material/Table";
+import FemaleIcon from "@mui/icons-material/Female";
+import MaleIcon from "@mui/icons-material/Male";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import EditIcon from "@mui/icons-material/Edit";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DatePickerDentist from "../../ui/date-picker/DatePickerDentist";
 import {
@@ -26,45 +23,35 @@ import {
 } from "../../../redux/PatienSlice/listPatientSlice";
 import Loading from "../../ui/Loading";
 import ModalAddPatient from "../../ModalComponent/ModalPatient/ModalAddPatient";
-import ModalDeletePatient from "../../ModalComponent/ModalPatient/ModalDeletePatient";
-import ModalUpdatePatient from "../../ModalComponent/ModalPatient/ModalUpdatePatient";
-import ModalDetailPatient from "../../ModalComponent/ModalPatient/ModalDetailPatient";
 import axiosInstance from "../../../config/customAxios";
-import { setUserId } from "../../../redux/modalSlice";
-import { Link } from "react-router-dom";
 import {
   StyledTableCell,
-  StyledTableRow,
+  StyledTableRowClick,
   StyledTable,
 } from "../../ui/TableElements";
-import { ToastContainer, toast } from "react-toastify";
-// import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "./style.css";
 import dayjs from "dayjs";
 import moment from "moment";
 
-// const color = {
-//   border: "rgba(0, 0, 0, 0.2)",
-// };
-
 const PatientManagementContent = () => {
   const dispatch = useDispatch();
   const listPatient = useSelector((state) => state.listPatient.listPatient);
+  const isAddPatient = useSelector((state) => state.listPatient.isAddPatient);
   const pageSize = useSelector((state) => state.listPatient.pageSize);
   const totalPages = useSelector((state) => state.listPatient.totalPage);
   const totalElements = useSelector((state) => state.listPatient.totalElements);
   const [currentPage, setCurrentPage] = useState(0);
-  const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
-  const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [modalAddOpen, setModalAddOpen] = useState(false);
-  const [modalDetailOpen, setModalDetailOpen] = useState(false);
   const [isSubmitFormPatient, setIsSubmitFormPatient] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
   const [role, setRole] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -78,14 +65,13 @@ const PatientManagementContent = () => {
     phone: "",
     email: "",
   });
-  let styleText = {};
 
   const renderColor = (status) => {
-    let color = "#59995c";
+    let color = "#2e7d32";
     if (status === 0) {
       color = "#e18220";
     } else if (status === 1) {
-      color = "#418eed";
+      color = "#0288d1";
     }
     return color;
   };
@@ -98,29 +84,23 @@ const PatientManagementContent = () => {
   };
 
   useEffect(() => {
-    if (isSubmitFormPatient) {
+    if (isAddPatient) {
       setLoading(true);
-      //   const page = currentPage;
-      //   if (isDeletePatient == true && totalElements % pageSize == 1) {
-      //     setCurrentPage(page - 1);
-      //   }
+      dispatch(
+        fetchAllPatient({
+          ...searchValue,
+          size: pageSize,
+          page: currentPage,
+        })
+      );
       setTimeout(() => {
-        dispatch(
-          fetchAllPatient({
-            ...searchValue,
-            size: pageSize,
-            page: currentPage,
-          })
-        );
         setLoading(false);
       }, 500);
-      setIsSubmitFormPatient(false);
     }
-  }, [isSubmitFormPatient]);
+  }, [isAddPatient]);
 
   useEffect(() => {
     setLoading(true);
-
     dispatch(
       fetchAllPatient({
         ...searchValue,
@@ -135,21 +115,26 @@ const PatientManagementContent = () => {
 
   const handleSearch = async (search = searchValue) => {
     setLoading(true);
-    setCurrentPage(0);
     try {
       if (currentPage === 0) {
-        await dispatch(
+        dispatch(
           searchPatient({
             ...search,
             size: pageSize,
             page: 0,
           })
         );
-        setLoading(false);
-        setOpenFilter(false);
+      } else {
+        setCurrentPage(0);
       }
+      setOpenFilter(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     } catch (error) {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
       console.log(error);
     }
   };
@@ -191,7 +176,7 @@ const PatientManagementContent = () => {
   return (
     <>
       {loading && <Loading />}
-      <h2 className="font-bold mb-5">Danh Sách Bệnh Nhân</h2>
+      <h2 className="font-bold mb-4">Danh Sách Bệnh Nhân</h2>
       <Box className="flex items-center gap-3 mb-3">
         <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>
         {role === "Doctor" || role === "Nurse" ? (
@@ -220,8 +205,7 @@ const PatientManagementContent = () => {
 
       <StyledTable size="small" className="shadow-md">
         <TableHead>
-          <StyledTableRow>
-            <StyledTableCell></StyledTableCell>
+          <StyledTableRowClick>
             <StyledTableCell>Họ tên</StyledTableCell>
             <StyledTableCell>
               <div className="attibute">Ngày sinh</div>
@@ -250,35 +234,30 @@ const PatientManagementContent = () => {
               <div className="attibute">Trạng thái</div>
             </StyledTableCell>
             <StyledTableCell></StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-          </StyledTableRow>
+          </StyledTableRowClick>
         </TableHead>
         {totalPages === 0 ? null : (
           <TableBody>
             {listPatient.map((item) => (
-              <StyledTableRow key={item.patientId}>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="detail"
-                    onClick={() => {
-                      setModalDetailOpen(true);
-                      dispatch(setUserId(item.patientId));
-                    }}
-                  >
-                    <RemoveRedEyeIcon />
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Link to={`record/${item.patientId}`}>
-                    {item.patientName}
-                  </Link>
-                </StyledTableCell>
+              <StyledTableRowClick
+                className="hover cursor-pointer"
+                key={item.patientId}
+                onClick={() => {
+                  navigate(`profile/${item.patientId}`);
+                }}
+              >
+                <StyledTableCell>{item.patientName}</StyledTableCell>
                 <StyledTableCell>
                   {dayjs(item.birthdate).format("DD/MM/YYYY")}
                 </StyledTableCell>
                 <StyledTableCell>{item.phone}</StyledTableCell>
-                <StyledTableCell>{item.gender ? "Nam" : "Nữ"}</StyledTableCell>
+                <StyledTableCell>
+                  {item.gender ? (
+                    <MaleIcon style={{ color: "rgb(65, 142, 237)" }} />
+                  ) : (
+                    <FemaleIcon style={{ color: "#f29cab" }} />
+                  )}
+                </StyledTableCell>
                 <StyledTableCell>{item.address}</StyledTableCell>
                 <StyledTableCell>{item.email}</StyledTableCell>
                 <StyledTableCell>
@@ -292,38 +271,19 @@ const PatientManagementContent = () => {
                   />
                 </StyledTableCell>
                 <StyledTableCell>
-                  <IconButton
-                    aria-label="edit"
-                    onClick={() => {
-                      setModalUpdateOpen(true);
-                      dispatch(setUserId(item.patientId));
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => {
-                      setModalDeleteOpen(true);
-                      dispatch(setUserId(item.patientId));
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <IconButton
-                    aria-label="add"
-                    onClick={() => {
+                  <Button
+                    variant="contained"
+                    color="info"
+                    startIcon={<AddIcon />}
+                    onClick={(e) => {
+                      e.stopPropagation();
                       addWaitingPatient(item.patientId);
                     }}
                   >
-                    <AddIcon />
-                  </IconButton>
+                    <span className="leading-none">Đặt lịch</span>
+                  </Button>
                 </StyledTableCell>
-              </StyledTableRow>
+              </StyledTableRowClick>
             ))}
           </TableBody>
         )}
@@ -367,26 +327,6 @@ const PatientManagementContent = () => {
           isSubmitForm={setIsSubmitFormPatient}
         />
       </div>
-      <div>
-        <ModalDeletePatient
-          modalDeleteOpen={modalDeleteOpen}
-          setModalDeleteOpen={setModalDeleteOpen}
-          isSubmitForm={setIsSubmitFormPatient}
-        />
-      </div>
-      <div>
-        <ModalUpdatePatient
-          modalUpdateOpen={modalUpdateOpen}
-          setModalUpdateOpen={setModalUpdateOpen}
-          isSubmitForm={setIsSubmitFormPatient}
-        />
-      </div>
-      <div>
-        <ModalDetailPatient
-          modalDetailOpen={modalDetailOpen}
-          setModalDetailOpen={setModalDetailOpen}
-        />
-      </div>
       <SwipeableDrawer
         anchor="right"
         open={openFilter}
@@ -419,20 +359,6 @@ const PatientManagementContent = () => {
                 });
               }}
             />
-            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                disableFuture={true}
-                value={searchValue.birthdate}
-                inputFormat="DD/MM/YYYY"
-                onChange={(newValue) => {
-                  setSearchValue({
-                    ...searchValue,
-                    birthdate: dayjs(newValue).format("MM-DD-YYYY"),
-                  });
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider> */}
           </Box>
           <Box className="mb-3">
             <p className="mb-1">Số điện thoại</p>

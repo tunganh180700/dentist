@@ -23,20 +23,6 @@ const ChartIncome = ({ data, onChangeDateRange }) => {
       legend: {
         position: "bottom",
       },
-      // slider:
-      //   data.length > 12
-      //     ? {
-      //         start: 0,
-      //         end: 0.5,
-      //         trendCfg: {
-      //           isArea: false,
-      //         },
-      //         height: 7,
-      //         handlerStyle: {
-      //           height: 10,
-      //         },
-      //       }
-      //     : null,
       color: ({ type }) => {
         switch (type) {
           case "Doanh thu":
@@ -63,8 +49,8 @@ const ChartIncome = ({ data, onChangeDateRange }) => {
       <Box className="flex items-center justify-between mb-5">
         <h4>Biểu đồ doanh thu</h4>
         <Box className="flex items-center gap-3">
-          <p className="mb-0">Chọn ngày</p>
-          <DatePickerDentist range onChange={onChangeDateRange} />
+          <h5>Doanh thu ngày</h5>
+          <DatePickerDentist placeholder={["Ngày bắt đầu","Ngày kết thúc"]} range onChange={onChangeDateRange} />
         </Box>
       </Box>
       <Column {...config} />
