@@ -35,12 +35,15 @@ const Sidebar = ({ isOpenSideBar = false }) => {
   return (
     <div className="decoration-white text-black h-4/5">
       <div className="mb-2">
-        <img
-          src={Logo}
-          width={130}
-          style={{ margin: "auto", borderRadius: "10px" }}
-          alt=""
-        />
+        <Link to="/patient-management">
+          <img
+            className="cursor-pointer"
+            src={Logo}
+            width={130}
+            style={{ margin: "auto", borderRadius: "10px" }}
+            alt=""
+          />
+        </Link>
       </div>
 
       <Box className="flex flex-col gap-2 h-full pb-5 overflow-x-hidden overflow-y-scroll">

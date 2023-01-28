@@ -40,7 +40,7 @@ const listScheduleSlice = createSlice({
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
                 state.totalPage = action.payload.totalPages;
-
+                state.isUpdateSchedule = false
                 state.message = action.payload.message
             })
             .addCase(updateSchedule.pending, (state, action) => {
@@ -81,12 +81,12 @@ export const addSchedule = createAsyncThunk('listSchedule/addSchedule', async (v
 
         console.log(values)
         const res = await axiosInstance.post(addScheduleAPI, values)
-        toast.success("Thêm vật liệu thành công !!!!!", toastCss)
+        toast.success("Đặt lịch thành công !!!!!", toastCss)
         console.log(res.data)
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error('Thêm mới thất bại :(', toastCss)
+        toast.error('Đặt lịch thất bại !!', toastCss)
     }
 })
 

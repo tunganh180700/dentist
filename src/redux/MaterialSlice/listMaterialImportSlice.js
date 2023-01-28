@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
-import { listMaterialImportAPI, updateMaterialImportAPI, deleteMaterialImportAPI, addMaterialImportAPI } from "../../config/baseAPI"
+import { listMaterialImportAPI, updateMaterialImportAPI, deleteMaterialImportAPI, addListMaterialImportAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, UPDATE_FAIL_IMPORT_MATERIAL, DELETE_FAIL_IMPORT_MATERIAL } from "../../config/constant"
@@ -112,7 +112,7 @@ export const deleteMaterialImport = createAsyncThunk('listMaterialImport/deleteM
 
 export const addMaterialImport = createAsyncThunk('listMaterialImport/addMaterialImport', async (values) => {
     try {
-        const res = await axiosInstance.post(addMaterialImportAPI, values)
+        const res = await axiosInstance.post(addListMaterialImportAPI, values)
         toast.success("Thêm vật liệu thành công !!!!!", toastCss)
         return res.data
     } catch (error) {

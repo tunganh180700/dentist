@@ -78,7 +78,8 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
   //   }, [currentPage]);
 
   return (
-    <Modal width={1500} open={isShow} onCancel={() => setIsShow(false)}>
+    <Modal width={1500} open={isShow} footer={null} 
+     onCancel={() => setIsShow(false)}>
       <p className="text-center font-bold text-2xl">Danh sách mẫu vật</p>
       {loading === false && (
         <>

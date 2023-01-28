@@ -51,6 +51,8 @@ const ModalReceivedSample = ({ isShow, setIsShow }) => {
   const handleSubmit = () => {
     const finalData = listSample.filter((item) => item.checked);
     dispatch(updateReceiveSample(finalData));
+    setListSample([]);
+    setIsShow(false);
   };
 
   return (

@@ -21,6 +21,7 @@ import {
 } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
 import {
+  deleteService,
   setIsAddCategory,
   setIsUpdateCategory,
 } from "../../../redux/ServiceAndCategorySlice/listCategorySlice";
@@ -173,7 +174,9 @@ const ServiceAndCategoryManagementContent = () => {
         >
           <span className="leading-none">Thêm mới dịch vụ</span>
         </Button>
-        <Button variant="contained" color="error" endIcon={<DeleteIcon />}>
+        <Button variant="contained" color="error" endIcon={<DeleteIcon />} onClick={
+          () => dispatch(deleteService(categoryServiceId))
+        }>
           <span className="leading-none">Xóa loại dịch vụ</span>
         </Button>
       </div>

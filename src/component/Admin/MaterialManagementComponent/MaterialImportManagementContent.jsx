@@ -77,8 +77,8 @@ const MaterialImportManagementContent = () => {
   }, [currentPage]);
   useEffect(() => {
     if (
-      isUpdateMaterialImport &&
-      isDeleteMaterialImport &&
+      isUpdateMaterialImport ||
+      isDeleteMaterialImport ||
       isAddMaterialImport
     ) {
       setLoading(true);

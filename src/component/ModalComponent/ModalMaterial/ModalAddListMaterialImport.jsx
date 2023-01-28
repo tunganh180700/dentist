@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "antd";
 import "antd/dist/antd.css";
-import { Typography, TextField, Box } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { Typography, TextField, Box, OutlinedInput } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 // import { useFormik } from "formik";
 import { listAllMaterialAPI } from "../../../config/baseAPI";
 import MenuItem from "@mui/material/MenuItem";
@@ -64,6 +64,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     loadMaterial();
   }, []);
 
+
   // const formik = useFormik({
   //     initialValues: {
   //         supplyName: '',
@@ -88,12 +89,16 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
         okText={"Lưu"}
         title="Nhập vật liệu"
         open={modalAddOpen}
-        width="70%"
+        width="80%"
         onOk={() => {
           setModalAddOpen(false);
+          setMaterialImport([]);
           dispatch(addMaterialImport(materialImport));
         }}
-        onCancel={() => setModalAddOpen(false)}
+        onCancel={() => {
+          setMaterialImport([]);
+          setModalAddOpen(false);
+        }}
       >
         <Box className="text-right">
           <Button
@@ -136,9 +141,11 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
           <TableBody>
             {materialImport?.map((materialImportItem, index) => (
               <StyledTableRow key={index}>
-                <StyledTableCell style={{ paddingTop: "1.5rem" }}>
+                <StyledTableCell>
                   <Select
                     id="materialId"
+                    fullWidth
+                    className="h-[30px]"
                     value={materialImportItem?.materialId}
                     onChange={(e) => {
                       setMaterialImport((prev) => {
@@ -155,9 +162,13 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                   </Select>
                 </StyledTableCell>
                 <StyledTableCell padding="none">
-                  <input
+                  <OutlinedInput
+                    endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
+                    size="small"
+                    id="supplyName"
+                    placeholder="Tên hãng nhập"
                     value={materialImportItem.supplyName}
-                    name="supplyName"
+                    className="h-[30px] bg-white"
                     onChange={(e) =>
                       setMaterialImport((prev) => {
                         prev[index].supplyName = e.target.value;
@@ -167,10 +178,13 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                   />
                 </StyledTableCell>
                 <StyledTableCell padding="none">
-                  <input
-                    value={materialImportItem.amount}
-                    name="amount"
+                  <OutlinedInput
+                    endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
+                    size="small"
+                    id="amount"
                     type={"number"}
+                    value={materialImportItem.amount}
+                    className="h-[30px] bg-white"
                     onChange={(e) =>
                       setMaterialImport((prev) => {
                         prev[index].amount = +e.target.value;
@@ -182,9 +196,13 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                   />
                 </StyledTableCell>
                 <StyledTableCell padding="none">
-                  <input
+                  <OutlinedInput
+                    endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
+                    size="small"
+                    id="unitPrice"
+                    type={"number"}
                     value={materialImportItem.unitPrice}
-                    name="unitPrice"
+                    className="h-[30px] bg-white"
                     onChange={(e) =>
                       setMaterialImport((prev) => {
                         prev[index].unitPrice = e.target.value;
@@ -194,17 +212,8 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     }
                   />
                 </StyledTableCell>
-                <StyledTableCell padding="none">
-                  <input
-                    value={materialImportItem.total}
-                    name="total"
-                    onChange={(e) =>
-                      setMaterialImport((prev) => {
-                        return _.cloneDeep(prev);
-                      })
-                    }
-                    disabled={true}
-                  />
+                <StyledTableCell padding="none" className="text-center">
+                  {materialImportItem.total} VND
                 </StyledTableCell>
                 <StyledTableCell padding="none">
                   <Button

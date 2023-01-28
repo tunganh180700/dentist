@@ -128,7 +128,7 @@ const SpecimenManagementContent = () => {
     <>
       <h2 className="font-bold mb-4">Quản lý mẫu vật</h2>
       <Box className="flex items-center gap-3 mb-3">
-        <p className="font-bold text-lg mb-0">Có ({0}) bản ghi</p>
+        <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>
         <Button
           variant="contained"
           color="info"

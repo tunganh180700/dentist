@@ -17,6 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DatePickerDentist from "../../ui/date-picker/DatePickerDentist";
+import ScheduleIcon from "@mui/icons-material/Schedule";
 import {
   fetchAllPatient,
   searchPatient,
@@ -34,6 +35,7 @@ import { toast } from "react-toastify";
 import "./style.css";
 import dayjs from "dayjs";
 import moment from "moment";
+import ModalAddSchedule from "../../ModalComponent/ModalSchedule/ModalAddSchedule";
 
 const PatientManagementContent = () => {
   const dispatch = useDispatch();
@@ -44,7 +46,9 @@ const PatientManagementContent = () => {
   const totalElements = useSelector((state) => state.listPatient.totalElements);
   const [currentPage, setCurrentPage] = useState(0);
   const [modalAddOpen, setModalAddOpen] = useState(false);
+  const [modalAddOpenSchedule, setModalAddOpenSchedule] = useState(false);
   const [isSubmitFormPatient, setIsSubmitFormPatient] = useState(false);
+  const [patientSchedule, setPatientSchedule] = useState();
   const [openFilter, setOpenFilter] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -234,6 +238,7 @@ const PatientManagementContent = () => {
               <div className="attibute">Trạng thái</div>
             </StyledTableCell>
             <StyledTableCell></StyledTableCell>
+            <StyledTableCell></StyledTableCell>
           </StyledTableRowClick>
         </TableHead>
         {totalPages === 0 ? null : (
@@ -273,11 +278,27 @@ const PatientManagementContent = () => {
                 <StyledTableCell>
                   <Button
                     variant="contained"
-                    color="info"
+                    color="primary"
                     startIcon={<AddIcon />}
                     onClick={(e) => {
                       e.stopPropagation();
                       addWaitingPatient(item.patientId);
+                    }}
+                  >
+                    <span className="leading-none">Thêm vào phòng chờ</span>
+                  </Button>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    startIcon={<ScheduleIcon />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPatientSchedule(item)
+                      setTimeout(()=>{
+                        setModalAddOpenSchedule(true)
+                      })
                     }}
                   >
                     <span className="leading-none">Đặt lịch</span>
@@ -419,6 +440,13 @@ const PatientManagementContent = () => {
           </Box>
         </Box>
       </SwipeableDrawer>
+      <div>
+        <ModalAddSchedule
+        patient={patientSchedule}
+          modalAddOpen={modalAddOpenSchedule}
+          setModalAddOpen={setModalAddOpenSchedule}
+        />
+      </div>
     </>
   );
 };

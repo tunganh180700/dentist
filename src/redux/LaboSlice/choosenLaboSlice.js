@@ -5,7 +5,7 @@ import {
   getListPrepareByIdAPI,
   getListReceiveByIdAPI,
   updatePrepareAPI,
-  updateReceiveAPI
+  updateReceiveAPI,
 } from "../../config/baseAPI";
 import axiosInstance from "../../config/customAxios";
 
@@ -19,7 +19,9 @@ const initState = {
   totalMoney: "",
   specimensDTOS: [],
   prepareSample: [],
-  receiveSamples:[]
+  receiveSamples: [],
+  isUpdatePrepareSample: false,
+  isUpdateReceiveSample: false,
 };
 const choosenLaboSlice = createSlice({
   name: "choosenLabo",
@@ -60,11 +62,18 @@ const choosenLaboSlice = createSlice({
         state.specimensDTOS = action.payload.specimensDTOS;
       })
       .addCase(fetchPrepareSample.fulfilled, (state, action) => {
+        state.isUpdatePrepareSample = false;
         state.prepareSample = action.payload;
       })
-      .addCase(updatePrepareSample.fulfilled, (state, action) => {})
-      .addCase(updateReceiveSample.fulfilled, (state, action) => {})
+      .addCase(updatePrepareSample.fulfilled, (state, action) => {
+        state.isUpdatePrepareSample = true;
+      })
+      .addCase(updateReceiveSample.fulfilled, (state, action) => {
+        state.isUpdateReceiveSample = true;
+
+      })
       .addCase(fetchListReceive.fulfilled, (state, action) => {
+        state.isUpdateReceiveSample = false;
         state.receiveSamples = action.payload;
       });
   },

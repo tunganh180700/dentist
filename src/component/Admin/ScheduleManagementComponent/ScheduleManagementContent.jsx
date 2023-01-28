@@ -36,8 +36,18 @@ const ScheduleManagementContent = () => {
     (state) => state.listSchedule.isUpdateSchedule
   );
 
-  const [modalAddOpen, setModalAddOpen] = useState(false);
   const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
+
+  useEffect(() => {
+    if (isAddSchedule || isUpdateSchedule) {
+      dispatch(
+        fetchAllSchedule({
+          size: pageSize,
+          page: currentPage,
+        })  
+      );
+    }
+  }, [isAddSchedule, isUpdateSchedule]);
 
   useEffect(() => {
     dispatch(
@@ -46,22 +56,10 @@ const ScheduleManagementContent = () => {
         page: currentPage,
       })
     );
-  }, [currentPage, isAddSchedule, isUpdateSchedule]);
-
+  }, [currentPage]);
   return (
     <>
       <h2 className="font-bold mb-4">Lịch hẹn</h2>
-      {/* <Button
-        aria-label="add"
-        variant="success"
-        style={{ float: "right", marginBottom: "1rem" }}
-        onClick={() => {
-          setModalAddOpen(true);
-        }}
-      >
-        <AddIcon /> Thêm mới
-      </Button> */}
-
       <StyledTable size="small" className="shadow-md">
         <TableHead>
           <StyledTableRow>
@@ -80,7 +78,7 @@ const ScheduleManagementContent = () => {
               <StyledTableCell>{item.date}</StyledTableCell>
               <StyledTableCell>{item.note}</StyledTableCell>
               <StyledTableCell>
-                <IconButton aria-label="edit">
+                <IconButton aria-label="delete">
                   <DeleteIcon />
                 </IconButton>
                 <IconButton
@@ -93,19 +91,16 @@ const ScheduleManagementContent = () => {
                   <EditIcon />
                 </IconButton>
               </StyledTableCell>
-              {/* <StyledTableCell>
-                <Button aria-label="delete" disabled>
-                  <DeleteIcon />
-                </Button>
-          
-              </StyledTableCell> */}
             </StyledTableRow>
           ))}
         </TableBody>
       </StyledTable>
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}
+      >
         {totalPages > 1 ? (
           <Pagination
+            color="primary"
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);
@@ -113,12 +108,12 @@ const ScheduleManagementContent = () => {
           />
         ) : null}
       </div>
-      <div>
+      {/* <div>
         <ModalAddSchedule
           modalAddOpen={modalAddOpen}
           setModalAddOpen={setModalAddOpen}
         />
-      </div>
+      </div> */}
       <div>
         <ModalUpdateSchedule
           modalUpdateOpen={modalUpdateOpen}

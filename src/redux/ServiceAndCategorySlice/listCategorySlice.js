@@ -164,14 +164,13 @@ export const updateService = createAsyncThunk(
 export const deleteService = createAsyncThunk(
   "listCategory/deleteService",
   async (serviceId) => {
-    console.log(serviceId);
     try {
       const res = await axiosInstance.delete(deleteServiceAPI + serviceId);
-      toast.success(DELETE_SUCCESS, toastCss);
+      toast.success("Xóa dịch vụ thành công", toastCss);
       console.log(res.data);
       return serviceId;
     } catch (error) {
-      toast.error(DELETE_FAIL, toastCss);
+      toast.error("Xóa dịch vụ không thành công", toastCss);
     }
   }
 );

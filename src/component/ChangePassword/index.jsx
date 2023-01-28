@@ -15,9 +15,11 @@ import { useState } from "react";
 import { Typography } from "antd";
 
 export default function ChangePassword() {
+  const [showOldPassword, setShowOldPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
   const validationSchema = yup.object().shape({
+    oldPass: yup.string().required("Vui lòng nhập mật khẩu cũ"),
     newPass: yup.string().required("Vui lòng nhập mật khẩu mới"),
     reEnter: yup
       .string()
@@ -29,6 +31,7 @@ export default function ChangePassword() {
 
   const formik = useFormik({
     initialValues: {
+      oldPass: "",
       newPass: "",
       reEnter: "",
     },
@@ -45,11 +48,43 @@ export default function ChangePassword() {
           </Box>
           <Box className="mb-3">
             <p className={`mb-1 font-bold`}>
+              Mật khẩu cũ <span className="text-red-600">*</span>
+            </p>
+            <OutlinedInput
+              id="oldPass"
+              className="w-full"
+              placeholder="Nhập mật khẩu cũ"
+              type={showOldPassword ? "text" : "password"}
+              value={formik.values.oldPass}
+              onChange={formik.handleChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowOldPassword(!showOldPassword)}
+                    edge="end"
+                  >
+                    {showOldPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            {formik.errors.oldPass && formik.touched.oldPass && (
+              <Typography
+                style={{ color: "red", fontStyle: "italic", fontSize: "14px" }}
+              >
+                {formik.errors.oldPass}
+              </Typography>
+            )}
+          </Box>
+          <Box className="mb-3">
+            <p className={`mb-1 font-bold`}>
               Mật khẩu mới <span className="text-red-600">*</span>
             </p>
             <OutlinedInput
               id="newPass"
               className="w-full"
+              placeholder="Nhập mật khẩu"
               type={showPassword ? "text" : "password"}
               value={formik.values.newPass}
               onChange={formik.handleChange}
@@ -80,6 +115,7 @@ export default function ChangePassword() {
             <OutlinedInput
               id="reEnter"
               className="w-full"
+              placeholder="Nhập lại mật khẩu"
               type={showRePassword ? "text" : "password"}
               value={formik.values.reEnter}
               onChange={formik.handleChange}

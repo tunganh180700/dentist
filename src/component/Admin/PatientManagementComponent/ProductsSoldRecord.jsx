@@ -46,7 +46,7 @@ const ProductsSoldRecord = ({ patientId, isShow, setIsShow }) => {
   });
 
   return (
-    <Modal width={1500} open={isShow} onCancel={() => setIsShow(false)}>
+    <Modal width={1500} open={isShow} footer={null} onCancel={() => setIsShow(false)}>
       <p className="text-center font-bold text-2xl">Sản phẩm đã mua</p>
       <StyledTable className="shadow-md" size="small">
         <TableHead>

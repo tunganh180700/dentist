@@ -23,10 +23,9 @@ const ModalDetailLabo = () => {
   const specimensDTOS = useSelector((state) => state.choosenLabo.specimensDTOS);
   const dispatch = useDispatch();
 
-  //   const isUpdateLabo = useSelector((state) => state.listLabo.isUpdateLabo);
-  //   const isDeleteSpecimens = useSelector(
-  //     (state) => state.choosenSpecimens.isDeleteSpecimens
-  //   );
+    const isUpdatePrepareSample = useSelector((state) => state.choosenLabo.isUpdatePrepareSample);
+    const isUpdateReceiveSample = useSelector((state) => state.choosenLabo.isUpdateReceiveSample);
+
   //   const isUpdateSpecimens = useSelector(
   //     (state) => state.listSpecimens.isUpdateSpecimens
   //   );
@@ -55,6 +54,20 @@ const ModalDetailLabo = () => {
       setLoading(false);
     }, 500);
   }, [laboId]);
+
+  useEffect(() => {
+    setLoading(true);
+    try {
+      if (laboId && (isUpdatePrepareSample || isUpdateReceiveSample)) {
+        dispatch(fetchLabo(laboId));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, [isUpdatePrepareSample, isUpdateReceiveSample]);
 
   return (
     <>
