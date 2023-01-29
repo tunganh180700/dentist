@@ -5,7 +5,14 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 // import StyledTableRow from '@mui/material/StyledTableRow';
-import { Pagination, Typography, IconButton, TextField } from "@mui/material";
+import {
+  Pagination,
+  Typography,
+  IconButton,
+  TextField,
+  Button,
+  Box,
+} from "@mui/material";
 import "./style.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -87,8 +94,8 @@ const WaitingRoomManagementContent = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    if (isDeleteWaiting == true && totalElements % pageSize == 1) {
-      setCurrentPage(currentPage - 1);
+    if (isDeleteWaiting || isCallWaiting) {
+      // setCurrentPage(currentPage - 1);
       dispatch(
         fetchAllWaiting({
           size: pageSize,
@@ -113,11 +120,19 @@ const WaitingRoomManagementContent = () => {
     }
   };
 
-  const handlePopupConfirm = () => {
+  const handlePopupConfirm = (mess) => {
     if (role === null || role === "Receptionist") {
       setTriggerGetList((prev) => !prev);
       setModalConfirmWaitingOpen(true);
+    } else {
+      dispatch(
+        fetchAllWaiting({
+          size: pageSize,
+          page: currentPage,
+        })
+      );
     }
+    console.log(mess);
   };
 
   const remove = (id) => {
@@ -142,70 +157,75 @@ const WaitingRoomManagementContent = () => {
             <StyledTableCell>Bệnh nhân</StyledTableCell>
             <StyledTableCell>Ngày</StyledTableCell>
             <StyledTableCell>Trạng thái</StyledTableCell>
+            <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
-        {totalPages ==! 0 && (
-            <TableBody>
-              {listWaiting?.map((item) => (
-                <StyledTableRow key={item.waitingRoomId}>
-                  <StyledTableCell>{item.patientName}</StyledTableCell>
-                  <StyledTableCell>
-                    {moment(item.date).format("DD/MM/YYYY")}
-                  </StyledTableCell>
-                  <StyledTableCell>{getStatusStr(item.status)}</StyledTableCell>
-                  {role === null ||
-                  role === "Receptionist" ||
-                  item.status === 1 ? (
-                    <></>
-                  ) : (
-                    <StyledTableCell>
-                      <IconButton
-                        aria-label="edit"
-                        onClick={() => {
-                          call(item.waitingRoomId);
-                        }}
-                      >
-                        Gọi
-                      </IconButton>
-                    </StyledTableCell>
-                  )}
-                  {role === null ||
-                  role === "Receptionist" ||
-                  item.status === 1 ? (
-                    <></>
-                  ) : (
-                    <StyledTableCell>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => {
-                          remove(item.waitingRoomId);
-                        }}
-                      >
-                        Xóa
-                      </IconButton>
-                    </StyledTableCell>
-                  )}
-                </StyledTableRow>
-              ))}
-            </TableBody>
-        )}
+        <TableBody>
+          {listWaiting?.map((item) => (
+            <StyledTableRow key={item.waitingRoomId}>
+              <StyledTableCell>{item.patientName}</StyledTableCell>
+              <StyledTableCell>
+                {moment(item.date).format("DD/MM/YYYY")}
+              </StyledTableCell>
+              <StyledTableCell>{getStatusStr(item.status)}</StyledTableCell>
+              <StyledTableCell>
+                {item.status === 1 || 2 && (
+                  <Box>
+                    {role === "Receptionist" ? (
+                      <Box>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          // startIcon={<AddIcon />}
+                          onClick={() => {
+                            remove(item.waitingRoomId);
+                          }}
+                        >
+                          <span className="leading-none">Vắng mặt</span>
+                        </Button>
+                      </Box>
+                    ) : (
+                      <Box>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          // startIcon={<AddIcon />}
+                          onClick={() => {
+                            call(item.waitingRoomId);
+                          }}
+                        >
+                          <span className="leading-none">Đăng kí khám</span>
+                        </Button>
+                      </Box>
+                    )}
+                  </Box>
+                )}
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
       </StyledTable>
-     {totalPages === 0 && (
-         <Typography
-              component="h2"
-              variant="h5"
-              color="inherit"
-              noWrap
-              textAlign="center"
-              padding={10}
-              margin="auto"
-            >
-              Không có ai ở phòng chờ
-            </Typography>
-        )}
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      {totalPages == !0 && <></>}
+
+      {totalPages === 0 && (
+        <Typography
+          component="h2"
+          variant="h5"
+          color="inherit"
+          noWrap
+          textAlign="center"
+          padding={10}
+          margin="auto"
+        >
+          Không có ai ở phòng chờ
+        </Typography>
+      )}
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}
+      >
         {totalPages > 1 ? (
           <Pagination
+            color="primary"
             count={totalPages}
             onChange={(e, pageNumber) => {
               setCurrentPage(pageNumber - 1);

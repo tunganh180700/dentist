@@ -15,13 +15,11 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import {
-  listAllCategoryAPI,
-  listServiceByCategoryIdAPI,
-} from "../../../config/baseAPI";
+import { listAllCategoryAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
 import {
   deleteService,
+  fetchAllServiceByCategory,
   setIsAddCategory,
   setIsUpdateCategory,
 } from "../../../redux/ServiceAndCategorySlice/listCategorySlice";
@@ -48,6 +46,9 @@ const color = {
 
 const ServiceAndCategoryManagementContent = () => {
   const listCategory = useSelector((state) => state.listCategory.listCategory);
+  const listServiceByCategory = useSelector(
+    (state) => state.listCategory.listServiceByCategory
+  );
   const dispatch = useDispatch();
   const pageSize = useSelector((state) => state.pageSize);
   const totalPages = useSelector((state) => state.totalPage);
@@ -126,17 +127,16 @@ const ServiceAndCategoryManagementContent = () => {
   const loadServiceByCategoryId = async (categoryServiceId) => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get(
-        listServiceByCategoryIdAPI + categoryServiceId
-      );
+      dispatch(fetchAllServiceByCategory(categoryServiceId));
       // setServiceId(res.data.categoryServiceId);
-      setServiceIds(res.data);
-      setIsSubmitFormService(false);
     } catch (error) {
       console.log(error);
     }
     setLoading(false);
   };
+  useEffect(() => {
+    setServiceIds(listServiceByCategory);
+  }, [listServiceByCategory]);
 
   useEffect(() => {
     if (categoryServiceId) {
@@ -145,10 +145,11 @@ const ServiceAndCategoryManagementContent = () => {
   }, [categoryServiceId]);
 
   useEffect(() => {
-    if (isSubmitFormService) {
+    console.log(isDeleteService, isAddService, isUpdateService);
+    if (isDeleteService || isAddService || isUpdateService) {
       loadServiceByCategoryId(categoryServiceId);
     }
-  }, [isSubmitFormService]);
+  }, [isDeleteService, isAddService, isUpdateService]);
 
   return (
     <>
@@ -174,9 +175,12 @@ const ServiceAndCategoryManagementContent = () => {
         >
           <span className="leading-none">Thêm mới dịch vụ</span>
         </Button>
-        <Button variant="contained" color="error" endIcon={<DeleteIcon />} onClick={
-          () => dispatch(deleteService(categoryServiceId))
-        }>
+        <Button
+          variant="contained"
+          color="error"
+          endIcon={<DeleteIcon />}
+          onClick={() => dispatch(deleteService(categoryServiceId))}
+        >
           <span className="leading-none">Xóa loại dịch vụ</span>
         </Button>
       </div>
@@ -255,7 +259,7 @@ const ServiceAndCategoryManagementContent = () => {
                   <StyledTableCell>{item.marketPrice}</StyledTableCell>
                   <StyledTableCell>{item.price}</StyledTableCell>
                   <StyledTableCell>
-                  <IconButton
+                    <IconButton
                       aria-label="delete"
                       onClick={() => {
                         setModalDeleteOpen(true);

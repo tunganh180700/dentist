@@ -57,7 +57,7 @@ const ModalSpecimen = ({
         specimenId: item.specimenId,
         specimenName: item.specimenName,
         amount: item.amount,
-        unitPrice: item.unitPrice,
+        unitPrice: item.unitPrice || 0,
         laboId: item.laboId,
         serviceId: item.serviceId,
         statusChange: item.statusChange,
@@ -113,7 +113,7 @@ const ModalSpecimen = ({
               {
                 specimenName: null,
                 amount: 1,
-                unitPrice: listOptionServiceEnable[0]?.price,
+                unitPrice: 0,
                 laboId: labo[0]?.laboId,
                 serviceId: listOptionServiceEnable[0]?.serviceId,
                 statusChange: "add",
@@ -175,22 +175,20 @@ const ModalSpecimen = ({
                   />
                 </StyledTableCell>
                 <StyledTableCell padding="none">
-                  {formatter.format(specimenItem.unitPrice) || 0} VND
-                  {/* <OutlinedInput
+                  {/* {formatter.format(specimenItem.unitPrice) || 0} VND */}
+                  <OutlinedInput
                     endAdornment={<p className="mb-0 leading-0 text-xs">VND</p>}
                     id="discount"
-                    value={specimen.unitPrice || 0}
+                    value={specimen.unitPrice}
+                    type="number"
                     className="h-[30px] bg-white"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    // onChange={(e) =>
-                    //   setSpecimen((prev) => {
-                    //     prev[index].unitPrice = e.target.value;
-                    //     return _.cloneDeep(prev);
-                    //   })
-                    // }
-                  /> */}
+                    onChange={(e) =>
+                      setSpecimen((prev) => {
+                        prev[index].unitPrice = e.target.value;
+                        return _.cloneDeep(prev);
+                      })
+                    }
+                  />
                 </StyledTableCell>
                 <StyledTableCell>
                   <Select

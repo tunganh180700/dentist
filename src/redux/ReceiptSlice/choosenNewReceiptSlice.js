@@ -12,6 +12,7 @@ const initState = {
     status: false,
     statusNewReceipt: false,
     debit: '',
+    oldDebit: 0,
     // patientId: '',
     newServices: [],
 
@@ -33,6 +34,7 @@ const choosenNewReceiptSlice = createSlice({
             .addCase(fetchNewReceipt.fulfilled, (state, action) => {
                 state.choosenNewReceipt = action.payload;
                 state.debit = action.payload.debit;
+                state.oldDebit = action.payload.oldDebit;
                 // state.patientId = action.payload.patientId;
                 state.newServices = action.payload.newServices;
                 state.status = false

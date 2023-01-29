@@ -108,9 +108,9 @@ const ModalAddSpecimens = ({ modalAddOpen, setModalAddOpen }) => {
 
       dispatch(addSpecimen(values));
       setModalAddOpen(false);
-      formik.handleReset();
       setReceiveDate(null);
       setDeliveryDate(null);
+      formik.handleReset();
     },
   });
 

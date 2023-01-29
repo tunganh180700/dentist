@@ -36,9 +36,12 @@ import "./style.css";
 import dayjs from "dayjs";
 import moment from "moment";
 import ModalAddSchedule from "../../ModalComponent/ModalSchedule/ModalAddSchedule";
+import { fetchAllWaiting } from "../../../redux/WaitingSlice/listWaitingSlice";
+import DoneIcon from "@mui/icons-material/Done";
 
 const PatientManagementContent = () => {
   const dispatch = useDispatch();
+  const listWaiting = useSelector((state) => state.listWaiting.listWaiting);
   const listPatient = useSelector((state) => state.listPatient.listPatient);
   const isAddPatient = useSelector((state) => state.listPatient.isAddPatient);
   const pageSize = useSelector((state) => state.listPatient.pageSize);
@@ -60,6 +63,7 @@ const PatientManagementContent = () => {
   useEffect(() => {
     const role = localStorage.getItem("role");
     setRole(role);
+    dispatch(fetchAllWaiting());
   }, []);
 
   const [searchValue, setSearchValue] = useState({
@@ -86,6 +90,13 @@ const PatientManagementContent = () => {
       ? "Đang Chữa"
       : "Đã Chữa Trị";
   };
+
+  const mapListWaiting = useMemo(() => {
+    if (listWaiting.length) {
+      return listWaiting.map((item) => item.patientId);
+    }
+    return [];
+  }, [listWaiting]);
 
   useEffect(() => {
     if (isAddPatient) {
@@ -170,6 +181,7 @@ const PatientManagementContent = () => {
       await axiosInstance.post(
         "http://localhost:8080/api/patients/" + patientId + "/waiting_room"
       );
+      dispatch(fetchAllWaiting());
       toast("Thêm bệnh nhân đang chờ thành công");
     } catch (error) {
       console.log("error = ", error);
@@ -237,7 +249,9 @@ const PatientManagementContent = () => {
             >
               <div className="attibute">Trạng thái</div>
             </StyledTableCell>
-            <StyledTableCell></StyledTableCell>
+            {(role === "Receptionist" || role === "Admin") && (
+              <StyledTableCell></StyledTableCell>
+            )}
             <StyledTableCell></StyledTableCell>
           </StyledTableRowClick>
         </TableHead>
@@ -275,19 +289,34 @@ const PatientManagementContent = () => {
                     }}
                   />
                 </StyledTableCell>
-                <StyledTableCell>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<AddIcon />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addWaitingPatient(item.patientId);
-                    }}
-                  >
-                    <span className="leading-none">Thêm vào phòng chờ</span>
-                  </Button>
-                </StyledTableCell>
+                {(role === "Receptionist" || role === "Admin") && (
+                  <StyledTableCell>
+                    {!mapListWaiting.includes(item.patientId) ? (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<AddIcon />}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addWaitingPatient(item.patientId);
+                        }}
+                      >
+                        <span className="leading-none">Thêm vào phòng chờ</span>
+                      </Button>
+                    ) : (
+                      <Chip
+                        size="medium"
+                        color="success"
+                        label={
+                          <Box className="flex items-center">
+                            <DoneIcon className="mr-1" />
+                            Đã thêm vào phòng chờ
+                          </Box>
+                        }
+                      ></Chip>
+                    )}
+                  </StyledTableCell>
+                )}
                 <StyledTableCell>
                   <Button
                     variant="contained"
@@ -295,10 +324,10 @@ const PatientManagementContent = () => {
                     startIcon={<ScheduleIcon />}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setPatientSchedule(item)
-                      setTimeout(()=>{
-                        setModalAddOpenSchedule(true)
-                      })
+                      setPatientSchedule(item);
+                      setTimeout(() => {
+                        setModalAddOpenSchedule(true);
+                      });
                     }}
                   >
                     <span className="leading-none">Đặt lịch</span>
@@ -442,7 +471,7 @@ const PatientManagementContent = () => {
       </SwipeableDrawer>
       <div>
         <ModalAddSchedule
-        patient={patientSchedule}
+          patient={patientSchedule}
           modalAddOpen={modalAddOpenSchedule}
           setModalAddOpen={setModalAddOpenSchedule}
         />

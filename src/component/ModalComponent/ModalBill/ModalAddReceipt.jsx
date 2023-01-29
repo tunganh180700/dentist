@@ -25,6 +25,7 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
   const [isSubmitForm, setIsSubmitForm] = useState(false);
   const treatmentId = useSelector((state) => state.modal.treatmentId);
   const debit = useSelector((state) => state.choosenNewReceipt.debit);
+  const oldDebit = useSelector((state) => state.choosenNewReceipt.oldDebit);
   const patientId = useSelector((state) => state.choosenBill.patientId);
 
   const newServices = useSelector(
@@ -100,6 +101,9 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
       >
+        <Typography component="h1" fontWeight="bold" color="inherit" marginBottom={1} noWrap>
+          Nợ cũ : {oldDebit || 0} VND
+        </Typography>
         <StyledTable className="shadow-md mb-3">
           <TableHead>
             <StyledTableRow>

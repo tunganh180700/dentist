@@ -108,14 +108,15 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      if (!deliveryDate || !receiveDate || moment(deliveryDate.$d).diff(receiveDate.$d, "minutes") > 0) {
+      console.log(receiveDate, deliveryDate);
+      if (!deliveryDate || !receiveDate || moment(receiveDate.$d || receiveDate).diff(deliveryDate.$d || deliveryDate, "minutes") < 0) {
         if (receiveDate !== null) {
-          values.receiveDate = moment(receiveDate.$d).format(validationDate);
+          values.receiveDate = moment(receiveDate.$d || receiveDate).format(validationDate);
         }else{
             values.receiveDate = null
         }
         if (deliveryDate !== null) {
-          values.deliveryDate = moment(deliveryDate.$d).format(validationDate);
+          values.deliveryDate = moment(deliveryDate.$d || deliveryDate).format(validationDate);
         }else{
             values.deliveryDate = null
         }
@@ -202,9 +203,13 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     } else if (receiveDate !== null && deliveryDate !== null) {
       setStatusStr(3);
     } else {
-      setStatusStr(4);
+      setStatusStr(1);
     }
   }, [receiveDate, deliveryDate]);
+
+  useEffect(()=>{
+    if(!receiveDate) setDeliveryDate(null)
+  }, [receiveDate])
 
   return (
     <>
@@ -412,7 +417,7 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         </Box>
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <p className={`mb-1 font-bold`}>Ngày nhận</p>
+          <p className={`mb-1 font-bold`}>Ngày labo nhận</p>
           <DatePicker
             name="receiveDate"
             className="mb-3"
@@ -426,12 +431,12 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         </LocalizationProvider>
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <p className={`mb-1 font-bold`}>Ngày giao</p>
+          <p className={`mb-1 font-bold`}>Ngày labo giao</p>
           <DatePicker
             name="deliveryDate"
             className="mb-3"
             inputFormat="DD/MM/YYYY"
-            value={receiveDate ? deliveryDate : null}
+            value={deliveryDate}
             disabled={!receiveDate}
             onChange={(newValue) => {
               setDeliveryDate(newValue);

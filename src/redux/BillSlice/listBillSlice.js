@@ -12,6 +12,7 @@ const initState = {
     index: 0,
     pageSize: 0,
     totalPage: 0,
+    totalElements: 0,
     statusUpdateBill: false,
     isUpdateBill: false,
     message: ''
@@ -38,6 +39,7 @@ const listBillSlice = createSlice({
                 state.pageSize = action.payload.size;
                 state.totalPage = action.payload.totalPages;
                 state.message = action.payload.message
+                state.totalElements = action.payload.totalElements
             })
 
     }

@@ -6,6 +6,7 @@ import {
   addServiceAPI,
   updateServiceAPI,
   updateCategoryBySelectIdAPI,
+  listServiceByCategoryIdAPI,
 } from "../../config/baseAPI";
 import { toast } from "react-toastify";
 import { toastCss } from "../toastCss";
@@ -19,6 +20,7 @@ import axiosInstance from "../../config/customAxios";
 
 const initState = {
   listCategory: [],
+  listServiceByCategory: [],
   pagination: [],
   status: false,
   index: 0,
@@ -69,12 +71,18 @@ const listCategorySlice = createSlice({
         state.totalPage = action.payload.totalPages;
         state.isUpdateCategory = false;
         // state.isDeleteCategory = false;
-        state.isDeleteService = false;
-        state.isAddCategory = false;
-        state.isAddService = false;
-        state.isUpdateService = false;
         state.message = action.payload.message;
       })
+      .addCase(fetchAllServiceByCategory.pending, (state, action) => {
+        state.status = true;
+      })
+      .addCase(fetchAllServiceByCategory.fulfilled, (state, action) => {
+        state.listServiceByCategory = action.payload;
+        state.isDeleteService = false;
+        state.isAddService = false;
+        state.isUpdateService = false;
+      })
+
       .addCase(updateCategory.pending, (state, action) => {
         state.statusUpdateCategory = true;
       })
@@ -115,7 +123,19 @@ export const fetchAllCategory = createAsyncThunk(
       const res = await axiosInstance.get(listAllCategoryAPI, {
         params: paramsSearch,
       });
-      console.log("du lieu check: ", res.data);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+export const fetchAllServiceByCategory = createAsyncThunk(
+  "listCategory/fetchAllServiceByCategory",
+  async (categoryServiceId) => {
+    try {
+      const res = await axiosInstance.get(
+        listServiceByCategoryIdAPI + categoryServiceId
+      );
       return res.data;
     } catch (error) {
       console.log(error);

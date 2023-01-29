@@ -144,15 +144,15 @@ const MaterialManagementContent = () => {
             <StyledTableCell style={{ fontWeight: "bold" }}>
               Đơn vị
             </StyledTableCell>
-            {/* <StyledTableCell style={{ fontWeight: "bold" }}>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
               Số lượng
-            </StyledTableCell> */}
+            </StyledTableCell>
             <StyledTableCell style={{ fontWeight: "bold" }}>
               Giá tiền
             </StyledTableCell>
-            {/* <StyledTableCell style={{ fontWeight: "bold" }}>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
               Tổng tiền
-            </StyledTableCell> */}
+            </StyledTableCell>
             <StyledTableCell></StyledTableCell>
           </StyledTableRow>
         </TableHead>
@@ -162,9 +162,9 @@ const MaterialManagementContent = () => {
             <StyledTableRow key={item.materialId}>
               <StyledTableCell>{item.materialName}</StyledTableCell>
               <StyledTableCell>{item.unit}</StyledTableCell>
-              {/* <StyledTableCell>{item.amount}</StyledTableCell> */}
+              <StyledTableCell>{item.amount}</StyledTableCell>
               <StyledTableCell>{item.price}</StyledTableCell>
-              {/* <StyledTableCell>{item.amount * item.price}</StyledTableCell> */}
+              <StyledTableCell>{item.amount * item.price}</StyledTableCell>
               <StyledTableCell>
                 <IconButton
                   aria-label="delete"

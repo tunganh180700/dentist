@@ -35,7 +35,8 @@ import { useMemo } from "react";
 import Loading from "../../ui/Loading";
 const BillManagementContent = () => {
   const listBill = useSelector((state) => state.listBill.listBill);
-
+  const totalElements = useSelector((state) => state.listBill.totalElements);
+  
   const dispatch = useDispatch();
   const pageSize = useSelector((state) => state.listBill.pageSize);
   const totalPages = useSelector((state) => state.listBill.totalPage);
@@ -106,7 +107,7 @@ const BillManagementContent = () => {
     {loading && <Loading />}
       <h2 className="font-bold mb-4">Danh Sách Hóa Đơn</h2>
       <Box className="flex items-center gap-3 mb-3">
-        <p className="font-bold text-lg mb-0">Có ({0}) bản ghi</p>
+        <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>
         <Button
           variant="contained"
           color="info"

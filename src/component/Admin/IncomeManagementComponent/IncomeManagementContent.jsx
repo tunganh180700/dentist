@@ -80,10 +80,16 @@ const IncomeManagementContent = () => {
   };
 
   const onFetchDataByDate = (date) => {
-    const filter = {
-      startDate: moment(date[0]).format("YYYY-MM-DD"),
-      endDate: moment(date[1]).format("YYYY-MM-DD"),
+    let filter = {
+      startDate: null,
+      endDate: null,
     };
+    if (date) {
+      filter = {
+        startDate: moment(date[0]).format("YYYY-MM-DD"),
+        endDate: moment(date[1]).format("YYYY-MM-DD"),
+      };
+    }
     handleFetchData(filter);
   };
 

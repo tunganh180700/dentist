@@ -32,12 +32,14 @@ const listWaitingSlice = createSlice({
                 state.status = true
             })
             .addCase(fetchAllWaiting.fulfilled, (state, action) => {
-                state.listWaiting = action.payload.content;
                 state.status = false;
+                state.listWaiting = action.payload.content;
                 state.pageNumber = action.payload.pageNumber;
                 state.totalPage = action.payload.totalPages;
                 state.totalElements = action.payload.totalElements;
                 state.message = action.payload.message
+                state.isDeleteWaiting = false
+                state.isCallWaiting = false
             })
             .addCase(deleteWaiting.pending, (state, action) => {
                 state.statusDeleteWaiting = true
