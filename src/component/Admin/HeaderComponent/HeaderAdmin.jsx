@@ -1,18 +1,12 @@
-import { Typography } from "@mui/material";
+import { Badge, Box, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Logo from "../../../img/ngang.png";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { Avatar } from "@mui/material";
 import Dropdown from "react-bootstrap/Dropdown";
 import { fetchUserProfile } from "../../../redux/ProfileSlice/userProfileSlice";
 import { Link } from "react-router-dom";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import RoleTag from "../../ui/RoleTag";
-
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useDispatch, useSelector } from "react-redux";
 
 const styleLogo = {
@@ -36,7 +30,11 @@ const HeaderAdmin = () => {
   }, []);
 
   return (
-    <>
+    <Box className="flex gap-4 items-center"> <Box>
+        <Badge color="error" badgeContent={1000} max={999} className="cursor-pointer">
+          <NotificationsIcon />
+        </Badge>
+        </Box>
       <Dropdown>
         <Dropdown.Toggle
           id="dropdown-basic"
@@ -68,7 +66,7 @@ const HeaderAdmin = () => {
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
-    </>
+    </Box>
   );
 };
 

@@ -46,7 +46,7 @@ const WaitingRoomManagementContent = () => {
   const totalElements = useSelector((state) => state.listWaiting.totalElements);
   const [modalConfirmWaitingOpen, setModalConfirmWaitingOpen] = useState(false);
   const [role, setRole] = useState(null);
-  const [u, setU] = useState(true);
+  const [refSocket, setRefSocket] = useState(null);
   const [triggerGetList, setTriggerGetList] = useState(true);
   const isCallWaiting = useSelector((state) => state.listWaiting.isCallWaiting);
   const isDeleteWaiting = useSelector(
@@ -121,17 +121,17 @@ const WaitingRoomManagementContent = () => {
   };
 
   const handlePopupConfirm = (mess) => {
-    if (role === null || role === "Receptionist") {
-      setTriggerGetList((prev) => !prev);
-      setModalConfirmWaitingOpen(true);
-    } else {
-      dispatch(
-        fetchAllWaiting({
-          size: pageSize,
-          page: currentPage,
-        })
-      );
-    }
+    // if (role === null || role === "Receptionist") {
+    //   setTriggerGetList((prev) => !prev);
+    //   setModalConfirmWaitingOpen(true);
+    // } else {
+    //   dispatch(
+    //     fetchAllWaiting({
+    //       size: pageSize,
+    //       page: currentPage,
+    //     })
+    //   );
+    // }
     console.log(mess);
   };
 
@@ -143,13 +143,17 @@ const WaitingRoomManagementContent = () => {
     <>
       <ToastContainer />
       <h2 className="font-bold mb-4">Quản Lý Phòng Chờ</h2>
+      <Button onClick={() => refSocket.sendMessage("/topic/Admin", JSON.stringify({message:"ducnh3"}))}>
+        {role}
+      </Button>
       <SockJsClient
         url={SOCKET_URL}
-        topics={["/topic/group"]}
+        topics={[`/topic/${role}`]}
         onConnect={onConnected}
         onDisconnect={() => console.log("Disconnected!")}
         onMessage={handlePopupConfirm}
         debug={false}
+        ref={(client) => setRefSocket(client)}
       />
       <StyledTable size="small" className="shadow-md">
         <TableHead>
@@ -169,37 +173,38 @@ const WaitingRoomManagementContent = () => {
               </StyledTableCell>
               <StyledTableCell>{getStatusStr(item.status)}</StyledTableCell>
               <StyledTableCell>
-                {item.status === 1 || 2 && (
-                  <Box>
-                    {role === "Receptionist" ? (
-                      <Box>
-                        <Button
-                          variant="contained"
-                          color="error"
-                          // startIcon={<AddIcon />}
-                          onClick={() => {
-                            remove(item.waitingRoomId);
-                          }}
-                        >
-                          <span className="leading-none">Vắng mặt</span>
-                        </Button>
-                      </Box>
-                    ) : (
-                      <Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          // startIcon={<AddIcon />}
-                          onClick={() => {
-                            call(item.waitingRoomId);
-                          }}
-                        >
-                          <span className="leading-none">Đăng kí khám</span>
-                        </Button>
-                      </Box>
-                    )}
-                  </Box>
-                )}
+                {item.status === 1 ||
+                  (2 && (
+                    <Box>
+                      {role === "Receptionist" ? (
+                        <Box>
+                          <Button
+                            variant="contained"
+                            color="error"
+                            // startIcon={<AddIcon />}
+                            onClick={() => {
+                              remove(item.waitingRoomId);
+                            }}
+                          >
+                            <span className="leading-none">Vắng mặt</span>
+                          </Button>
+                        </Box>
+                      ) : (
+                        <Box>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            // startIcon={<AddIcon />}
+                            onClick={() => {
+                              call(item.waitingRoomId);
+                            }}
+                          >
+                            <span className="leading-none">Đăng kí khám</span>
+                          </Button>
+                        </Box>
+                      )}
+                    </Box>
+                  ))}
               </StyledTableCell>
             </StyledTableRow>
           ))}
