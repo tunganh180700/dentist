@@ -1,4 +1,5 @@
 export const baseUrl = process.env.BASE_URL || 'http://localhost:8080'
+export const SOCKET_URL = "http://localhost:8080/waiting-room/";
 
 export const listUserAPI = `${baseUrl}/api/users/get_list_users`
 export const getAccountByIdAPI = `${baseUrl}/api/users/`
@@ -127,5 +128,7 @@ export const getListScheduleAPI = `${baseUrl}/api/schedule/get_list_schedule`
 export const getScheduleByIdAPI = `${baseUrl}/api/schedule/`
 export const addScheduleAPI = `${baseUrl}/api/schedule`
 export const updateScheduleAPI = `${baseUrl}/api/schedule/`
+export const getListNotifiesAPI = `${baseUrl}/api/notifies/get_list_notify`
+
 
 

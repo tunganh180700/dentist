@@ -29,13 +29,14 @@ const Routing = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginComponent />} />
-        <Route path="/forgot" element={<ForgotPassword />} />
+        {/* <Route path="/forgot" element={<ForgotPassword />} /> */}
+        <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="/" element={<DefaultLayout />}>
           <Route index element={<HomePage />} />
           <Route path="change-password" element={<ChangePassword />} />
           <Route path="accmanagement" element={<AccountManagement />} />
           <Route path="labo" element={<LaboManagement />} />
-          <Route path="meetingroom" element={<WaitingRoomManagement />} />
+          <Route path="waitting-room/:tab" element={<WaitingRoomManagement />} />
           <Route path="patient-management">
             <Route index  element={<PatientManagement />} />
             <Route path="profile/:id" element={<RecordManagement />} />
@@ -51,7 +52,6 @@ const Routing = () => {
           <Route path='/serviceandcategory' element={<ServiceAndCategoryManagement />} />
           <Route path="income" element={<IncomeManagement />} />
           <Route path="bill" element={<BillManagement />} />
-          <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="profile" element={<ProfileManagement />} />
           <Route path="specimen" element={<SpecimenManagement />} />
           <Route path="schedule" element={<ScheduleManagement />} />
