@@ -16,8 +16,8 @@ import moment from "moment";
 //   listConfirmWaitingAPI,
 // } from "../../../config/baseAPI";
 // import axiosInstance from "../../../config/customAxios";
-import Loading from "../../ui/Loading";
 // import ModalConfirmWaiting from "../../ModalComponent/ModalWaiting/ModalConfirmWaiting";
+import Loading from "../../ui/Loading";
 import { ToastContainer } from "react-toastify";
 import SockJsClient from "react-stomp";
 import {
@@ -47,7 +47,6 @@ const WaitingRoomManagementContent = () => {
   const totalPages = useSelector((state) => state.listWaiting.totalPage);
   const [currentPage, setCurrentPage] = useState(0);
   const totalElements = useSelector((state) => state.listWaiting.totalElements);
-  const totalElementsComfirm = useSelector((state) => state.listConfirmWaiting.totalElements);
   const [modalConfirmWaitingOpen, setModalConfirmWaitingOpen] = useState(false);
   const [role, setRole] = useState(null);
   const [refSocket, setRefSocket] = useState(null);
@@ -163,6 +162,8 @@ const WaitingRoomManagementContent = () => {
   const remove = async (id) => {
     dispatch(deleteWaiting(id));
   };
+
+  const disableCallPatient = useMemo(()=> listWaiting.some(item => item.status === 2) ,[listWaiting])
 
   const WaittingRoom = useMemo(() => {
     return (
@@ -332,6 +333,7 @@ const WaitingRoomManagementContent = () => {
             variant="contained"
             color="primary"
             // startIcon={<AddIcon />}
+            disabled={!disableCallPatient}
             onClick={() => {
               const firstFreePatient = listWaiting.filter(
                 (item) => item.status === 2
@@ -359,7 +361,7 @@ const WaitingRoomManagementContent = () => {
             },
             {
               label: (
-                <p className="mb-0 font-medium text-lg">Đang được yêu cầu ({totalElementsComfirm})</p>
+                <p className="mb-0 font-medium text-lg">Đang được yêu cầu ({listConfirmWaiting.length})</p>
               ),
               key: "confirm",
               children: WaitingPatientRequest,
