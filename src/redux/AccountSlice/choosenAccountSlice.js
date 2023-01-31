@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getAccountByIdAPI, getListNotifiesAPI } from "../../config/baseAPI";
+import {
+  getAccountByIdAPI,
+  getListNotifiesAPI,
+  readNotiAPI,
+} from "../../config/baseAPI";
+import axiosInstance from "../../config/customAxios";
 
 const initState = {
   choosenAccount: {},
@@ -14,7 +19,8 @@ const initState = {
   salary: "",
   roleId: "",
   roleName: "",
-  listNotifies:[]
+  listNotifies: [],
+  isUpdateNoti: false
 };
 const choosenAccountSlice = createSlice({
   name: "choosenAccount",
@@ -61,8 +67,18 @@ const choosenAccountSlice = createSlice({
         state.roleName = action.payload.roleName;
         state.status = false;
       })
+      .addCase(getListNotifies.pending, (state, action) => {
+        state.isUpdateNoti = false;
+      })
       .addCase(getListNotifies.fulfilled, (state, action) => {
         state.listNotifies = action.payload;
+        state.isUpdateNoti = false;
+      })
+      .addCase(readNoti.pending, (state, action) => {
+        // state.listNotifies = action.payload;
+      })
+      .addCase(readNoti.fulfilled, (state, action) => {
+        state.isUpdateNoti = true;
       });
   },
 });
@@ -71,7 +87,6 @@ export const fetchAccount = createAsyncThunk(
   async (userId) => {
     try {
       const res = await axios.get(getAccountByIdAPI + userId);
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -79,17 +94,24 @@ export const fetchAccount = createAsyncThunk(
   }
 );
 export const getListNotifies = createAsyncThunk(
-    "users/getListNotifies",
-    async () => {
-      try {
-        const res = await axios.get(getListNotifiesAPI);
-        console.log(res.data);
-        return res.data;
-      } catch (error) {
-        console.log(error);
-      }
+  "users/getListNotifies",
+  async () => {
+    try {
+      const res = await axiosInstance.get(getListNotifiesAPI);
+      return res.data;
+    } catch (error) {
+      console.log(error);
     }
-  );
+  }
+);
+
+export const readNoti = createAsyncThunk("users/readNoti", async (notiId) => {
+  try {
+    await axiosInstance.put(readNotiAPI + notiId);
+  } catch (error) {
+    console.log(error);
+  }
+});
 export const {
   setChoosenAccount,
   setName,

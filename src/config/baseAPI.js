@@ -129,6 +129,8 @@ export const getScheduleByIdAPI = `${baseUrl}/api/schedule/`
 export const addScheduleAPI = `${baseUrl}/api/schedule`
 export const updateScheduleAPI = `${baseUrl}/api/schedule/`
 export const getListNotifiesAPI = `${baseUrl}/api/notifies/get_list_notify`
+export const readNotiAPI = `${baseUrl}/api/notifies/read_notify/`
+
 
 
 

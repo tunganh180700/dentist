@@ -55,7 +55,6 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
   }, [treatmentId]);
 
   useEffect(() => {
-    console.log(isSubmitForm);
     try {
       if (isSubmitForm) {
         dispatch(fetchBill(treatmentId));

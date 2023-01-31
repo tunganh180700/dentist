@@ -16,6 +16,7 @@ const initState = {
   userProfile: {},
   status: false,
   statusUserProfile: false,
+  userId:"",
   fullName: "",
   roleName: "",
   birthdate: "",
@@ -43,6 +44,7 @@ const userProfileSlice = createSlice({
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.userProfile = action.payload;
         state.fullName = action.payload.fullName;
+        state.userId = action.payload.userId;
         state.birthdate = action.payload.birthdate;
         state.phone = action.payload.phone;
         state.email = action.payload.email;

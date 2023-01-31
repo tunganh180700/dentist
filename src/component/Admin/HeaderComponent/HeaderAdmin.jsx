@@ -18,11 +18,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Popover } from "antd";
 import NotiCard from "../../ui/noti";
 import SockJsClient from "react-stomp";
-import { getListNotifies } from "../../../redux/AccountSlice/choosenAccountSlice";
+import {
+  getListNotifies,
+  readNoti,
+} from "../../../redux/AccountSlice/choosenAccountSlice";
 import { toast } from "react-toastify";
 import { toastBottomCss } from "../../../redux/toastCss";
 import { SOCKET_URL } from "../../../config/baseAPI";
-import { useNavigate,  useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMemo } from "react";
 
 const HeaderAdmin = () => {
   const dispatch = useDispatch();
@@ -33,7 +37,11 @@ const HeaderAdmin = () => {
   const listNotifies = useSelector(
     (state) => state.choosenAccount.listNotifies
   );
-  const [refSocket, setRefSocket] = useState(null);
+  const isUpdateNoti = useSelector(
+    (state) => state.choosenAccount.isUpdateNoti
+  );
+  const [isOpenNoti, setIsOpenNoti] = useState(false);
+
   const onConnected = () => {
     console.log(listNotifies);
   };
@@ -41,14 +49,24 @@ const HeaderAdmin = () => {
   useEffect(() => {
     try {
       dispatch(fetchUserProfile());
+      dispatch(getListNotifies());
     } catch (error) {
       console.log(error);
     }
   }, []);
+  useEffect(() => {
+    if (isUpdateNoti) {
+      dispatch(getListNotifies());
+    }
+  }, [isUpdateNoti]);
+
   const fetchListNoti = ({ patient, doctor }) => {
     // dispatch(getListNotifies());
     toast(
-      <Box className="flex gap-3 w-[270px] p-2" onClick={()=> navigate('/waitting-room/confirm')}>
+      <Box
+        className="flex gap-3 w-[270px] p-2"
+        onClick={() => navigate("/waitting-room/request")}
+      >
         <Avatar
           alt={patient.patientID}
           src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg?w=2000"
@@ -66,77 +84,66 @@ const HeaderAdmin = () => {
     );
   };
 
-  const listNoti = (
-    <Box height="500px" overflow="scroll">
-      <NotiCard message="Image avatars can be created by passing standard img" />
-      <NotiCard message="Image avatars can be created by passing standard img" />
-      <NotiCard message="Image avatars can be created by passing standard img" />
-      <NotiCard
-        seen
-        message="Image avatars can be created by passing standard img"
-      />
-      <NotiCard
-        seen
-        message="Image avatars can be created by passing standard img"
-      />
-      <NotiCard
-        seen
-        message="Image avatars can be created by passing standard img"
-      />
-      <NotiCard
-        seen
-        message="Image avatars can be created by passing standard img"
-      />
-      <NotiCard
-        seen
-        message="Image avatars can be created by passing standard img"
-      />
-      <NotiCard
-        seen
-        message="Image avatars can be created by passing standard img"
-      />
-    </Box>
-  );
+  const handleMessageSocket = ({ message, patient, doctor }) => {
+    if (message === "re-fetch-noti") {
+      dispatch(getListNotifies());
+      return;
+    }
+    fetchListNoti({ patient, doctor });
+  };
+
+  const listNoti = useMemo(() => {
+    return (
+      <Box height="450px" className="overflow-y-scroll">
+        {listNotifies.map((item) => (
+          <Box
+            onClick={() => {
+              dispatch(readNoti(item.notifyId));
+              navigate(`/bill?phone=0378362631`);
+              setIsOpenNoti(false);
+            }}
+          >
+            <NotiCard
+              seen={item.isRead}
+              message={`Bệnh nhân ${item.patientName} đã khám bệnh xong`}
+            />
+          </Box>
+        ))}
+      </Box>
+    );
+  }, [listNotifies]);
 
   return (
     <Box className="flex gap-4 items-center">
-      {/* <Snackbar
-        open={open}
-        className="cursor-pointer hover:scale-105"
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        autoHideDuration={5000}
-        onClose={() => setOpen(false)}
-        onClick={() => console.log(123123)}
-      >
-        <Box className="flex gap-4 w-[270px] p-2  bg-white hover:bg-slate-100 rounded-md shadow-md">
-          <Avatar
-            alt={message.patientID}
-            src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg?w=2000"
-          />
-          <p className={` text-xs`}>{message.patientID}</p>
-        </Box>
-      </Snackbar> */}
       <SockJsClient
         url={SOCKET_URL}
         topics={[`/topic/${roleName}`]}
         onConnect={onConnected}
         onDisconnect={() => console.log("Disconnected!")}
-        onMessage={fetchListNoti}
+        onMessage={handleMessageSocket}
         debug={false}
-        ref={(client) => setRefSocket(client)}
       />
-      <Box>
-        <Popover placement="bottom" content={listNoti} trigger="click">
+      {roleName === "Receptionist" && <Box>
+        <Popover
+          title={`Có (${
+            listNotifies.filter((item) => !item.isRead)?.length
+          }) thông báo chưa xem`}
+          placement="bottom"
+          content={listNoti}
+          trigger="click"
+          visible={isOpenNoti}
+          onVisibleChange={() => setIsOpenNoti(!isOpenNoti)}
+        >
           <Badge
             color="error"
-            badgeContent={4}
+            badgeContent={listNotifies.filter((item) => !item.isRead)?.length}
             max={99}
             className="cursor-pointer"
           >
             <NotificationsIcon />
           </Badge>
         </Popover>
-      </Box>
+      </Box>}
       <Dropdown>
         <Dropdown.Toggle
           id="dropdown-basic"
