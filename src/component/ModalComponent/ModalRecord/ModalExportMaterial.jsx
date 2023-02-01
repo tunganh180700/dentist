@@ -29,6 +29,7 @@ const ModalExportMaterial = ({
 }) => {
   const dispatch = useDispatch();
   const [material, setMaterial] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const [materialExport, setMaterialExport] = useState([]);
   //   const [amountTotalMaterial, setAmountTotalMaterial] = useState(0);
 
@@ -48,6 +49,9 @@ const ModalExportMaterial = ({
   });
 
   const maxAmount = (materialId) => {
+    console.log(
+      material.find((item) => item.materialId === materialId)?.amount
+    );
     return material.find((item) => item.materialId === materialId)?.amount || 0;
   };
 
@@ -60,7 +64,7 @@ const ModalExportMaterial = ({
 
   useEffect(() => {
     setMaterialExport([]);
-    if (materialExportDTOS.length) {
+    if (materialExportDTOS.length && modalExportOpen) {
       const dataDTOS = materialExportDTOS.map((item) => ({
         patientRecordId: item.patientRecordId,
         materialExportId: item.materialExportId,
@@ -73,7 +77,7 @@ const ModalExportMaterial = ({
       }));
       setMaterialExport(dataDTOS);
     }
-  }, [materialExportDTOS]);
+  }, [materialExportDTOS, modalExportOpen]);
 
   const listOptionMaterialEnable = useMemo(() => {
     const selected = materialExport.map((item) => item.materialId);
@@ -88,10 +92,21 @@ const ModalExportMaterial = ({
         open={modalExportOpen}
         width="65%"
         onOk={() => {
+          const error = materialExport.some(
+            (item) => item.amount > maxAmount(item?.materialId)
+          );
+          if (error) {
+            setErrorMessage("Vật liệu trong kho không đủ để bán!");
+            return;
+          }
+          setErrorMessage("");
           setModalExportOpen(false);
           exportMaterial(materialExport);
         }}
-        onCancel={() => setModalExportOpen(false)}
+        onCancel={() => {
+          setErrorMessage("");
+          setModalExportOpen(false);
+        }}
       >
         <Button
           className="mb-3 float-right"
@@ -129,6 +144,7 @@ const ModalExportMaterial = ({
               <StyledTableCell style={{ width: "25%" }}>
                 Tên sản phẩm
               </StyledTableCell>
+              <StyledTableCell>Số lượng có sẵn</StyledTableCell>
               <StyledTableCell>Số lượng</StyledTableCell>
               <StyledTableCell>Đơn giá</StyledTableCell>
               <StyledTableCell>Tổng giá</StyledTableCell>
@@ -173,6 +189,9 @@ const ModalExportMaterial = ({
                     ))}
                   </Select>
                 </StyledTableCell>
+                <StyledTableCell>
+                  {maxAmount(materialExportItem?.materialId)}
+                </StyledTableCell>
                 {/* <StyledTableCell padding="none">
                   <TextField
                     endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
@@ -204,11 +223,9 @@ const ModalExportMaterial = ({
                     id="amount"
                     value={materialExportItem.amount}
                     type="number"
-                    InputProps={{
-                      inputProps: {
-                        min: 1,
-                        max: maxAmount(materialExportItem?.materialId),
-                      },
+                    inputProps={{
+                      max: maxAmount(materialExportItem?.materialId),
+                      min: 1,
                     }}
                     className="h-[30px] bg-white"
                     onChange={(e) =>
@@ -244,6 +261,7 @@ const ModalExportMaterial = ({
             ))}
           </TableBody>
         </StyledTable>
+        <p className="text-center text-red-500 mb-0 mt-3">{errorMessage}</p>
       </Modal>
     </>
   );

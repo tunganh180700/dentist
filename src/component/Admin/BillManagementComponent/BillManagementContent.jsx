@@ -33,10 +33,14 @@ import {
 } from "../../ui/TableElements";
 import { useMemo } from "react";
 import Loading from "../../ui/Loading";
+import { useLocation } from "react-router-dom";
+import { SOCKET_URL } from "../../../config/baseAPI";
+import SockJsClient from "react-stomp";
+
 const BillManagementContent = () => {
   const listBill = useSelector((state) => state.listBill.listBill);
   const totalElements = useSelector((state) => state.listBill.totalElements);
-  
+
   const dispatch = useDispatch();
   const pageSize = useSelector((state) => state.listBill.pageSize);
   const totalPages = useSelector((state) => state.listBill.totalPage);
@@ -51,8 +55,12 @@ const BillManagementContent = () => {
     patientName: "",
     phone: "",
   });
-
-  useEffect(() => {
+  const useQuery = () => {
+    const { search } = useLocation();
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+  };
+  const query = useQuery();
+  const fetchData = () => {
     setLoading(true);
     dispatch(
       fetchAllBill({
@@ -61,10 +69,25 @@ const BillManagementContent = () => {
         page: currentPage,
       })
     );
-    setTimeout(()=>{
+    setTimeout(() => {
       setLoading(false);
-    }, 500)
+    }, 500);
+  };
+  useEffect(() => {
+    fetchData();
   }, [currentPage]);
+
+  useEffect(() => {
+    const phone = query.get("phone");
+    if (phone) {
+      const valueSearch = {
+        patientName: "",
+        phone: phone,
+      };
+      setSearchValue(valueSearch);
+      handleSearch(valueSearch);
+    }
+  }, []);
 
   const handleSearch = async (search = searchValue) => {
     setLoading(true);
@@ -78,19 +101,20 @@ const BillManagementContent = () => {
           })
         );
       } else {
-        setCurrentPage(0)
+        setCurrentPage(0);
       }
       setOpenFilter(false);
     } catch (error) {
       console.log(error);
     }
-    setTimeout(()=>{
+    setTimeout(() => {
       setLoading(false);
-    }, 500)
+    }, 500);
   };
 
   const enableButtonSearch = useMemo(
-    () => searchValue.patientName || searchValue.phone , [searchValue]
+    () => searchValue.patientName || searchValue.phone,
+    [searchValue]
   );
 
   const onResetFilter = () => {
@@ -102,10 +126,21 @@ const BillManagementContent = () => {
     handleSearch(newSearchValue);
   };
 
+  const handleMessageSocket = ({ message }) => {
+    if (message === "re-fetch-bill") {
+      fetchData();
+    }
+  };
+
   return (
     <>
-    {loading && <Loading />}
+      {loading && <Loading />}
       <h2 className="font-bold mb-4">Danh Sách Hóa Đơn</h2>
+      <SockJsClient
+        url={SOCKET_URL}
+        topics={[`/topic/group`]}
+        onMessage={handleMessageSocket}
+      />
       <Box className="flex items-center gap-3 mb-3">
         <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>
         <Button
@@ -152,8 +187,8 @@ const BillManagementContent = () => {
                 <IconButton
                   aria-label="receipt-list"
                   onClick={() => {
-                    setModalReceiptOpen(true);
                     dispatch(setTreatmentId(item.treatmentId));
+                    setModalReceiptOpen(true);
                   }}
                 >
                   <ReceiptIcon />

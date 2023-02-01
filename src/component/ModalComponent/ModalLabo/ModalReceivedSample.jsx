@@ -22,10 +22,12 @@ const ModalReceivedSample = ({ isShow, setIsShow }) => {
   );
 
   const [listSample, setListSample] = useState([]);
+  const [isCheckedAll, setIsCheckedAll] = useState(false);
 
   useEffect(() => {
     if (laboId && isShow) {
       dispatch(fetchListReceive(laboId));
+      setIsCheckedAll(false);
     }
   }, [isShow]);
 
@@ -66,7 +68,13 @@ const ModalReceivedSample = ({ isShow, setIsShow }) => {
       }}
     >
       <Box>
-        <Checkbox onChange={(e) => onCheckedAll(e.target.checked)} />
+        <Checkbox
+          checked={isCheckedAll}
+          onChange={(e) => {
+            setIsCheckedAll(true);
+            onCheckedAll(e.target.checked);
+          }}
+        />
         <span className="text-xl font-bold ml-3">Chọn tất cả</span>
       </Box>
       <StyledTable className="shadow-md mt-3">

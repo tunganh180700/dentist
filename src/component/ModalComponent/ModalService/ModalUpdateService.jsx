@@ -33,7 +33,6 @@ const ModalUpdateService = ({
     unit: yup
       .string("Nhập đơn vị")
       .max(50, "Đơn vị không thể quá 50 ký tự.")
-      .matches(regexNumber, "Đơn vị không được nhập chữ, kí tự, số âm.")
       .required("Đơn vị là bắt buộc."),
     marketPrice: yup
       .string("Nhập đơn giá")

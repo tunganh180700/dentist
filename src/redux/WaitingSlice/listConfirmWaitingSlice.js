@@ -14,6 +14,7 @@ const initState = {
     message: '',
     isConfirmed: false,
     statusConfirmed: false,
+    totalElements:0
 }
 
 const listConfirmWaitingSlice = createSlice({
@@ -34,7 +35,7 @@ const listConfirmWaitingSlice = createSlice({
                 state.status = false;
                 // state.pageNumber = action.payload.pageNumber;
                 // state.totalPage = action.payload.totalPages;
-                // state.totalElements = action.payload.totalElements;
+                // state.totalElements = action.payload;
                 state.message = action.payload.message;
                 state.isConfirmed = false;
                 state.statusConfirmed = false;
@@ -51,6 +52,7 @@ const listConfirmWaitingSlice = createSlice({
 export const fetchAllConfirmWaiting = createAsyncThunk('listConfirmWaiting/fetchAllConfirmWaiting', async () => {
     try {
         const res = await axiosInstance.get(listConfirmWaitingAPI);
+        console.log(123123, res.data);
         return res.data
     } catch (error) {
         console.log('error = ',error)

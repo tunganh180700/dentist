@@ -80,7 +80,7 @@ export const callWaiting = createAsyncThunk('listWaiting/callWaiting', async (id
 
 export const deleteWaiting = createAsyncThunk('listWaiting/deleteWaiting', async (id) => {
     try {
-        const res = await axiosInstance.delete(deleteWaitingAPI + id);
+         await axiosInstance.delete(deleteWaitingAPI + id);
         toast("Xóa thành công");
     } catch (error) {
         toast("Xóa không thành công");

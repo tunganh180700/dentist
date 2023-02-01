@@ -6,6 +6,7 @@ export const UPDATE_FAIL = 'Cập nhật thất bại'
 
 export const DELETE_SUCCESS = 'Xoá thành công.'
 export const DELETE_FAIL = 'Không được xóa bệnh nhân khi đã có lịch sử thăm khám.'
+export const DELETE_SPECIMENS_FAIL = 'Không được xóa mẫu vật này'
 
 export const DELETE_FAIL_RECORD = 'Không được xóa sau ngày khởi tạo.'
 

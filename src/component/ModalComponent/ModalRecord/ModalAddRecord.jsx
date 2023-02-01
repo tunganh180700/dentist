@@ -12,18 +12,13 @@ import {
   OutlinedInput,
   Typography,
 } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Modal } from "antd";
 import { useState, useMemo } from "react";
-import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import axiosInstance from "../../../config/customAxios";
 import { useParams } from "react-router-dom";
 import {
-  addRecordAPI,
   listAllServiceAPI,
   listTreatingServiceAPI,
 } from "../../../config/baseAPI";
@@ -32,20 +27,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import SellIcon from "@mui/icons-material/Sell";
 import ClearIcon from "@mui/icons-material/Clear";
-import { toast } from "react-toastify";
 import * as yup from "yup";
-import { regexNumber, validationDate } from "../../../config/validation";
+import { validationDate } from "../../../config/validation";
 import moment from "moment";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import ModalExportMaterial from "./ModalExportMaterial";
 import ModalSpecimen from "./ModalSpecimen";
 import { addAndUpdateRecord } from "../../../redux/RecordSlice/listRecordSlice";
-import {
-  fetchPatientSpecimen,
-  setListSpecimen,
-} from "../../../redux/SpecimenSlice/listSpecimenSlice";
-import { fetchPatientMaterialExport } from "../../../redux/MaterialSlice/listMaterialExportSlice";
 import { fetchRecord } from "../../../redux/RecordSlice/listRecordSlice";
 import InputDentist from "../../ui/input";
 import {
@@ -56,11 +45,12 @@ import {
 import "./style.css";
 import _ from "lodash";
 import Loading from "../../ui/Loading";
+import SockJsClient from "react-stomp";
+import { SOCKET_URL } from "../../../config/baseAPI";
 
 const ModalAddRecord = ({
   modalAddOpen,
   setModalAddOpen,
-  isSubmitForm,
   isEditRecord = false,
 }) => {
   const dispatch = useDispatch();
@@ -82,6 +72,7 @@ const ModalAddRecord = ({
 
   const [showConfirm, setShowConfirm] = useState(-1);
   const [isEdit, setEdit] = useState(false);
+  const [refSocket, setRefSocket] = useState(null);
 
   const recordId = useSelector((state) => state.modal.recordSelected);
   const treatmentId = useSelector((state) => state.listRecord.treatmentId);
@@ -212,11 +203,12 @@ const ModalAddRecord = ({
       prescription: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       if (!rows.length && !listTreatingService.length) {
         setErrorUpdateMess("Vui lòng thêm dịch vụ!");
         return;
       }
+      setLoading(true)
       const formatValue = { ...values };
       const listA = listTreatingService.filter((a) => {
         return Object.keys(a)?.length !== 0;
@@ -237,7 +229,7 @@ const ModalAddRecord = ({
         id: isEditRecord ? recordId : id,
         values: formatValue,
       };
-      dispatch(
+     await dispatch(
         addAndUpdateRecord({
           payload: addValue,
           type: isEditRecord ? "edit" : "add",
@@ -248,8 +240,21 @@ const ModalAddRecord = ({
         statusCount: "up",
         value: 0,
       });
+      refSocket.sendMessage(
+        "/topic/group",
+        JSON.stringify({ message: "re-fetch" })
+      );
+      refSocket.sendMessage(
+        "/topic/group",
+        JSON.stringify({ message: "re-fetch-bill" })
+      );
+      refSocket.sendMessage(
+        "/topic/Receptionist",
+        JSON.stringify({ message: "re-fetch-noti" })
+      );
       setModalAddOpen(false);
       formik.handleReset();
+      setLoading(false)
     },
   });
 
@@ -266,11 +271,6 @@ const ModalAddRecord = ({
       return null;
     });
     return listA.concat(listB);
-  };
-
-  const styleInput = {
-    width: "70%",
-    background: "none",
   };
 
   useEffect(() => {
@@ -374,8 +374,6 @@ const ModalAddRecord = ({
     currency: "VND",
   });
 
-  // useEffect(() => {
-  // }, [id, serviceId, isAddRecord]);
   const listOptionServiceEnable = useMemo(() => {
     const selected = serviceIds.map((item) => item.serviceId);
     const list = originListService.filter((item) =>
@@ -392,8 +390,15 @@ const ModalAddRecord = ({
         open={modalAddOpen}
         width="75%"
         onOk={formik.handleSubmit}
+        confirmLoading={loading}
         onCancel={handleCancel}
       >
+        <SockJsClient
+          url={SOCKET_URL}
+          topics={["/topic/group"]}
+          onDisconnect={() => console.log("Disconnected!")}
+          ref={(client) => setRefSocket(client)}
+        />
         <Box
           className=""
           style={{ display: "flex", justifyContent: "space-between" }}
@@ -623,7 +628,7 @@ const ModalAddRecord = ({
                                 setRows((prev) => {
                                   prev[index] = {
                                     ...prev[index],
-                                    amount:  Number(e.target.value),
+                                    amount: Number(e.target.value),
                                   };
                                   return _.cloneDeep(prev);
                                 })
@@ -677,9 +682,7 @@ const ModalAddRecord = ({
                             </Select>
                           </StyledTableCell>
                           <StyledTableCell>
-                            <Button
-                              onClick={() => handleConfirm(index)}
-                            >
+                            <Button onClick={() => handleConfirm(index)}>
                               <ClearIcon />
                             </Button>
                           </StyledTableCell>

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { toast } from "react-toastify"
 import { deleteSpecimensAPI, getSpecimensByIdAPI } from "../../config/baseAPI"
-import { DELETE_FAIL, DELETE_SUCCESS } from "../../config/constant"
+import { DELETE_SPECIMENS_FAIL, DELETE_SUCCESS } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 import { toastCss } from "../toastCss"
 
@@ -63,6 +63,7 @@ const choosenSpecimensSlice = createSlice({
                 state.receiveDate = action.payload.receiveDate;
                 state.deliveryDate = action.payload.deliveryDate;
                 state.dateRecord = action.payload.date;
+                state.isDeleteSpecimens = false
             })
             .addCase(deleteSpecimens.pending, (state, action) => {
                 state.statusDeleteSpecimens = true
@@ -85,13 +86,12 @@ export const fetchSpecimens = createAsyncThunk('specimens/fetchSpecimens', async
 })
 
 export const deleteSpecimens = createAsyncThunk('listSpecimens/deleteSpecimens', async (specimenId) => {
-    console.log('sss', specimenId)
     try {
         const res = await axiosInstance.delete(deleteSpecimensAPI + specimenId)
         toast.success(DELETE_SUCCESS, toastCss)
         return specimenId
     } catch (error) {
-        toast.error(DELETE_FAIL, toastCss)
+        toast.error(DELETE_SPECIMENS_FAIL, toastCss)
 
     }
 })

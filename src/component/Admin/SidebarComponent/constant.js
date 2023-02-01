@@ -25,7 +25,7 @@ export const menu = [
     icon: <AddHomeWorkIcon />,
     iconActive: <AddHomeWorkIcon color="info" />,
     title: "Quản lý phòng chờ",
-    href: "/meetingroom",
+    href: "/waitting-room/list",
     permission: ["Admin", "Doctor", "LeaderNurse", "Nurse", "Receptionist"],
   },
   {

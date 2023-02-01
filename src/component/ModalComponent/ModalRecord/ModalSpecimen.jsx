@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Modal } from "antd";
+import { Modal, Typography } from "antd";
 import { useDispatch } from "react-redux";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
@@ -24,7 +24,7 @@ const ModalSpecimen = ({
 }) => {
   const [labo, setLabo] = useState([]);
   const [specimen, setSpecimen] = useState([]);
-
+  const [errorMessage, setErrorMessage] = useState("");
   const formatter = new Intl.NumberFormat({
     style: "currency",
     currency: "VND",
@@ -46,6 +46,7 @@ const ModalSpecimen = ({
   }, [modalSpecimenOpen]);
 
   useEffect(() => {
+    console.log(1323, specimenDTOS);
     setSpecimen([]);
     if (specimenDTOS.length) {
       const enableServiceDTOS = serviceDTOS
@@ -57,7 +58,7 @@ const ModalSpecimen = ({
         specimenId: item.specimenId,
         specimenName: item.specimenName,
         amount: item.amount,
-        unitPrice: item.unitPrice || 0,
+        unitPrice: item.unitPrice,
         laboId: item.laboId,
         serviceId: item.serviceId,
         statusChange: item.statusChange,
@@ -93,11 +94,18 @@ const ModalSpecimen = ({
         open={modalSpecimenOpen}
         width="72%"
         onOk={() => {
+          const error = specimen.some(item => !item.specimenName)
+          if(error){
+            setErrorMessage("Kiểm tra lại tên các mẫu vật. Không được để trống!!")
+            return 
+          }
+          setErrorMessage("")
           setModalSpecimenOpen(false);
           specimens(specimen);
         }}
         onCancel={() => {
           setSpecimen([]);
+          setErrorMessage("")
           setModalSpecimenOpen(false);
         }}
       >
@@ -179,8 +187,9 @@ const ModalSpecimen = ({
                   <OutlinedInput
                     endAdornment={<p className="mb-0 leading-0 text-xs">VND</p>}
                     id="discount"
-                    value={specimen.unitPrice}
+                    value={specimenItem.unitPrice}
                     type="number"
+                    inputProps={{ min: 0 }}
                     className="h-[30px] bg-white"
                     onChange={(e) =>
                       setSpecimen((prev) => {
@@ -264,6 +273,7 @@ const ModalSpecimen = ({
             ))}
           </TableBody>
         </StyledTable>
+        <p className="text-center text-red-500 mb-0 mt-3">{errorMessage}</p>
       </Modal>
     </>
   );

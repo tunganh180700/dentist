@@ -18,9 +18,11 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { listAllCategoryAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
 import {
+  deleteCategory,
   deleteService,
   fetchAllServiceByCategory,
   setIsAddCategory,
+  setIsDeleteCategory,
   setIsUpdateCategory,
 } from "../../../redux/ServiceAndCategorySlice/listCategorySlice";
 import DesignServicesIcon from "@mui/icons-material/DesignServices";
@@ -39,6 +41,7 @@ import {
 } from "../../ui/TableElements";
 import InputDentist from "../../ui/input";
 import Loading from "../../ui/Loading";
+import { Modal } from "antd";
 
 const color = {
   border: "rgba(0, 0, 0, 0.2)",
@@ -63,6 +66,9 @@ const ServiceAndCategoryManagementContent = () => {
   const isAddCategory = useSelector(
     (state) => state.listCategory.isAddCategory
   );
+  const isDeleteCategory = useSelector(
+    (state) => state.listCategory.isDeleteCategory
+  );
   const isAddService = useSelector((state) => state.listCategory.isAddService);
   const isUpdateService = useSelector(
     (state) => state.listCategory.isUpdateService
@@ -70,6 +76,7 @@ const ServiceAndCategoryManagementContent = () => {
 
   const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
+  const [modalDeleteCategoryOpen, setModalDeleteCategoryOpen] = useState(false);
   const [modalAddCategoryOpen, setModalAddCategoryOpen] = useState(false);
   const [modalAddServiceOpen, setModalAddServiceOpen] = useState(false);
   const [modalUpdateServiceOpen, setModalUpdateServiceOpen] = useState(false);
@@ -99,17 +106,33 @@ const ServiceAndCategoryManagementContent = () => {
     }
     setLoading(false);
   };
+  const loadCategoryNotChangeId = async () => {
+    setLoading(true);
+    try {
+      const res = await axiosInstance.get(listAllCategoryAPI);
+      setOriginData(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     loadCategory();
   }, []);
+
   useEffect(() => {
-    if (isAddCategory || isUpdateCategory) {
-      loadCategory();
+    if (isAddCategory || isUpdateCategory || isDeleteCategory) {
+      if (isDeleteCategory) {
+        loadCategory();
+      } else {
+        loadCategoryNotChangeId();
+      }
       dispatch(setIsAddCategory(false));
       dispatch(setIsUpdateCategory(false));
+      dispatch(setIsDeleteCategory(false));
     }
-  }, [isAddCategory, isUpdateCategory]);
+  }, [isAddCategory, isUpdateCategory, isDeleteCategory]);
 
   useEffect(() => {
     if (originData.length) {
@@ -128,7 +151,6 @@ const ServiceAndCategoryManagementContent = () => {
     setLoading(true);
     try {
       dispatch(fetchAllServiceByCategory(categoryServiceId));
-      // setServiceId(res.data.categoryServiceId);
     } catch (error) {
       console.log(error);
     }
@@ -145,7 +167,6 @@ const ServiceAndCategoryManagementContent = () => {
   }, [categoryServiceId]);
 
   useEffect(() => {
-    console.log(isDeleteService, isAddService, isUpdateService);
     if (isDeleteService || isAddService || isUpdateService) {
       loadServiceByCategoryId(categoryServiceId);
     }
@@ -179,7 +200,7 @@ const ServiceAndCategoryManagementContent = () => {
           variant="contained"
           color="error"
           endIcon={<DeleteIcon />}
-          onClick={() => dispatch(deleteService(categoryServiceId))}
+          onClick={() => setModalDeleteCategoryOpen(true)}
         >
           <span className="leading-none">Xóa loại dịch vụ</span>
         </Button>
@@ -322,6 +343,18 @@ const ServiceAndCategoryManagementContent = () => {
           isSubmitForm={setIsSubmitFormService}
         />
       </div>
+      <Modal
+        title="Thông báo"
+        open={modalDeleteCategoryOpen}
+        onOk={() => {
+          setModalDeleteCategoryOpen(false);
+          dispatch(deleteCategory(categoryServiceId));
+        }}
+        confirmLoading={loading}
+        onCancel={() => setModalDeleteCategoryOpen(false)}
+      >
+        <p>Chắc chắn xóa dịch vụ này</p>
+      </Modal>
     </>
   );
 };

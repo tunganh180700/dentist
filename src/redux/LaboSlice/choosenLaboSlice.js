@@ -22,6 +22,7 @@ const initState = {
   receiveSamples: [],
   isUpdatePrepareSample: false,
   isUpdateReceiveSample: false,
+  isDeleteSpecimens: false
 };
 const choosenLaboSlice = createSlice({
   name: "choosenLabo",
@@ -39,6 +40,10 @@ const choosenLaboSlice = createSlice({
     setTotalMoney: (state, action) => {
       state.totalMoney = action.payload;
     },
+    setIsDeleteSpecimens: (state, action) => {
+      state.isDeleteSpecimens = action.payload;;
+    },
+    
   },
   extraReducers: (builder) => {
     builder
@@ -60,6 +65,7 @@ const choosenLaboSlice = createSlice({
         state.phone = action.payload.phone;
         state.totalMoney = action.payload.totalMoney;
         state.specimensDTOS = action.payload.specimensDTOS;
+        state.isDeleteSpecimens = false
       })
       .addCase(fetchPrepareSample.fulfilled, (state, action) => {
         state.isUpdatePrepareSample = false;
@@ -142,6 +148,7 @@ export const {
   setPhone,
   setTotalMoney,
   setMessage,
+  setIsDeleteSpecimens
 } = choosenLaboSlice.actions;
 
 export default choosenLaboSlice.reducer;

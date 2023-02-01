@@ -42,6 +42,7 @@ import {
 } from "../../ui/TableElements";
 import { statusLaboColor, statusLaboFormatter } from "../../style-config/index";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import Loading from "../../ui/Loading";
 
 const SpecimenManagementContent = () => {
   const dispatch = useDispatch();
@@ -126,6 +127,7 @@ const SpecimenManagementContent = () => {
 
   return (
     <>
+    {loading && <Loading />}
       <h2 className="font-bold mb-4">Quản lý mẫu vật</h2>
       <Box className="flex items-center gap-3 mb-3">
         <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>

@@ -13,16 +13,30 @@ import { useMemo } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import { Typography } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  changePassword,
+  setIsChangePassword,
+} from "../../redux/ProfileSlice/userProfileSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { toastCss } from "../../redux/toastCss";
 
 export default function ChangePassword() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
+  const userId = useSelector((state) => state.userProfile.userId);
+
   const validationSchema = yup.object().shape({
     oldPass: yup.string().required("Vui lòng nhập mật khẩu cũ"),
-    newPass: yup.string().required("Vui lòng nhập mật khẩu mới"),
+    newPass: yup.string().min(6, "Mật khẩu phải có 6 kí tự").required("Vui lòng nhập mật khẩu mới"),
     reEnter: yup
       .string()
+      .required("Vui lòng nhập lại mật khẩu mới")
       .oneOf(
         [yup.ref("newPass"), null],
         "Mật khẩu mới phải trùng với mật khẩu cũ"
@@ -36,7 +50,21 @@ export default function ChangePassword() {
       reEnter: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {},
+    onSubmit: async (values) => {
+       const res = await dispatch(
+          changePassword({
+            userId,
+            oldPassword: values.oldPass,
+            newPassword: values.newPass,
+          })
+        );
+        if(res.payload){
+          toast.success("Đổi mật khẩu thành công", toastCss);
+          navigate("/profile");
+          return 
+        }
+        toast.error("Đổi mật khẩu thất bại", toastCss);
+    },
   });
 
   return (

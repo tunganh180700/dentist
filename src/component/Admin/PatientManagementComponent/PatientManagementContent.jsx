@@ -38,6 +38,8 @@ import moment from "moment";
 import ModalAddSchedule from "../../ModalComponent/ModalSchedule/ModalAddSchedule";
 import { fetchAllWaiting } from "../../../redux/WaitingSlice/listWaitingSlice";
 import DoneIcon from "@mui/icons-material/Done";
+import { SOCKET_URL } from "../../../config/baseAPI";
+import SockJsClient from "react-stomp";
 
 const PatientManagementContent = () => {
   const dispatch = useDispatch();
@@ -53,6 +55,7 @@ const PatientManagementContent = () => {
   const [isSubmitFormPatient, setIsSubmitFormPatient] = useState(false);
   const [patientSchedule, setPatientSchedule] = useState();
   const [openFilter, setOpenFilter] = useState(false);
+  const [refSocket, setRefSocket] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -182,6 +185,10 @@ const PatientManagementContent = () => {
         "http://localhost:8080/api/patients/" + patientId + "/waiting_room"
       );
       dispatch(fetchAllWaiting());
+      refSocket.sendMessage(
+        "/topic/group",
+        JSON.stringify({ message: "re-fetch" })
+      );
       toast("Thêm bệnh nhân đang chờ thành công");
     } catch (error) {
       console.log("error = ", error);
@@ -189,10 +196,25 @@ const PatientManagementContent = () => {
     }
   };
 
+  const handleToDoMessageSocket = ({ message, patientId }) => {
+    switch (message) {
+      case "re-fetch":
+        dispatch(fetchAllWaiting());
+        break;
+    }
+  };
+
   return (
     <>
       {loading && <Loading />}
       <h2 className="font-bold mb-4">Danh Sách Bệnh Nhân</h2>
+      <SockJsClient
+        url={SOCKET_URL}
+        topics={["/topic/group"]}
+        onDisconnect={() => console.log("Disconnected!")}
+        onMessage={handleToDoMessageSocket}
+        ref={(client) => setRefSocket(client)}
+      />
       <Box className="flex items-center gap-3 mb-3">
         <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>
         {role === "Doctor" || role === "Nurse" ? (

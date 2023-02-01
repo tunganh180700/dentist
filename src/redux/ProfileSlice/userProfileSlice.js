@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { add } from "lodash";
-import { profileAPI } from "../../config/baseAPI";
+import { profileAPI, changePasswordAPI } from "../../config/baseAPI";
 import axiosInstance from "../../config/customAxios";
 import { toast } from "react-toastify";
 import { toastCss } from "../toastCss";
@@ -16,6 +16,7 @@ const initState = {
   userProfile: {},
   status: false,
   statusUserProfile: false,
+  userId: "",
   fullName: "",
   roleName: "",
   birthdate: "",
@@ -25,6 +26,7 @@ const initState = {
   userName: "",
   isUpdateAccount: false,
   statusDeleteAccount: false,
+  isChangePassword: false,
 };
 
 const userProfileSlice = createSlice({
@@ -32,6 +34,9 @@ const userProfileSlice = createSlice({
   initialState: initState,
   reducers: {
     setUserProfile: (state, action) => {
+      state.userProfile = action.payload;
+    },
+    setIsChangePassword: (state, action) => {
       state.userProfile = action.payload;
     },
   },
@@ -43,6 +48,7 @@ const userProfileSlice = createSlice({
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.userProfile = action.payload;
         state.fullName = action.payload.fullName;
+        state.userId = action.payload.userId;
         state.birthdate = action.payload.birthdate;
         state.phone = action.payload.phone;
         state.email = action.payload.email;
@@ -52,6 +58,12 @@ const userProfileSlice = createSlice({
         state.isUpdateAccount = false;
 
         state.status = false;
+      })
+      .addCase(changePassword.pending, (state, action) => {
+        // state.statusUpdateAccount = true;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.isChangePassword = true;
       })
       .addCase(updateAccount.pending, (state, action) => {
         state.statusUpdateAccount = true;
@@ -67,13 +79,28 @@ export const fetchUserProfile = createAsyncThunk(
   async () => {
     try {
       const res = await axiosInstance.get(profileAPI);
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error);
     }
   }
 );
+export const changePassword = createAsyncThunk(
+  "users/changePassword",
+  async ({ userId, oldPassword, newPassword }) => {
+    try {
+      const res = await axiosInstance.put(
+        `${
+          changePasswordAPI + userId
+        }?oldPassword=${oldPassword}&newPassword=${newPassword}`
+      );
+      return true;
+    } catch (error) {
+      return false;
+      console.log(error);
+    }
+  }
+);
 
-export const { setUserProfile } = userProfileSlice.actions;
+export const { setUserProfile, setIsChangePassword } = userProfileSlice.actions;
 export default userProfileSlice.reducer;

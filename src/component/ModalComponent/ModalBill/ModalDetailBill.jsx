@@ -17,6 +17,7 @@ import {
   StyledTableRow,
   StyledTable,
 } from "../../ui/TableElements";
+import Loading from "../../ui/Loading";
 const ModalDetailBill = ({ modalDetailOpen, setModalDetailOpen }) => {
   const [loading, setLoading] = useState();
   const treatmentId = useSelector((state) => state.modal.treatmentId);
@@ -24,9 +25,6 @@ const ModalDetailBill = ({ modalDetailOpen, setModalDetailOpen }) => {
     (state) => state.choosenBill.treatmentServiceMapDTOList
   );
   const dispatch = useDispatch();
-
-  // const isUpdateBill = useSelector(state => state.listBill.isUpdateBill);
-  console.log("ra bill: ", treatmentServiceMapDTOList);
 
   useEffect(() => {
     setLoading(true);
@@ -37,13 +35,22 @@ const ModalDetailBill = ({ modalDetailOpen, setModalDetailOpen }) => {
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   }, [treatmentId]);
 
   return (
     <>
-      <Modal title="Thông tin hóa đơn" open={modalDetailOpen} footer={null} onCancel={() => setModalDetailOpen(false)}>
-        {/* {loading === false && <> */}
+      {loading && <Loading />}
+      <Modal
+        title="Thông tin hóa đơn"
+        open={modalDetailOpen}
+        footer={null}
+        onCancel={() => {
+          setModalDetailOpen(false);
+        }}
+      >
         <StyledTable className="shadow-md text-center">
           <TableHead>
             <StyledTableRow>
@@ -62,7 +69,6 @@ const ModalDetailBill = ({ modalDetailOpen, setModalDetailOpen }) => {
             ))}
           </TableBody>
         </StyledTable>
-        {/* </>} */}
       </Modal>
     </>
   );
