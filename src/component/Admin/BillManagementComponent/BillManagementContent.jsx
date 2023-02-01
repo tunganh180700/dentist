@@ -33,7 +33,7 @@ import {
 } from "../../ui/TableElements";
 import { useMemo } from "react";
 import Loading from "../../ui/Loading";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SOCKET_URL } from "../../../config/baseAPI";
 import SockJsClient from "react-stomp";
 
@@ -59,7 +59,10 @@ const BillManagementContent = () => {
     const { search } = useLocation();
     return React.useMemo(() => new URLSearchParams(search), [search]);
   };
+  const navigate = useNavigate();
   const query = useQuery();
+  const phone = useMemo(() => query.get("phone"), [query]);
+
   const fetchData = () => {
     setLoading(true);
     dispatch(
@@ -73,12 +76,8 @@ const BillManagementContent = () => {
       setLoading(false);
     }, 500);
   };
-  useEffect(() => {
-    fetchData();
-  }, [currentPage]);
 
   useEffect(() => {
-    const phone = query.get("phone");
     if (phone) {
       const valueSearch = {
         patientName: "",
@@ -86,8 +85,10 @@ const BillManagementContent = () => {
       };
       setSearchValue(valueSearch);
       handleSearch(valueSearch);
+      return
     }
-  }, []);
+    fetchData();
+  }, [currentPage, phone]);
 
   const handleSearch = async (search = searchValue) => {
     setLoading(true);
@@ -118,10 +119,12 @@ const BillManagementContent = () => {
   );
 
   const onResetFilter = () => {
+    
     const newSearchValue = {
       patientName: "",
       phone: "",
     };
+    navigate("/bill")
     setSearchValue(newSearchValue);
     handleSearch(newSearchValue);
   };

@@ -22,9 +22,6 @@ const ModalListReceipt = ({ modalReceiptOpen, setModalReceiptOpen }) => {
   );
   const patientName = useSelector((state) => state.choosenBill.patientName);
 
-  // const isUpdateBill = useSelector(state => state.listBill.isUpdateBill);
-  console.log("ra bill: ", listReceipts);
-
   useEffect(() => {
     setLoading(true);
     try {

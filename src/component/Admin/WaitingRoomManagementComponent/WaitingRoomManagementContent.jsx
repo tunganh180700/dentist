@@ -89,19 +89,6 @@ const WaitingRoomManagementContent = () => {
 
   const onConnected = () => {};
 
-  // const checkExistConfirmWaiting = async () => {
-  //   try {
-  //     const res = await axiosInstance.get(listConfirmWaitingAPI);
-  //     if (res.data.length > 0) {
-  //       setModalConfirmWaitingOpen(true);
-  //     } else {
-  //       setModalConfirmWaitingOpen(false);
-  //     }
-  //   } catch (error) {
-  //     setModalConfirmWaitingOpen(false);
-  //   }
-  // };
-
   useEffect(() => {
     const role = localStorage.getItem("role");
     loadWaitingList();
@@ -125,12 +112,6 @@ const WaitingRoomManagementContent = () => {
       setLoading(false);
     }, 500);
   }, [currentPage]);
-
-  // useEffect(() => {
-  //   if (isDeleteWaiting || isCallWaiting) {
-  //     loadWaitingList();
-  //   }
-  // }, [isDeleteWaiting, isCallWaiting]);
 
   const getStatusStr = (status) => {
     if (status == 1) {
@@ -273,7 +254,7 @@ const WaitingRoomManagementContent = () => {
                           </Button>
                         </Box>
                       ) : (
-                        <Box className="mb-3 float-right">
+                        <Box>
                           <Button
                             variant="contained"
                             color="primary"

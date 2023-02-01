@@ -61,7 +61,6 @@ const HeaderAdmin = () => {
   }, [isUpdateNoti]);
 
   const fetchListNoti = ({ patient, doctor }) => {
-    // dispatch(getListNotifies());
     toast(
       <Box
         className="flex gap-3 w-[270px] p-2"
@@ -99,7 +98,7 @@ const HeaderAdmin = () => {
           <Box
             onClick={() => {
               dispatch(readNoti(item.notifyId));
-              navigate(`/bill?phone=0378362631`);
+              navigate(`/bill?phone=${item.phone}`);
               setIsOpenNoti(false);
             }}
           >
@@ -123,7 +122,7 @@ const HeaderAdmin = () => {
         onMessage={handleMessageSocket}
         debug={false}
       />
-      {roleName === "Receptionist" && <Box>
+      {roleName === "Receptionist" && <Box className="relative">
         <Popover
           title={`Có (${
             listNotifies.filter((item) => !item.isRead)?.length
@@ -143,6 +142,7 @@ const HeaderAdmin = () => {
             <NotificationsIcon />
           </Badge>
         </Popover>
+        {/* <img width={50} className="absolute bottom-6 left-5" src="https://cdn-icons-png.flaticon.com/512/2089/2089117.png" alt="" /> */}
       </Box>}
       <Dropdown>
         <Dropdown.Toggle
