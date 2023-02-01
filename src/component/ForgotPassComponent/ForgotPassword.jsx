@@ -17,7 +17,7 @@ const validationSchema = yup.object({
 const ForgotPassword = () => {
   const paperStyle = {
     background:
-      "linear-gradient(45deg,  rgba(66, 183, 245,0.8) 0%,rgba(66, 245, 189,0.4) 100%)",
+      "linear-gradient(244.89deg, rgb(226, 251, 255) 7.39%, rgb(234, 225, 217) 74.76%, rgb(247, 184, 156) 100%)",
     height: "100vh",
     width: "100%",
     display: "flex",
@@ -100,7 +100,7 @@ const ForgotPassword = () => {
             onChange={handleChange}
           />
           {/* {formik.errors.password && <Typography color={'red'}>{formik.errors.password}</Typography>} */}
-          <div style={{ display: "flex", width: "60%", marginLeft: "135px" }}>
+          <div style={{ display: "flex", width: "100%" }}>
             <Button
               // loading={loading}
               type="submit"

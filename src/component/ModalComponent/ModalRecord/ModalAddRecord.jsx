@@ -208,6 +208,7 @@ const ModalAddRecord = ({
         setErrorUpdateMess("Vui lòng thêm dịch vụ!");
         return;
       }
+      setLoading(true)
       const formatValue = { ...values };
       const listA = listTreatingService.filter((a) => {
         return Object.keys(a)?.length !== 0;
@@ -253,6 +254,7 @@ const ModalAddRecord = ({
       );
       setModalAddOpen(false);
       formik.handleReset();
+      setLoading(false)
     },
   });
 
@@ -388,6 +390,7 @@ const ModalAddRecord = ({
         open={modalAddOpen}
         width="75%"
         onOk={formik.handleSubmit}
+        confirmLoading={loading}
         onCancel={handleCancel}
       >
         <SockJsClient

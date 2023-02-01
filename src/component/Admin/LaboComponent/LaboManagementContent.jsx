@@ -23,7 +23,6 @@ const LaboManagementContent = () => {
   const dispatch = useDispatch();
   const allLabo = useSelector((state) => state.listLabo.listLabo);
   const pageSize = 10;
-  // const userId = useSelector(state=>state.modal.userId);
   const isUpdateLabo = useSelector((state) => state.listLabo.isUpdateLabo);
   const isDeleteLabo = useSelector((state) => state.listLabo.isDeleteLabo);
   const isAddLabo = useSelector((state) => state.listLabo.isAddLabo);
@@ -37,6 +36,26 @@ const LaboManagementContent = () => {
   const [modalSendSample, setModalSendSample] = useState(false);
   const [modalReceiveSample, setModalReceiveSample] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isChangeLaboSelected, setIsChangeLaboSelected] = useState(true);
+
+  useEffect(() => {
+    if (isUpdateLabo || isDeleteLabo || isAddLabo) {
+      setLoading(true);
+      dispatch(
+        fetchAllLabo({
+          size: pageSize,
+        })
+      );
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+      if (isDeleteLabo) {
+        setIsChangeLaboSelected(true);
+        return;
+      }
+      setIsChangeLaboSelected(false);
+    }
+  }, [isUpdateLabo, isDeleteLabo, isAddLabo]);
 
   useEffect(() => {
     setLoading(true);
@@ -48,11 +67,13 @@ const LaboManagementContent = () => {
     setTimeout(() => {
       setLoading(false);
     }, 500);
-  }, [isUpdateLabo, isDeleteLabo, isAddLabo]);
+  }, []);
 
   useEffect(() => {
     setListLabo(allLabo);
-    setLaboSelected(allLabo[0]?.laboId || 0);
+    if (isChangeLaboSelected) {
+      setLaboSelected(allLabo[0]?.laboId || 0);
+    }
   }, [allLabo]);
 
   useEffect(() => {
@@ -74,15 +95,6 @@ const LaboManagementContent = () => {
     <>
       {loading && <Loading />}
       <h2 className="font-bold mb-2"> Quản Lý Labo</h2>
-      {/* <IconButton
-        aria-label="add"
-        style={{ borderRadius: "5%" }}
-        onClick={() => {
-          setModalAddOpen(true);
-        }}
-      >
-        <AddIcon /> Thêm mới
-      </IconButton> */}
       <div className="flex gap-3 justify-end mb-3">
         <Button
           variant="contained"

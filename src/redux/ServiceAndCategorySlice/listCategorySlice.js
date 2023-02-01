@@ -7,6 +7,7 @@ import {
   updateServiceAPI,
   updateCategoryBySelectIdAPI,
   listServiceByCategoryIdAPI,
+  deleteCategoryBySelectIdAPI,
 } from "../../config/baseAPI";
 import { toast } from "react-toastify";
 import { toastCss } from "../toastCss";
@@ -57,6 +58,9 @@ const listCategorySlice = createSlice({
     setIsUpdateCategory: (state, action) => {
       state.isUpdateCategory = action.payload;
     },
+    setIsDeleteCategory: (state, action) => {
+      state.isDeleteCategory = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -70,7 +74,7 @@ const listCategorySlice = createSlice({
         state.pageNumber = action.payload.pageNumber;
         state.totalPage = action.payload.totalPages;
         state.isUpdateCategory = false;
-        // state.isDeleteCategory = false;
+        state.isDeleteCategory = false;
         state.message = action.payload.message;
       })
       .addCase(fetchAllServiceByCategory.pending, (state, action) => {
@@ -112,6 +116,9 @@ const listCategorySlice = createSlice({
       })
       .addCase(addService.fulfilled, (state, action) => {
         state.isAddService = true;
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        state.isDeleteCategory = true;
       });
   },
 });
@@ -162,6 +169,21 @@ export const updateCategory = createAsyncThunk(
   }
 );
 
+export const deleteCategory = createAsyncThunk(
+  "listCategory/deleteCategory",
+  async (categoryServiceId) => {
+    try {
+      const res = await axiosInstance.delete(
+        deleteCategoryBySelectIdAPI + categoryServiceId
+      );
+      toast.success("Xóa thành công", toastCss);
+      return res.data;
+    } catch (error) {
+      toast.error("Không thể loại dịch vì khi đã có dịch vụ", toastCss);
+    }
+  }
+);
+
 export const updateService = createAsyncThunk(
   "listCategory/updateService",
   async (data) => {
@@ -201,7 +223,6 @@ export const addCategory = createAsyncThunk(
     try {
       const res = await axiosInstance.post(addCategoryAPI, values);
       toast.success("Thêm loại dịch vụ thành công !!!!!", toastCss);
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -216,14 +237,13 @@ export const addService = createAsyncThunk(
     try {
       const res = await axiosInstance.post(addServiceAPI, values);
       toast.success("Thêm dịch vụ thành công !!!!!", toastCss);
-      console.log("asdasdas", res.data);
       return res.data;
     } catch (error) {
       console.log(error);
-      toast.error("Thêm mới thất bại :(", toastCss);
+      toast.error("Dịch vụ đã tồn tại", toastCss);
     }
   }
 );
-export const { setListCategory, setIsAddCategory, setIsUpdateCategory } =
+export const { setListCategory, setIsAddCategory, setIsUpdateCategory, setIsDeleteCategory } =
   listCategorySlice.actions;
 export default listCategorySlice.reducer;

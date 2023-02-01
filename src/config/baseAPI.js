@@ -69,7 +69,7 @@ export const updateRecordAPI = `${baseUrl}/api/patient_record/`
 export const loginAPI = `${baseUrl}/api/login`
 export const forgotPassword = `${baseUrl}/api/forgot_password?username=`
 export const profileAPI = `${baseUrl}/api/users/get_profile`
-
+export const changePasswordAPI = `${baseUrl}/api/users/change_password/`
 export const GET_LIST_TIMEKEEPING = `${baseUrl}/api/timekeeping/get_list_timekeeping?size=10&page=`
 export const CHECK_IN = `${baseUrl}/api/timekeeping/checkin`
 export const CHECK_OUT = `${baseUrl}/api/timekeeping/checkout`
@@ -79,6 +79,7 @@ export const listAllCategoryAPI = `${baseUrl}/api/categories/get_all_category_se
 export const addCategoryAPI = `${baseUrl}/api/categories/`
 export const getCategoryByIdAPI = `${baseUrl}/api/categories/`
 export const updateCategoryBySelectIdAPI = `${baseUrl}/api/categories/`
+export const deleteCategoryBySelectIdAPI = `${baseUrl}/api/categories/`
 
 
 export const listServiceByCategoryIdAPI = `${baseUrl}/api/categories/get_all_service_by_category_id/`

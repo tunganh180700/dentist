@@ -20,7 +20,6 @@ const ModalDeleteService = ({
     "Bạn có chắc chắn muốn xóa không ?"
   );
 
-  console.log("serviceIDL :", serviceId);
   const handleOk = () => {
     setModalText("Bạn chắc chắn muốn xóa không ?");
     handleDelete(serviceId);

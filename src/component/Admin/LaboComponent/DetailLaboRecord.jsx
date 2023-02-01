@@ -1,4 +1,4 @@
-import { TableBody, TableHead, IconButton } from "@mui/material";
+import { TableBody, TableHead, IconButton, Chip } from "@mui/material";
 import {
   StyledTableCell,
   StyledTableRow,
@@ -6,7 +6,10 @@ import {
 } from "../../ui/TableElements";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLabo } from "../../../redux/LaboSlice/choosenLaboSlice";
+import {
+  fetchLabo,
+  setIsDeleteSpecimens,
+} from "../../../redux/LaboSlice/choosenLaboSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 // import EditIcon from "@mui/icons-material/Edit";
 import ModalDeleteSpecimens from "../../ModalComponent/ModalSpecimens/ModalDeleteSpecimens";
@@ -16,6 +19,7 @@ import ModalDeleteSpecimens from "../../ModalComponent/ModalSpecimens/ModalDelet
 // import { fetchAllSpecimens } from "../../../redux/SpecimensSlice/listSpecimensSlice";
 import { setUserId } from "../../../redux/modalSlice";
 import Loading from "../../ui/Loading";
+import { statusLaboColor, statusLaboFormatter } from "../../style-config";
 
 const ModalDetailLabo = () => {
   const [loading, setLoading] = useState();
@@ -23,37 +27,52 @@ const ModalDetailLabo = () => {
   const specimensDTOS = useSelector((state) => state.choosenLabo.specimensDTOS);
   const dispatch = useDispatch();
 
-    const isUpdatePrepareSample = useSelector((state) => state.choosenLabo.isUpdatePrepareSample);
-    const isUpdateReceiveSample = useSelector((state) => state.choosenLabo.isUpdateReceiveSample);
-
-  //   const isUpdateSpecimens = useSelector(
-  //     (state) => state.listSpecimens.isUpdateSpecimens
-  //   );
-  //   const isAddSpecimens = useSelector(
-  //     (state) => state.listSpecimens.isAddSpecimens
-  //   );
+  const isUpdatePrepareSample = useSelector(
+    (state) => state.choosenLabo.isUpdatePrepareSample
+  );
+  const isUpdateReceiveSample = useSelector(
+    (state) => state.choosenLabo.isUpdateReceiveSample
+  );
+  const isDeleteSpecimens = useSelector(
+    (state) => state.choosenLabo.isDeleteSpecimens
+  );
 
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
-  // const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
-  // const [modalAddOpen, setModalAddOpen] = useState(false);
   const [listLaboRecord, setListLaboRecord] = useState([]);
   useEffect(() => {
     setListLaboRecord(specimensDTOS);
   }, [specimensDTOS]);
 
   useEffect(() => {
-    setLoading(true);
-    try {
-      if (laboId) {
-        dispatch(fetchLabo(laboId));
+    if (laboId) {
+      setLoading(true);
+      try {
+        if (laboId) {
+          dispatch(fetchLabo(laboId));
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     }
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   }, [laboId]);
+  useEffect(() => {
+    if (isDeleteSpecimens) {
+      setLoading(true);
+      try {
+        if (laboId) {
+          dispatch(fetchLabo(laboId));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    }
+  }, [isDeleteSpecimens]);
 
   useEffect(() => {
     setLoading(true);
@@ -95,7 +114,16 @@ const ModalDetailLabo = () => {
                 <StyledTableCell>{item.deliveryDate}</StyledTableCell>
                 <StyledTableCell>{item.amount}</StyledTableCell>
                 <StyledTableCell>{item.unitPrice}</StyledTableCell>
-                <StyledTableCell>{item.status}</StyledTableCell>
+                <StyledTableCell>
+                  <Chip
+                    size="small"
+                    style={{
+                      backgroundColor: `${statusLaboColor(item.status)}`,
+                      color: "#fff",
+                    }}
+                    label={statusLaboFormatter(item.status)}
+                  />
+                </StyledTableCell>
                 {/* <StyledTableCell>
                     <IconButton
                       aria-label="edit"

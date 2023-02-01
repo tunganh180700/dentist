@@ -33,24 +33,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
 
   const [materialIds, setMaterialIds] = useState([]);
   const [materialImport, setMaterialImport] = useState([]);
-
-  // const [listMaterialPrice, setListMaterialPrice] = useState([]);
-
-  // const validationSchema = yup.object({
-  //     supplyName: yup
-  //         .string('Nhập đơn vị cung cấp')
-  //         .max(250, 'Đơn vị cung cấp không thể quá 250 ký tự.')
-  //         .required('Đơn vị cung cấp là bắt buộc.'),
-  //     amount: yup
-  //         .string('Nhập số lượng')
-  //         .matches(regexNumber, "Số lượng không được nhập chữ, kí tự, số âm.")
-  //         .required('Số lượng là bắt buộc.'),
-  //     unitPrice: yup
-  //         .string('Nhập đơn giá')
-  //         .matches(regexNumber, "Đơn giá không được nhập chữ, kí tự, số âm.")
-  //         .required('Đơn giá là bắt buộc.')
-
-  // });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const loadMaterial = async () => {
     try {
@@ -64,25 +47,6 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
     loadMaterial();
   }, []);
 
-
-  // const formik = useFormik({
-  //     initialValues: {
-  //         supplyName: '',
-  //         amount: '',
-  //         unitPrice: '',
-  //     },
-  //     validationSchema: validationSchema,
-  //     onSubmit: (values) => {
-  //         values.date = moment(value.$d).format(validationDate);
-  //         values.materialId = materialId;
-  //         values.totalPrice = materialPrice;
-  //         console.log(values);
-  //         dispatch(addMaterialImport(values))
-  //         setModalAddOpen(false)
-  //         formik.handleReset()
-  //     }
-  // });
-
   return (
     <>
       <Modal
@@ -91,11 +55,20 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
         open={modalAddOpen}
         width="80%"
         onOk={() => {
+          const error = materialImport.some((item) => !item.supplyName);
+          if (error) {
+            setErrorMessage(
+              "Kiểm tra lại dữ liệu nhập. Hãng cung cấp không thể để trống!"
+            );
+            return;
+          }
+          setErrorMessage("");
           setModalAddOpen(false);
           setMaterialImport([]);
           dispatch(addMaterialImport(materialImport));
         }}
         onCancel={() => {
+          setErrorMessage("");
           setMaterialImport([]);
           setModalAddOpen(false);
         }}
@@ -132,7 +105,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                 Tên sản phẩm
               </StyledTableCell>
               <StyledTableCell>Hãng cung cấp</StyledTableCell>
-              <StyledTableCell>Số lương</StyledTableCell>
+              <StyledTableCell>Số lượng</StyledTableCell>
               <StyledTableCell>Đơn Giá</StyledTableCell>
               <StyledTableCell>Tổng giá</StyledTableCell>
               <StyledTableCell></StyledTableCell>
@@ -184,6 +157,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
                     id="amount"
                     type={"number"}
                     value={materialImportItem.amount}
+                    inputProps={{ min: 1, max: 10 }}
                     className="h-[30px] bg-white"
                     onChange={(e) =>
                       setMaterialImport((prev) => {
@@ -232,6 +206,7 @@ const ModalAddListMaterialImport = ({ modalAddOpen, setModalAddOpen }) => {
             ))}
           </TableBody>
         </StyledTable>
+        <p className="text-center text-red-500 mb-0 mt-3">{errorMessage}</p>
       </Modal>
     </>
   );
