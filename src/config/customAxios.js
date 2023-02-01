@@ -1,5 +1,5 @@
 import axios from "axios";
-import Cookies from "js-cookie";
+
 import { baseUrl } from "./baseAPI";
 
 const axiosInstance = axios.create({

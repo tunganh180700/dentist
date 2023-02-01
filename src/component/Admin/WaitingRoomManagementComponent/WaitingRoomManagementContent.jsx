@@ -6,14 +6,116 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Pagination, Typography, IconButton, TextField } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
 import "./style.css"
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllWaiting, callWaiting, deleteWaiting } from '../../../redux/WaitingSlice/listWaitingSlice';
+import moment from 'moment';
+import { updateWaitingAPI, listConfirmWaitingAPI } from "../../../config/baseAPI";
+import axiosInstance from "../../../config/customAxios";
+import ModalConfirmWaiting from '../../ModalComponent/ModalWaiting/ModalConfirmWaiting';
+import { ToastContainer } from 'react-toastify';
+import SockJsClient from 'react-stomp';
 
 const WaitingRoomManagementContent = () => {
+
+    const SOCKET_URL = 'http://localhost:8080/waiting-room/';
+
+    const listWaiting = useSelector(state => state.listWaiting.listWaiting)
+    const dispatch = useDispatch()
+    const pageSize = useSelector(state => state.listWaiting.pageSize)
+    const totalPages = useSelector(state => state.listWaiting.totalPage)
+    const [currentPage, setCurrentPage] = useState(0);
+    const totalElements = useSelector(state => state.listWaiting.totalElements)
+    const [modalConfirmWaitingOpen, setModalConfirmWaitingOpen] = useState(false);
+    const [role, setRole] = useState(null);
+    const [u, setU] = useState(true);
+    const [triggerGetList, setTriggerGetList] = useState(true);
+    const isCallWaiting = useSelector(state => state.listWaiting.isCallWaiting);
+    const isDeleteWaiting = useSelector(state => state.listWaiting.isDeleteWaiting);
+
+    const loadWaitingList = () => {
+        dispatch(fetchAllWaiting({
+            size: pageSize,
+            page: currentPage
+        },
+        ));
+    }
+
+    const onConnected = () => {
+        console.log("Connected!!")
+    }
+
+    const checkExistConfirmWaiting = async () => {
+        try {
+            const res = await axiosInstance.get(listConfirmWaitingAPI);
+            if (res.data.length > 0) {
+                setModalConfirmWaitingOpen(true);
+            }
+            else {
+                setModalConfirmWaitingOpen(false);
+            }
+        } catch (error) {
+            setModalConfirmWaitingOpen(false);
+        }
+    }
+
+    useEffect(() => {
+        const role = localStorage.getItem('role');
+        if (role === 'Receptionist') {
+            checkExistConfirmWaiting();
+        }
+        else {
+            setModalConfirmWaitingOpen(false);
+        }
+        setRole(role);
+    }, [])
+
+    useEffect(() => {
+        loadWaitingList();
+    }, [currentPage])
+
+    useEffect(() => {
+        if (isDeleteWaiting == true && totalElements % pageSize == 1) {
+            setCurrentPage(currentPage - 1)
+            dispatch(fetchAllWaiting({
+                size: pageSize,
+                page: currentPage,
+            }))
+        }
+    }, [isDeleteWaiting, isCallWaiting])
+
+    const call = async (id) => {
+            dispatch(callWaiting(id));
+    }
+
+
+    const getStatusStr = (status) => {
+        if (status == 1) {
+            return 'Đang chữa';
+        }
+        if (status == 2) {
+            return 'Đang chờ';
+        }
+        else {
+            return 'Đến lượt';
+        }
+    }
+
+    const handlePopupConfirm = () => {
+        if (role === null || role === 'Receptionist') {
+            setTriggerGetList((prev) => !prev)
+            setModalConfirmWaitingOpen(true);
+
+        }
+    }
+
+    const remove = (id) => {
+        dispatch(deleteWaiting(id));
+    }
+
     return (
         <>
+            <ToastContainer />
             <Typography
                 component="h1"
                 variant="h5"
@@ -23,101 +125,91 @@ const WaitingRoomManagementContent = () => {
             >
                 QUẢN LÝ PHÒNG CHỜ
             </Typography>
-            <IconButton aria-label="add">
-                <AddIcon /> Thêm mới
-            </IconButton>
+            <SockJsClient
+                url={SOCKET_URL}
+                topics={['/topic/group']}
+                onConnect={onConnected}
+                onDisconnect={() => console.log("Disconnected!")}
+                onMessage={handlePopupConfirm}
+                debug={false}
+            />
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell><div className='attibute'>STT</div></TableCell>
-                        <TableCell>
-                            <div className='attibute'>Tên khách hàng</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="searchRoom"
-                                    label="Tìm kiếm"
-                                    name="searchRoom"
-                                    autoComplete="searchRoom"
-                                    // value={fullName}
-                                    autoFocus
-                                // onChange={handleChange}
-                                />
-                            </div>
-                        </TableCell>
-                        <TableCell>
-                            <div className='attibute'>MSKH</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="searchRoom"
-                                    label="Tìm kiếm"
-                                    name="searchRoom"
-                                    autoComplete="searchRoom"
-                                    // value={fullName}
-                                    autoFocus
-                                // onChange={handleChange}
-                                />
-                            </div>
-                        </TableCell>
-                        <TableCell>
-                            <div className='attibute'>Trạng thái</div>
-                            <div style={{ width: "160px" }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    id="searchRoom"
-                                    label="Tìm kiếm"
-                                    name="searchRoom"
-                                    autoComplete="searchRoom"
-                                    // value={fullName}
-                                    autoFocus
-                                // onChange={handleChange}
-                                />
-                            </div>
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
+                        <TableCell>Bệnh nhân</TableCell>
+                        <TableCell>Ngày</TableCell>
+                        <TableCell>Trạng thái</TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>
-                            <IconButton aria-label="edit"
-                            // onClick={() => {
-                            //     setModalUpdateOpen(true)
-                            // }}
+                {totalPages === 0 ?
+                    (
+                        <>
+                            <Typography
+                                component="h1"
+                                variant="h5"
+                                color="inherit"
+                                noWrap
+                                textAlign="center"
                             >
-                                <EditIcon />
-                            </IconButton>
-                        </TableCell>
-                        <TableCell>
-                            <IconButton aria-label="delete">
-                                <DeleteIcon />
-                            </IconButton>
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
+                                Không có ai ở phòng chờ
+                            </Typography>
+                        </>
+                    )
+                    :
+                    (
+                        <>
+                            <TableBody>
+                                {listWaiting?.map((item) =>
+                                    <TableRow key={item.waitingRoomId}>
+                                        <TableCell>{item.patientName}</TableCell>
+                                        <TableCell>{moment(item.date).format("DD/MM/YYYY")}</TableCell>
+                                        <TableCell>{getStatusStr(item.status)}</TableCell>
+                                        {
+                                            role === null || role === 'Receptionist' || item.status === 1 ?
+                                                <></>
+                                                :
+                                                <TableCell>
+                                                    <IconButton aria-label="edit" onClick={() => {
+                                                        call(item.waitingRoomId)
+                                                    }}>
+                                                        Gọi
+                                                    </IconButton>
+                                                </TableCell>
+                                        }
+                                        {
+                                            role === null || role === 'Receptionist' || item.status === 1 ?
+                                                <></>
+                                                :
+                                                <TableCell>
+                                                    <IconButton aria-label="delete" onClick={() => {
+                                                        remove(item.waitingRoomId)
+                                                    }}>
+                                                        Xóa
+                                                    </IconButton>
+                                                </TableCell>
+                                        }
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </>
+                    )
+                }
             </Table >
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Pagination
-                    count={3}
-                    defaultPage={1}
-                // onChange={(e, pageNumber) => {
-                //     setCurrentPage(pageNumber - 1)
-                // }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
-            {/* <div>
+            <div>
+                <ModalConfirmWaiting modalConfirmWaitingOpen={modalConfirmWaitingOpen} setModalConfirmWaitingOpen={setModalConfirmWaitingOpen} triggerGetList={triggerGetList} />
+            </div>
 
-                <ModalUpdateAccount modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
-            </div> */}
 
         </>
     )

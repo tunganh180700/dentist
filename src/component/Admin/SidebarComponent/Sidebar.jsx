@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -14,132 +14,228 @@ import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
 import StarBorder from '@mui/icons-material/StarBorder';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import { useState } from 'react';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 
 const Sidebar = () => {
     const [open, setOpen] = useState(true);
+    const [role, setRole] = useState(null);
     const handleClick = () => {
         setOpen(!open);
     };
 
+    useEffect(() => {
+        const role = localStorage.getItem('role');
+        setRole(role);
+    }, []);
+
+    useEffect(() => {
+        const role = localStorage.getItem('role');
+        setRole(role);
+    }, []);
+
     return (
         <>
             <React.Fragment>
-                <ListItemButton onClick={handleClick}>
+                <ListItemButton>
                     <ListItemIcon>
-                        <CategoryIcon />
+                        <MeetingRoomIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Quản lý danh mục" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
+
+                    <Link to={'/timekeeping'}>
+                        <ListItemText style={{ color: "black" }} primary='Quản lý chấm công' />
+                    </Link>
                 </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }}>
+                {
+                    role === 'Receptionist' ?
+                        (<></>)
+                        :
+                        (<ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
                                 <StarBorder />
-                            </ListItemIcon>
-                            <Link to={'/patient-management'}>
-                                <ListItemText primary="Bệnh nhân" />
-                            </Link>
-                        </ListItemButton>
-                    </List>
-                </Collapse>
+                            </ListItemIcon><Link to={'/patient-management'}>
+                                <ListItemText style={{ color: "black" }} primary=' Bệnh nhân' />
+                            </Link></ListItemButton>)
+                }
 
                 <ListItemButton>
                     <ListItemIcon>
                         <MeetingRoomIcon />
                     </ListItemIcon>
                     <Link to={'/meetingroom'}>
-                        <ListItemText primary="Quản lý phòng chờ" />
+                        <ListItemText style={{ color: "black" }} primary='Quản lý phòng chờ' />
                     </Link>
                 </ListItemButton>
 
+                {
+                    role === 'LeaderNurse' || role === 'Doctor' || role === 'Receptionist' || role === 'Nurse' ?
+                        (<></>)
+                        : (
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <MeetingRoomIcon />
+                                </ListItemIcon>
+                                <Link to={'/accmanagement'}>
+                                    <ListItemText style={{ color: "black" }} primary='Quản lý tài khoản' />
+                                </Link>
+                            </ListItemButton>
+                        )
+                }
                 <ListItemButton>
                     <ListItemIcon>
-                        <PaidIcon />
+                        <ScheduleIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Quản lý doanh thu" />
-                </ListItemButton>
-
-                <ListItemButton>
-                    <ListItemIcon>
-                        <AccountCircleIcon />
-                    </ListItemIcon>
-                    <Link to={'/accmanagement'}>
-                        <ListItemText primary="Quản lý tài khoản" />
+                    <Link to={'/schedule'}>
+                        <ListItemText style={{ color: "black" }} primary='Quản lý lịch hẹn' />
                     </Link>
                 </ListItemButton>
 
-                <ListItemButton>
-                    <ListItemIcon>
-                        <DescriptionIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Quản lý hóa đơn" />
-                </ListItemButton>
+                {
+                    role === 'Doctor' || role === 'Receptionist' ?
+                        (<></>)
+                        : (
+                            <ListItemButton onClick={handleClick}>
+                                <ListItemIcon>
+                                    <CategoryIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Quản lý vật liệu" />
+                                {open ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                        )
+                }
 
-                <ListItemButton onClick={handleClick}>
-                    <ListItemIcon>
-                        <CategoryIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Quản lý vật liệu" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                                <StarBorder />
-                            </ListItemIcon>
-                            <Link to={'/materialmanagement'}>
-                                <ListItemText primary="Vật liệu" />
-                            </Link>
-                        </ListItemButton>
-                        <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                                <StarBorder />
-                            </ListItemIcon>
-                            <Link to={'/materialimport'}>
-                                <ListItemText primary="Vật liệu nhập khẩu" />
-                            </Link>
-                        </ListItemButton>
-                        <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                                <StarBorder />
-                            </ListItemIcon>
-                            <Link to={'/materialexport'}>
-                                <ListItemText primary="Vật liệu xuất khẩu" />
-                            </Link>
-                        </ListItemButton>
-                    </List>
-                </Collapse>
+                {
+                    role === 'Doctor' || role === 'Receptionist' ?
+                        (<></>)
+                        : (
+                            <Collapse in={open} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding>
+                                    {role === 'Nurse' ?
+                                        (<></>)
+                                        : (
+                                            <ListItemButton sx={{ pl: 4 }}>
+                                                <ListItemIcon>
+                                                    <StarBorder />
+                                                </ListItemIcon>
 
-                <ListItemButton>
-                    <ListItemIcon>
-                        <AccountCircleIcon />
-                    </ListItemIcon>
-                    <Link to={'/labo'}>
-                        <ListItemText primary="Quản lý Labo" />
-                    </Link>
-                </ListItemButton>
+                                                <Link to={'/materialmanagement'}>
+                                                    <ListItemText style={{ color: "black" }} primary='Vật liệu' />
+                                                </Link>
+                                            </ListItemButton>
+                                        )
+                                    }
 
-                
-                <ListItemButton>
-                    <ListItemIcon>
-                        <AccountCircleIcon />
-                    </ListItemIcon>
-                    <Link to={'/serviceandcategory'}>
-                        <ListItemText primary="Quản lý Dịch vụ" />
-                    </Link>
-                </ListItemButton>
+                                    {role === 'Nurse' ?
+                                        (<></>)
+                                        : (
+                                            <ListItemButton sx={{ pl: 4 }}>
+                                                <ListItemIcon>
+                                                    <StarBorder />
+                                                </ListItemIcon>
 
-                <ListItemButton>
-                    <ListItemIcon>
-                        <PointOfSaleIcon />
-                    </ListItemIcon>
-                    <Link to={'/income'}>
-                        <ListItemText primary="Thu nhập" />
-                    </Link>
-                </ListItemButton>
+                                                <Link to={'/materialimport'}>
+                                                    <ListItemText style={{ color: "black" }} primary='Nhập vật liệu' />
+                                                </Link>
+                                            </ListItemButton>
+                                        )
+                                    }
+
+                                    <ListItemButton sx={{ pl: 4 }}>
+                                        <ListItemIcon>
+                                            <StarBorder />
+                                        </ListItemIcon>
+
+                                        <Link to={'/materialexport'}>
+                                            <ListItemText style={{ color: "black" }} primary='Xuất vật liệu' />
+                                        </Link>
+                                    </ListItemButton>
+
+                                </List>
+
+                            </Collapse>
+                        )
+                }
+
+                {
+                    role === 'Admin' || role === 'Doctor' || role === 'Nurse' || role === 'LeaderNurse' ?
+                        (
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <CategoryIcon />
+                                </ListItemIcon>
+
+                                <Link to={'/specimen'}>
+                                    <ListItemText style={{ color: "black" }} primary=' Mẫu vật' />
+                                </Link>
+                            </ListItemButton>
+                        )
+                        :
+                        (<></>)
+
+                }
+
+                {
+                    role === 'Doctor' || role === 'Receptionist' || role === 'Nurse' ?
+                        (<></>)
+                        : (
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <AccountCircleIcon />
+                                </ListItemIcon>
+
+                                <Link to={'/labo'}>
+                                    <ListItemText style={{ color: "black" }} primary=' Quản lý Labo' />
+                                </Link>
+                            </ListItemButton>
+                        )
+                }
+
+
+                {
+                    role === 'Doctor' || role === 'Receptionist' || role === 'Nurse' || role === 'LeaderNurse' ?
+                        (<></>)
+                        : (
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <AccountCircleIcon />
+                                </ListItemIcon>
+                                <Link to={'/serviceandcategory'}>
+                                    <ListItemText style={{ color: "black" }} primary='Quản lý dịch vụ' />
+                                </Link>
+                            </ListItemButton>
+                        )
+                }
+
+                {
+                    role === 'Doctor' || role === 'Receptionist' || role === 'Nurse' || role === 'LeaderNurse' ?
+                        (<></>)
+                        : (
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <PointOfSaleIcon />
+                                </ListItemIcon>
+                                <Link to={'/income'}>
+                                    <ListItemText style={{ color: "black" }} primary='Thu nhập' />
+                                </Link>
+                            </ListItemButton>
+                        )
+                }
+
+                {
+                    role === 'Doctor' || role === 'Receptionist' || role === 'Nurse' ?
+                        (<></>)
+                        : (
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <ReceiptLongIcon />
+                                </ListItemIcon>
+                                <Link to={'/bill'}>
+                                    <ListItemText style={{ color: "black" }} primary='Quản lý hoá đơn' />
+                                </Link>
+                            </ListItemButton>
+                        )
+                }
             </React.Fragment>
         </>
     )

@@ -8,21 +8,23 @@ import { toast } from 'react-toastify';
 import { toastCss } from '../../../redux/toastCss';
 import { loginAPI } from '../../../config/baseAPI';
 import { useNavigate } from 'react-router-dom';
+import { regexPassword } from '../../../config/validation';
 
 const validationSchema = yup.object({
     userName: yup
-        .string("Enter username")
-        .required("Username is required"),
-    // password: yup
-    //     .string("Enter password")
-    //     .min(6, "Password should be of minimum 6 characters length")
-    //     .required("Password is required"),
+        .string("Nhập tên đăng nhập")
+        .required("Trường tên đăng nhập là bắt buộc."),
+    password: yup
+        .string("Nhập mật khẩu")
+        .matches(regexPassword, "Mật khẩu phải là từ 6 đến 32 ký tự, viết liền, không dấu.")
+        .required("Trường mật khẩu là bắt buộc."),
 });
 
 const LoginComponent = () => {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
     const paperStyle = {
+        background: 'linear-gradient(45deg,  rgba(66, 183, 245,0.8) 0%,rgba(66, 245, 189,0.4) 100%)',
         height: '100vh',
         width: '100%',
         display: 'flex',
@@ -62,18 +64,20 @@ const LoginComponent = () => {
                     break;
             }
         } catch (error) {
-            toast.error("Login failed", toastCss)
+            toast.error("Tên đăng nhập hoặc mật khẩu không đúng.", toastCss)
         }
     }
 
     return (
         <Grid container style={paperStyle}>
+
             <Box
                 sx={{
                     width: 500,
                     padding: 10,
                     borderRadius: 5,
                     boxShadow: "0px 6px 6px -3px rgb(0 0 0 / 20%), 0px 10px 14px 1px rgb(0 0 0 / 14%), 0px 4px 18px 3px rgb(0 0 0 / 12%)",
+                    backgroundColor: 'white'
                 }}>
                 <Grid style={{ display: 'flex', justifyContent: 'center' }}>
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main', alignItems: 'center' }}>
@@ -91,8 +95,13 @@ const LoginComponent = () => {
                     autoFocus
                     value={formik.values.userName}
                     onChange={handleChange}
+                    onKeyUp={(e) => {
+                        if (e.key === 'Enter') {
+                            formik.handleSubmit()
+                        }
+                    }}
                 />
-                {formik.errors.userName && <Typography color={'red'}>{formik.errors.userName}</Typography>}
+                {formik.errors.userName && formik.touched.userName && <Typography color={'red'}>{formik.errors.userName}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -105,8 +114,13 @@ const LoginComponent = () => {
                     autoComplete="password"
                     autoFocus
                     onChange={handleChange}
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                            formik.handleSubmit()
+                        }
+                    }}
                 />
-                {formik.errors.password && <Typography color={'red'}>{formik.errors.password}</Typography>}
+                {formik.errors.password && formik.touched.password && <Typography color={'red'}>{formik.errors.password}</Typography>}
                 <Button
                     loading={loading}
                     type="submit"
@@ -119,7 +133,7 @@ const LoginComponent = () => {
                 </Button>
                 <Grid item xs
                     sx={{ textAlign: "center" }}>
-                    <Link href="#" variant="body2">
+                    <Link href="/forgot-password" variant="body2">
                         Quên mật khẩu?
                     </Link>
                 </Grid>

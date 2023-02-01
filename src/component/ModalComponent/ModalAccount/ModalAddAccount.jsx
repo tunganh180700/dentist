@@ -13,7 +13,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { regexEmail, regexPhone, validationDate } from '../../../config/validation';
+import { regexEmail, regexNumber, regexPassword, regexPhone, regexPositiveNumber, validationDate } from '../../../config/validation';
 import axios from 'axios';
 import { listRoleAPI } from '../../../config/baseAPI';
 import moment from 'moment/moment';
@@ -25,26 +25,30 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
     const [value, setValue] = useState(null);
     const [roleIds, setRoleIds] = useState([]);
     const [roleId, setRoleId] = useState();
+    const [error, setError] = useState([])
 
     const validationSchema = yup.object({
         fullName: yup
-            .string('Enter your name')
-            .required('Your name is required'),
+            .string('Nhập họ tên')
+            .required('Họ tên là bắt buộc.'),
         phone: yup
-            .string("Enter your phone")
-            .matches(regexPhone, "Invalid Phone")
-            .required("Phone is required"),
+            .string("Nhập số điện thoại")
+            .matches(regexPhone, "Số điện thoại không được nhập chữ, kí tự, bắt buộc phải 10 số bắt đầu là 03, 05, 07 08, 09.")
+            .required("Số điện thoại là bắt buộc."),
         password: yup
             .string("Enter your password")
-            .required("Password is required"),
+            .matches(regexPassword, "Mật khẩu phải là từ 6 đến 32 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.")
+            .required("Trường mật khẩu là bắt buộc."),
         email: yup
-            .string("Enter your email")
-            .matches(regexEmail, "Invalid email")
-            .required("Email is required"),
+            .string("Nhập email")
+            .matches(regexEmail, "Email không đúng với định dạng.")
+            .required("Trường email là bắt buộc."),
         salary: yup
-            .string('Enter your salary')
-            .required('Salary is required')
+            .string('Nhập số lương')
+            .matches(regexNumber, "Lương không được nhập chữ, kí tự, số âm.")
+            .required('Lương là bắt buộc.')
     });
+
 
     const loadRole = async () => {
         try {
@@ -56,7 +60,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
             console.log(error)
         }
     }
-    
+
     useEffect(() => {
         loadRole();
     }, [])
@@ -79,13 +83,35 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+
+        // formik.values.fullName = ""
+        // formik.errors.fullName = ""
+
+        // formik.values.password = ""
+        // formik.errors.password = ""
+
+        // formik.values.phone = ""
+        // formik.errors.phone = ""
+
+        // formik.values.email = ""
+        // formik.errors.email = ""
+
+        // formik.values.salary = ""
+        // formik.errors.salary = ""
+
+        setValue(null)
+        formik.resetForm()
+    }
+
     return (
         <>
             <Modal
-                title="Thêm tài khoản"
+                title="Thêm Tài Khoản"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
                 <TextField
                     margin="normal"
@@ -99,13 +125,13 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.fullName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
+                {formik.errors.fullName && formik.touched.fullName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
                 <TextField
                     margin="normal"
                     required
                     fullWidth
                     id="password"
-                    label="Mat khau"
+                    label="Mật khẩu"
                     name="password"
                     autoComplete="password"
                     autoFocus
@@ -113,17 +139,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     type={"password"}
                     onChange={formik.handleChange}
                 />
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="username"
-                    disabled
-                    label="Tên đăng nhập"
-                    name="username"
-                    autoComplete="username"
-                    autoFocus
-                />
+                 {formik.errors.password && formik.touched.password && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.password}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -136,7 +152,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
+                {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -149,12 +165,13 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
+                {formik.errors.email && formik.touched.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Ngày sinh"
                         name="birthdate"
                         value={value}
+                        disableFuture={true}
                         onChange={(newValue) => {
                             setValue(newValue);
                             console.log(newValue)
@@ -174,7 +191,7 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
+                {formik.errors.salary && formik.touched.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl fullWidth>
                         <InputLabel id="permisstion">Quyền hạn</InputLabel>

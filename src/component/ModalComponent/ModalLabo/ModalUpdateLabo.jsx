@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import 'antd/dist/antd.css';
 import { Modal } from 'antd';
-import { TextField } from '@mui/material';
+import { TextField, useStepContext } from '@mui/material';
 import "./../style.css"
 import Typography from '@mui/material/Typography';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import axios from 'axios';
 import { regexPhone } from '../../../config/validation';
 import { updateLabo } from '../../../redux/LaboSlice/listLaboSlice';
 import { getLaboByIdAPI } from '../../../config/baseAPI';
+import axiosInstance from '../../../config/customAxios';
 
 
 const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -19,14 +19,17 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [loading, setLoading] = useState();
     const [value, setValue] = useState(null);
 
+    const [oldData, setOldData] = useState()
+
     const validationSchema = yup.object({
         laboName: yup
-            .string('Enter labo name')
-            .required('Your material name is required'),
+            .string('Nhập Labo')
+            .max(250, 'Labo không thể quá 250 ký tự.')
+            .required('Labo là bắt buộc.'),
         phone: yup
-            .string("Enter your phone")
-            .matches(regexPhone, "Invalid Phone")
-            .required("Phone is required")
+            .string("Nhập số điện thoại")
+            .matches(regexPhone, "Số điện thoại không được nhập chữ, kí tự, bắt buộc phải 10 số bắt đầu là 03, 05, 07 08, 09.")
+            .required("Số điện thoại là bắt buộc."),
     });
 
     const formik = useFormik({
@@ -43,11 +46,12 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const fetchLabo = async (laboId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 getLaboByIdAPI + laboId,
             )
             console.log(res.data)
             formik.setValues(res.data)
+            setOldData(res.data)
         } catch (error) {
             console.log(error)
         }
@@ -59,13 +63,26 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             fetchLabo(laboId)
     }, [laboId])
 
+    const handleCancel = () => {
+        formik.values.laboName = oldData.laboName
+        formik.values.phone = oldData.phone
+
+        // formik.errors.laboName = ""
+        // formik.touched.laboName = ""
+
+        // formik.errors.phone = ""
+        // formik.touched.phone = ""
+
+        setModalUpdateOpen(false)
+    }
+
     return (
         <>
             <Modal
                 title="Thông tin Labo"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalUpdateOpen(false)}
+                onCancel={handleCancel}
             >
                 {loading === false && <>
                     <TextField
@@ -80,7 +97,7 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.laboName && <Typography style={{ color: 'red' }}>{formik.errors.laboName}</Typography>}
+                    {formik.errors.laboName && formik.touched.laboName && <Typography style={{ color: 'red' }}>{formik.errors.laboName}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -93,7 +110,7 @@ const ModalUpdateLabo = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
+                    {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
 
 
                 </>}

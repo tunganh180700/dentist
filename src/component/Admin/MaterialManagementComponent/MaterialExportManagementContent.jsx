@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Pagination, Typography, IconButton } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { setMaterialExportId} from '../../../redux/modalSlice';
+import { setMaterialExportId } from '../../../redux/modalSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -41,7 +41,7 @@ const MaterialExportManagementContent = () => {
             page: currentPage
         },
         ));
-    }, [currentPage,isUpdateMaterialExport, isDeleteMaterialExport,isAddMaterialExport])
+    }, [currentPage, isUpdateMaterialExport, isDeleteMaterialExport, isAddMaterialExport])
 
     return (
         <>
@@ -50,10 +50,11 @@ const MaterialExportManagementContent = () => {
                 variant="h5"
                 color="inherit"
                 noWrap
+                fontWeight='bold'
             >
-                Quản lý vật liệu xuất khẩu
+                Quản Lý Xuất Vật Liệu
             </Typography>
-            <IconButton aria-label="add"   style={{borderRadius: '5%'}} onClick={() => {
+            <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
                 setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
@@ -61,53 +62,68 @@ const MaterialExportManagementContent = () => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Tên vật liệu</TableCell>
-                        <TableCell>Số lượng</TableCell>
-                        <TableCell>Tổng tiền</TableCell>
-                        <TableCell>Tên bệnh nhân</TableCell>
-                        <TableCell>Date</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên vật liệu</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Số lượng</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Đơn giá</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên bệnh nhân</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Date</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                {listMaterialExport.map((item, index) =>
-                        <TableRow key={item.materialExportId}>
-                            <TableCell>{item.materialName}</TableCell>
-                            <TableCell>{item.amount}</TableCell>
-                            <TableCell>{item.totalPrice}</TableCell>
-                            <TableCell>{item.patientName}</TableCell>
-                            <TableCell>{item.date}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setMaterialExportId(item.materialExportId))
-                                    console.log('id',item.materialExportId)
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setMaterialExportId(item.materialExportId))
-                                    console.log('id22',item.materialExportId)
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-   )}
-                </TableBody>
+                {totalPages === 0 ? (
+                    <>
+                        <Typography
+                            component="h1"
+                            variant="h5"
+                            color="inherit"
+                            noWrap
+                            textAlign="center"
+                        >
+                            Không có vật liệu nào
+                        </Typography>
+                    </>
+                ) : (
+                    <TableBody>
+                        {listMaterialExport.map((item, index) =>
+                            <TableRow key={item.materialExportId}>
+                                <TableCell>{item.materialName}</TableCell>
+                                <TableCell>{item.amount}</TableCell>
+                                <TableCell>{item.unitPrice}</TableCell>
+                                <TableCell>{item.patientName}</TableCell>
+                                <TableCell>{item.date}</TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="edit" onClick={() => {
+                                        setModalUpdateOpen(true)
+                                        dispatch(setMaterialExportId(item.materialExportId))
+                                    }}>
+                                        <EditIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="delete" onClick={() => {
+                                        setModalDeleteOpen(true)
+                                        dispatch(setMaterialExportId(item.materialExportId))
+                                    }}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                )
+                }
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Pagination
-                    count={totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
             <div>
                 <ModalUpdateMaterialExport modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />

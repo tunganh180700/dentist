@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { addMaterial } from '../../../redux/MaterialSlice/listMaterialSlice';
+import { regexNumber } from '../../../config/validation';
 
 const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -13,22 +14,24 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
 
     const validationSchema = yup.object({
         materialName: yup
-            .string('Enter material name')
-            .required('Your material name is required'),
+            .string('Nhập tên vật liệu')
+            .max(255, 'Vật liệu không thể quá 255 ký tự.')
+            .required('Vật liệu là bắt buộc.'),
         unit: yup
-            .string('Enter unit')
-            .required('Your unit is required'),
+            .string('Nhập đơn vị')
+            .max(45, 'Đơn vị không thể quá 45 ký tự.')
+            .required('Đơn vị là bắt buộc.'),
 
         price: yup
-            .string('Enter price')
-            .required('Your price is required')
+            .string('Nhập đơn giá')
+            .matches(regexNumber, "Đơn giá không được nhập chữ, kí tự, số âm.")
+            .required('Đơn giá là bắt buộc.')
     });
 
     const formik = useFormik({
         initialValues: {
             materialName: '',
             unit: "",
-
             price: '',
         },
         validationSchema: validationSchema,
@@ -39,13 +42,28 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+    const handleCancelCustom = () => {
+        setModalAddOpen(false)
+        // formik.errors.materialName = ""
+        // formik.touched.materialName = ""
+
+        // formik.errors.unit = ""
+        // formik.touched.unit = ""
+
+        // formik.errors.price = ""
+        // formik.touched.price = ""
+
+        formik.resetForm()
+       
+    }
+
     return (
         <>
             <Modal
-                title="Thêm vật liệu"
+                title="Thêm Vật Liệu"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancelCustom}
             >
                 <TextField
                     margin="normal"
@@ -59,7 +77,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.materialName && <Typography style={{ color: 'red' }}>{formik.errors.materialName}</Typography>}
+                {formik.errors.materialName && formik.touched.materialName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.materialName}</Typography>}
                 <TextField
                     margin="normal"
                     required
@@ -73,6 +91,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
                     type={"unit"}
                     onChange={formik.handleChange}
                 />
+                {formik.errors.unit && formik.touched.unit && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.unit}</Typography>}
                 {/* <TextField
                     margin="normal"
                     required
@@ -98,7 +117,7 @@ const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
+                {formik.errors.price && formik.touched.price && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.price}</Typography>}
 
             </Modal>
         </>

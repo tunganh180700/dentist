@@ -3,7 +3,8 @@ import axios from "axios"
 import { listMaterialImportAPI, updateMaterialImportAPI, deleteMaterialImportAPI, addMaterialImportAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
-import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, UPDATE_FAIL_IMPORT_MATERIAL, DELETE_FAIL_IMPORT_MATERIAL } from "../../config/constant"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     listMaterialImport: [],
@@ -67,7 +68,7 @@ const listMaterialImportSlice = createSlice({
 
 export const fetchAllMaterialImport = createAsyncThunk('listMaterialImport/fetchAllMaterialImport', async (paramsSearch) => {
     try {
-        const res = await axios.get(listMaterialImportAPI, {
+        const res = await axiosInstance.get(listMaterialImportAPI, {
             params: paramsSearch,
         })
         return res.data
@@ -79,7 +80,7 @@ export const fetchAllMaterialImport = createAsyncThunk('listMaterialImport/fetch
 export const updateMaterialImport = createAsyncThunk('listMaterialImport/updateMaterialImport', async (data) => {
 
     try {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
             updateMaterialImportAPI + data.materialImportId, data
         )
         console.log(res)
@@ -87,7 +88,7 @@ export const updateMaterialImport = createAsyncThunk('listMaterialImport/updateM
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error(UPDATE_FAIL, toastCss)
+        toast.error(UPDATE_FAIL_IMPORT_MATERIAL, toastCss)
 
     }
 })
@@ -95,20 +96,20 @@ export const updateMaterialImport = createAsyncThunk('listMaterialImport/updateM
 export const deleteMaterialImport = createAsyncThunk('listMaterialImport/deleteMaterialImport', async (materialImportId) => {
     console.log(materialImportId)
     try {
-        const res = await axios.delete(deleteMaterialImportAPI + materialImportId)
+        const res = await axiosInstance.delete(deleteMaterialImportAPI + materialImportId)
         toast.success(DELETE_SUCCESS, toastCss)
         return materialImportId
     } catch (error) {
-        toast.error(DELETE_FAIL, toastCss)
+        toast.error(DELETE_FAIL_IMPORT_MATERIAL, toastCss)
 
     }
 })
 
 export const addMaterialImport = createAsyncThunk('listMaterialImport/addMaterialImport', async (values) => {
     try {
-      
+
         console.log(values)
-        const res = await axios.post(addMaterialImportAPI, values)
+        const res = await axiosInstance.post(addMaterialImportAPI, values)
         toast.success("Thêm vật liệu thành công !!!!!", toastCss)
         console.log(res.data)
         return res.data
@@ -117,5 +118,6 @@ export const addMaterialImport = createAsyncThunk('listMaterialImport/addMateria
         toast.error('Thêm mới thất bại :(', toastCss)
     }
 })
+
 export const { setListMaterialImport } = listMaterialImportSlice.actions;
 export default listMaterialImportSlice.reducer;

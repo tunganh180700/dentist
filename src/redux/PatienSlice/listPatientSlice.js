@@ -8,7 +8,6 @@ import { toastCss } from "../toastCss"
 
 const initState = {
     listPatient: [],
-    pagination: [],
     index: 0,
     pageSize: 3,
     totalPage: 0,
@@ -41,6 +40,7 @@ const listPatientSlice = createSlice({
             .addCase(fetchAllPatient.fulfilled, (state, action) => {
                 state.listPatient = action.payload.content;
                 state.statusPatient = action.payload.status
+                // state.pageSize = action.payload.pageSize
                 state.status = false;
                 state.totalElements = action.payload.totalElements;
                 state.totalPage = action.payload.totalPages;
@@ -73,9 +73,11 @@ const listPatientSlice = createSlice({
             .addCase(searchPatient.fulfilled, (state, action) => {
                 state.listPatient = action.payload.content;
                 state.isSearchPatient = true
+                state.totalPage = action.payload.totalPages
                 state.totalElements = action.payload.totalElements;
-                state.totalPage = action.payload.totalPages;
-                state.isSearchPatient = true;
+                state.isDeletePatient = false;
+                state.isUpdatePatient = false;
+                state.isAddPatient = false;
             })
 
     }

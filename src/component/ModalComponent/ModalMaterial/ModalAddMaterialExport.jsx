@@ -2,23 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import 'antd/dist/antd.css';
 import { Typography, TextField } from '@mui/material';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { addMaterialExport } from '../../../redux/MaterialSlice/listMaterialExportSlice';
-import { validationDate } from '../../../config/validation';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { listMaterialAPI, listAllMaterialAPI, listAllPatientAPI, getMaterialExportByIdAPI,listPatientRecordByTreatmentIdAPI } from '../../../config/baseAPI';
-import axios from 'axios';
-import moment from 'moment/moment';
+import { listAllMaterialAPI, listAllPatientAPI, getMaterialExportByIdAPI, listPatientRecordByTreatmentIdAPI } from '../../../config/baseAPI';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Label } from '@mui/icons-material';
+import Select from '@mui/material/Select';
+import axiosInstance from '../../../config/customAxios';
+import { regexNumber } from '../../../config/validation';
 
 const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const dispatch = useDispatch();
@@ -28,7 +23,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const [materialId, setMaterialId] = useState();
     const [materialPrice, setMaterialPrice] = useState();
     const [materialExportId, setMaterialExportId] = useState();
-
+    const [unitPrice, setUnitPrice] = useState();
 
     const [patientIds, setPatientIds] = useState([]);
     const [patientId, setPatientId] = useState();
@@ -40,8 +35,9 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const validationSchema = yup.object({
 
         amount: yup
-            .string('Enter amount')
-            .required('Your amount is required')
+            .string('Nhập số lượng')
+            .matches(regexNumber, "Số lượng không được nhập chữ, kí tự, số âm.")
+            .required('Số lượng là bắt buộc.'),
 
     });
 
@@ -49,9 +45,10 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
 
     const loadMaterial = async () => {
         try {
-            const res = await axios.get(listAllMaterialAPI)
+            const res = await axiosInstance.get(listAllMaterialAPI)
             setMaterialId(res.data[0].materialId)
             setMaterialIds(res.data)
+            // isSubmitForm(false)
             setMaterialPrice(res.data[0].price)
 
 
@@ -65,10 +62,10 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
 
     const loadPatient = async () => {
         try {
-            const res = await axios.get(listAllPatientAPI)
+            const res = await axiosInstance.get(listAllPatientAPI)
             setPatientId(res.data[0].patientId)
             setPatientIds(res.data)
-
+            // isSubmitForm(false)
             console.log('patient', res.data)
 
         } catch (error) {
@@ -90,10 +87,12 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
             values.materialId = materialId;
             values.patientId = patientId;
             values.totalPrice = materialPrice;
+            values.unitPrice = unitPrice;
             values.patientRecordId = patientRecordId;
             console.log(values);
             dispatch(addMaterialExport(values))
             setModalAddOpen(false)
+            // isSubmitForm(true)
             formik.handleReset()
         }
     });
@@ -101,7 +100,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const fetchMaterialExport = async (materialExportId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 getMaterialExportByIdAPI + materialExportId,
             )
             console.log(res.data)
@@ -109,7 +108,6 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
             console.log('id', res.data.materialId)
             setPatientRecordId(res.data.patientRecordId)
             setMaterialExportId(res.data.materialExportId)
-            // setMaterialId(res.data.materialId)
             console.log('day roi: ', res.data.patientRecordId)
             setValue(res.data.date)
         } catch (error) {
@@ -126,7 +124,7 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     const loadRecordByTreatmentId = async (patientId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 listPatientRecordByTreatmentIdAPI + patientId,
             )
             //  setPatientRecordId(res.data[0].patientId)
@@ -153,20 +151,33 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
     }, [materialId, formik.values.amount])
 
 
+    useEffect(() => {
+        const unitPrice = materialIds?.filter(e => e.materialId === materialId)[0]?.price
 
+        setUnitPrice(unitPrice)
+    }, [materialId])
+
+    const handleCancel = () => {
+        setModalAddOpen(false)
+        // setMaterialId(1)
+        // setMaterialExportId(1)
+        // setPatientId(1)
+        formik.resetForm()
+    }
     return (
         <>
             <Modal
-                title="Thêm vật liệu nhập khẩu"
+                title="Thêm vật liệu xuất khẩu"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
 
-                <Box sx={{ minWidth: 120 }}>
+                <Box >
                     <FormControl fullWidth>
                         <InputLabel id="material">Vật liệu</InputLabel>
                         <Select
+                            style={{ width: '100%', height: '10%' }}
                             labelId="material"
                             id="materialSelect"
                             label="Vật liệu"
@@ -183,10 +194,11 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
                     </FormControl>
                 </Box>
 
-                <Box sx={{ minWidth: 120 }}>
+                <Box >
                     <FormControl fullWidth>
                         <InputLabel id="patient">Bệnh nhân</InputLabel>
                         <Select
+                            style={{ width: '100%', height: '10%' }}
                             labelId="patient"
                             id="patientSelect"
                             label="Bệnh nhân"
@@ -203,10 +215,11 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
                     </FormControl>
                 </Box>
 
-                <Box sx={{ minWidth: 120 }}>
+                <Box >
                     <FormControl fullWidth>
                         <InputLabel id="patientrecord">Date record</InputLabel>
                         <Select
+                            style={{ width: '100%', height: '10%' }}
                             labelId="patientrecord"
                             id="patientrecordSelect"
                             label="Date record"
@@ -235,15 +248,27 @@ const ModalAddMaterialExport = ({ modalAddOpen, setModalAddOpen }) => {
                     autoFocus
                     onChange={formik.handleChange}
                 />
-                {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
-
+                {formik.errors.amount && formik.touched.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
+                <TextField
+                    margin="normal"
+                    required
+                    disabled
+                    fullWidth
+                    id="unitPrice"
+                    label="Đơn giá"
+                    name="unitPrice"
+                    autoComplete="unitPrice"
+                    value={unitPrice}
+                    autoFocus
+                    onChange={formik.handleChange}
+                />
                 <TextField
                     margin="normal"
                     required
                     disabled
                     fullWidth
                     id="totalPrice"
-                    label="Total Price"
+                    label="Tổng giá"
                     name="totalPrice"
                     autoComplete="totalPrice"
                     value={materialPrice}

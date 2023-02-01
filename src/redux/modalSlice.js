@@ -4,6 +4,7 @@ const initState = {
     isOpenUpdateUser: false,
     isOpenDeleteAccount: false,
     isOpenDeletePatient: false,
+    isOpenDeleteRecord: false,
     userId: 0,
 
     isOpenUpdateLabo: false,
@@ -22,11 +23,28 @@ const initState = {
     isOpenDeleteMaterialExport: false,
     materialExportId: 0,
 
+    treatmentId: 0,
     
 
-    isOpenUpdateServiceAndCategory: false,
-    isOpenDeleteServiceAndCategory: false,
+    isOpenUpdateSpecimens: false,
+    isOpenDeleteSpecimens: false,
+
+
+    isOpenUpdateCategory: false,
+    isOpenDeleteCategory: false,
     categoryServiceId: 0,
+
+    isOpenUpdateService: false,
+    isOpenDeleteService: false,
+    serviceId: 0,
+
+    specimenId: 0,
+    isOpenUpdateSpecimen:false,
+    isOpenDeleteSpecimen:false,
+
+    waitingRoomId: 0,
+    isOpenUpdateSchedule:false,
+
 }
 
 const modalSlice = createSlice({
@@ -41,6 +59,9 @@ const modalSlice = createSlice({
         },
         setIsOpenDeletePatient: (state, action) => {
             state.isOpenDeletePatient = action.payload
+        },
+        setIsOpenDeleteRecord: (state, action) => {
+            state.isOpenDeleteRecord = action.payload
         },
         setUserId: (state, action) => {
             state.userId = action.payload
@@ -74,12 +95,33 @@ const modalSlice = createSlice({
             state.laboId = action.payload
         },
 
-        setIsOpenDeleteServiceAndCategory: (state, action) => {
-            state.isOpenDeleteServiceAndCategory = action.payload
+        setIsOpenDeleteCategory: (state, action) => {
+            state.isOpenDeleteCategory = action.payload
         },
-        setCategoryServiceId: (state,action) => {
+        setCategoryServicedId: (state,action) => {
             state.categoryServiceId = action.payload
-        }
+        },
+        setIsOpenDeleteService: (state, action) => {
+            state.isOpenDeleteService = action.payload
+        },
+        setIsOpenDeleteSpecimens: (state, action) => {
+            state.isOpenDeleteSpecimens = action.payload
+        },
+        setServicedId: (state,action) => {
+            state.serviceId = action.payload
+        },
+        setTreatmentId: (state,action) => {
+            state.treatmentId = action.payload
+        },
+        setSpecimenId: (state,action) => {
+            state.specimenId = action.payload
+        },
+        setIsOpenDeleteSpecimen: (state, action) => {
+            state.isOpenDeleteSpecimen = action.payload
+        },
+        setScheduleId: (state,action) => {
+            state.waitingRoomId = action.payload
+        },
     }
 })
 export const { setUserId } = modalSlice.actions;
@@ -88,6 +130,14 @@ export const { setMaterialId } = modalSlice.actions;
 export const { setMaterialImportId } = modalSlice.actions;
 export const { setMaterialExportId } = modalSlice.actions;
 
-export const { setCategoryServiceId } = modalSlice.actions;
+export const { setCategoryServicedId } = modalSlice.actions;
+export const { setServicedId } = modalSlice.actions;
+
+export const { setTreatmentId} = modalSlice.actions;
+
+export const { setSpecimenId} = modalSlice.actions;
+
+export const { setScheduleId} = modalSlice.actions;
+
 
 export default modalSlice.reducer;

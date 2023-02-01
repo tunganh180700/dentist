@@ -7,9 +7,10 @@ import "./../style.css"
 import Typography from '@mui/material/Typography';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import axios from 'axios';
 import { updateMaterial } from '../../../redux/MaterialSlice/listMaterialSlice';
 import { getMaterialByIdAPI } from '../../../config/baseAPI';
+import axiosInstance from '../../../config/customAxios';
+import { regexNumber } from '../../../config/validation';
 
 
 const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
@@ -17,20 +18,25 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const materialId = useSelector(state => state.modal.materialId);
     const [loading, setLoading] = useState();
     const [value, setValue] = useState(null);
+    const [oldData, setOldData] = useState()
 
     const validationSchema = yup.object({
         materialName: yup
-            .string('Enter material name')
-            .required('Your material name is required'),
+            .string('Nhập tên vật liệu')
+            .max(255, 'Vật liệu không thể quá 255 ký tự.')
+            .required('Vật liệu là bắt buộc.'),
         unit: yup
-            .string('Enter unit')
-            .required('Your unit is required'),
+            .string('Nhập đơn vị')
+            .max(45, 'Đơn vị không thể quá 45 ký tự.')
+            .required('Đơn vị là bắt buộc.'),
         amount: yup
-            .string('Enter amount')
-            .required('Your amount is required'),
+            .string('Nhập số lượng')
+            .matches(regexNumber, "Số lượng không được nhập chữ, kí tự, số âm.")
+            .required('Số lượng là bắt buộc.'),
         price: yup
-            .string('Enter price')
-            .required('Your price is required')
+            .string('Nhập đơn giá')
+            .matches(regexNumber, "Đơn giá không được nhập chữ, kí tự, số âm.")
+            .required('Đơn giá là bắt buộc.')
     });
 
     const formik = useFormik({
@@ -47,11 +53,12 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const fetchMaterial = async (materialId) => {
         setLoading(true)
         try {
-            const res = await axios.get(
+            const res = await axiosInstance.get(
                 getMaterialByIdAPI + materialId,
             )
             console.log(res.data)
             formik.setValues(res.data)
+            setOldData(res.data)
         } catch (error) {
             console.log(error)
         }
@@ -63,13 +70,34 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             fetchMaterial(materialId)
     }, [materialId])
 
+
+    const handleCancel = () => {
+        formik.values.materialName = oldData.materialName
+        formik.values.unit = oldData.unit
+        formik.values.amount = oldData.amount
+        formik.values.price = oldData.price
+
+        // formik.errors.materialName = ""
+        // formik.touched.materialName = ""
+
+        // formik.errors.unit = ""
+        // formik.touched.unit = ""
+
+        // formik.errors.amount = ""
+        // formik.touched.amount = ""
+
+        // formik.errors.price = ""
+        // formik.touched.price = ""
+        setModalUpdateOpen(false)
+    }
+
     return (
         <>
             <Modal
-                title="Thông tin vật liệu"
+                title="Cập Nhật Vật Liệu"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalUpdateOpen(false)}
+                onCancel={handleCancel}
             >
                 {loading === false && <>
                     <TextField
@@ -84,7 +112,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.materialName && <Typography style={{ color: 'red' }}>{formik.errors.materialName}</Typography>}
+                    {formik.errors.materialName && formik.touched.materialName && <Typography style={{ color: 'red' }}>{formik.errors.materialName}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -97,7 +125,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.unit && <Typography style={{ color: 'red' }}>{formik.errors.unit}</Typography>}
+                    {formik.errors.unit && formik.touched.unit && <Typography style={{ color: 'red' }}>{formik.errors.unit}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -110,7 +138,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}           
+                    {formik.errors.amount && formik.touched.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -123,7 +151,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
+                    {formik.errors.price && formik.touched.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
                 </>}
 
             </Modal>

@@ -3,7 +3,7 @@ import axios from "axios"
 import { listUserAPI, updateAccountAPI, deleteAccountAPI, addAccountAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
-import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, ADD_FAIL_ACCOUNT } from "../../config/constant"
 import axiosInstance from "../../config/customAxios"
 
 const initState = {
@@ -20,7 +20,8 @@ const initState = {
     isDeleteAccount: false,
     statusAddAccount: false,
     isAddAccount: false,
-    message: ''
+    message: '',
+    fullName: ''
 }
 
 const listAccountSlice = createSlice({
@@ -30,6 +31,9 @@ const listAccountSlice = createSlice({
         setListAccount: (state, action) => {
             state.listAccount = action.payload
         },
+        setFullName: (state, action) => {
+            state.fullName = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -90,7 +94,7 @@ export const updateAccount = createAsyncThunk('listAccount/updateAccount', async
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error(UPDATE_FAIL, toastCss)
+        toast.error(ADD_FAIL_ACCOUNT, toastCss)
 
     }
 })
@@ -125,8 +129,8 @@ export const addAccount = createAsyncThunk('listAccount/addAccount', async (valu
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error('Thêm mới thất bại :(', toastCss)
+        toast.error(ADD_FAIL_ACCOUNT, toastCss)
     }
 })
-export const { setListAccount } = listAccountSlice.actions;
+export const { setListAccount, setFullName } = listAccountSlice.actions;
 export default listAccountSlice.reducer;

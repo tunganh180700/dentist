@@ -59,8 +59,9 @@ const AccountManagementContent = () => {
                 variant="h5"
                 color="inherit"
                 noWrap
+                fontWeight="bold"
             >
-                Quản lý tài khoản
+                Danh Sách Tài Khoản
             </Typography>
             <IconButton aria-label="add" style={{ borderRadius: "20%" }} onClick={() => {
                 setModalAddOpen(true)
@@ -70,53 +71,73 @@ const AccountManagementContent = () => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Họ tên</TableCell>
-                        <TableCell>Tên đăng nhập</TableCell>
-                        <TableCell>Số điện thoại</TableCell>
-                        <TableCell>Email</TableCell>
-                        <TableCell>Ngày sinh</TableCell>
-                        <TableCell>Quyền hạn</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Họ tên</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên đăng nhập</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Số điện thoại</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Email</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Ngày sinh</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Quyền hạn</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {listAccount.map((item) =>
-                        <TableRow key={item.userId}>
-                            <TableCell>{item.fullName}</TableCell>
-                            <TableCell>{item.userName}</TableCell>
-                            <TableCell>{item.phone}</TableCell>
-                            <TableCell>{item.email}</TableCell>
-                            <TableCell>{item.birthdate}</TableCell>
-                            <TableCell>{item.roleName}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setUserId(item.userId))
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setUserId(item.userId))
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
+                {totalPages === 0 ?
+                    (
+                        <>
+                            <Typography
+                                component="h1"
+                                variant="h5"
+                                color="inherit"
+                                noWrap
+                                textAlign="center"
+                            >
+                                Không có toàn khoản nào
+                            </Typography>
+                        </>
+                    ) : (
+                        <>
+                            <TableBody>
+                                {listAccount.map((item) =>
+                                    <TableRow key={item.userId}>
+                                        <TableCell>{item.fullName}</TableCell>
+                                        <TableCell>{item.userName}</TableCell>
+                                        <TableCell>{item.phone}</TableCell>
+                                        <TableCell>{item.email}</TableCell>
+                                        <TableCell>{item.birthdate}</TableCell>
+                                        <TableCell>{item.roleName}</TableCell>
+                                        <TableCell>
+                                            <IconButton aria-label="edit" onClick={() => {
+                                                setModalUpdateOpen(true)
+                                                dispatch(setUserId(item.userId))
+                                            }}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                        <TableCell>
+                                            <IconButton aria-label="delete" onClick={() => {
+                                                setModalDeleteOpen(true)
+                                                dispatch(setUserId(item.userId))
+                                            }}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </>
+                    )
+                }
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
-                <Pagination
-                    count={totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
             <div>
                 <ModalUpdateAccount modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />

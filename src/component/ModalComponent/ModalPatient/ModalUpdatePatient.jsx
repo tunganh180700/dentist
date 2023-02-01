@@ -11,43 +11,47 @@ import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { getPatientByIdAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
-import { regexEmail, regexPhone, validationDate } from "../../../config/validation";
+import { regexEmail, regexName, regexPhone, validationDate } from "../../../config/validation";
 import { updatePatient } from "../../../redux/PatienSlice/listPatientSlice";
 
-const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
+const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen, isSubmitForm }) => {
     const dispatch = useDispatch();
     const [gender, setGender] = useState();
     const [value, setValue] = useState(null);
     const [loading, setLoading] = useState();
     const patientId = useSelector(state => state.modal.userId);
 
+    const [oldData, setOldData] = useState()
+
     const validationSchema = yup.object({
         patientName: yup
-            .string('Enter your name')
-            .required('Your name is required'),
+            .string('Nhập họ tên')
+            .matches(regexName, 'Họ và tên không được nhập số hoặc kí tự đặc biệt')
+            .required('Họ tên là bắt buộc.'),
         phone: yup
-            .string("Enter your phone")
-            .matches(regexPhone, "Invalid Phone")
-            .required("Phone is required"),
+            .string("Nhập số điện thoại")
+            .matches(regexPhone, "Số điện thoại không được nhập chữ, kí tự, bắt buộc phải 10 số bắt đầu là 03, 05, 07 08, 09.")
+            .required("Số điện thoại là bắt buộc."),
         email: yup
-            .string("Enter your email")
-            .matches(regexEmail, "Invalid email")
-            .required("Email is required"),
+            .string("Nhập email")
+            .matches(regexEmail, "Email không đúng với định dạng."),
         address: yup
-            .string("Enter your address")
-            .required("Address is required"),
+            .string("Nhập địa chỉ")
+            .max(255, "Địa chỉ không thể quá 255 kí tự.")
+            .required("Địa chỉ là bắt buộc."),
     });
 
     const formik = useFormik({
         initialValues: {
 
         },
-        validationSchema: validationSchema,
+        // validationSchema: validationSchema,
         onSubmit: (values) => {
             values.birthdate = moment(value.$d).format(validationDate);
             values.gender = gender;
             dispatch(updatePatient(values));
             setModalUpdateOpen(false);
+            isSubmitForm(true)
         }
     })
 
@@ -59,6 +63,7 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             )
             console.log(res.data)
             formik.setValues(res.data)
+            setOldData(res.data)
             setValue(res.data.birthdate)
             setGender(res.data.gender)
         } catch (error) {
@@ -72,13 +77,25 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             fetchPatient(patientId)
     }, [patientId])
 
+    const handleCancel = () => {
+        isSubmitForm(false)
+        formik.values.patientName = oldData.patientName
+        setValue(oldData.birthdate)
+        formik.values.phone = oldData.phone
+        formik.values.address = oldData.address
+        formik.values.bodyPrehistory = oldData.bodyPrehistory
+        setGender(oldData.gender)
+        formik.values.teethPrehistory = oldData.teethPrehistory
+        setModalUpdateOpen(false)
+    }
+
     return (
         <>
             <Modal
-                title="Chỉnh sửa tài khoản"
+                title="Chỉnh Sửa Bệnh Nhân"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalUpdateOpen(false)}
+                onCancel={handleCancel}
             >
                 {loading === false && <>
                     <TextField
@@ -93,12 +110,13 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.patientName && <Typography style={{ color: 'red' }}>{formik.errors.patientName}</Typography>}
+                    {formik.errors.patientName && formik.touched.patientName && <Typography style={{ color: 'red' }}>{formik.errors.patientName}</Typography>}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Ngày sinh"
                             name="birthdate"
                             value={value}
+                            disableFuture={true}
                             onChange={(newValue) => {
                                 setValue(newValue);
                                 console.log(newValue)
@@ -118,7 +136,7 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
+                    {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
                     <FormControl style={{ display: 'flex' }}>
                         <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginRight: "80%" }}>Gender</FormLabel>
                         <RadioGroup
@@ -145,7 +163,7 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.address && <Typography style={{ color: 'red' }}>{formik.errors.address}</Typography>}
+                    {formik.errors.address && formik.touched.address && <Typography style={{ color: 'red' }}>{formik.errors.address}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -158,7 +176,7 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.email && <Typography style={{ color: 'red' }}>{formik.errors.email}</Typography>}
+                    {formik.errors.email && formik.touched.email && <Typography style={{ color: 'red' }}>{formik.errors.email}</Typography>}
                     <TextField
                         margin="normal"
                         fullWidth
@@ -168,6 +186,8 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoComplete="bodyPrehistory"
                         value={formik.values.bodyPrehistory}
                         autoFocus
+                        multiline
+                        rows={5}
                         onChange={formik.handleChange}
                     />
                     <TextField
@@ -179,6 +199,8 @@ const ModalUpdatePatient = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoComplete="teethPrehistory"
                         value={formik.values.teethPrehistory}
                         autoFocus
+                        multiline
+                        rows={5}
                         onChange={formik.handleChange}
                     />
                 </>}

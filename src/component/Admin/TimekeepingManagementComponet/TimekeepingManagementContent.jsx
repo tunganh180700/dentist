@@ -1,41 +1,74 @@
-import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import React from 'react';
-import { useSelector } from 'react-redux';
+import { LoadingButton } from '@mui/lab';
+import { Pagination, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { CHECK_IN, CHECK_OUT, GET_LIST_TIMEKEEPING } from '../../../config/baseAPI';
+import axiosInstance from '../../../config/customAxios';
+import { toastCss } from '../../../redux/toastCss';
+import TableTimeKeepingManagement from './TableTimeKeepingManagement';
 
 const TimekeepingManagementContent = () => {
-    const listTimekeeping = useSelector(state => state.listTimekeeping.listTimekeeping)
-
-    console.log(listTimekeeping)
+    const [listTimekeeping, setListTimekeeping] = useState([])
+    const role = localStorage.getItem('role');
+    const [loading, setLoading] = useState(false)
+    const [isCheckin, setIsCheckin] = useState(true)
+    const [count, setCount] = useState(0)
+    const [currentPage, setCurrentPage] = useState(0)
+    const [totalPages, setTotalPages] = useState(1)
+    const loadData = async () => {
+        try {
+            const res = await axiosInstance.get(GET_LIST_TIMEKEEPING + currentPage)
+            const { checkinEnable, timekeepingDTOS } = res.data
+            setIsCheckin(checkinEnable)
+            setListTimekeeping(timekeepingDTOS.content)
+            setCurrentPage(timekeepingDTOS.number)
+            setTotalPages(timekeepingDTOS.totalPages)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const checkInOut = async () => {
+        setLoading(true)
+        try {
+            const res = await axiosInstance.post(isCheckin ? CHECK_IN : CHECK_OUT)
+            if (res.status === 200) setCount(prevCount => prevCount + 1)
+        } catch (error) {
+            if (!isCheckin) toast.error('Chỉ có thể checkout sau 3 tiếng!', toastCss)
+        }
+        setLoading(false)
+    }
+    const handleOnClick = () => {
+        checkInOut()
+    }
+    useEffect(() => {
+        loadData()
+    }, [count])
     return (
         <>
             <Typography
                 component="h1"
                 variant="h5"
                 color="inherit"
+                fontWeight="bold"
                 noWrap
             >
-                Chấm công
+                Danh Sách Chấm Công
             </Typography>
-            <Table size="small" style={{ marginTop: "15px" }}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Ngày</TableCell>
-                        <TableCell>Thời gian check-in</TableCell>
-                        <TableCell>Thời gian check-out</TableCell>
-                        <TableCell>Trạng thái</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {listTimekeeping.map((item) =>
-                        <TableRow key={item.timekeepingId}>
-                            <TableCell>{item.timekeepingId}</TableCell>
-                            <TableCell>{item.timekeepingId}</TableCell>
-                            <TableCell>{item.timekeepingId}</TableCell>
-                            <TableCell>{item.timekeepingId}</TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                {role !== 'Admin' && <LoadingButton type='primary' onClick={handleOnClick} loading={loading}>Check {isCheckin ? "in" : "out"}</LoadingButton>}
+            </div>
+            <TableTimeKeepingManagement listTimekeeping={listTimekeeping} role={role} currentPage={currentPage} />
+            <div style={{ display: 'flex', justifyContent: 'center', padding: "14px 16px" }}>
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
+            </div>
         </>
     )
 }

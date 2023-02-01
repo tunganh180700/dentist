@@ -4,6 +4,7 @@ import { listLaboAPI, updateLaboAPI, deleteLaboAPI, addLaboAPI } from "../../con
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
 import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     listLabo: [],
@@ -67,7 +68,7 @@ const listLaboSlice = createSlice({
 
 export const fetchAllLabo = createAsyncThunk('listLabo/fetchAllLabo', async (paramsSearch) => {
     try {
-        const res = await axios.get(listLaboAPI, {
+        const res = await axiosInstance.get(listLaboAPI, {
             params: paramsSearch,
         })
         return res.data
@@ -79,7 +80,7 @@ export const fetchAllLabo = createAsyncThunk('listLabo/fetchAllLabo', async (par
 export const updateLabo = createAsyncThunk('listLabo/updateLabo', async (data) => {
     // console.log(data.userId)
     try {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
             updateLaboAPI + data.laboId, data
         )
         console.log(res)
@@ -95,7 +96,7 @@ export const updateLabo = createAsyncThunk('listLabo/updateLabo', async (data) =
 export const deleteLabo = createAsyncThunk('listLabo/deleteLabo', async (laboId) => {
     console.log(laboId)
     try {
-        const res = await axios.delete(deleteLaboAPI + laboId)
+        const res = await axiosInstance.delete(deleteLaboAPI + laboId)
         toast.success(DELETE_SUCCESS, toastCss)
         return laboId
     } catch (error) {
@@ -112,7 +113,7 @@ export const addLabo = createAsyncThunk('listLabo/addLabo', async (values) => {
             totalMoney: values.totalMoney
         }
         console.log(values)
-        const res = await axios.post(addLaboAPI, formValue)
+        const res = await axiosInstance.post(addLaboAPI, formValue)
         toast.success("Thêm vật liệu thành công !!!!!", toastCss)
         console.log(res.data)
         return res.data

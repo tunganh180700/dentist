@@ -14,12 +14,13 @@ const ModalAddLabo = ({ modalAddOpen, setModalAddOpen }) => {
 
     const validationSchema = yup.object({
         laboName: yup
-            .string('Enter labo name')
-            .required('Your material name is required'),
+            .string('Nhập Labo')
+            .max(250, 'Labo không thể quá 250 ký tự.')
+            .required('Labo là bắt buộc.'),
         phone: yup
-            .string("Enter your phone")
-            .matches(regexPhone, "Invalid Phone")
-            .required("Phone is required")
+            .string("Nhập số điện thoại")
+            .matches(regexPhone, "Số điện thoại không được nhập chữ, kí tự, bắt buộc phải 10 số bắt đầu là 03, 05, 07 08, 09.")
+            .required("Số điện thoại là bắt buộc."),
     });
 
     const formik = useFormik({
@@ -35,13 +36,26 @@ const ModalAddLabo = ({ modalAddOpen, setModalAddOpen }) => {
         }
     });
 
+    const handleCancel = () => {
+        setModalAddOpen(false)
+
+        // formik.errors.laboName = ""
+        // formik.touched.laboName = ""
+
+        // formik.errors.phone = ""
+        // formik.touched.phone = ""
+
+        formik.resetForm()
+
+    }
+
     return (
         <>
             <Modal
                 title="Thêm Labo"
                 open={modalAddOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
+                onCancel={handleCancel}
             >
                 <TextField
                     margin="normal"
@@ -52,24 +66,24 @@ const ModalAddLabo = ({ modalAddOpen, setModalAddOpen }) => {
                     name="laboName"
                     autoComplete="laboName"
                     value={formik.values.laboName}
-                  
+
                     onChange={formik.handleChange}
                 />
-                {formik.errors.laboName && <Typography style={{ color: 'red' }}>{formik.errors.laboName}</Typography>}
+                {formik.errors.laboName && formik.touched.laboName && <Typography style={{ color: 'red' }}>{formik.errors.laboName}</Typography>}
                 <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="phone"
-                        label="Số điện thoại"
-                        name="phone"
-                        autoComplete="phone"
-                        value={formik.values.phone}
-                       
-                        onChange={formik.handleChange}
-                    />
-                    {formik.errors.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
- 
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="phone"
+                    label="Số điện thoại"
+                    name="phone"
+                    autoComplete="phone"
+                    value={formik.values.phone}
+
+                    onChange={formik.handleChange}
+                />
+                {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red' }}>{formik.errors.phone}</Typography>}
+
 
             </Modal>
         </>

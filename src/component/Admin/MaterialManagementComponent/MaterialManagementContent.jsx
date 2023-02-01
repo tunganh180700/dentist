@@ -50,10 +50,11 @@ const MaterialManagementContent = () => {
                 variant="h5"
                 color="inherit"
                 noWrap
+                fontWeight='bold'
             >
-                Quản lý vật liệu
+                Danh Sách Vật Liệu
             </Typography>
-            <IconButton aria-label="add"   style={{borderRadius: '5%'}} onClick={() => {
+            <IconButton aria-label="add" style={{ borderRadius: '5%' }} onClick={() => {
                 setModalAddOpen(true)
             }}>
                 <AddIcon /> Thêm mới
@@ -61,53 +62,70 @@ const MaterialManagementContent = () => {
             <Table size="small" style={{ marginTop: "15px" }}>
                 <TableHead>
                     <TableRow>
-                       
-                        <TableCell>Tên vật liệu</TableCell>
-                        <TableCell>Đơn vị</TableCell>
-                        <TableCell>Số lượng</TableCell>
-                        <TableCell>Đơn giá</TableCell>
-                        <TableCell>Tổng tiền</TableCell>
+
+                        <TableCell style={{ fontWeight: 'bold' }}>Tên vật liệu</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Đơn vị</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Số lượng</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Giá tiền</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>Tổng tiền</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {listMaterial.map((item, index) =>
-                        <TableRow key={item.materialId}>
-                          
-                            <TableCell>{item.materialName}</TableCell>
-                            <TableCell>{item.unit}</TableCell>
-                            <TableCell>{item.amount}</TableCell>
-                            <TableCell>{item.price}</TableCell>
-                            <TableCell>{item.amount * item.price}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setMaterialId(item.materialId))
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setMaterialId(item.materialId))
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
+                {totalPages === 0 ? (
+                    <>
+                        <Typography
+                            component="h1"
+                            variant="h5"
+                            color="inherit"
+                            noWrap
+                            textAlign="center"
+                        >
+                            Không có vật liệu nào
+                        </Typography>
+                    </>
+                ) : (
+                    <TableBody>
+                        {listMaterial.map((item, index) =>
+                            <TableRow key={item.materialId}>
+
+                                <TableCell>{item.materialName}</TableCell>
+                                <TableCell>{item.unit}</TableCell>
+                                <TableCell>{item.amount}</TableCell>
+                                <TableCell>{item.price}</TableCell>
+                                <TableCell>{item.amount * item.price}</TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="edit" onClick={() => {
+                                        setModalUpdateOpen(true)
+                                        dispatch(setMaterialId(item.materialId))
+                                    }}>
+                                        <EditIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="delete" onClick={() => {
+                                        setModalDeleteOpen(true)
+                                        dispatch(setMaterialId(item.materialId))
+                                    }}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                )
+                }
             </Table>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Pagination
-                    count={totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
+                {totalPages > 1 ?
+                    <Pagination
+                        count={totalPages}
+                        onChange={(e, pageNumber) => {
+                            setCurrentPage(pageNumber - 1)
+                        }}
+                    />
+                    : null
+                }
             </div>
             <div>
                 <ModalUpdateMaterial modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />

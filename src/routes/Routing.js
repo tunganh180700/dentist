@@ -7,11 +7,20 @@ import HomePage from "../component/HomeComponent/Home";
 import WaitingRoomManagement from "../component/Admin/WaitingRoomManagementComponent/WaitingRoomManagement";
 import PatientManagement from "../component/Admin/PatientManagementComponent/PatientManagement";
 import LaboManagement from "../component/Admin/LaboComponent/LaboManagement";
+
+import TimekeepingManagement from "../component/Admin/TimekeepingManagementComponet/TimekeepingManagement";
+
 import MaterialManagement from "../component/Admin/MaterialManagementComponent/MaterialManagement";
 import MaterialImportManagement from "../component/Admin/MaterialManagementComponent/MaterialImportManagement";
 import MaterialExportManagement from "../component/Admin/MaterialManagementComponent/MaterialExportManagement";
 import ServiceAndCategoryManagement from "../component/Admin/ServiceAndCategoryManagementComponent/ServiceAndCategoryManagement";
 import IncomeManagement from "../component/Admin/IncomeManagementComponent/IncomeManagement";
+import RecordManagement from "../component/Admin/RecordComponent/RecordManagement";
+import BillManagement from "../component/Admin/BillManagementComponent/BillManagement";
+import ProfileManagement from "../component/Admin/ProfileManagementComponent/ProfileManagement";
+import SpecimenManagement from "../component/Admin/SpecimenManagementComponent/SpecimenManagement";
+import ScheduleManagement from "../component/Admin/ScheduleManagementComponent/ScheduleManagement";
+
 
 const Routing = () => {
     return (
@@ -26,7 +35,17 @@ const Routing = () => {
                 <Route path='/patient-management' element={<PatientManagement />} />
                 <Route path='/timekeeping' element={<TimekeepingManagement />} />
                 <Route path='/record/:id' element={<RecordManagement />} />
+                <Route path='/materialmanagement' element={<MaterialManagement />} />
+                <Route path='/materialimport' element={<MaterialImportManagement />} />
+                <Route path='/materialexport' element={<MaterialExportManagement />} />
+                <Route path='/serviceandcategory' element={<ServiceAndCategoryManagement />} />
+                <Route path='/income' element={<IncomeManagement />} />
+                <Route path='/bill' element={<BillManagement />} />
                 <Route path='/' element={<HomePage />} />
+                <Route path='/forgot-password' element={<ForgotPassword />} />
+                <Route path='/profile' element={<ProfileManagement />} />
+                <Route path='/specimen' element={<SpecimenManagement />} />
+                <Route path='/schedule' element={<ScheduleManagement />} />
                 <Route path='*' element={<>404 Error</>} />
             </Routes>
         </Router>

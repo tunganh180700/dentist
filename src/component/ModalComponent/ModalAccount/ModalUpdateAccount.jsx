@@ -18,7 +18,7 @@ import * as yup from "yup";
 import axios from 'axios';
 import moment from 'moment/moment';
 import { updateAccount } from '../../../redux/AccountSlice/listAccountSlice';
-import { regexEmail, regexPhone, validationDate } from '../../../config/validation';
+import { regexEmail, regexNumber, regexPhone, validationDate } from '../../../config/validation';
 import { getAccountByIdAPI, listRoleAPI } from '../../../config/baseAPI';
 import axiosInstance from '../../../config/customAxios';
 
@@ -31,21 +31,24 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     const [roleIds, setRoleIds] = useState([]);
     const [roleId, setRoleId] = useState();
 
+    const [oldData, setOldData] = useState();
+
     const validationSchema = yup.object({
         fullName: yup
-            .string('Enter your name')
-            .required('Your name is required'),
+            .string('Nhập họ tên')
+            .required('Họ tên là bắt buộc.'),
         phone: yup
-            .string("Enter your phone")
-            .matches(regexPhone, "Invalid Phone")
-            .required("Phone is required"),
+            .string("Nhập số điện thoại")
+            .matches(regexPhone, "Số điện thoại không được nhập chữ, kí tự, bắt buộc phải 10 số bắt đầu là 03, 05, 07 08, 09.")
+            .required("Số điện thoại là bắt buộc."),
         email: yup
-            .string("Enter your email")
-            .matches(regexEmail, "Invalid email")
-            .required("Email is required"),
+            .string("Nhập email")
+            .matches(regexEmail, "Email không đúng với định dạng.")
+            .required("Trường email là bắt buộc."),
         salary: yup
-            .string('Enter your salary')
-            .required('Salary is required')
+            .string('Nhập số lương')
+            .matches(regexNumber, "Lương không được nhập chữ, kí tự, số âm.")
+            .required('Lương là bắt buộc.'),
     });
 
     const formik = useFormik({
@@ -76,6 +79,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
             )
             console.log(res.data)
             formik.setValues(res.data)
+            setOldData(res.data)
             setRoleId(res.data.roleId)
             setValue(res.data.birthdate)
         } catch (error) {
@@ -104,13 +108,23 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     }, [])
 
 
+    const handleCancel = () => {
+        formik.values.salary = oldData.salary
+        formik.values.fullName = oldData.fullName
+        formik.values.phone = oldData.phone
+        formik.values.email = oldData.email
+        setValue(oldData.birthdate)
+        setRoleId(oldData.roleId)
+        setModalUpdateOpen(false)
+    }
+
     return (
         <>
             <Modal
                 title="Thông tin nhân viên"
                 open={modalUpdateOpen}
                 onOk={formik.handleSubmit}
-                onCancel={() => setModalUpdateOpen(false)}
+                onCancel={handleCancel}
             >
                 {loading === false && <>
                     <TextField
@@ -125,7 +139,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.fullName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
+                    {formik.errors.fullName && formik.touched.fullName && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.fullName}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -150,7 +164,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
+                    {formik.errors.phone && formik.touched.phone && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.phone}</Typography>}
                     <TextField
                         margin="normal"
                         required
@@ -163,12 +177,13 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
+                    {formik.errors.email && formik.touched.email && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.email}</Typography>}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Ngày sinh"
                             name="birthdate"
                             value={value}
+                            disableFuture={true}
                             onChange={(newValue) => {
                                 setValue(newValue);
                                 console.log(newValue)
@@ -188,7 +203,7 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                         autoFocus
                         onChange={formik.handleChange}
                     />
-                    {formik.errors.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
+                    {formik.errors.salary && formik.touched.salary && <Typography style={{ color: 'red', fontStyle: 'italic' }}>{formik.errors.salary}</Typography>}
                     <Box sx={{ minWidth: 120 }}>
                         <FormControl fullWidth>
                             <InputLabel id="permisstion">Quyền hạn</InputLabel>
