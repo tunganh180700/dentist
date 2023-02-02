@@ -45,17 +45,22 @@ const HeaderAdmin = () => {
   const onConnected = () => {
     console.log(listNotifies);
   };
+  const isReceptionist = useMemo(() => {
+    return roleName === "Receptionist";
+  }, [roleName]);
 
   useEffect(() => {
     try {
       dispatch(fetchUserProfile());
-      dispatch(getListNotifies());
+      if (isReceptionist) {
+        dispatch(getListNotifies());
+      }
     } catch (error) {
       console.log(error);
     }
   }, []);
   useEffect(() => {
-    if (isUpdateNoti) {
+    if (isUpdateNoti && isReceptionist) {
       dispatch(getListNotifies());
     }
   }, [isUpdateNoti]);
@@ -92,7 +97,7 @@ const HeaderAdmin = () => {
   };
 
   const listNoti = useMemo(() => {
-    if (roleName === "Receptionist") {
+    if (isReceptionist) {
       return (
         <Box height="450px" className="overflow-y-scroll">
           {listNotifies?.map((item) => (
@@ -125,7 +130,7 @@ const HeaderAdmin = () => {
         onMessage={handleMessageSocket}
         debug={false}
       />
-      {roleName === "Receptionist" && (
+      {isReceptionist && (
         <Box className="relative">
           <Popover
             title={`Có (${
