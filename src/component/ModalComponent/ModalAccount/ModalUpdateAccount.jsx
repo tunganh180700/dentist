@@ -26,6 +26,7 @@ import {
 } from "../../../config/validation";
 import { getAccountByIdAPI, listRoleAPI } from "../../../config/baseAPI";
 import axiosInstance from "../../../config/customAxios";
+import RoleTag from "../../ui/RoleTag";
 
 const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
   const dispatch = useDispatch();
@@ -226,13 +227,13 @@ const ModalUpdateAccount = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                   labelId="permisstion"
                   id="permisstionSelect"
                   label="Quyền hạn"
-                  className="min-h-[50px]"
+                  className="min-h-[70px] min-w-[200px]"
                   value={roleId}
                   onChange={(e) => setRoleId(e.target.value)}
                 >
                   {roleIds?.map((item) => (
                     <MenuItem key={item.roleId} value={item.roleId}>
-                      {item.roleName}
+                      <RoleTag role={item.roleName} />
                     </MenuItem>
                   ))}
                 </Select>

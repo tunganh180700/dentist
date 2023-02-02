@@ -25,14 +25,28 @@ const ModalListReceipt = ({ modalReceiptOpen, setModalReceiptOpen }) => {
   useEffect(() => {
     setLoading(true);
     try {
-      if (treatmentId > 0) {
+      if (treatmentId) {
         dispatch(fetchAllReceipts(treatmentId));
       }
     } catch (error) {
       console.log(error);
     }
     setLoading(false);
-  }, [treatmentId, isAddNewReceipt]);
+  }, [treatmentId]);
+  
+  useEffect(() => {
+    if (isAddNewReceipt) {
+      setLoading(true);
+      try {
+        if (treatmentId > 0) {
+          dispatch(fetchAllReceipts(treatmentId));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    }
+  }, [isAddNewReceipt]);
 
   return (
     <>

@@ -27,6 +27,7 @@ const initState = {
   teethPrehistory: "",
   isDeleted: null,
   isUpdatePatient: false,
+  loading: false
 };
 const choosenPatientSlice = createSlice({
   name: "choosenPatient",
@@ -37,6 +38,9 @@ const choosenPatientSlice = createSlice({
     },
     setIsUpdatePatient: (state, { payload }) => {
       state.isUpdatePatient = payload;
+    },
+    setLoading: (state, { payload }) => {
+      state.loading = payload;
     },
   },
   extraReducers: (builder) => {
@@ -64,24 +68,30 @@ const choosenPatientSlice = createSlice({
 });
 export const fetchPatient = createAsyncThunk(
   "patients/fetchPatient",
-  async (patientId) => {
+  async (patientId, { dispatch }) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.get(getPatientByIdAPI + patientId);
+      dispatch(setLoading(false))
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
     }
   }
 );
 export const deletePatient = createAsyncThunk(
   "listPatient/deletePatient",
-  async (patientId) => {
+  async (patientId, { dispatch }) => {
     try {
+      dispatch(setLoading(true))
       await axiosInstance.delete(deletePatientAPI + patientId);
+      dispatch(setLoading(false))
       toast.success(DELETE_SUCCESS, toastCss);
       return true;
     } catch (error) {
       toast.error(DELETE_FAIL, toastCss);
+      dispatch(setLoading(false))
       return false;
     }
   }
@@ -89,19 +99,21 @@ export const deletePatient = createAsyncThunk(
 
 export const updatePatient = createAsyncThunk(
   "listPatient/updatePatient",
-  async (data) => {
-    // console.log(data.userId)
+  async (data, { dispatch }) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.put(
         updatePatientAPI + data.patientId,
         data
       );
+      dispatch(setLoading(false))
       toast.success(UPDATE_SUCCESS, toastCss);
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       toast.error(UPDATE_FAIL, toastCss);
     }
   }
 );
-export const { setChoosenPatient, setIsUpdatePatient } = choosenPatientSlice.actions;
+export const { setChoosenPatient, setIsUpdatePatient, setLoading } = choosenPatientSlice.actions;
 export default choosenPatientSlice.reducer;

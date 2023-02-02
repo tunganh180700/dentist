@@ -22,6 +22,7 @@ import {
 import InputDentist from "../../ui/input";
 const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
   const [loading, setLoading] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitForm, setIsSubmitForm] = useState(false);
   const treatmentId = useSelector((state) => state.modal.treatmentId);
   const debit = useSelector((state) => state.choosenNewReceipt.debit);
@@ -43,8 +44,9 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
 
   useEffect(() => {
     setLoading(true);
+    setErrorMessage("");
     try {
-      if (treatmentId) {
+      if (treatmentId && modalAddReceiptOpen) {
         dispatch(fetchBill(treatmentId));
         dispatch(fetchNewReceipt(treatmentId));
       }
@@ -52,7 +54,7 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
       console.log(error);
     }
     setLoading(false);
-  }, [treatmentId]);
+  }, [treatmentId, modalAddReceiptOpen]);
 
   useEffect(() => {
     try {
@@ -72,6 +74,11 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      if (debit - values.payment < 0) {
+        setErrorMessage("Không được nhập quá số tiền nợ.");
+        return;
+      }
+      setErrorMessage("");
       const addValue = {
         treatmentId: treatmentId,
         values: values,
@@ -80,9 +87,7 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
       dispatch(addNewReceipt(addValue));
       setModalAddReceiptOpen(false);
       formik.handleReset();
-      setTimeout(() => {
-        setIsSubmitForm(true);
-      }, 1000);
+      setTimeout(() => {}, 1000);
     },
   });
 
@@ -100,7 +105,13 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
       >
-        <Typography component="h1" fontWeight="bold" color="inherit" marginBottom={1} noWrap>
+        <Typography
+          component="h1"
+          fontWeight="bold"
+          color="inherit"
+          marginBottom={1}
+          noWrap
+        >
           Nợ cũ : {oldDebit || 0} VND
         </Typography>
         <StyledTable className="shadow-md mb-3">
@@ -115,6 +126,9 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
               <StyledTableCell style={{ fontWeight: "bold" }}>
                 Giảm giá (VND)
               </StyledTableCell>
+              <StyledTableCell style={{ fontWeight: "bold" }}>
+                Số lượng
+              </StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
@@ -123,6 +137,7 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
                 <StyledTableCell>{item.serviceName}</StyledTableCell>
                 <StyledTableCell>{item.currentPrice}</StyledTableCell>
                 <StyledTableCell>{item.discount}</StyledTableCell>
+                <StyledTableCell>{item.amount}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -148,6 +163,7 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
               id="payment"
               placeholder="Nhập tiền thanh toán"
               name="payment"
+              type="number"
               value={formik.values.payment}
               onChange={formik.handleChange}
               endAdornment={<InputAdornment>VND</InputAdornment>}
@@ -157,7 +173,9 @@ const ModalAddReceipt = ({ modalAddReceiptOpen, setModalAddReceiptOpen }) => {
                 {formik.errors.payment}
               </Typography>
             )}
-
+            <Typography style={{ color: "red", fontStyle: "italic" }}>
+              {errorMessage}
+            </Typography>
             <hr />
             <Typography component="h1" fontWeight="bold" color="inherit" noWrap>
               Còn lại : {debit - formik.values.payment} VND

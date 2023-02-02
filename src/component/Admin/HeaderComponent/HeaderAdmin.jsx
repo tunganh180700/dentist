@@ -92,24 +92,27 @@ const HeaderAdmin = () => {
   };
 
   const listNoti = useMemo(() => {
-    return (
-      <Box height="450px" className="overflow-y-scroll">
-        {listNotifies.map((item) => (
-          <Box
-            onClick={() => {
-              dispatch(readNoti(item.notifyId));
-              navigate(`/bill?phone=${item.phone}`);
-              setIsOpenNoti(false);
-            }}
-          >
-            <NotiCard
-              seen={item.isRead}
-              message={`Bệnh nhân ${item.patientName} đã khám bệnh xong`}
-            />
-          </Box>
-        ))}
-      </Box>
-    );
+    if (roleName === "Receptionist") {
+      return (
+        <Box height="450px" className="overflow-y-scroll">
+          {listNotifies?.map((item) => (
+            <Box
+              onClick={() => {
+                dispatch(readNoti(item.notifyId));
+                navigate(`/bill?phone=${item.phone}`);
+                setIsOpenNoti(false);
+              }}
+            >
+              <NotiCard
+                seen={item.isRead}
+                message={`Bệnh nhân ${item.patientName} đã khám bệnh xong`}
+              />
+            </Box>
+          ))}
+        </Box>
+      );
+    }
+    return <></>;
   }, [listNotifies]);
 
   return (
@@ -122,28 +125,30 @@ const HeaderAdmin = () => {
         onMessage={handleMessageSocket}
         debug={false}
       />
-      {roleName === "Receptionist" && <Box className="relative">
-        <Popover
-          title={`Có (${
-            listNotifies.filter((item) => !item.isRead)?.length
-          }) thông báo chưa xem`}
-          placement="bottom"
-          content={listNoti}
-          trigger="click"
-          visible={isOpenNoti}
-          onVisibleChange={() => setIsOpenNoti(!isOpenNoti)}
-        >
-          <Badge
-            color="error"
-            badgeContent={listNotifies.filter((item) => !item.isRead)?.length}
-            max={99}
-            className="cursor-pointer"
+      {roleName === "Receptionist" && (
+        <Box className="relative">
+          <Popover
+            title={`Có (${
+              listNotifies.filter((item) => !item.isRead)?.length
+            }) thông báo chưa xem`}
+            placement="bottom"
+            content={listNoti}
+            trigger="click"
+            visible={isOpenNoti}
+            onVisibleChange={() => setIsOpenNoti(!isOpenNoti)}
           >
-            <NotificationsIcon />
-          </Badge>
-        </Popover>
-        {/* <img width={50} className="absolute bottom-6 left-5" src="https://cdn-icons-png.flaticon.com/512/2089/2089117.png" alt="" /> */}
-      </Box>}
+            <Badge
+              color="error"
+              badgeContent={listNotifies.filter((item) => !item.isRead)?.length}
+              max={99}
+              className="cursor-pointer"
+            >
+              <NotificationsIcon />
+            </Badge>
+          </Popover>
+          {/* <img width={50} className="absolute bottom-6 left-5" src="https://cdn-icons-png.flaticon.com/512/2089/2089117.png" alt="" /> */}
+        </Box>
+      )}
       <Dropdown>
         <Dropdown.Toggle
           id="dropdown-basic"

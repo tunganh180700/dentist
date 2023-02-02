@@ -1,4 +1,6 @@
-export const baseUrl = process.env.BASE_URL || 'http://localhost:8080'
+// require('dotenv').config();
+
+export const baseUrl = process.env.REACT_APP_BASE_URL
 export const SOCKET_URL = "http://localhost:8080/waiting-room/";
 
 export const listUserAPI = `${baseUrl}/api/users/get_list_users`

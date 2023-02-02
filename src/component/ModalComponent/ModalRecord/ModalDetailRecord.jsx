@@ -22,11 +22,10 @@ const ModalDetailRecord = ({
   modalDetailRecordOpen,
   setModalDetailRecordOpen,
 }) => {
-  const [loading, setLoading] = useState();
   const [defaultActiveKey, setDefaultActiveKey] = useState("1");
   const recordId = useSelector((state) => state.modal.recordSelected);
   const dispatch = useDispatch();
-  // const reason = useSelector((state) => state.listRecord.reason);
+  const loading = useSelector((state) => state.listRecord.loading);
   // const diagnostic = useSelector((state) => state.listRecord.diagnostic);
   // const causal = useSelector((state) => state.listRecord.causal);
   // const date = useSelector((state) => state.listRecord.date);
@@ -35,6 +34,7 @@ const ModalDetailRecord = ({
   // const treatment = useSelector((state) => state.listRecord.treatment);
   // const prescription = useSelector((state) => state.listRecord.prescription);
   // const listService = useSelector((state) => state.listRecord.listService);
+
   const {
     reason,
     diagnostic,
@@ -58,6 +58,7 @@ const ModalDetailRecord = ({
     boxShadow: 24,
     p: 4,
   };
+
   const renderColor = (status) => {
     let color = "#2e7d32";
     if (status === 0) {
@@ -73,16 +74,12 @@ const ModalDetailRecord = ({
 
   useEffect(() => {
     if (modalDetailRecordOpen) {
-      setLoading(true);
       try {
         setDefaultActiveKey("1");
         dispatch(fetchRecord(recordId));
       } catch (error) {
         console.log(error);
       }
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
     }
   }, [recordId, modalDetailRecordOpen]);
 
@@ -233,7 +230,7 @@ const ModalDetailRecord = ({
   return (
     <>
       {loading && <Loading />}
-      <Modal
+      {!loading && <Modal
         title={`Ngày ${moment(date).format("DD-MM-YYYY")}`}
         open={modalDetailRecordOpen}
         width={800}
@@ -257,7 +254,7 @@ const ModalDetailRecord = ({
             },
           ]}
         />
-      </Modal>
+      </Modal>}
     </>
   );
 };

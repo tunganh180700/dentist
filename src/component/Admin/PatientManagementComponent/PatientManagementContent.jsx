@@ -21,6 +21,7 @@ import ScheduleIcon from "@mui/icons-material/Schedule";
 import {
   fetchAllPatient,
   searchPatient,
+  setLoading,
 } from "../../../redux/PatienSlice/listPatientSlice";
 import Loading from "../../ui/Loading";
 import ModalAddPatient from "../../ModalComponent/ModalPatient/ModalAddPatient";
@@ -47,6 +48,8 @@ const PatientManagementContent = () => {
   const listPatient = useSelector((state) => state.listPatient.listPatient);
   const isAddPatient = useSelector((state) => state.listPatient.isAddPatient);
   const pageSize = useSelector((state) => state.listPatient.pageSize);
+  const loading = useSelector((state) => state.listPatient.loading);
+  const loading_2 = useSelector((state) => state.listSchedule.loading);
   const totalPages = useSelector((state) => state.listPatient.totalPage);
   const totalElements = useSelector((state) => state.listPatient.totalElements);
   const [currentPage, setCurrentPage] = useState(0);
@@ -56,8 +59,6 @@ const PatientManagementContent = () => {
   const [patientSchedule, setPatientSchedule] = useState();
   const [openFilter, setOpenFilter] = useState(false);
   const [refSocket, setRefSocket] = useState(null);
-
-  const [loading, setLoading] = useState(false);
 
   const [role, setRole] = useState(null);
 
@@ -103,7 +104,6 @@ const PatientManagementContent = () => {
 
   useEffect(() => {
     if (isAddPatient) {
-      setLoading(true);
       dispatch(
         fetchAllPatient({
           ...searchValue,
@@ -111,14 +111,10 @@ const PatientManagementContent = () => {
           page: currentPage,
         })
       );
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
     }
   }, [isAddPatient]);
 
   useEffect(() => {
-    setLoading(true);
     dispatch(
       fetchAllPatient({
         ...searchValue,
@@ -126,13 +122,9 @@ const PatientManagementContent = () => {
         page: currentPage,
       })
     );
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   }, [currentPage]);
 
   const handleSearch = async (search = searchValue) => {
-    setLoading(true);
     try {
       if (currentPage === 0) {
         dispatch(
@@ -146,13 +138,8 @@ const PatientManagementContent = () => {
         setCurrentPage(0);
       }
       setOpenFilter(false);
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
+      
     } catch (error) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
       console.log(error);
     }
   };
@@ -181,6 +168,7 @@ const PatientManagementContent = () => {
 
   const addWaitingPatient = async (patientId) => {
     try {
+      dispatch(setLoading(true))
       await axiosInstance.post(
         "http://localhost:8080/api/patients/" + patientId + "/waiting_room"
       );
@@ -189,10 +177,11 @@ const PatientManagementContent = () => {
         "/topic/group",
         JSON.stringify({ message: "re-fetch" })
       );
-      toast("Thêm bệnh nhân đang chờ thành công");
+      dispatch(setLoading(false))
+      toast.success("Thêm bệnh nhân vào phòng chờ thành công");
     } catch (error) {
-      console.log("error = ", error);
-      toast("Thêm bệnh nhân đang chờ không thành công");
+      dispatch(setLoading(false))
+      toast.error("Thêm bệnh nhân vào phòng chờ không thành công");
     }
   };
 
@@ -206,7 +195,7 @@ const PatientManagementContent = () => {
 
   return (
     <>
-      {loading && <Loading />}
+      {(loading || loading_2) && <Loading />}
       <h2 className="font-bold mb-4">Danh Sách Bệnh Nhân</h2>
       <SockJsClient
         url={SOCKET_URL}

@@ -18,11 +18,9 @@ import ModalDeletePatient from "../../ModalComponent/ModalPatient/ModalDeletePat
 import { Skeleton } from "antd";
 
 const PatientProfile = () => {
-  const [loading, setLoading] = useState();
   const [isEdit, setIsEdit] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
-  const [isSubmitForm, setIsSubmitForm] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -43,14 +41,16 @@ const PatientProfile = () => {
     status: useSelector((state) => state.choosenPatient.status),
     isDeleted: useSelector((state) => state.choosenPatient.isDeleted),
   };
+  const loading = useSelector((state) => state.choosenPatient.loading);
   const bodyPrehistory = useSelector(
     (state) => state.choosenPatient.bodyPrehistory
   );
   const teethPrehistory = useSelector(
     (state) => state.choosenPatient.teethPrehistory
   );
-  const isUpdatePatient= useSelector((state) => state.choosenPatient.isUpdatePatient)
-
+  const isUpdatePatient = useSelector(
+    (state) => state.choosenPatient.isUpdatePatient
+  );
 
   const styleTxt = {
     whiteSpace: "nowrap",
@@ -61,7 +61,6 @@ const PatientProfile = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
     try {
       if (id) {
         dispatch(fetchPatient(id));
@@ -69,15 +68,11 @@ const PatientProfile = () => {
     } catch (error) {
       console.log(error);
     }
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   }, []);
 
   useEffect(() => {
     try {
       if (id && isUpdatePatient) {
-        setLoading(true);
         dispatch(fetchPatient(id));
         dispatch(setIsUpdatePatient(false));
         setIsEdit(false);
@@ -85,10 +80,6 @@ const PatientProfile = () => {
     } catch (error) {
       console.log(error);
     }
-    setTimeout(() => {
-      setIsSubmitForm(false);
-      setLoading(false);
-    }, 500);
   }, [isUpdatePatient]);
 
   useEffect(() => {

@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/customAxios";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { toastCss } from "../toastCss";
 import {
@@ -25,6 +24,7 @@ const initState = {
   isSearchPatient: false,
   message: "",
   statusPatient: 0,
+  loading: false,
 };
 
 const listPatientSlice = createSlice({
@@ -33,6 +33,9 @@ const listPatientSlice = createSlice({
   reducers: {
     setListPatient: (state, action) => {
       state.listPatient = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -87,47 +90,33 @@ const listPatientSlice = createSlice({
 
 export const fetchAllPatient = createAsyncThunk(
   "listPatient/fetchAllPatient",
-  async (paramSearch) => {
+  async (paramSearch, { dispatch }) => {
+    dispatch(setLoading(true));
     try {
       const res = await axiosInstance.get(listPatientAPI, {
         params: paramSearch,
       });
+      dispatch(setLoading(false));
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false));
       console.log(error);
     }
   }
 );
 
-// export const searchPatient = createAsyncThunk('listPatient/searchPatient', async (paramSearch) => {
-//     try {
-//         // const formValue = {
-//         //     name: values.patientName,
-//         //     birthdate: values.birthdate,
-//         //     gender: values.gender,
-//         //     address: values.address,
-//         //     phone: values.phone,
-//         //     email: values.email,
-//         // }
-//         const res = await axiosInstance.get(searchPatientAPI, {
-//             params: paramSearch
-//         })
-//         console.log(res)
-//         return res.data
-//     } catch (error) {
-//         console.log(error)
-//     }
-// })
 export const searchPatient = createAsyncThunk(
   "listPatient/searchPatient",
-  async (paramSearch) => {
+  async (paramSearch, { dispatch }) => {
     try {
+      dispatch(setLoading(true));
       const res = await axiosInstance.get(searchPatientAPI, {
         params: paramSearch,
       });
-      console.log(res);
+      dispatch(setLoading(false));
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false));
       console.log(error);
     }
   }
@@ -135,8 +124,9 @@ export const searchPatient = createAsyncThunk(
 
 export const addPatient = createAsyncThunk(
   "listPatient/addPatient",
-  async (values) => {
+  async (values, { dispatch }) => {
     try {
+      dispatch(setLoading(true));
       const formValue = {
         patientName: values.patientName,
         birthdate: values.birthdate,
@@ -147,17 +137,16 @@ export const addPatient = createAsyncThunk(
         bodyPrehistory: values.bodyPrehistory,
         teethPrehistory: values.teethPrehistory,
       };
-      console.log(values);
       const res = await axiosInstance.post(addPatientAPI, formValue);
       toast.success("Thêm mới thành công !!!!!", toastCss);
-      console.log(res.data);
+      dispatch(setLoading(false));
       return res.data;
     } catch (error) {
-      console.log(error);
+      dispatch(setLoading(false));
       toast.error("Thêm mới thất bại :(", toastCss);
     }
   }
 );
 
-export const { setListPatient } = listPatientSlice.actions;
+export const { setListPatient, setLoading } = listPatientSlice.actions;
 export default listPatientSlice.reducer;

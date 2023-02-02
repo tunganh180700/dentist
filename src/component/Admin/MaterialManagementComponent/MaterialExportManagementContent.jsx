@@ -81,7 +81,7 @@ const MaterialExportManagementContent = () => {
     if (currentPage === 0) {
       dispatch(
         fetchAllMaterialExport({
-          size: pageSize,
+          size: 12,
           page: 0,
           patientName: searchValue,
         })

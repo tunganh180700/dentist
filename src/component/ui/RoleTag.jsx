@@ -17,19 +17,22 @@ function RoleTag({ role, title="", left }) {
       case "Doctor":
         bgColor = "bg-blue-500";
         imgSrc = Doctor;
+        text = "Bác sĩ";
         break;
       case "LeaderNurse":
         bgColor = "bg-yellow-400";
         imgSrc = LeaderNurse;
-        text = "Leader Nurse";
+        text = "Y tá trưởng";
         break;
       case "Nurse":
         bgColor = "bg-pink-400";
         imgSrc = Nurse;
+        text = "Y tá";
         break;
       case "Receptionist":
         bgColor = "bg-green-500";
         imgSrc = Receptionist;
+        text = "Lễ tân";
         break;
     }
     return (

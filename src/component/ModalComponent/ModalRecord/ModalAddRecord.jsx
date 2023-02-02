@@ -47,6 +47,7 @@ import _ from "lodash";
 import Loading from "../../ui/Loading";
 import SockJsClient from "react-stomp";
 import { SOCKET_URL } from "../../../config/baseAPI";
+import { setLoading } from "../../../redux/PatienSlice/listPatientSlice";
 
 const ModalAddRecord = ({
   modalAddOpen,
@@ -58,7 +59,6 @@ const ModalAddRecord = ({
   const { id } = useParams();
   const [listTreatingService, setListTreatingService] = useState([]);
 
-  const [loading, setLoading] = useState(false);
   const [serviceId, setServiceId] = useState();
   const [errorUpdateMess, setErrorUpdateMess] = useState("");
   const [serviceIds, setServiceIds] = useState([]);
@@ -76,6 +76,7 @@ const ModalAddRecord = ({
 
   const recordId = useSelector((state) => state.modal.recordSelected);
   const treatmentId = useSelector((state) => state.listRecord.treatmentId);
+  const loading = useSelector((state) => state.listRecord.loading);
 
   const [rows, setRows] = useState([]);
   const [countRow, setCountRow] = useState({
@@ -109,17 +110,19 @@ const ModalAddRecord = ({
 
   const loadServiceOption = async () => {
     try {
+      dispatch(setLoading(true));
       const res = await axiosInstance.get(listAllServiceAPI);
       setOriginListService(res.data);
       setServiceIds(res.data);
+      dispatch(setLoading(false));
     } catch (error) {
       console.log(error);
+      dispatch(setLoading(false));
     }
   };
 
   useEffect(() => {
     if (modalAddOpen) {
-      setLoading(true);
       loadServiceOption();
       setSpecimenDTOS([]);
       setMaterialExportDTOS([]);
@@ -128,9 +131,7 @@ const ModalAddRecord = ({
       } else {
         getServiceTreating(id);
       }
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      setTimeout(() => {}, 1000);
     }
   }, [modalAddOpen]);
 
@@ -208,7 +209,10 @@ const ModalAddRecord = ({
         setErrorUpdateMess("Vui lòng thêm dịch vụ!");
         return;
       }
-      setLoading(true)
+      const flagCheckPrice = rows.some((item) => +item.price < +item.discount);
+      if (flagCheckPrice) {
+        return;
+      }
       const formatValue = { ...values };
       const listA = listTreatingService.filter((a) => {
         return Object.keys(a)?.length !== 0;
@@ -229,7 +233,7 @@ const ModalAddRecord = ({
         id: isEditRecord ? recordId : id,
         values: formatValue,
       };
-     await dispatch(
+      await dispatch(
         addAndUpdateRecord({
           payload: addValue,
           type: isEditRecord ? "edit" : "add",
@@ -254,7 +258,6 @@ const ModalAddRecord = ({
       );
       setModalAddOpen(false);
       formik.handleReset();
-      setLoading(false)
     },
   });
 
@@ -332,7 +335,6 @@ const ModalAddRecord = ({
   const handleServiceChange = (index, newsServiceId) => {
     const serviceInfo = serviceIds.find((s) => s.serviceId === newsServiceId);
     setRows((prev) => {
-      // const tempIsNew = prev[index].isNew
       prev[index] = { ...prev[index], ...serviceInfo };
       prev[index].isNew = true;
       prev[index].status = 1;
@@ -384,7 +386,7 @@ const ModalAddRecord = ({
 
   return (
     <>
-      {loading && <Loading />}
+      {/* {loading && <Loading />} */}
       <Modal
         title={`Ngày ${moment(valueDate).format("DD-MM-YYYY")}`}
         open={modalAddOpen}
@@ -638,14 +640,19 @@ const ModalAddRecord = ({
                           <StyledTableCell>
                             {formatter.format(i?.price) || 0} VND
                           </StyledTableCell>
-                          <StyledTableCell>
+                          <StyledTableCell className="relative">
                             <OutlinedInput
                               id="discount"
+                              type="number"
                               className="h-[30px] bg-white w-[150px]"
-                              value={formatter.format(i?.discount)}
+                              value={i?.discount}
                               endAdornment={
                                 <p className="mb-0 leading-0 text-xs">VND</p>
                               }
+                              inputProps={{
+                                min: 0,
+                                max: i?.price,
+                              }}
                               onChange={(e) => {
                                 const value = e.target.value.replaceAll(
                                   ",",
@@ -660,6 +667,12 @@ const ModalAddRecord = ({
                                 });
                               }}
                             />
+
+                            {i?.discount > i?.price && (
+                              <p className="absolute bottom-[-3.5] pt-[2px] text-red-600">
+                                Không thể lớn hơn giá gốc
+                              </p>
+                            )}
                           </StyledTableCell>
                           <StyledTableCell>
                             <Select

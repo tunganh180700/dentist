@@ -26,6 +26,7 @@ import { listRoleAPI } from "../../../config/baseAPI";
 import moment from "moment/moment";
 import { addAccount } from "../../../redux/AccountSlice/listAccountSlice";
 import axiosInstance from "../../../config/customAxios";
+import RoleTag from "../../ui/RoleTag";
 
 const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
   const dispatch = useDispatch();
@@ -232,12 +233,13 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
               id="permisstionSelect"
               label="Quyền hạn"
               value={roleId}
-              className="min-h-[50px]"
+              
+              className="min-h-[70px] min-w-[200px]"
               onChange={(e) => setRoleId(e.target.value)}
             >
               {roleIds?.map((item) => (
-                <MenuItem key={item.roleId} value={item.roleId}>
-                  {item.roleName}
+                <MenuItem className="p-2" key={item.roleId} value={item.roleId}>
+                  <RoleTag role={item.roleName} />
                 </MenuItem>
               ))}
             </Select>

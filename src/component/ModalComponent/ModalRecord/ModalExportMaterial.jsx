@@ -21,6 +21,7 @@ import {
   StyledTableRow,
   StyledTable,
 } from "../../ui/TableElements";
+import Loading from "../../ui/Loading";
 const ModalExportMaterial = ({
   modalExportOpen,
   setModalExportOpen,
@@ -31,15 +32,18 @@ const ModalExportMaterial = ({
   const [material, setMaterial] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [materialExport, setMaterialExport] = useState([]);
-  //   const [amountTotalMaterial, setAmountTotalMaterial] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const getMaterials = async () => {
     try {
+      setLoading(true);
       let { data } = await axiosInstance.get(listAllMaterialAPI);
       data = data.filter((item) => item.amount > 0);
       setMaterial(data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -49,9 +53,6 @@ const ModalExportMaterial = ({
   });
 
   const maxAmount = (materialId) => {
-    console.log(
-      material.find((item) => item.materialId === materialId)?.amount
-    );
     return material.find((item) => item.materialId === materialId)?.amount || 0;
   };
 
@@ -87,112 +88,114 @@ const ModalExportMaterial = ({
 
   return (
     <>
-      <Modal
-        title="Bán sản phẩm"
-        open={modalExportOpen}
-        width="65%"
-        onOk={() => {
-          const error = materialExport.some(
-            (item) => item.amount > maxAmount(item?.materialId)
-          );
-          if (error) {
-            setErrorMessage("Vật liệu trong kho không đủ để bán!");
-            return;
-          }
-          setErrorMessage("");
-          setModalExportOpen(false);
-          exportMaterial(materialExport);
-        }}
-        onCancel={() => {
-          setErrorMessage("");
-          setModalExportOpen(false);
-        }}
-      >
-        <Button
-          className="mb-3 float-right"
-          variant="contained"
-          disabled={!listOptionMaterialEnable.length}
-          color="success"
-          endIcon={<AddCircleIcon />}
-          onClick={() => {
-            setMaterialExport((prev) => [
-              ...prev,
-              {
-                materialId: listOptionMaterialEnable[0]?.materialId,
-                amount: 1,
-                unitPrice: listOptionMaterialEnable[0]?.price,
-                total: listOptionMaterialEnable[0]?.price,
-                statusChange: "add",
-              },
-            ]);
+      {loading && <Loading />}
+      {!loading && (
+        <Modal
+          title="Bán sản phẩm"
+          open={modalExportOpen}
+          width="65%"
+          onOk={() => {
+            const error = materialExport.some(
+              (item) => item.amount > maxAmount(item?.materialId)
+            );
+            if (error) {
+              setErrorMessage("Vật liệu trong kho không đủ để bán!");
+              return;
+            }
+            setErrorMessage("");
+            setModalExportOpen(false);
+            exportMaterial(materialExport);
+          }}
+          onCancel={() => {
+            setErrorMessage("");
+            setModalExportOpen(false);
           }}
         >
-          <span className="leading-none">
-            {listOptionMaterialEnable.length ? "Thêm mới" : "Đã hết sản phẩm"}
-          </span>
-        </Button>
-        <p className="font-bold text-lg mb-0">
-          Đang có ({materialExport.length}) thêm mới
-        </p>
-        <StyledTable
-          className="shadow-md"
-          size="small"
-          style={{ marginTop: "15px" }}
-        >
-          <TableHead>
-            <StyledTableRow>
-              <StyledTableCell style={{ width: "25%" }}>
-                Tên sản phẩm
-              </StyledTableCell>
-              <StyledTableCell>Số lượng có sẵn</StyledTableCell>
-              <StyledTableCell>Số lượng</StyledTableCell>
-              <StyledTableCell>Đơn giá</StyledTableCell>
-              <StyledTableCell>Tổng giá</StyledTableCell>
-              <StyledTableCell></StyledTableCell>
-            </StyledTableRow>
-          </TableHead>
-          <TableBody>
-            {materialExport?.map((materialExportItem, index) => (
-              <StyledTableRow key={index}>
-                <StyledTableCell>
-                  <Select
-                    id="materialId"
-                    fullWidth
-                    value={materialExportItem?.materialId}
-                    className="bg-white h-[30px]"
-                    onChange={(e) => {
-                      const m = material.find(
-                        (s) => s.materialId === e.target.value
-                      );
-                      setMaterialExport((prev) => {
-                        const total = (prev[index]?.amount || 0) * m?.price;
-                        prev[index] = {
-                          ...prev[index],
-                          unitPrice: m?.price,
-                          materialId: m?.materialId,
-                          total,
-                        };
-                        return _.cloneDeep(prev);
-                      });
-                    }}
-                  >
-                    {material?.map((item) => (
-                      <MenuItem
-                        hidden={materialExport
-                          .map((item_material) => item_material.materialId)
-                          .includes(item.materialId)}
-                        key={item.materialId}
-                        value={item.materialId}
-                      >
-                        {item.materialName}
-                      </MenuItem>
-                    ))}
-                  </Select>
+          <Button
+            className="mb-3 float-right"
+            variant="contained"
+            disabled={!listOptionMaterialEnable.length}
+            color="success"
+            endIcon={<AddCircleIcon />}
+            onClick={() => {
+              setMaterialExport((prev) => [
+                ...prev,
+                {
+                  materialId: listOptionMaterialEnable[0]?.materialId,
+                  amount: 1,
+                  unitPrice: listOptionMaterialEnable[0]?.price,
+                  total: listOptionMaterialEnable[0]?.price,
+                  statusChange: "add",
+                },
+              ]);
+            }}
+          >
+            <span className="leading-none">
+              {listOptionMaterialEnable.length ? "Thêm mới" : "Đã hết sản phẩm"}
+            </span>
+          </Button>
+          <p className="font-bold text-lg mb-0">
+            Đang có ({materialExport.length}) thêm mới
+          </p>
+          <StyledTable
+            className="shadow-md"
+            size="small"
+            style={{ marginTop: "15px" }}
+          >
+            <TableHead>
+              <StyledTableRow>
+                <StyledTableCell style={{ width: "25%" }}>
+                  Tên sản phẩm
                 </StyledTableCell>
-                <StyledTableCell>
-                  {maxAmount(materialExportItem?.materialId)}
-                </StyledTableCell>
-                {/* <StyledTableCell padding="none">
+                <StyledTableCell>Số lượng có sẵn</StyledTableCell>
+                <StyledTableCell>Số lượng</StyledTableCell>
+                <StyledTableCell>Đơn giá</StyledTableCell>
+                <StyledTableCell>Tổng giá</StyledTableCell>
+                <StyledTableCell></StyledTableCell>
+              </StyledTableRow>
+            </TableHead>
+            <TableBody>
+              {materialExport?.map((materialExportItem, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell>
+                    <Select
+                      id="materialId"
+                      fullWidth
+                      value={materialExportItem?.materialId}
+                      className="bg-white h-[30px]"
+                      onChange={(e) => {
+                        const m = material.find(
+                          (s) => s.materialId === e.target.value
+                        );
+                        setMaterialExport((prev) => {
+                          const total = (prev[index]?.amount || 0) * m?.price;
+                          prev[index] = {
+                            ...prev[index],
+                            unitPrice: m?.price,
+                            materialId: m?.materialId,
+                            total,
+                          };
+                          return _.cloneDeep(prev);
+                        });
+                      }}
+                    >
+                      {material?.map((item) => (
+                        <MenuItem
+                          hidden={materialExport
+                            .map((item_material) => item_material.materialId)
+                            .includes(item.materialId)}
+                          key={item.materialId}
+                          value={item.materialId}
+                        >
+                          {item.materialName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    {maxAmount(materialExportItem?.materialId)}
+                  </StyledTableCell>
+                  {/* <StyledTableCell padding="none">
                   <TextField
                     endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
                     size="small"
@@ -216,53 +219,55 @@ const ModalExportMaterial = ({
                     }
                   />
                 </StyledTableCell> */}
-                <StyledTableCell padding="none">
-                  <OutlinedInput
-                    endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
-                    size="small"
-                    id="amount"
-                    value={materialExportItem.amount}
-                    type="number"
-                    inputProps={{
-                      max: maxAmount(materialExportItem?.materialId),
-                      min: 1,
-                    }}
-                    className="h-[30px] bg-white"
-                    onChange={(e) =>
-                      setMaterialExport((prev) => {
-                        prev[index].amount = e.target.value;
-                        prev[index].total =
-                          (e.target.value || 0) * (prev[index].unitPrice || 0);
-                        return _.cloneDeep(prev);
-                      })
-                    }
-                  />
-                </StyledTableCell>
-                <StyledTableCell padding="none">
-                  {formatter.format(materialExportItem.unitPrice) || 0} VND
-                </StyledTableCell>
-                <StyledTableCell padding="none">
-                  {formatter.format(materialExportItem.total) || 0} VND
-                </StyledTableCell>
-                <StyledTableCell padding="none">
-                  <Button
-                    className="mr10"
-                    onClick={() => {
-                      setMaterialExport((prev) => {
-                        prev.splice(index, 1);
-                        return _.cloneDeep(prev);
-                      });
-                    }}
-                  >
-                    <ClearIcon />
-                  </Button>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </StyledTable>
-        <p className="text-center text-red-500 mb-0 mt-3">{errorMessage}</p>
-      </Modal>
+                  <StyledTableCell padding="none">
+                    <OutlinedInput
+                      endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
+                      size="small"
+                      id="amount"
+                      value={materialExportItem.amount}
+                      type="number"
+                      inputProps={{
+                        max: maxAmount(materialExportItem?.materialId),
+                        min: 1,
+                      }}
+                      className="h-[30px] bg-white"
+                      onChange={(e) =>
+                        setMaterialExport((prev) => {
+                          prev[index].amount = e.target.value;
+                          prev[index].total =
+                            (e.target.value || 0) *
+                            (prev[index].unitPrice || 0);
+                          return _.cloneDeep(prev);
+                        })
+                      }
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell padding="none">
+                    {formatter.format(materialExportItem.unitPrice) || 0} VND
+                  </StyledTableCell>
+                  <StyledTableCell padding="none">
+                    {formatter.format(materialExportItem.total) || 0} VND
+                  </StyledTableCell>
+                  <StyledTableCell padding="none">
+                    <Button
+                      className="mr10"
+                      onClick={() => {
+                        setMaterialExport((prev) => {
+                          prev.splice(index, 1);
+                          return _.cloneDeep(prev);
+                        });
+                      }}
+                    >
+                      <ClearIcon />
+                    </Button>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </StyledTable>
+          <p className="text-center text-red-500 mb-0 mt-3">{errorMessage}</p>
+        </Modal>
+      )}
     </>
   );
 };

@@ -221,7 +221,7 @@ const ServiceAndCategoryManagementContent = () => {
             <p className="font-bold text-center">
               Có ( {categoryServiceIds.length} ) kết quả
             </p>
-            <div className="flex flex-col gap-2 px-3 max-h-[515px] overflow-y-scroll text-left">
+            <div className="flex flex-col gap-2 px-3 max-h-[515px] overflow-y-scroll overflow-x-hidden text-left">
               {categoryServiceIds.map((item, index) => (
                 <Box
                   className={`whitespace-nowrap p-2 rounded-md cursor-pointer hover:bg-slate-100 ${

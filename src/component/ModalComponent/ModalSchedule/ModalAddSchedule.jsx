@@ -22,24 +22,6 @@ const ModalAddSchedule = ({ modalAddOpen, setModalAddOpen, patient }) => {
   const dispatch = useDispatch();
   const [value, setValue] = useState(new Date());
 
-  //   const [patientIds, setPatientIds] = useState([]);
-  //   const [patientId, setPatientId] = useState();
-  //   const [phone, setPhone] = useState();
-
-  //   const loadPatient = async () => {
-  //     try {
-  //       const res = await axiosInstance.get(listAllPatientAPI);
-  //       setPatientId(res.data[0].patientId);
-  //       setPatientIds(res.data);
-  //       console.log("list patient: ", res.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   useEffect(() => {
-  //     loadPatient();
-  //   }, []);
-
   const formik = useFormik({
     initialValues: {
       note: "",
@@ -71,44 +53,10 @@ const ModalAddSchedule = ({ modalAddOpen, setModalAddOpen, patient }) => {
             Tên bệnh nhân:{" "}
             <span className="font-bold">{patient?.patientName}</span>
           </p>
-          {/* <FormControl fullWidth>
-            <InputLabel id="patient">Bệnh nhân</InputLabel>
-
-            <Select
-              style={{ width: "100%", height: "10%" }}
-              labelId="patient"
-              id="patientSelect"
-              label="Bệnh nhân"
-              value={patientId}
-              onChange={(e) => setPatientId(e.target.value)}
-            >
-              {patientIds?.map((item) => (
-                <MenuItem
-                  selected={patientId}
-                  key={item.patientId}
-                  value={item.patientId}
-                >
-                  {item.patientName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl> */}
           <p>
             Số điện thoại: <span className="font-bold"> {patient?.phone}</span>
           </p>
         </Box>
-        {/* <TextField
-          margin="normal"
-          required
-          disabled
-          fullWidth
-          id="phone"
-          name="phone"
-          autoComplete="phone"
-          value={phone}
-          autoFocus
-          onChange={formik.handleChange}
-        /> */}
         <Box className="mb-3">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <p className="font-bold mb-1">Ngày khám:</p>
