@@ -140,7 +140,7 @@ const BillManagementContent = () => {
       {loading && <Loading />}
       <h2 className="font-bold mb-4">Danh Sách Hóa Đơn</h2>
       <SockJsClient
-        url={SOCKET_URL}
+        url={process.env.REACT_APP_SOCKET_URL}
         topics={[`/topic/group`]}
         onMessage={handleMessageSocket}
       />

@@ -198,7 +198,7 @@ const PatientManagementContent = () => {
       {(loading || loading_2) && <Loading />}
       <h2 className="font-bold mb-4">Danh Sách Bệnh Nhân</h2>
       <SockJsClient
-        url={SOCKET_URL}
+        url={process.env.REACT_APP_SOCKET_URL}
         topics={["/topic/group"]}
         onDisconnect={() => console.log("Disconnected!")}
         onMessage={handleToDoMessageSocket}
