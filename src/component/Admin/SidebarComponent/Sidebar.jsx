@@ -1,148 +1,131 @@
-import * as React from 'react';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import CategoryIcon from '@mui/icons-material/Category';
-import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
-import PaidIcon from '@mui/icons-material/Paid';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import DescriptionIcon from '@mui/icons-material/Description';
+import React, { useEffect, useCallback } from "react";
+import ListItemButton from "@mui/material/ListItemButton";
+import Box from "@mui/material/Box";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import { Link } from "react-router-dom";
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import Collapse from '@mui/material/Collapse';
-import List from '@mui/material/List';
-import StarBorder from '@mui/icons-material/StarBorder';
-import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
-import { useState } from 'react';
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import Collapse from "@mui/material/Collapse";
+import { useState } from "react";
+import Logo from "../../../img/logo.png";
+import { menu } from "./constant";
+import { useLocation } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
+const Sidebar = ({ isOpenSideBar = false }) => {
+  const [isOpenCollapse, setIsOpenCollapse] = useState(false);
+  const [role, setRole] = useState(null);
+  const handleClickCollapse = () => {
+    setIsOpenCollapse(!isOpenCollapse);
+  };
 
-const Sidebar = () => {
-    const [open, setOpen] = useState(true);
-    const handleClick = () => {
-        setOpen(!open);
-    };
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    setRole(role);
+  }, []);
 
-    return (
-        <>
-            <React.Fragment>
-                <ListItemButton onClick={handleClick}>
-                    <ListItemIcon>
-                        <CategoryIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Quản lý danh mục" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
+  const location = useLocation();
+
+  const activeTab = useCallback(
+    (item) => {
+      return `/${location.pathname.split("/")[1]}` === item.href;
+    },
+    [location]
+  );
+
+  return (
+    <div className="decoration-white text-black h-4/5">
+      <div className="mb-2">
+        <Link to="/patient-management">
+          <img
+            className="cursor-pointer"
+            src={Logo}
+            width={130}
+            style={{ margin: "auto", borderRadius: "10px" }}
+            alt=""
+          />
+        </Link>
+      </div>
+
+      <Box className="flex flex-col gap-2 h-full pb-5 overflow-x-hidden overflow-y-scroll">
+        {menu.map((item) => (
+          <Box hidden={!item.permission.includes(role)}>
+            {item?.subItem ? (
+              <Box>
+                <ListItemButton
+                  sx={{
+                    justifyContent: "flex-start",
+                    borderRadius: "10px",
+                  }}
+                  onClick={handleClickCollapse}
+                >
+                  <ListItemIcon className="ml-2">{item.icon}</ListItemIcon>
+                  <Box className="flex justify-between w-full">
+                    {item.title}
+                    {isOpenCollapse ? <ExpandLess /> : <ExpandMore />}
+                  </Box>
                 </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                                <StarBorder />
-                            </ListItemIcon>
-                            <Link to={'/patient-management'}>
-                                <ListItemText primary="Bệnh nhân" />
-                            </Link>
+                <Collapse in={isOpenCollapse} timeout="auto" unmountOnExit>
+                  {item.subItem.map((sub) => (
+                    <Box
+                      hidden={!sub.permission.includes(role)}
+                      className="ml-5"
+                    >
+                      <Link
+                        to={sub.href}
+                        className={`decoration-transparent  ${
+                          activeTab(sub) ? "text-sky-500" : "text-black"
+                        } rounded-full`}
+                      >
+                        <ListItemButton
+                          sx={{
+                            justifyContent: "flex-start",
+                            borderRadius: "10px",
+                            background: `${activeTab(sub) ? "#CAF8FF" : ""}`,
+                            boxShadow: `${activeTab(sub) ? "#CAF8FF" : ""}`,
+                          }}
+                        >
+                          <ListItemIcon className="ml-[-2px]">
+                            {activeTab(sub) ? sub.iconActive : sub.icon}
+                          </ListItemIcon>
+                          {sub.title}
                         </ListItemButton>
-                    </List>
+                      </Link>
+                    </Box>
+                  ))}
                 </Collapse>
-
-                <ListItemButton>
-                    <ListItemIcon>
-                        <MeetingRoomIcon />
+              </Box>
+            ) : (
+              <Link
+                to={item.href}
+                className={`h-10 decoration-transparent  ${
+                  activeTab(item) ? "text-sky-500" : "text-black"
+                } rounded-full`}
+              >
+                <Tooltip
+                  arrow
+                  title={!isOpenSideBar ? item.title : ""}
+                  placement="left"
+                >
+                  <ListItemButton
+                    sx={{
+                      justifyContent: "flex-start",
+                      borderRadius: "10px",
+                      background: `${activeTab(item) ? "#CAF8FF" : ""}`,
+                    }}
+                  >
+                    <ListItemIcon className="ml-2">
+                      {activeTab(item) ? item.iconActive : item.icon}
                     </ListItemIcon>
-                    <Link to={'/meetingroom'}>
-                        <ListItemText primary="Quản lý phòng chờ" />
-                    </Link>
-                </ListItemButton>
-
-                <ListItemButton>
-                    <ListItemIcon>
-                        <PaidIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Quản lý doanh thu" />
-                </ListItemButton>
-
-                <ListItemButton>
-                    <ListItemIcon>
-                        <AccountCircleIcon />
-                    </ListItemIcon>
-                    <Link to={'/accmanagement'}>
-                        <ListItemText primary="Quản lý tài khoản" />
-                    </Link>
-                </ListItemButton>
-
-                <ListItemButton>
-                    <ListItemIcon>
-                        <DescriptionIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Quản lý hóa đơn" />
-                </ListItemButton>
-
-                <ListItemButton onClick={handleClick}>
-                    <ListItemIcon>
-                        <CategoryIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Quản lý vật liệu" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                                <StarBorder />
-                            </ListItemIcon>
-                            <Link to={'/materialmanagement'}>
-                                <ListItemText primary="Vật liệu" />
-                            </Link>
-                        </ListItemButton>
-                        <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                                <StarBorder />
-                            </ListItemIcon>
-                            <Link to={'/materialimport'}>
-                                <ListItemText primary="Vật liệu nhập khẩu" />
-                            </Link>
-                        </ListItemButton>
-                        <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                                <StarBorder />
-                            </ListItemIcon>
-                            <Link to={'/materialexport'}>
-                                <ListItemText primary="Vật liệu xuất khẩu" />
-                            </Link>
-                        </ListItemButton>
-                    </List>
-                </Collapse>
-
-                <ListItemButton>
-                    <ListItemIcon>
-                        <AccountCircleIcon />
-                    </ListItemIcon>
-                    <Link to={'/labo'}>
-                        <ListItemText primary="Quản lý Labo" />
-                    </Link>
-                </ListItemButton>
-
-                
-                <ListItemButton>
-                    <ListItemIcon>
-                        <AccountCircleIcon />
-                    </ListItemIcon>
-                    <Link to={'/serviceandcategory'}>
-                        <ListItemText primary="Quản lý Dịch vụ" />
-                    </Link>
-                </ListItemButton>
-
-                <ListItemButton>
-                    <ListItemIcon>
-                        <PointOfSaleIcon />
-                    </ListItemIcon>
-                    <Link to={'/income'}>
-                        <ListItemText primary="Thu nhập" />
-                    </Link>
-                </ListItemButton>
-            </React.Fragment>
-        </>
-    )
-}
+                    {item.title}
+                  </ListItemButton>
+                </Tooltip>
+              </Link>
+            )}
+          </Box>
+        ))}
+      </Box>
+    </div>
+  );
+};
 
 export default Sidebar;

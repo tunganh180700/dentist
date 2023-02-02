@@ -1,13 +1,10 @@
-import React from 'react';
-import Dashboard from '../Dashboard/Dashboard';
-import TimekeepingManagementContent from './TimekeepingManagementContent';
+import React from "react";
+import TimekeepingManagementContent from "./TimekeepingManagementContent";
 
 const TimekeepingManagement = () => {
-    return (
-        <>
-            <Dashboard component={<TimekeepingManagementContent />} />
-        </>
-    )
-}
+  return (
+      <TimekeepingManagementContent />
+  );
+};
 
-export default TimekeepingManagement
+export default TimekeepingManagement;

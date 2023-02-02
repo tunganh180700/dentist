@@ -1,126 +1,257 @@
-import React, { useEffect, useState } from 'react';
-import 'antd/dist/antd.css';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import { Pagination, Typography, IconButton } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { setMaterialExportId} from '../../../redux/modalSlice';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
-
-import { fetchAllMaterialExport } from '../../../redux/MaterialSlice/listMaterialExportSlice';
-import ModalUpdateMaterialExport from '../../ModalComponent/ModalMaterial/ModalUpdateMaterialExport';
-import ModalDeleteMaterialExport from '../../ModalComponent/ModalMaterial/ModalDeleteMaterialExport';
-import ModalAddMaterialExport from '../../ModalComponent/ModalMaterial/ModalAddMaterialExport';
+import React, { useEffect, useState } from "react";
+import "antd/dist/antd.css";
+import TableBody from "@mui/material/TableBody";
+import TableHead from "@mui/material/TableHead";
+import {
+  Pagination,
+  Typography,
+  IconButton,
+  SwipeableDrawer,
+  Box,
+  TextField,
+  Button,
+} from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { setMaterialExportId } from "../../../redux/modalSlice";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
+import { fetchAllMaterialExport } from "../../../redux/MaterialSlice/listMaterialExportSlice";
+import ModalUpdateMaterialExport from "../../ModalComponent/ModalMaterial/ModalUpdateMaterialExport";
+import ModalDeleteMaterialExport from "../../ModalComponent/ModalMaterial/ModalDeleteMaterialExport";
+import ModalAddMaterialExport from "../../ModalComponent/ModalMaterial/ModalAddMaterialExport";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import Loading from "../../ui/Loading";
 
 const MaterialExportManagementContent = () => {
+  const listMaterialExport = useSelector(
+    (state) => state.listMaterialExport.listMaterialExport
+  );
+  const dispatch = useDispatch();
+  const pageSize = useSelector((state) => state.listMaterialExport.pageSize);
+  const totalPages = useSelector((state) => state.listMaterialExport.totalPage);
+  const [currentPage, setCurrentPage] = useState(0);
+  // const userId = useSelector(state=>state.modal.userId);
+  const isUpdateMaterialExport = useSelector(
+    (state) => state.listMaterialExport.isUpdateMaterialExport
+  );
+  const isDeleteMaterialExport = useSelector(
+    (state) => state.listMaterialExport.isDeleteMaterialExport
+  );
+  const isAddMaterialExport = useSelector(
+    (state) => state.listMaterialExport.isAddMaterialExport
+  );
+  const totalExportMaterial = useSelector(
+    (state) => state.listMaterialExport.totalExportMaterial
+  );
 
-    const listMaterialExport = useSelector(state => state.listMaterialExport.listMaterialExport)
-    const dispatch = useDispatch()
-    const pageSize = useSelector(state => state.listMaterialExport.pageSize)
-    const totalPages = useSelector(state => state.listMaterialExport.totalPage)
-    const [currentPage, setCurrentPage] = useState(0);
-    // const userId = useSelector(state=>state.modal.userId);
-    const isUpdateMaterialExport = useSelector(state => state.listMaterialExport.isUpdateMaterialExport);
-    const isDeleteMaterialExport = useSelector(state => state.listMaterialExport.isDeleteMaterialExport);
-    const isAddMaterialExport = useSelector(state => state.listMaterialExport.isAddMaterialExport);
+  const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
+  const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
+  const [modalAddOpen, setModalAddOpen] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
-    const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
-    const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
-    const [modalAddOpen, setModalAddOpen] = useState(false);
+  useEffect(() => {
+    setLoading(true);
+    dispatch(
+      fetchAllMaterialExport({
+        size: 12,
+        page: currentPage,
+        patientName: searchValue,
+      })
+    );
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, [
+    currentPage,
+    isUpdateMaterialExport,
+    isDeleteMaterialExport,
+    isAddMaterialExport,
+  ]);
 
+  const handleSearch = (searchValue) => {
+    setLoading(true);
+    if (currentPage === 0) {
+      dispatch(
+        fetchAllMaterialExport({
+          size: 12,
+          page: 0,
+          patientName: searchValue,
+        })
+      );
+    } else {
+      setCurrentPage(0);
+    }
+    setOpenFilter(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  };
 
+  const onResetFilter = () => {
+    setSearchValue("");
+    handleSearch("");
+  };
 
-    useEffect(() => {
-        dispatch(fetchAllMaterialExport({
-            size: pageSize,
-            page: currentPage
-        },
-        ));
-    }, [currentPage,isUpdateMaterialExport, isDeleteMaterialExport,isAddMaterialExport])
+  return (
+    <>
+      {loading && <Loading />}
+      <h2 className="font-bold mb-4">Quản Lý Xuất Vật Liệu</h2>
+      <Box className="flex items-center gap-3 mb-3">
+        <p className="font-bold text-lg mb-0">
+          Có ({totalExportMaterial}) bản ghi
+        </p>
+        <Button
+          variant="contained"
+          color="info"
+          endIcon={<FilterAltIcon />}
+          onClick={() => setOpenFilter(true)}
+        >
+          <span className="leading-none">Lọc</span>
+        </Button>
+      </Box>
+      <StyledTable className="shadow-md mb-3" size="small">
+        <TableHead>
+          <StyledTableRow>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Tên vật liệu
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Số lượng
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Đơn giá
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Tên bệnh nhân
+            </StyledTableCell>
+            <StyledTableCell style={{ fontWeight: "bold" }}>
+              Date
+            </StyledTableCell>
+            <StyledTableCell></StyledTableCell>
+          </StyledTableRow>
+        </TableHead>
 
-    return (
+        <TableBody>
+          {listMaterialExport.map((item, index) => (
+            <StyledTableRow key={item.materialExportId}>
+              <StyledTableCell>{item.materialName}</StyledTableCell>
+              <StyledTableCell>{item.amount}</StyledTableCell>
+              <StyledTableCell>{item.unitPrice}</StyledTableCell>
+              <StyledTableCell>{item.patientName}</StyledTableCell>
+              <StyledTableCell>{item.date}</StyledTableCell>
+              <StyledTableCell>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => {
+                    setModalDeleteOpen(true);
+                    dispatch(setMaterialExportId(item.materialExportId));
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <IconButton
+                  aria-label="edit"
+                  onClick={() => {
+                    setModalUpdateOpen(true);
+                    dispatch(setMaterialExportId(item.materialExportId));
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </StyledTable>
+      {totalPages === 0 && (
         <>
-            <Typography
-                component="h1"
-                variant="h5"
-                color="inherit"
-                noWrap
-            >
-                Quản lý vật liệu xuất khẩu
-            </Typography>
-            <IconButton aria-label="add"   style={{borderRadius: '5%'}} onClick={() => {
-                setModalAddOpen(true)
-            }}>
-                <AddIcon /> Thêm mới
-            </IconButton>
-            <Table size="small" style={{ marginTop: "15px" }}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Tên vật liệu</TableCell>
-                        <TableCell>Số lượng</TableCell>
-                        <TableCell>Tổng tiền</TableCell>
-                        <TableCell>Tên bệnh nhân</TableCell>
-                        <TableCell>Date</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                {listMaterialExport.map((item, index) =>
-                        <TableRow key={item.materialExportId}>
-                            <TableCell>{item.materialName}</TableCell>
-                            <TableCell>{item.amount}</TableCell>
-                            <TableCell>{item.totalPrice}</TableCell>
-                            <TableCell>{item.patientName}</TableCell>
-                            <TableCell>{item.date}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setMaterialExportId(item.materialExportId))
-                                    console.log('id',item.materialExportId)
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setMaterialExportId(item.materialExportId))
-                                    console.log('id22',item.materialExportId)
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-   )}
-                </TableBody>
-            </Table>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Pagination
-                    count={totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
-            </div>
-            <div>
-                <ModalUpdateMaterialExport modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
-            </div>
-            <div>
-                <ModalDeleteMaterialExport modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
-            </div>
-            <div>
-                <ModalAddMaterialExport modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
-            </div>
-
+          <Typography
+            component="h1"
+            variant="h5"
+            color="inherit"
+            noWrap
+            textAlign="center"
+          >
+            Không có vật liệu nào
+          </Typography>
         </>
-    )
-}
+      )}
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        {totalPages > 1 ? (
+          <Pagination
+            page={currentPage + 1}
+            color="primary"
+            count={totalPages}
+            onChange={(e, pageNumber) => {
+              setCurrentPage(pageNumber - 1);
+            }}
+          />
+        ) : null}
+      </div>
+      <SwipeableDrawer
+        anchor="right"
+        open={openFilter}
+        onClose={() => setOpenFilter(false)}
+        PaperProps={{ elevation: 0, style: { backgroundColor: "transparent" } }}
+      >
+        <Box className="p-3 w-[300px] bg-white h-full rounded-tl-lg rounded-bl-lg">
+          <h3 className="mb-3">Lọc</h3>
+          <Box className="mb-3">
+            <p className="mb-1">Tên bệnh nhân</p>
+            <TextField
+              required
+              value={searchValue}
+              onChange={(newValue) => setSearchValue(newValue.target.value)}
+            />
+          </Box>
+          <Box display="flex" gap={2} justifyContent="center">
+            <Button
+              variant="contained"
+              className="mr-3"
+              onClick={() => handleSearch(searchValue)}
+              disabled={!searchValue}
+            >
+              Đồng ý
+            </Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={onResetFilter}
+              disabled={!searchValue}
+            >
+              Đặt lại
+            </Button>
+          </Box>
+        </Box>
+      </SwipeableDrawer>
+      <div>
+        <ModalUpdateMaterialExport
+          modalUpdateOpen={modalUpdateOpen}
+          setModalUpdateOpen={setModalUpdateOpen}
+        />
+      </div>
+      <div>
+        <ModalDeleteMaterialExport
+          modalDeleteOpen={modalDeleteOpen}
+          setModalDeleteOpen={setModalDeleteOpen}
+        />
+      </div>
+      {/* <div>
+        <ModalAddMaterialExport
+          modalAddOpen={modalAddOpen}
+          setModalAddOpen={setModalAddOpen}
+        />
+      </div> */}
+    </>
+  );
+};
 
 export default MaterialExportManagementContent;

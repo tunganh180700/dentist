@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 import { getMaterialByIdAPI } from "../../config/baseAPI"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     choosenMaterial: {},
@@ -52,7 +53,7 @@ const choosenMaterialSlice = createSlice({
 })
 export const fetchMaterial = createAsyncThunk('materials/fetchMaterial', async (materialId) => {
     try {
-        const res = await axios.get(
+        const res = await axiosInstance.get(
             getMaterialByIdAPI + materialId,
         )
         console.log(res.data)

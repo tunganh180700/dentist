@@ -3,7 +3,8 @@ import axios from "axios"
 import { listMaterialAPI, updateMaterialAPI, deleteMaterialAPI, addMaterialAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
-import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, DELETE_FAIL_MATERIAL, ADD_FAIL_MATERIAL } from "../../config/constant"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     listMaterial: [],
@@ -12,6 +13,7 @@ const initState = {
     index: 0,
     pageSize: 3,
     totalPage: 0,
+    totalMaterials: 0,
     statusUpdateMaterial: false,
     isUpdateMaterial: false,
     statusDeleteMaterial: false,
@@ -39,6 +41,7 @@ const listMaterialSlice = createSlice({
                 state.status = false;
                 state.pageNumber = action.payload.pageNumber;
                 state.totalPage = action.payload.totalPages;
+                state.totalMaterials =action.payload.totalElements
                 state.isUpdateMaterial = false;
                 state.isDeleteMaterial = false;
                 state.isAddMaterial = false;
@@ -67,7 +70,7 @@ const listMaterialSlice = createSlice({
 
 export const fetchAllMaterial = createAsyncThunk('listMaterial/fetchAllMaterial', async (paramsSearch) => {
     try {
-        const res = await axios.get(listMaterialAPI, {
+        const res = await axiosInstance.get(listMaterialAPI, {
             params: paramsSearch,
         })
         return res.data
@@ -79,7 +82,7 @@ export const fetchAllMaterial = createAsyncThunk('listMaterial/fetchAllMaterial'
 export const updateMaterial = createAsyncThunk('listMaterial/updateMaterial', async (data) => {
     // console.log(data.userId)
     try {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
             updateMaterialAPI + data.materialId, data
         )
         console.log(res)
@@ -95,11 +98,11 @@ export const updateMaterial = createAsyncThunk('listMaterial/updateMaterial', as
 export const deleteMaterial = createAsyncThunk('listMaterial/deleteMaterial', async (materialId) => {
     console.log(materialId)
     try {
-        const res = await axios.delete(deleteMaterialAPI + materialId)
+        const res = await axiosInstance.delete(deleteMaterialAPI + materialId)
         toast.success(DELETE_SUCCESS, toastCss)
         return materialId
     } catch (error) {
-        toast.error(DELETE_FAIL, toastCss)
+        toast.error(DELETE_FAIL_MATERIAL, toastCss)
 
     }
 })
@@ -113,13 +116,13 @@ export const addMaterial = createAsyncThunk('listMaterial/addMaterial', async (v
             price: values.price
         }
         console.log(values)
-        const res = await axios.post(addMaterialAPI, formValue)
+        const res = await axiosInstance.post(addMaterialAPI, formValue)
         toast.success("Thêm vật liệu thành công !!!!!", toastCss)
         console.log(res.data)
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error('Thêm mới thất bại :(', toastCss)
+        toast.error(ADD_FAIL_MATERIAL, toastCss)
     }
 })
 export const { setListMaterial } = listMaterialSlice.actions;

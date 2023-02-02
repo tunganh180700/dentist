@@ -1,180 +1,152 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import axios from "axios"
-import { toast } from "react-toastify"
-import { addPatientAPI, deletePatientAPI, listPatientAPI, searchPatientAPI, updatePatientAPI } from "../../config/baseAPI"
-import { DELETE_FAIL, DELETE_SUCCESS, UPDATE_FAIL, UPDATE_SUCCESS } from "../../config/constant"
-import axiosInstance from "../../config/customAxios"
-import { toastCss } from "../toastCss"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axiosInstance from "../../config/customAxios";
+import { toast } from "react-toastify";
+import { toastCss } from "../toastCss";
+import {
+  addPatientAPI,
+  listPatientAPI,
+  searchPatientAPI,
+} from "../../config/baseAPI";
 
 const initState = {
-    listPatient: [],
-    pagination: [],
-    index: 0,
-    pageSize: 3,
-    totalPage: 0,
-    totalElements: 0,
-    statusUpdatePatient: false,
-    isUpdatePatient: false,
-    statusDeletePatient: false,
-    isDeletePatient: false,
-    statusAddPatient: false,
-    isAddPatient: false,
-    statusSearchPatient: false,
-    isSearchPatient: false,
-    message: '',
-    statusPatient: 0
-}
+  listPatient: [],
+  index: 0,
+  pageSize: 13,
+  totalPage: 0,
+  totalElements: 0,
+  // statusUpdatePatient: false,
+  // isUpdatePatient: false,
+  // statusDeletePatient: false,
+  // isDeletePatient: false,
+  statusAddPatient: false,
+  isAddPatient: false,
+  statusSearchPatient: false,
+  isSearchPatient: false,
+  message: "",
+  statusPatient: 0,
+  loading: false,
+};
 
 const listPatientSlice = createSlice({
-    name: 'listPatient',
-    initialState: initState,
-    reducers: {
-        setListPatient: (state, action) => {
-            state.listPatient = action.payload
-        },
+  name: "listPatient",
+  initialState: initState,
+  reducers: {
+    setListPatient: (state, action) => {
+      state.listPatient = action.payload;
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(fetchAllPatient.pending, (state, action) => {
-                state.status = true
-            })
-            .addCase(fetchAllPatient.fulfilled, (state, action) => {
-                state.listPatient = action.payload.content;
-                state.statusPatient = action.payload.status
-                state.status = false;
-                state.totalElements = action.payload.totalElements;
-                state.totalPage = action.payload.totalPages;
-                state.isAddPatient = false;
-                state.isDeletePatient = false;
-                state.isUpdatePatient = false;
-                state.isSearchPatient = false;
-            })
-            .addCase(addPatient.pending, (state, action) => {
-                state.statusAddPatient = true
-            })
-            .addCase(addPatient.fulfilled, (state, action) => {
-                state.isAddPatient = true
-            })
-            .addCase(deletePatient.pending, (state, action) => {
-                state.statusDeletePatient = true
-            })
-            .addCase(deletePatient.fulfilled, (state, action) => {
-                state.isDeletePatient = true
-            })
-            .addCase(updatePatient.pending, (state, action) => {
-                state.statusUpdatePatient = true
-            })
-            .addCase(updatePatient.fulfilled, (state, action) => {
-                state.isUpdatePatient = true
-            })
-            .addCase(searchPatient.pending, (state, action) => {
-                state.statusSearchPatient = true
-            })
-            .addCase(searchPatient.fulfilled, (state, action) => {
-                state.listPatient = action.payload.content;
-                state.isSearchPatient = true
-                state.totalElements = action.payload.totalElements;
-                state.totalPage = action.payload.totalPages;
-                state.isSearchPatient = true;
-            })
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchAllPatient.pending, (state, action) => {
+        state.status = true;
+      })
+      .addCase(fetchAllPatient.fulfilled, (state, action) => {
+        state.listPatient = action.payload.content;
+        state.statusPatient = action.payload.status;
+        // state.pageSize = action.payload.pageSize
+        state.status = false;
+        state.totalElements = action.payload.totalElements;
+        state.totalPage = action.payload.totalPages;
+        state.isAddPatient = false;
+        state.isDeletePatient = false;
+        state.isUpdatePatient = false;
+        state.isSearchPatient = false;
+      })
+      .addCase(addPatient.pending, (state, action) => {
+        state.statusAddPatient = true;
+      })
+      .addCase(addPatient.fulfilled, (state, action) => {
+        state.isAddPatient = true;
+      })
+      // .addCase(deletePatient.pending, (state, action) => {
+      //   state.statusDeletePatient = true;
+      // })
+      // .addCase(deletePatient.fulfilled, (state, action) => {
+      //   state.isDeletePatient = true;
+      // })
+      // .addCase(updatePatient.pending, (state, action) => {
+      //   state.statusUpdatePatient = true;
+      // })
+      // .addCase(updatePatient.fulfilled, (state, action) => {
+      //   state.isUpdatePatient = true;
+      // })
+      .addCase(searchPatient.pending, (state, action) => {
+        state.statusSearchPatient = true;
+      })
+      .addCase(searchPatient.fulfilled, (state, action) => {
+        state.listPatient = action.payload.content;
+        state.isSearchPatient = true;
+        state.totalPage = action.payload.totalPages;
+        state.totalElements = action.payload.totalElements;
+        state.isDeletePatient = false;
+        state.isUpdatePatient = false;
+        state.isAddPatient = false;
+      });
+  },
+});
 
-    }
-})
-
-export const fetchAllPatient = createAsyncThunk('listPatient/fetchAllPatient', async (paramSearch) => {
+export const fetchAllPatient = createAsyncThunk(
+  "listPatient/fetchAllPatient",
+  async (paramSearch, { dispatch }) => {
+    dispatch(setLoading(true));
     try {
-        const res = await axiosInstance.get(listPatientAPI, {
-            params: paramSearch,
-        })
-        return res.data
+      const res = await axiosInstance.get(listPatientAPI, {
+        params: paramSearch,
+      });
+      dispatch(setLoading(false));
+      return res.data;
     } catch (error) {
-        console.log(error)
+      dispatch(setLoading(false));
+      console.log(error);
     }
-})
+  }
+);
 
-// export const searchPatient = createAsyncThunk('listPatient/searchPatient', async (paramSearch) => {
-//     try {
-//         // const formValue = {
-//         //     name: values.patientName,
-//         //     birthdate: values.birthdate,
-//         //     gender: values.gender,
-//         //     address: values.address,
-//         //     phone: values.phone,
-//         //     email: values.email,
-//         // }
-//         const res = await axiosInstance.get(searchPatientAPI, {
-//             params: paramSearch
-//         })
-//         console.log(res)
-//         return res.data
-//     } catch (error) {
-//         console.log(error)
-//     }
-// })
-export const searchPatient = createAsyncThunk('listPatient/searchPatient', async (paramSearch) => {
+export const searchPatient = createAsyncThunk(
+  "listPatient/searchPatient",
+  async (paramSearch, { dispatch }) => {
     try {
-
-        const res = await axiosInstance.get(searchPatientAPI, {
-            params: paramSearch
-        })
-        console.log(res)
-        return res.data
+      dispatch(setLoading(true));
+      const res = await axiosInstance.get(searchPatientAPI, {
+        params: paramSearch,
+      });
+      dispatch(setLoading(false));
+      return res.data;
     } catch (error) {
-        console.log(error)
+      dispatch(setLoading(false));
+      console.log(error);
     }
-})
+  }
+);
 
-
-export const addPatient = createAsyncThunk('listPatient/addPatient', async (values) => {
+export const addPatient = createAsyncThunk(
+  "listPatient/addPatient",
+  async (values, { dispatch }) => {
     try {
-        const formValue = {
-            patientName: values.patientName,
-            birthdate: values.birthdate,
-            gender: values.gender,
-            address: values.address,
-            phone: values.phone,
-            email: values.email,
-            bodyPrehistory: values.bodyPrehistory,
-            teethPrehistory: values.teethPrehistory
-        }
-        console.log(values)
-        const res = await axiosInstance.post(addPatientAPI, formValue)
-        toast.success("Thêm mới thành công !!!!!", toastCss)
-        console.log(res.data)
-        return res.data
+      dispatch(setLoading(true));
+      const formValue = {
+        patientName: values.patientName,
+        birthdate: values.birthdate,
+        gender: values.gender,
+        address: values.address,
+        phone: values.phone,
+        email: values.email,
+        bodyPrehistory: values.bodyPrehistory,
+        teethPrehistory: values.teethPrehistory,
+      };
+      const res = await axiosInstance.post(addPatientAPI, formValue);
+      toast.success("Thêm mới thành công !!!!!", toastCss);
+      dispatch(setLoading(false));
+      return res.data;
     } catch (error) {
-        console.log(error)
-        toast.error('Thêm mới thất bại :(', toastCss)
+      dispatch(setLoading(false));
+      toast.error("Thêm mới thất bại :(", toastCss);
     }
-})
+  }
+);
 
-export const deletePatient = createAsyncThunk('listPatient/deletePatient', async (patientId) => {
-
-    try {
-        const res = await axiosInstance.delete(deletePatientAPI + patientId)
-        toast.success(DELETE_SUCCESS, toastCss)
-        return patientId
-    } catch (error) {
-        toast.error(DELETE_FAIL, toastCss)
-
-    }
-})
-
-export const updatePatient = createAsyncThunk('listPatient/updatePatient', async (data) => {
-    // console.log(data.userId)
-    try {
-        const res = await axiosInstance.put(
-            updatePatientAPI + data.patientId, data
-        )
-        console.log(res)
-        toast.success(UPDATE_SUCCESS, toastCss)
-        return res.data
-    } catch (error) {
-        console.log(error)
-        toast.error(UPDATE_FAIL, toastCss)
-
-    }
-})
-
-export const { setListPatient } = listPatientSlice.actions;
+export const { setListPatient, setLoading } = listPatientSlice.actions;
 export default listPatientSlice.reducer;

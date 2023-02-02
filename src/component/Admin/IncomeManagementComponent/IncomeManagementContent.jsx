@@ -1,123 +1,211 @@
-import React, { useEffect, useState } from 'react';
-import 'antd/dist/antd.css';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import { Pagination, Typography, IconButton } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { setIncomeId } from '../../../redux/modalSlice';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
+import React, { useEffect, useState } from "react";
+import "antd/dist/antd.css";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import { Pagination, Typography, IconButton } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { setIncomeId } from "../../../redux/modalSlice";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTable,
+} from "../../ui/TableElements";
+import { Tabs } from "antd";
 
-import { fetchAllIncome } from '../../../redux/IncomeSlice/listIncomeSlice';
-// import ModalUpdateIncome from '../../ModalComponent/ModalIncome/ModalUpdateIncome';
-// import ModalDeleteIncome from '../../ModalComponent/ModalIncome/ModalDeleteIncome';
-// import ModalAddIncome from '../../ModalComponent/ModalIncome/ModalAddIncome';
+import {
+  fetchAllIncome,
+  fetchAllNetIncome,
+  fetchAllTotalSpendIncome,
+} from "../../../redux/IncomeSlice/listIncomeSlice";
+import ChartIncome from "./ChartIncome";
+import moment from "moment/moment";
 
 const IncomeManagementContent = () => {
+  const listIncome = useSelector((state) => state.listIncome.listIncome);
+  const listNetIncome = useSelector((state) => state.listIncome.listNetIncome);
+  const listTotalSpendIncome = useSelector(
+    (state) => state.listIncome.listTotalSpendIncome
+  );
+  const totalIncome = useSelector((state) => state.listIncome.totalIncome);
+  const totalNetIncome = useSelector(
+    (state) => state.listIncome.totalNetIncome
+  );
+  const totalSpendIncome = useSelector(
+    (state) => state.listIncome.totalSpendIncome
+  );
+  const dispatch = useDispatch();
+  const pageSize = useSelector((state) => state.listIncome.pageSize);
+  const totalPages = useSelector((state) => state.listIncome.totalPage);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [dataChart, setDataChart] = useState([]);
 
-    const listIncome = useSelector(state => state.listIncome.listIncome)
-    const dispatch = useDispatch()
-    const pageSize = useSelector(state => state.listIncome.pageSize)
-    const totalPages = useSelector(state => state.listIncome.totalPage)
-    const [currentPage, setCurrentPage] = useState(0);
-    // const userId = useSelector(state=>state.modal.userId);
-    // const isUpdateIncome = useSelector(state => state.listIncome.isUpdateIncome);
-    // const isDeleteIncome = useSelector(state => state.listIncome.isDeleteIncome);
-    // const isAddIncome = useSelector(state => state.listIncome.isAddIncome);
+  useEffect(() => {
+    handleFetchData();
+  }, []);
 
-    // const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
-    // const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
-    // const [modalAddOpen, setModalAddOpen] = useState(false);
+  useEffect(() => {
+    const cookIncome = listIncome?.map((item) => ({
+      ...item,
+      value: item.price,
+      type: "Doanh thu",
+    }));
+    const cookNetIncome = listNetIncome?.map((item) => ({
+      ...item,
+      value: item.price,
+      type: "Thực thu",
+    }));
+    const cookTotalSpend = listTotalSpendIncome?.map((item) => ({
+      ...item,
+      value: item.price,
+      type: "Tổng chi",
+    }));
+    setDataChart([...cookIncome, ...cookNetIncome, ...cookTotalSpend]);
+  }, [listTotalSpendIncome, listNetIncome, listIncome]);
 
-    console.log('income: ',listIncome)
+  const formatter = new Intl.NumberFormat({
+    style: "currency",
+    currency: "VND",
+  });
 
+  const handleFetchData = (filter = null) => {
+    dispatch(fetchAllIncome(filter || {}));
+    dispatch(fetchAllNetIncome(filter || {}));
+    dispatch(fetchAllTotalSpendIncome(filter || {}));
+  };
 
+  const onFetchDataByDate = (date) => {
+    let filter = {
+      startDate: null,
+      endDate: null,
+    };
+    if (date) {
+      filter = {
+        startDate: moment(date[0]).format("YYYY-MM-DD"),
+        endDate: moment(date[1]).format("YYYY-MM-DD"),
+      };
+    }
+    handleFetchData(filter);
+  };
 
-    useEffect(() => {
-        dispatch(fetchAllIncome({
-            size: pageSize,
-            page: currentPage
-        },
-        ));
-    }, [currentPage])
-
+  const InComeTable = () => {
     return (
-        <>
-            <Typography
-                component="h1"
-                variant="h5"
-                color="inherit"
-                noWrap
-            >
-                Quản lý Thu nhập
-            </Typography>
-            {/* <IconButton aria-label="add"  style={{borderRadius: '5%'}} onClick={() => {
-                setModalAddOpen(true)
-            }}>
-                <AddIcon /> Thêm mới
-            </IconButton> */}
-            <Table size="small" style={{ marginTop: "15px" }}>
-                <TableHead>
-                    <TableRow>
-                       
-                        <TableCell>Tiền thực nhận</TableCell>
-                        <TableCell>Tiền bệnh nhân chưa nhận</TableCell>
-                        <TableCell>Tổng tiền</TableCell>
-                        {/* <TableCell></TableCell>
-                        <TableCell></TableCell> */}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
+      <StyledTable size="small" className="shadow-md mb-10">
+        <TableHead>
+          <StyledTableRow>
+            <StyledTableCell>Nguồn thu nhập</StyledTableCell>
+            <StyledTableCell>Ngày thu</StyledTableCell>
+            <StyledTableCell>Số Tiền ( VND )</StyledTableCell>
+          </StyledTableRow>
+        </TableHead>
+        <TableBody>
+          {listIncome.map((item, index) => (
+            <StyledTableRow size="medium">
+              <StyledTableCell>{item.name}</StyledTableCell>
+              <StyledTableCell>{item.date}</StyledTableCell>
+              <StyledTableCell>{formatter.format(item.price)}</StyledTableCell>
+            </StyledTableRow>
+          ))}
+          <StyledTableCell
+            colSpan={3}
+            style={{ fontWeight: "bold", fontSize: "20px", textAlign: "end" }}
+          >
+            Tổng tiền : {formatter.format(totalIncome)} VND
+          </StyledTableCell>
+        </TableBody>
+      </StyledTable>
+    );
+  };
+  const NetIncomeTable = () => {
+    return (
+      <StyledTable size="small" className="shadow-md mb-10">
+        <TableHead>
+          <StyledTableRow>
+            <StyledTableCell>Nguồn thu nhập</StyledTableCell>
+            <StyledTableCell>Ngày thu</StyledTableCell>
+            <StyledTableCell>Số Tiền ( VND )</StyledTableCell>
+          </StyledTableRow>
+        </TableHead>
+        <TableBody>
+          {listNetIncome.map((item, index) => (
+            <StyledTableRow size="medium">
+              <StyledTableCell>{item.name}</StyledTableCell>
+              <StyledTableCell>{item.date}</StyledTableCell>
+              <StyledTableCell>{formatter.format(item.price)}</StyledTableCell>
+            </StyledTableRow>
+          ))}
+          <StyledTableCell
+            colSpan={3}
+            style={{ fontWeight: "bold", fontSize: "20px", textAlign: "end" }}
+          >
+            Tổng tiền : {formatter.format(totalNetIncome)} VND
+          </StyledTableCell>
+        </TableBody>
+      </StyledTable>
+    );
+  };
 
-                        <TableRow size='medium'>                         
-                            <TableCell>{listIncome.netIncome}</TableCell>
-                            <TableCell>{listIncome.notReceived}</TableCell>
-                            <TableCell style={{ fontWeight: 'bold', fontSize: '20px' }}>{listIncome.totalIncome}</TableCell>
-                            {/* <TableCell>
-                                <IconButton aria-label="edit" onClick={() => {
-                                    setModalUpdateOpen(true)
-                                    dispatch(setIncomeId(item.IncomeId))
-                                }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <IconButton aria-label="delete" onClick={() => {
-                                    setModalDeleteOpen(true)
-                                    dispatch(setIncomeId(item.IncomeId))
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell> */}
-                        </TableRow>
+  const TotalSpendTable = () => {
+    return (
+      <StyledTable size="small" className="shadow-md mb-10">
+        <TableHead>
+          <StyledTableRow>
+            <StyledTableCell>Nguồn thu nhập</StyledTableCell>
+            <StyledTableCell>Ngày thu</StyledTableCell>
+            <StyledTableCell>Số Tiền ( VND )</StyledTableCell>
+          </StyledTableRow>
+        </TableHead>
+        <TableBody>
+          {listTotalSpendIncome.map((item, index) => (
+            <StyledTableRow size="medium">
+              <StyledTableCell>{item.name}</StyledTableCell>
+              <StyledTableCell>{item.date}</StyledTableCell>
+              <StyledTableCell>{formatter.format(item.price)}</StyledTableCell>
+            </StyledTableRow>
+          ))}
+          <StyledTableCell
+            colSpan={3}
+            style={{ fontWeight: "bold", fontSize: "20px", textAlign: "end" }}
+          >
+            Tổng tiền : {formatter.format(totalSpendIncome)} VND
+          </StyledTableCell>
+        </TableBody>
+      </StyledTable>
+    );
+  };
 
-                </TableBody>
-            </Table>
-            {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Pagination
-                    count={totalPages}
-                    defaultPage={1}
-                    onChange={(e, pageNumber) => {
-                        setCurrentPage(pageNumber - 1)
-                    }}
-                />
-            </div>
-            <div>
-                <ModalUpdateIncome modalUpdateOpen={modalUpdateOpen} setModalUpdateOpen={setModalUpdateOpen} />
-            </div>
-            <div>
-                <ModalDeleteIncome modalDeleteOpen={modalDeleteOpen} setModalDeleteOpen={setModalDeleteOpen} />
-            </div>
-            <div>
-                <ModalAddIncome modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
-            </div> */}
-
-        </>
-    )
-}
+  return (
+    <>
+      <h2 className="font-bold mb-4">Quản lý Thu nhập</h2>
+      <ChartIncome data={dataChart} onChangeDateRange={onFetchDataByDate} />
+      <Tabs
+        defaultActiveKey="1"
+        className="mt-3"
+        items={[
+          {
+            label: <p className="mb-0 font-medium text-lg">Doanh thu</p>,
+            key: "1",
+            children: <InComeTable />,
+          },
+          {
+            label: <p className="mb-0 font-medium text-lg">Thực thu</p>,
+            key: "2",
+            children: <NetIncomeTable />,
+          },
+          {
+            label: <p className="mb-0 font-medium text-lg">Tổng chi</p>,
+            key: "3",
+            children: <TotalSpendTable />,
+          },
+        ]}
+      />
+    </>
+  );
+};
 
 export default IncomeManagementContent;

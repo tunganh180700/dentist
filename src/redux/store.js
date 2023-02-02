@@ -4,7 +4,6 @@ import listAccountSlice from "./AccountSlice/listAccountSlice";
 import modalSlice from "./modalSlice";
 import choosenPatientSlice from "./PatienSlice/choosenPatientSlice";
 import listPatientSlice from "./PatienSlice/listPatientSlice";
-import listTimekeepingSlice from "./TimekeepingSlice/listTimekeepingSlice";
 
 
 import choosenLaboSlice from "./LaboSlice/choosenLaboSlice";
@@ -21,11 +20,35 @@ import listmaterialImportSlice from "./MaterialSlice/listMaterialImportSlice";
 import choosenMaterialExportSlice from "./MaterialSlice/choosenMaterialExportSlice";
 import listMaterialExportSlice from "./MaterialSlice/listMaterialExportSlice";
 
+import userProfileSlice from "./ProfileSlice/userProfileSlice";
 
-import choosenServiceAndCategorySlice from "./ServiceAndCategorySlice/choosenServiceAndCategorySlice";
-import listServiceAndCategorySlice from "./ServiceAndCategorySlice/listServiceAndCategorySlice";
+
 
 import listIncomeSlice from "./IncomeSlice/listIncomeSlice";
+
+import listCategorySlice from "./ServiceAndCategorySlice/listCategorySlice";
+
+import choosenServiceSlice from "./ServiceAndCategorySlice/choosenServiceSlice";
+
+import listBillSlice from "./BillSlice/listBillSlice";
+import choosenBillSlice from "./BillSlice/choosenBillSlice";
+
+import listSpecimensSlice from "./SpecimensSlice/listSpecimensSlice";
+import choosenSpecimensSlice from "./SpecimensSlice/choosenSpecimensSlice";
+import listRecordSlice from "./RecordSlice/listRecordSlice";
+
+import listReceiptSlice from "./ReceiptSlice/listReceiptSlice";
+import choosenNewReceiptSlice from "./ReceiptSlice/choosenNewReceiptSlice";
+import listWaitingSlice from "./WaitingSlice/listWaitingSlice";
+import listConfirmWaitingSlice from "./WaitingSlice/listConfirmWaitingSlice";
+
+import listSpecimenSlice from "./SpecimenSlice/listSpecimenSlice";
+import choosenSpecimenSlice from "./SpecimenSlice/choosenSpecimenSlice";
+
+import listScheduleSlice from "./ScheduleSlice/listScheduleSlice";
+
+
+
 
 const store = configureStore({
     reducer: {
@@ -47,11 +70,31 @@ const store = configureStore({
 
         choosenLabo: choosenLaboSlice,
         listLabo: listLaboSlice,
+        choosenSpecimens: choosenSpecimensSlice,
+        listSpecimens: listSpecimensSlice,
 
-        choosenServiceAndCategory: choosenServiceAndCategorySlice,
-        listServiceAndCategory: listServiceAndCategorySlice,
 
-        listIncome: listIncomeSlice
+
+        listIncome: listIncomeSlice,
+        listBill: listBillSlice,
+        choosenBill: choosenBillSlice,
+
+        listCategory: listCategorySlice,
+        choosenService: choosenServiceSlice,
+        listRecord: listRecordSlice,
+
+        listReceipts: listReceiptSlice,
+        choosenNewReceipt: choosenNewReceiptSlice,
+
+        listWaiting: listWaitingSlice,
+        listConfirmWaiting: listConfirmWaitingSlice,
+
+        userProfile: userProfileSlice,
+
+        listSpecimen: listSpecimenSlice,
+        choosenSpecimen: choosenSpecimenSlice,
+
+        listSchedule: listScheduleSlice,
     }
 })
 

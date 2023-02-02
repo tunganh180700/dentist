@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
-import { listMaterialImportAPI, updateMaterialImportAPI, deleteMaterialImportAPI, addMaterialImportAPI } from "../../config/baseAPI"
+import { listMaterialImportAPI, updateMaterialImportAPI, deleteMaterialImportAPI, addListMaterialImportAPI } from "../../config/baseAPI"
 import { toast } from "react-toastify"
 import { toastCss } from "../toastCss"
-import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL } from "../../config/constant"
+import { UPDATE_SUCCESS, UPDATE_FAIL, DELETE_SUCCESS, DELETE_FAIL, UPDATE_FAIL_IMPORT_MATERIAL, DELETE_FAIL_IMPORT_MATERIAL } from "../../config/constant"
+import axiosInstance from "../../config/customAxios"
 
 const initState = {
     listMaterialImport: [],
@@ -12,6 +13,7 @@ const initState = {
     index: 0,
     pageSize: 3,
     totalPage: 0,
+    totalImportMaterial: 0,
     statusUpdateMaterialImport: false,
     isUpdateMaterialImport: false,
     statusDeleteMaterialImport: false,
@@ -28,6 +30,9 @@ const listMaterialImportSlice = createSlice({
         setListMaterialImport: (state, action) => {
             state.listMaterialImport = action.payload
         },
+        setIsAddMaterialImport: (state, action) => {
+            state.isAddMaterialImport = action.payload
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -43,6 +48,7 @@ const listMaterialImportSlice = createSlice({
                 state.isDeleteMaterialImport = false;
                 state.isAddMaterialImport = false;
                 state.message = action.payload.message
+                state.totalImportMaterial = action.payload.totalElements
             })
             .addCase(updateMaterialImport.pending, (state, action) => {
                 state.statusUpdateMaterialImport = true
@@ -67,7 +73,7 @@ const listMaterialImportSlice = createSlice({
 
 export const fetchAllMaterialImport = createAsyncThunk('listMaterialImport/fetchAllMaterialImport', async (paramsSearch) => {
     try {
-        const res = await axios.get(listMaterialImportAPI, {
+        const res = await axiosInstance.get(listMaterialImportAPI, {
             params: paramsSearch,
         })
         return res.data
@@ -79,7 +85,7 @@ export const fetchAllMaterialImport = createAsyncThunk('listMaterialImport/fetch
 export const updateMaterialImport = createAsyncThunk('listMaterialImport/updateMaterialImport', async (data) => {
 
     try {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
             updateMaterialImportAPI + data.materialImportId, data
         )
         console.log(res)
@@ -87,7 +93,7 @@ export const updateMaterialImport = createAsyncThunk('listMaterialImport/updateM
         return res.data
     } catch (error) {
         console.log(error)
-        toast.error(UPDATE_FAIL, toastCss)
+        toast.error(UPDATE_FAIL_IMPORT_MATERIAL, toastCss)
 
     }
 })
@@ -95,27 +101,25 @@ export const updateMaterialImport = createAsyncThunk('listMaterialImport/updateM
 export const deleteMaterialImport = createAsyncThunk('listMaterialImport/deleteMaterialImport', async (materialImportId) => {
     console.log(materialImportId)
     try {
-        const res = await axios.delete(deleteMaterialImportAPI + materialImportId)
+        const res = await axiosInstance.delete(deleteMaterialImportAPI + materialImportId)
         toast.success(DELETE_SUCCESS, toastCss)
         return materialImportId
     } catch (error) {
-        toast.error(DELETE_FAIL, toastCss)
+        toast.error(DELETE_FAIL_IMPORT_MATERIAL, toastCss)
 
     }
 })
 
 export const addMaterialImport = createAsyncThunk('listMaterialImport/addMaterialImport', async (values) => {
     try {
-      
-        console.log(values)
-        const res = await axios.post(addMaterialImportAPI, values)
+        const res = await axiosInstance.post(addListMaterialImportAPI, values)
         toast.success("Thêm vật liệu thành công !!!!!", toastCss)
-        console.log(res.data)
         return res.data
     } catch (error) {
         console.log(error)
         toast.error('Thêm mới thất bại :(', toastCss)
     }
 })
-export const { setListMaterialImport } = listMaterialImportSlice.actions;
+
+export const { setListMaterialImport, setIsAddMaterialImport } = listMaterialImportSlice.actions;
 export default listMaterialImportSlice.reducer;

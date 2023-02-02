@@ -1,108 +1,110 @@
-import React, { useEffect, useState } from 'react';
-import { Modal } from 'antd';
-import 'antd/dist/antd.css';
-import { Typography, TextField } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import { Modal } from "antd";
+import "antd/dist/antd.css";
+import { Typography, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { addMaterial } from '../../../redux/MaterialSlice/listMaterialSlice';
+import { addMaterial } from "../../../redux/MaterialSlice/listMaterialSlice";
+import { regexNumber } from "../../../config/validation";
+import InputDentist from "../../ui/input";
 
 const ModalAddMaterial = ({ modalAddOpen, setModalAddOpen }) => {
-    const dispatch = useDispatch();
-    const [value, setValue] = useState(null);
+  const dispatch = useDispatch();
+  const [value, setValue] = useState(null);
 
-    const validationSchema = yup.object({
-        materialName: yup
-            .string('Enter material name')
-            .required('Your material name is required'),
-        unit: yup
-            .string('Enter unit')
-            .required('Your unit is required'),
+  const validationSchema = yup.object({
+    materialName: yup
+      .string("Nhập tên vật liệu")
+      .max(255, "Vật liệu không thể quá 255 ký tự.")
+      .required("Vật liệu là bắt buộc."),
+    unit: yup
+      .string("Nhập đơn vị")
+      .max(45, "Đơn vị không thể quá 45 ký tự.")
+      .required("Đơn vị là bắt buộc."),
 
-        price: yup
-            .string('Enter price')
-            .required('Your price is required')
-    });
+    price: yup
+      .string("Nhập đơn giá")
+      .matches(regexNumber, "Đơn giá không được nhập chữ, kí tự, số âm.")
+      .required("Đơn giá là bắt buộc."),
+  });
 
-    const formik = useFormik({
-        initialValues: {
-            materialName: '',
-            unit: "",
+  const formik = useFormik({
+    initialValues: {
+      materialName: "",
+      unit: "",
+      price: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      dispatch(addMaterial(values));
+      setModalAddOpen(false);
+      formik.handleReset();
+    },
+  });
 
-            price: '',
-        },
-        validationSchema: validationSchema,
-        onSubmit: (values) => {
-            dispatch(addMaterial(values))
-            setModalAddOpen(false)
-            formik.handleReset()
-        }
-    });
+  const handleCancelCustom = () => {
+    setModalAddOpen(false);
+    // formik.errors.materialName = ""
+    // formik.touched.materialName = ""
 
-    return (
-        <>
-            <Modal
-                title="Thêm vật liệu"
-                open={modalAddOpen}
-                onOk={formik.handleSubmit}
-                onCancel={() => setModalAddOpen(false)}
-            >
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="materialName"
-                    label="Vật liệu"
-                    name="materialName"
-                    autoComplete="materialName"
-                    value={formik.values.materialName}
-                    autoFocus
-                    onChange={formik.handleChange}
-                />
-                {formik.errors.materialName && <Typography style={{ color: 'red' }}>{formik.errors.materialName}</Typography>}
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="unit"
-                    label="Đơn vị"
-                    name="unit"
-                    autoComplete="unit"
-                    autoFocus
-                    value={formik.values.unit}
-                    type={"unit"}
-                    onChange={formik.handleChange}
-                />
-                {/* <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="amount"
-                    label="Số lương"
-                    name="amount"
-                    autoComplete="amount"
-                    value={formik.values.amount}
-                    autoFocus
-                    onChange={formik.handleChange}
-                />
-                {formik.errors.amount && <Typography style={{ color: 'red' }}>{formik.errors.amount}</Typography>} */}
-                <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="price"
-                    label="Giá cả"
-                    name="price"
-                    autoComplete="price"
-                    value={formik.values.price}
-                    autoFocus
-                    onChange={formik.handleChange}
-                />
-                {formik.errors.price && <Typography style={{ color: 'red' }}>{formik.errors.price}</Typography>}
+    // formik.errors.unit = ""
+    // formik.touched.unit = ""
 
-            </Modal>
-        </>
-    )
-}
+    // formik.errors.price = ""
+    // formik.touched.price = ""
+
+    formik.resetForm();
+  };
+
+  return (
+    <>
+      <Modal
+        title="Thêm Vật Liệu"
+        open={modalAddOpen}
+        onOk={formik.handleSubmit}
+        onCancel={handleCancelCustom}
+      >
+        <InputDentist
+          required
+          id="materialName"
+          label="Vật liệu"
+          name="materialName"
+          value={formik.values.materialName}
+          onChange={formik.handleChange}
+          error={{
+            message: formik.errors.materialName,
+            touched: formik.touched.materialName,
+          }}
+        />
+        <InputDentist
+          required
+          id="unit"
+          label="Đơn vị"
+          name="unit"
+          value={formik.values.unit}
+          type={"unit"}
+          onChange={formik.handleChange}
+          error={{
+            message: formik.errors.unit,
+            touched: formik.touched.unit,
+          }}
+        />
+        <InputDentist
+          required
+          id="price"
+          label="Giá cả"
+          name="price"
+          value={formik.values.price}
+          onChange={formik.handleChange}
+          error={{
+            message: formik.errors.price,
+            touched: formik.touched.price,
+          }}
+        />
+      </Modal>
+    </>
+  );
+};
 
 export default ModalAddMaterial;
