@@ -396,7 +396,7 @@ const ModalAddRecord = ({
         onCancel={handleCancel}
       >
         <SockJsClient
-          url={SOCKET_URL}
+          url={process.env.REACT_APP_SOCKET_URL}
           topics={["/topic/group"]}
           onDisconnect={() => console.log("Disconnected!")}
           ref={(client) => setRefSocket(client)}

@@ -123,7 +123,7 @@ const HeaderAdmin = () => {
   return (
     <Box className="flex gap-4 items-center">
       <SockJsClient
-        url={SOCKET_URL}
+        url={process.env.REACT_APP_SOCKET_URL}
         topics={[`/topic/${roleName}`]}
         onConnect={onConnected}
         onDisconnect={() => console.log("Disconnected!")}

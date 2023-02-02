@@ -409,7 +409,7 @@ const WaitingRoomManagementContent = () => {
       <ToastContainer />
       <h2 className="font-bold mb-4">Quản Lý Phòng Chờ</h2>
       <SockJsClient
-        url={SOCKET_URL}
+        url={process.env.REACT_APP_SOCKET_URL}
         topics={[`/topic/${userInfo.userId}`, `/topic/${role}`, "/topic/group"]}
         onConnect={onConnected}
         onDisconnect={() => console.log("Disconnected!")}
