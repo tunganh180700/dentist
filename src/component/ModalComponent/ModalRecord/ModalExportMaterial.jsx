@@ -73,6 +73,7 @@ const ModalExportMaterial = ({
         materialName: item.materialName,
         amount: item.amount,
         unitPrice: item.unitPrice,
+        isShow: item.isShow,
         total: item.unitPrice * item.amount,
         statusChange: item.statusChange,
       }));
@@ -125,6 +126,7 @@ const ModalExportMaterial = ({
                   amount: 1,
                   unitPrice: listOptionMaterialEnable[0]?.price,
                   total: listOptionMaterialEnable[0]?.price,
+                  // totalAmount: listOptionMaterialEnable[0]?.price,
                   statusChange: "add",
                 },
               ]);

@@ -61,7 +61,6 @@ export const fetchAllWaiting = createAsyncThunk('listWaiting/fetchAllWaiting', a
         const res = await axiosInstance.get(listWaitingAPI, {
             params: paramsSearch,
         })
-        console.log('waiting data = ', res.data);
         return res.data
     } catch (error) {
         console.log(error)
