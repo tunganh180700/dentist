@@ -39,7 +39,6 @@ import moment from "moment";
 import ModalAddSchedule from "../../ModalComponent/ModalSchedule/ModalAddSchedule";
 import { fetchAllWaiting } from "../../../redux/WaitingSlice/listWaitingSlice";
 import DoneIcon from "@mui/icons-material/Done";
-import { SOCKET_URL } from "../../../config/baseAPI";
 import SockJsClient from "react-stomp";
 
 const PatientManagementContent = () => {

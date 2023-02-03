@@ -46,7 +46,6 @@ import "./style.css";
 import _ from "lodash";
 import Loading from "../../ui/Loading";
 import SockJsClient from "react-stomp";
-import { SOCKET_URL } from "../../../config/baseAPI";
 import { setLoading } from "../../../redux/PatienSlice/listPatientSlice";
 
 const ModalAddRecord = ({
