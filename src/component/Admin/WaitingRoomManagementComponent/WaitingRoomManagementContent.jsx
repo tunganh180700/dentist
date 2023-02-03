@@ -39,7 +39,6 @@ import {
 } from "../../../redux/WaitingSlice/listConfirmWaitingSlice";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { SOCKET_URL } from "../../../config/baseAPI";
 import { toastBottomCss } from "../../../redux/toastCss";
 
 const WaitingRoomManagementContent = () => {

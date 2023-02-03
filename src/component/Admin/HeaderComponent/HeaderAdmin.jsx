@@ -24,7 +24,6 @@ import {
 } from "../../../redux/AccountSlice/choosenAccountSlice";
 import { toast } from "react-toastify";
 import { toastBottomCss } from "../../../redux/toastCss";
-import { SOCKET_URL } from "../../../config/baseAPI";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMemo } from "react";
 
