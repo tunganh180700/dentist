@@ -24,7 +24,7 @@ import {
 } from "../../../redux/AccountSlice/choosenAccountSlice";
 import { toast } from "react-toastify";
 import { toastBottomCss } from "../../../redux/toastCss";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 
 const HeaderAdmin = () => {
@@ -45,15 +45,15 @@ const HeaderAdmin = () => {
     console.log(listNotifies);
   };
   const isReceptionist = useMemo(() => {
+    if (roleName === "Receptionist") {
+      dispatch(getListNotifies());
+    }
     return roleName === "Receptionist";
   }, [roleName]);
 
   useEffect(() => {
     try {
       dispatch(fetchUserProfile());
-      if (isReceptionist) {
-        dispatch(getListNotifies());
-      }
     } catch (error) {
       console.log(error);
     }

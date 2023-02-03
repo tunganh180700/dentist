@@ -137,7 +137,6 @@ const PatientManagementContent = () => {
         setCurrentPage(0);
       }
       setOpenFilter(false);
-      
     } catch (error) {
       console.log(error);
     }
@@ -167,19 +166,22 @@ const PatientManagementContent = () => {
 
   const addWaitingPatient = async (patientId) => {
     try {
-      dispatch(setLoading(true))
+      dispatch(setLoading(true));
       await axiosInstance.post(
-        "http://localhost:8080/api/patients/" + patientId + "/waiting_room"
+        process.env.REACT_APP_BASE_URL +
+          "/api/patients/" +
+          patientId +
+          "/waiting_room"
       );
       dispatch(fetchAllWaiting());
       refSocket.sendMessage(
         "/topic/group",
         JSON.stringify({ message: "re-fetch" })
       );
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
       toast.success("Thêm bệnh nhân vào phòng chờ thành công");
     } catch (error) {
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
       toast.error("Thêm bệnh nhân vào phòng chờ không thành công");
     }
   };
