@@ -27,7 +27,8 @@ import { toastBottomCss } from "../../../redux/toastCss";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import Loading from "../../ui/Loading";
-
+import FolderSharedIcon from '@mui/icons-material/FolderShared';
+import KeyIcon from "@mui/icons-material/Key";
 const HeaderAdmin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -168,13 +169,29 @@ const HeaderAdmin = () => {
         </Dropdown.Toggle>
         <Dropdown.Menu className="border-0 shadow-md">
           <Dropdown.Item>
-            <Link to="/profile" className="decoration-white text-black">
-              <span>Hồ sơ cá nhân</span>
+            <Link
+              to="/profile"
+              className="flex items-center decoration-transparent font-semibold text-black"
+            >
+              <FolderSharedIcon
+                sx={{
+                  fontSize: "25px",
+                }}
+              />
+              <span className="ml-2">Hồ sơ cá nhân</span>
             </Link>
           </Dropdown.Item>
           <Dropdown.Item>
-            <Link to="/change-password" className="decoration-white text-black">
-              <span>Đổi mật khẩu</span>
+            <Link
+              to="/change-password"
+              className="flex items-center decoration-transparent font-semibold text-black"
+            >
+              <KeyIcon
+                sx={{
+                  fontSize: "25px",
+                }}
+              />
+              <span className="ml-2">Đổi mật khẩu</span>
             </Link>
           </Dropdown.Item>
           <Dropdown.Divider />
