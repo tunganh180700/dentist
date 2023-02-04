@@ -585,9 +585,11 @@ const ModalAddRecord = ({
                       {isEdit ? (
                         <>
                           <StyledTableCell>
-                            <Box sx={{ minWidth: 120 }}>
+                            <Box sx={{ minWidth: 120, mt: 0 }}>
                               <FormControl fullWidth className="items-center">
                                 <Select
+                                  fullWidth
+                                  className="h-[30px]"
                                   labelId="permisstion"
                                   id="permisstionSelect"
                                   value={i?.serviceId}
@@ -676,7 +678,8 @@ const ModalAddRecord = ({
                           </StyledTableCell>
                           <StyledTableCell>
                             <Select
-                              className="mb-0"
+                              fullWidth
+                              className="mb-0 h-[30px]"
                               labelId="status"
                               id="status"
                               value={i?.status || ""}
