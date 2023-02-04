@@ -178,7 +178,7 @@ const MaterialExportManagementContent = () => {
             noWrap
             textAlign="center"
           >
-            Không có vật liệu nào
+            {/* Không có vật liệu nào */}
           </Typography>
         </>
       )}
