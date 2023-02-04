@@ -27,7 +27,7 @@ import { toastBottomCss } from "../../../redux/toastCss";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import Loading from "../../ui/Loading";
-import FolderSharedIcon from '@mui/icons-material/FolderShared';
+import FolderSharedIcon from "@mui/icons-material/FolderShared";
 import KeyIcon from "@mui/icons-material/Key";
 const HeaderAdmin = () => {
   const dispatch = useDispatch();
@@ -111,8 +111,13 @@ const HeaderAdmin = () => {
               }}
             >
               <NotiCard
+                time={item.time}
                 seen={item.isRead}
-                message={`Bệnh nhân ${item.patientName} đã khám bệnh xong`}
+                message={
+                  <p className="italic mb-0 text-xs">
+                    Bệnh nhân <span className="not-italic text-sm">{item.patientName}</span> đã khám bệnh xong
+                  </p>
+                }
               />
             </Box>
           ))}
