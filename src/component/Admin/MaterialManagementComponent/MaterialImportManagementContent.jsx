@@ -246,6 +246,7 @@ const MaterialImportManagementContent = () => {
             <p className="mb-1">Tên vật liệu</p>
             <TextField
               required
+              fullWidth
               value={searchValue}
               onChange={(newValue) => setSearchValue(newValue.target.value)}
             />
