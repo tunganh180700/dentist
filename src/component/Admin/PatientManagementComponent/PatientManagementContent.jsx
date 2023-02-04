@@ -443,7 +443,7 @@ const PatientManagementContent = () => {
           width="100%"
           padding="100px"
         >
-          Không có bệnh nhân nào
+          {/* Không có bệnh nhân nào */}
         </Typography>
       )}
 

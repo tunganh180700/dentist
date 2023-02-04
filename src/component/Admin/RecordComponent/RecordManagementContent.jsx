@@ -277,7 +277,7 @@ const RecordManagementContent = () => {
               textAlign="center"
               marginTop={10}
             >
-              Không có hồ sơ nào
+              {/* Không có hồ sơ nào */}
             </Typography>
           </>
         )}
