@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
-import { Modal } from "antd";
+import { Modal, Skeleton } from "antd";
 import { TextField, useStepContext } from "@mui/material";
 import "./../style.css";
 import Typography from "@mui/material/Typography";
@@ -45,15 +45,15 @@ const ModalUpdateLabo = ({ isShow, setModalUpdateOpen }) => {
   });
 
   const fetchLabo = async (laboId) => {
-    setLoading(true);
     try {
+      setLoading(true);
       const res = await axiosInstance.get(getLaboByIdAPI + laboId);
       formik.setValues(res.data);
       setOldData(res.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -91,36 +91,42 @@ const ModalUpdateLabo = ({ isShow, setModalUpdateOpen }) => {
         onCancel={handleCancel}
         okButtonProps={{ disabled: disabledBtnOk }}
       >
-        <>
-          <InputDentist
-            required
-            isEdit
-            id="laboName"
-            label="Labo"
-            name="laboName"
-            value={formik.values.laboName}
-            onChange={formik.handleChange}
-          />
-          {formik.errors.laboName && formik.touched.laboName && (
-            <Typography style={{ color: "red" }}>
-              {formik.errors.laboName}
-            </Typography>
-          )}
-          <InputDentist
-            required
-            isEdit
-            id="phone"
-            label="Số điện thoại"
-            name="phone"
-            value={formik.values.phone}
-            onChange={formik.handleChange}
-          />
-          {formik.errors.phone && formik.touched.phone && (
-            <Typography style={{ color: "red" }}>
-              {formik.errors.phone}
-            </Typography>
-          )}
-        </>
+        {!loading ? (
+          <>
+            <InputDentist
+              required
+              isEdit
+              id="laboName"
+              label="Labo"
+              name="laboName"
+              value={formik.values.laboName}
+              onChange={formik.handleChange}
+            />
+            {formik.errors.laboName && formik.touched.laboName && (
+              <Typography style={{ color: "red" }}>
+                {formik.errors.laboName}
+              </Typography>
+            )}
+            <InputDentist
+              required
+              isEdit
+              id="phone"
+              label="Số điện thoại"
+              name="phone"
+              value={formik.values.phone}
+              onChange={formik.handleChange}
+            />
+            {formik.errors.phone && formik.touched.phone && (
+              <Typography style={{ color: "red" }}>
+                {formik.errors.phone}
+              </Typography>
+            )}
+          </>
+        ) : (
+          <>
+            <Skeleton />
+          </>
+        )}
       </Modal>
     </>
   );

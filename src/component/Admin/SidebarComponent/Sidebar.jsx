@@ -27,7 +27,8 @@ const Sidebar = ({ isOpenSideBar = false }) => {
 
   const activeTab = useCallback(
     (item) => {
-      return `/${location.pathname.split("/")[1]}` === item.href;
+      console.log(`/${location.pathname.split("/")[1]}` , item.href.split("/")[1]);
+      return `${location.pathname.split("/")[1]}` === item.href.split("/")[1];
     },
     [location]
   );

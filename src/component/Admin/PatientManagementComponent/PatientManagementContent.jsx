@@ -31,7 +31,7 @@ import {
   StyledTableRowClick,
   StyledTable,
 } from "../../ui/TableElements";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./style.css";
 import dayjs from "dayjs";
@@ -57,11 +57,65 @@ const PatientManagementContent = () => {
   const [isSubmitFormPatient, setIsSubmitFormPatient] = useState(false);
   const [patientSchedule, setPatientSchedule] = useState();
   const [openFilter, setOpenFilter] = useState(false);
+  const [isFilter, setIsFilter] = useState(false);
   const [refSocket, setRefSocket] = useState(null);
+  const [isFetch, setIsFetch] = useState(false);
 
   const [role, setRole] = useState(null);
 
   const navigate = useNavigate();
+  const { search } = useLocation();
+
+  const useQuery = () => {
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+  };
+  const query = useQuery();
+
+  useEffect(() => {
+    if (isFetch) {
+      navigate({
+        pathname: `/patient-management`,
+        search: `?${createSearchParams({
+          ...formatSearchParams,
+          page: currentPage + 1,
+        })}`,
+      });
+      dispatch(
+        fetchAllPatient({
+          ...searchValue,
+          size: pageSize,
+          page: currentPage,
+        })
+      );
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (query) {
+      setCurrentPage(+query.get("page") - 1 > 0 ? +query.get("page") - 1 : 0);
+      const filterInit = {
+        ...(query.get("name") && { name: query.get("name") }),
+        ...(query.get("birthdate") && { birthdate: query.get("birthdate") }),
+        ...(query.get("address") && { address: query.get("address") }),
+        ...(query.get("address") && { address: query.get("address") }),
+        ...(query.get("email") && { email: query.get("email") }),
+        ...(query.get("phone") && { phone: query.get("phone") }),
+      };
+      dispatch(
+        searchPatient({
+          ...filterInit,
+          size: pageSize,
+          page: +query.get("page") - 1 || 0,
+        })
+      );
+      setSearchValue({
+        ...searchValue,
+        ...filterInit,
+      });
+      setIsFetch(true);
+      setIsFilter(true);
+    }
+  }, []);
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -113,18 +167,11 @@ const PatientManagementContent = () => {
     }
   }, [isAddPatient]);
 
-  useEffect(() => {
-    dispatch(
-      fetchAllPatient({
-        ...searchValue,
-        size: pageSize,
-        page: currentPage,
-      })
-    );
-  }, [currentPage]);
-
   const handleSearch = async (search = searchValue) => {
     try {
+      for (const property in search) {
+        search[property] = search[property]?.trim() || search[property];
+      }
       if (currentPage === 0) {
         dispatch(
           searchPatient({
@@ -136,10 +183,39 @@ const PatientManagementContent = () => {
       } else {
         setCurrentPage(0);
       }
+      navigate({
+        pathname: `/patient-management`,
+        search: `?${createSearchParams({
+          ...formatSearchParamsFunc(search),
+          page: currentPage + 1,
+        })}`,
+      });
       setOpenFilter(false);
+      setIsFilter(true);
     } catch (error) {
+      setIsFilter(false);
       console.log(error);
     }
+  };
+
+  const formatSearchParams = useMemo(() => {
+    let query = {};
+    for (const prop in searchValue) {
+      if (searchValue[prop]) {
+        query[prop] = searchValue[prop];
+      }
+    }
+    return query;
+  }, [searchValue]);
+
+  const formatSearchParamsFunc = (searchValue) => {
+    let query = {};
+    for (const prop in searchValue) {
+      if (searchValue[prop]) {
+        query[prop] = searchValue[prop];
+      }
+    }
+    return query;
   };
 
   const enableButtonSearch = useMemo(
@@ -162,6 +238,7 @@ const PatientManagementContent = () => {
     };
     setSearchValue(newSearchValue);
     handleSearch(newSearchValue);
+    setIsFilter(false);
   };
 
   const addWaitingPatient = async (patientId) => {
@@ -186,7 +263,7 @@ const PatientManagementContent = () => {
     }
   };
 
-  const handleToDoMessageSocket = ({ message, patientId }) => {
+  const handleToDoMessageSocket = ({ message }) => {
     switch (message) {
       case "re-fetch":
         dispatch(fetchAllWaiting());
@@ -274,7 +351,13 @@ const PatientManagementContent = () => {
                 className="hover cursor-pointer"
                 key={item.patientId}
                 onClick={() => {
-                  navigate(`profile/${item.patientId}`);
+                  navigate({
+                    pathname: `profile/${item.patientId}`,
+                    search: `?${createSearchParams({
+                      ...formatSearchParams,
+                      page: currentPage + 1,
+                    })}`,
+                  });
                 }}
               >
                 <StyledTableCell>{item.patientName}</StyledTableCell>
@@ -474,7 +557,7 @@ const PatientManagementContent = () => {
               variant="contained"
               color="warning"
               onClick={onResetFilter}
-              disabled={!enableButtonSearch}
+              disabled={!isFilter}
             >
               Đặt lại
             </Button>

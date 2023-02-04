@@ -43,6 +43,7 @@ const initState = {
   listServiceDTO: [],
   message: "",
   id: 0,
+  loading: false
 };
 
 const listCategorySlice = createSlice({
@@ -60,6 +61,9 @@ const listCategorySlice = createSlice({
     },
     setIsDeleteCategory: (state, action) => {
       state.isDeleteCategory = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -125,26 +129,32 @@ const listCategorySlice = createSlice({
 
 export const fetchAllCategory = createAsyncThunk(
   "listCategory/fetchAllCategory",
-  async (paramsSearch) => {
+  async (paramsSearch, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.get(listAllCategoryAPI, {
         params: paramsSearch,
       });
+      dispatch(setLoading(false))
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
     }
   }
 );
 export const fetchAllServiceByCategory = createAsyncThunk(
   "listCategory/fetchAllServiceByCategory",
-  async (categoryServiceId) => {
+  async (categoryServiceId, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.get(
         listServiceByCategoryIdAPI + categoryServiceId
       );
+      dispatch(setLoading(false))
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
     }
   }
@@ -152,17 +162,19 @@ export const fetchAllServiceByCategory = createAsyncThunk(
 
 export const updateCategory = createAsyncThunk(
   "listCategory/updateCategory",
-  async (data) => {
+  async (data, {dispatch}) => {
     // console.log(data.userId)
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.put(
         updateCategoryBySelectIdAPI + data.categoryServiceId,
         data
       );
-      console.log(res);
+      dispatch(setLoading(false))
       toast.success(UPDATE_SUCCESS, toastCss);
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
       toast.error(UPDATE_FAIL, toastCss);
     }
@@ -171,14 +183,17 @@ export const updateCategory = createAsyncThunk(
 
 export const deleteCategory = createAsyncThunk(
   "listCategory/deleteCategory",
-  async (categoryServiceId) => {
+  async (categoryServiceId, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.delete(
         deleteCategoryBySelectIdAPI + categoryServiceId
       );
+      dispatch(setLoading(false))
       toast.success("Xóa thành công", toastCss);
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       toast.error("Không thể loại dịch vì khi đã có dịch vụ", toastCss);
     }
   }
@@ -186,17 +201,19 @@ export const deleteCategory = createAsyncThunk(
 
 export const updateService = createAsyncThunk(
   "listCategory/updateService",
-  async (data) => {
+  async (data, {dispatch}) => {
     // console.log(data.userId)
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.put(
         updateServiceAPI + data.serviceId,
         data
       );
-      console.log(res);
+      dispatch(setLoading(false))
       toast.success(UPDATE_SUCCESS, toastCss);
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
       toast.error(UPDATE_FAIL, toastCss);
     }
@@ -205,13 +222,15 @@ export const updateService = createAsyncThunk(
 
 export const deleteService = createAsyncThunk(
   "listCategory/deleteService",
-  async (serviceId) => {
+  async (serviceId, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.delete(deleteServiceAPI + serviceId);
+      dispatch(setLoading(false))
       toast.success("Xóa dịch vụ thành công", toastCss);
-      console.log(res.data);
       return serviceId;
     } catch (error) {
+      dispatch(setLoading(false))
       toast.error("Xóa dịch vụ không thành công", toastCss);
     }
   }
@@ -219,12 +238,15 @@ export const deleteService = createAsyncThunk(
 
 export const addCategory = createAsyncThunk(
   "listCategory/addCategory",
-  async (values) => {
+  async (values, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.post(addCategoryAPI, values);
+      dispatch(setLoading(false))
       toast.success("Thêm loại dịch vụ thành công !!!!!", toastCss);
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
       toast.error("Thêm mới thất bại :(", toastCss);
     }
@@ -233,17 +255,20 @@ export const addCategory = createAsyncThunk(
 
 export const addService = createAsyncThunk(
   "listService/addService",
-  async (values) => {
+  async (values, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.post(addServiceAPI, values);
+      dispatch(setLoading(false))
       toast.success("Thêm dịch vụ thành công !!!!!", toastCss);
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
       toast.error("Dịch vụ đã tồn tại", toastCss);
     }
   }
 );
-export const { setListCategory, setIsAddCategory, setIsUpdateCategory, setIsDeleteCategory } =
+export const { setListCategory, setIsAddCategory, setIsUpdateCategory, setIsDeleteCategory, setLoading } =
   listCategorySlice.actions;
 export default listCategorySlice.reducer;

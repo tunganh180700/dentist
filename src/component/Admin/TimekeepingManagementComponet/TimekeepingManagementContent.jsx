@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import { Pagination, Typography } from "@mui/material";
+import { Box, Button, Pagination, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
@@ -11,6 +11,7 @@ import axiosInstance from "../../../config/customAxios";
 import { toastCss } from "../../../redux/toastCss";
 import TableTimeKeepingManagement from "./TableTimeKeepingManagement";
 import Loading from "../../ui/Loading";
+import FingerprintIcon from "@mui/icons-material/Fingerprint";
 
 const TimekeepingManagementContent = () => {
   const [listTimekeeping, setListTimekeeping] = useState([]);
@@ -30,21 +31,23 @@ const TimekeepingManagementContent = () => {
       setListTimekeeping(timekeepingDTOS.content);
       setCurrentPage(timekeepingDTOS.number);
       setTotalPages(timekeepingDTOS.totalPages);
-      setTotalItem(timekeepingDTOS.totalElements)
+      setTotalItem(timekeepingDTOS.totalElements);
       setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
   const checkInOut = async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const res = await axiosInstance.post(isCheckin ? CHECK_IN : CHECK_OUT);
       if (res.status === 200) setCount((prevCount) => prevCount + 1);
+      toast.success("Đã kết thúc giờ làm", toastCss)
+      setLoading(false);
     } catch (error) {
-      if (!isCheckin) toast.error("Chỉ có thể checkout sau 3 tiếng!", toastCss);
+      setLoading(false);
+      if (!isCheckin) toast.error("Chỉ có thể kết thúc giờ làm sau 3 tiếng!", toastCss);
     }
-    setLoading(false);
   };
   const handleOnClick = () => {
     checkInOut();
@@ -56,20 +59,33 @@ const TimekeepingManagementContent = () => {
     <>
       {loading && <Loading />}
       <h2 className="font-bold mb-4">Danh Sách Chấm Công</h2>
-      <p className="font-bold text-lg">
-        Có ({totalItem}) bản ghi
-      </p>
       <div
-        style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+        style={{ width: "100%", display: "flex", justifyContent: "flex-start" }}
+        className="gap-3 items-center mb-3"
       >
+        <p className="mb-0 font-bold text-lg">Có ({totalItem}) bản ghi</p>
         {role !== "Admin" && (
-          <LoadingButton
-            type="primary"
-            onClick={handleOnClick}
-            loading={loading}
-          >
-            Check {isCheckin ? "in" : "out"}
-          </LoadingButton>
+          <Box>
+            {isCheckin ? (
+              <Button
+                variant="outlined"
+                color="success"
+                onClick={handleOnClick}
+              >
+                <FingerprintIcon className="mr-2" />
+                Bắt đầu
+              </Button>
+            ) : (
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleOnClick}
+              >
+                <FingerprintIcon className="mr-2" />
+                Kết thúc
+              </Button>
+            )}
+          </Box>
         )}
       </div>
       <TableTimeKeepingManagement

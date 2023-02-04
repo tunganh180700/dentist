@@ -53,17 +53,23 @@ const MaterialImportManagementContent = () => {
   const totalImportMaterial = useSelector(
     (state) => state.listMaterialImport.totalImportMaterial
   );
+  const loading = useSelector(
+    (state) => state.listMaterialImport.loading
+  );
 
   const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [modalAddListOpen, setModalAddListOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [isFilter, setIsFilter] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
+    for (const property in searchValue) {
+      searchValue[property] = searchValue[property].trim();
+    }
     dispatch(
       fetchAllMaterialImport({
         size: 12,
@@ -71,9 +77,6 @@ const MaterialImportManagementContent = () => {
         materialName: searchValue,
       })
     );
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   }, [currentPage]);
   useEffect(() => {
     if (
@@ -81,41 +84,41 @@ const MaterialImportManagementContent = () => {
       isDeleteMaterialImport ||
       isAddMaterialImport
     ) {
-      setLoading(true);
       dispatch(
         fetchAllMaterialImport({
           size: 12,
           page: currentPage,
-          materialName: searchValue,
+          materialName: searchValue.trim(),
         })
       );
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
     }
   }, [isUpdateMaterialImport, isDeleteMaterialImport, isAddMaterialImport]);
   const handleSearch = (searchValue) => {
-    setLoading(true);
-    if (currentPage === 0) {
-      dispatch(
-        fetchAllMaterialImport({
-          size: 12,
-          page: 0,
-          materialName: searchValue,
-        })
-      );
-    } else {
-      setCurrentPage(0);
+    try {
+      if (currentPage === 0) {
+        dispatch(
+          fetchAllMaterialImport({
+            size: 12,
+            page: 0,
+            materialName: searchValue.trim(),
+          })
+        );
+      } else {
+        setCurrentPage(0);
+      }
+      setIsFilter(true);
+      setOpenFilter(false);
+    } catch (err) {
+      setIsFilter(false);
     }
-    setOpenFilter(false);
     setTimeout(() => {
-      setLoading(false);
     }, 500);
   };
 
   const onResetFilter = () => {
     setSearchValue("");
     handleSearch("");
+    setIsFilter(false);
   };
 
   return (
@@ -260,7 +263,7 @@ const MaterialImportManagementContent = () => {
               variant="contained"
               color="warning"
               onClick={onResetFilter}
-              disabled={!searchValue}
+              disabled={!isFilter}
             >
               Đặt lại
             </Button>
@@ -280,9 +283,6 @@ const MaterialImportManagementContent = () => {
           setModalDeleteOpen={setModalDeleteOpen}
         />
       </div>
-      {/* <div>
-                <ModalAddMaterialImport modalAddOpen={modalAddOpen} setModalAddOpen={setModalAddOpen} />
-            </div> */}
       <div>
         <ModalAddListMaterialImport
           modalAddOpen={modalAddListOpen}

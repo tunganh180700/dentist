@@ -31,6 +31,7 @@ const initState = {
   isDeleteAccount: false,
   statusAddAccount: false,
   isAddAccount: false,
+  loading: false,
   message: "",
   fullName: "",
 };
@@ -47,6 +48,9 @@ const listAccountSlice = createSlice({
     },
     setIsUpdateAccount: (state, action) => {
       state.isUpdateAccount = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -88,11 +92,13 @@ const listAccountSlice = createSlice({
 
 export const fetchAllAccount = createAsyncThunk(
   "listAccount/fetchAllAccount",
-  async (paramsSearch) => {
+  async (paramsSearch, { dispatch }) => {
     try {
+      dispatch(setLoading(true));
       const res = await axiosInstance.get(listUserAPI, {
         params: paramsSearch,
       });
+      dispatch(setLoading(false));
       return res.data;
     } catch (error) {
       console.log(error);
@@ -102,14 +108,17 @@ export const fetchAllAccount = createAsyncThunk(
 
 export const updateAccount = createAsyncThunk(
   "listAccount/updateAccount",
-  async (data) => {
+  async (data, { dispatch }) => {
     // console.log(data.userId)
     try {
+      dispatch(setLoading(true));
       const res = await axiosInstance.put(updateAccountAPI + data.userId, data);
+      dispatch(setLoading(false));
       toast.success(UPDATE_SUCCESS, toastCss);
       return res.data;
     } catch (error) {
       console.log(error);
+      dispatch(setLoading(false));
       toast.error(ADD_FAIL_ACCOUNT, toastCss);
     }
   }
@@ -117,13 +126,16 @@ export const updateAccount = createAsyncThunk(
 
 export const deleteAccount = createAsyncThunk(
   "listAccount/deleteAccount",
-  async (userId) => {
+  async (userId, { dispatch }) => {
     console.log(userId);
     try {
+      dispatch(setLoading(true));
       const res = await axiosInstance.delete(deleteAccountAPI + userId);
+      dispatch(setLoading(false));
       toast.success(DELETE_SUCCESS, toastCss);
       return userId;
     } catch (error) {
+      dispatch(setLoading(false));
       toast.error(DELETE_FAIL, toastCss);
     }
   }
@@ -131,27 +143,21 @@ export const deleteAccount = createAsyncThunk(
 
 export const addAccount = createAsyncThunk(
   "listAccount/addAccount",
-  async (values) => {
+  async (values, { dispatch }) => {
     try {
-      // const formValue = {
-      //     fullName: values.fullName,
-      //     birthdate: values.birthdate,
-      //     password: values.password,
-      //     email: values.email,
-      //     phone: values.phone,
-      //     salary: values.salary,
-      //     roleId: values.roleId
-      // }
-      console.log(values);
+      dispatch(setLoading(true));
       const res = await axiosInstance.post(addAccountAPI, values);
+      dispatch(setLoading(false));
       toast.success("Thêm mới thành công !!!!!", toastCss);
       console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error);
+      dispatch(setLoading(false));
       toast.error(ADD_FAIL_ACCOUNT, toastCss);
     }
   }
 );
-export const { setListAccount, setFullName, setIsUpdateAccount } = listAccountSlice.actions;
+export const { setListAccount, setFullName, setIsUpdateAccount, setLoading } =
+  listAccountSlice.actions;
 export default listAccountSlice.reducer;

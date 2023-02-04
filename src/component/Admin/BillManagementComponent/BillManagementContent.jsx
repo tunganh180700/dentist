@@ -39,6 +39,7 @@ import SockJsClient from "react-stomp";
 const BillManagementContent = () => {
   const listBill = useSelector((state) => state.listBill.listBill);
   const totalElements = useSelector((state) => state.listBill.totalElements);
+  const loading = useSelector((state) => state.listBill.loading);
 
   const dispatch = useDispatch();
   const pageSize = useSelector((state) => state.listBill.pageSize);
@@ -48,8 +49,9 @@ const BillManagementContent = () => {
   const [modalDetailOpen, setModalDetailOpen] = useState(false);
   const [modalReceiptOpen, setModalReceiptOpen] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
+  const [isFilter, setIsFilter] = useState(false);
   const [searchValue, setSearchValue] = useState({
     patientName: "",
     phone: "",
@@ -63,7 +65,9 @@ const BillManagementContent = () => {
   const phone = useMemo(() => query.get("phone"), [query]);
 
   const fetchData = () => {
-    setLoading(true);
+    for (const property in searchValue) {
+      searchValue[property] = searchValue[property].trim();
+    }
     dispatch(
       fetchAllBill({
         ...searchValue,
@@ -71,9 +75,6 @@ const BillManagementContent = () => {
         page: currentPage,
       })
     );
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   };
 
   useEffect(() => {
@@ -90,9 +91,11 @@ const BillManagementContent = () => {
   }, [currentPage, phone]);
 
   const handleSearch = async (search = searchValue) => {
-    setLoading(true);
     try {
       if (currentPage === 0) {
+        for (const property in search) {
+          search[property] = search[property].trim();
+        }
         dispatch(
           fetchAllBill({
             ...search,
@@ -104,12 +107,11 @@ const BillManagementContent = () => {
         setCurrentPage(0);
       }
       setOpenFilter(false);
+      setIsFilter(true)
     } catch (error) {
+      setIsFilter(false)
       console.log(error);
     }
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   };
 
   const enableButtonSearch = useMemo(
@@ -118,7 +120,6 @@ const BillManagementContent = () => {
   );
 
   const onResetFilter = () => {
-    
     const newSearchValue = {
       patientName: "",
       phone: "",
@@ -126,6 +127,7 @@ const BillManagementContent = () => {
     navigate("/bill")
     setSearchValue(newSearchValue);
     handleSearch(newSearchValue);
+    setIsFilter(false);
   };
 
   const handleMessageSocket = ({ message }) => {
@@ -219,7 +221,6 @@ const BillManagementContent = () => {
           noWrap
           textAlign="center"
         >
-          Không có đơn giá nào
         </Typography>
       )}
       <div
@@ -286,7 +287,7 @@ const BillManagementContent = () => {
               variant="contained"
               color="warning"
               onClick={onResetFilter}
-              disabled={!enableButtonSearch}
+              disabled={!isFilter}
             >
               Đặt lại
             </Button>

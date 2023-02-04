@@ -73,11 +73,11 @@ export const fetchAllSchedule = createAsyncThunk(
   "listSchedule/fetchAllSchedule",
   async (paramsSearch, { dispatch }) => {
     try {
-      // dispatch(setLoading(true))
+      dispatch(setLoading(true))
       const res = await axiosInstance.get(getListScheduleAPI, {
         params: paramsSearch,
       });
-      // dispatch(setLoading(false))
+      dispatch(setLoading(false))
       return res.data;
     } catch (error) {
       console.log(error);

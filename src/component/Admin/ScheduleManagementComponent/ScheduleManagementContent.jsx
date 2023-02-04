@@ -21,10 +21,12 @@ import {
 } from "../../ui/TableElements";
 import { fetchAllSchedule } from "../../../redux/ScheduleSlice/listScheduleSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Loading from "../../ui/Loading";
 
 const ScheduleManagementContent = () => {
   const listSchedule = useSelector((state) => state.listSchedule.listSchedule);
   const dispatch = useDispatch();
+  const loading = useSelector((state) => state.listSchedule.loading);
   const pageSize = useSelector((state) => state.listSchedule.pageSize);
   const totalPages = useSelector((state) => state.listSchedule.totalPage);
   const [currentPage, setCurrentPage] = useState(0);
@@ -60,6 +62,7 @@ const ScheduleManagementContent = () => {
   return (
     <>
       <h2 className="font-bold mb-4">Lịch hẹn</h2>
+      {loading && <Loading />}
       <StyledTable size="small" className="shadow-md">
         <TableHead>
           <StyledTableRow>

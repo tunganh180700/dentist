@@ -52,7 +52,6 @@ const listConfirmWaitingSlice = createSlice({
 export const fetchAllConfirmWaiting = createAsyncThunk('listConfirmWaiting/fetchAllConfirmWaiting', async () => {
     try {
         const res = await axiosInstance.get(listConfirmWaitingAPI);
-        console.log(123123, res.data);
         return res.data
     } catch (error) {
         console.log('error = ',error)

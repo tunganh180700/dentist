@@ -40,20 +40,20 @@ export const menu = [
     iconActive: <ScheduleIcon color="info" />,
     title: "Quản lý lịch hẹn",
     href: "/schedule",
-    permission: ["Admin", "Doctor", "LeaderNurse", "Nurse", "Receptionist"],
+    permission: ["Admin", "LeaderNurse", "Nurse", "Receptionist"],
   },
   {
     icon: <InventoryIcon />,
     title: "Quản lý vật liệu",
     href: "",
-    permission: ["Admin", "Doctor", "LeaderNurse", "Nurse", "Receptionist"],
+    permission: ["Admin", "LeaderNurse", "Nurse"],
     subItem: [
       {
         icon: <NoteAltIcon />,
         iconActive: <NoteAltIcon color="info" />,
         title: "Vật liệu",
         href: "/materialmanagement",
-        permission: ["Admin", "Doctor", "LeaderNurse", "Nurse", "Receptionist"],
+        permission: ["Admin", "LeaderNurse", "Nurse"],
       },
       {
         icon: <ArchiveIcon />,
@@ -67,7 +67,7 @@ export const menu = [
         iconActive: <UnarchiveIcon color="info" />,
         title: "Xuất vật liệu",
         href: "/materialexport",
-        permission: ["Admin", "Doctor", "LeaderNurse", "Nurse", "Receptionist"],
+        permission: ["Admin", "LeaderNurse", "Nurse"],
       },
     ],
   },
@@ -104,7 +104,7 @@ export const menu = [
     iconActive: <ReceiptLongIcon color="info" />,
     title: "Quản lý hoá đơn",
     href: "/bill",
-    permission: ["Admin", "LeaderNurse", "Receptionist"],
+    permission: ["Admin", "Receptionist"],
   },
   {
     icon: <CalendarMonthIcon />,

@@ -73,28 +73,25 @@ const SpecimenManagementContent = () => {
   const isSearchSpecimen = useSelector(
     (state) => state.listSpecimen.isSearchSpecimen
   );
-  const [loading, setLoading] = useState(false);
+  const loading = useSelector((state) => state.listSpecimen.loading);
   const [openFilter, setOpenFilter] = useState(false);
+  const [isFilter, setIsFilter] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
   let styleText = {};
 
   const loadSpecimenList = () => {
-    setLoading(true);
     try {
       dispatch(
         fetchAllSpecimen({
           size: pageSize,
           page: currentPage,
-          patientName: searchValue,
+          patientName: searchValue.trim(),
         })
       );
     } catch (error) {
       console.log(error);
     }
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   };
 
   useEffect(() => {
@@ -102,32 +99,34 @@ const SpecimenManagementContent = () => {
   }, [currentPage, isAddSpecimen, isUpdateSpecimen, isUseSpecimen]);
 
   const handleSearch = (searchValue) => {
-    setLoading(true);
-    if (currentPage === 0) {
-      dispatch(
-        fetchAllSpecimen({
-          size: pageSize,
-          page: 0,
-          patientName: searchValue,
-        })
-      );
-    } else {
-      setCurrentPage(0);
+    try {
+      if (currentPage === 0) {
+        dispatch(
+          fetchAllSpecimen({
+            size: pageSize,
+            page: 0,
+            patientName: searchValue.trim(),
+          })
+        );
+      } else {
+        setCurrentPage(0);
+      }
+      setIsFilter(true);
+      setOpenFilter(false);
+    } catch (err) {
+      setIsFilter(false);
     }
-    setOpenFilter(false);
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   };
 
   const onResetFilter = () => {
     setSearchValue("");
     handleSearch("");
+    setIsFilter(false);
   };
 
   return (
     <>
-    {loading && <Loading />}
+      {loading && <Loading />}
       <h2 className="font-bold mb-4">Quản lý mẫu vật</h2>
       <Box className="flex items-center gap-3 mb-3">
         <p className="font-bold text-lg mb-0">Có ({totalElements}) bản ghi</p>
@@ -221,7 +220,7 @@ const SpecimenManagementContent = () => {
                 />
               </StyledTableCell>
               <StyledTableCell style={styleText}>
-                <IconButton 
+                <IconButton
                   aria-label="edit"
                   onClick={() => {
                     setModalUpdateOpen(true);
@@ -283,7 +282,7 @@ const SpecimenManagementContent = () => {
               variant="contained"
               color="warning"
               onClick={onResetFilter}
-              disabled={!searchValue}
+              disabled={!isFilter}
             >
               Đặt lại
             </Button>

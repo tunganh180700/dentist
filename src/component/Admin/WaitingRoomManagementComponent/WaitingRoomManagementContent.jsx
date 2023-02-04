@@ -114,15 +114,15 @@ const WaitingRoomManagementContent = () => {
 
   const getStatusStr = (status) => {
     if (status == 1) {
-      return { txt: "Đang chữa", color: "rgb(46, 125, 50)" };
+      return { txt: "Đang chữa", color: "#0288d1" };
     }
     if (status == 2) {
-      return { txt: "Đang chờ", color: "rgb(225, 130, 32)" };
+      return { txt: "Đang chờ", color: "#e18220" };
     } else {
       return { txt: "Đến lượt", color: "#000" };
     }
   };
-
+  
   const handleToDoMessageSocket = ({ message, patient }) => {
     loadWaitingList();
     switch (message) {

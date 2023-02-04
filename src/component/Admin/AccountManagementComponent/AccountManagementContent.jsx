@@ -34,15 +34,14 @@ const AccountManagementContent = () => {
     (state) => state.listAccount.isDeleteAccount
   );
   const isAddAccount = useSelector((state) => state.listAccount.isAddAccount);
+  const loading = useSelector((state) => state.listAccount.loading);
 
   const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [modalAddOpen, setModalAddOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    if (isDeleteAccount && totalElements % pageSize == 1) {
+    if (isDeleteAccount && currentPage >= 0 && totalElements % pageSize == 1) {
       const newCurrentPage = currentPage - 1;
       setCurrentPage((prev) => prev - 1);
       dispatch(
@@ -51,6 +50,7 @@ const AccountManagementContent = () => {
           page: newCurrentPage,
         })
       );
+      return;
     }
     dispatch(
       fetchAllAccount({
@@ -58,10 +58,18 @@ const AccountManagementContent = () => {
         page: currentPage,
       })
     );
-    setTimeout(()=>{
-      setLoading(false);
-    }, 500)
-  }, [currentPage, isUpdateAccount, isDeleteAccount, isAddAccount]);
+  }, [currentPage, isDeleteAccount]);
+
+  useEffect(() => {
+    if (isUpdateAccount || isAddAccount) {
+      dispatch(
+        fetchAllAccount({
+          size: pageSize,
+          page: currentPage,
+        })
+      );
+    }
+  }, [isUpdateAccount, isAddAccount]);
 
   return (
     <>

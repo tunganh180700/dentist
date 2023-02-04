@@ -26,6 +26,7 @@ import { toast } from "react-toastify";
 import { toastBottomCss } from "../../../redux/toastCss";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
+import Loading from "../../ui/Loading";
 
 const HeaderAdmin = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const HeaderAdmin = () => {
     (state) => state.choosenAccount.isUpdateNoti
   );
   const [isOpenNoti, setIsOpenNoti] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onConnected = () => {
     console.log(listNotifies);
@@ -121,6 +123,7 @@ const HeaderAdmin = () => {
 
   return (
     <Box className="flex gap-4 items-center">
+      {loading && <Loading />}
       <SockJsClient
         url={process.env.REACT_APP_SOCKET_URL}
         topics={[`/topic/${roleName}`]}
@@ -159,7 +162,9 @@ const HeaderAdmin = () => {
           className="bg-transparent border-0 gap-2 relative"
           style={{ display: "flex", alignItems: "center" }}
         >
-          <RoleTag className="absolute" title={fullName} role={roleName} />
+          {roleName && (
+            <RoleTag className="absolute" title={fullName} role={roleName} />
+          )}
         </Dropdown.Toggle>
         <Dropdown.Menu className="border-0 shadow-md">
           <Dropdown.Item>
@@ -174,13 +179,25 @@ const HeaderAdmin = () => {
           </Dropdown.Item>
           <Dropdown.Divider />
           <Dropdown.Item>
-            <Link
-              to="/login"
-              className="decoration-white text-black flex items-center gap-2"
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                localStorage.clear();
+                setLoading(true);
+                setTimeout(() => {
+                  setLoading(false);
+                  navigate("/login");
+                }, 500);
+              }}
             >
-              <PowerSettingsNewIcon fontSize="12px" />
-              <span> Đăng xuất</span>
-            </Link>
+              <PowerSettingsNewIcon
+                sx={{
+                  fontSize: "20px",
+                }}
+              />
+              <span className="leading-none ml-2"> Đăng xuất</span>
+            </Button>
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

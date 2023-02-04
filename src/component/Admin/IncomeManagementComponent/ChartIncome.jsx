@@ -3,8 +3,9 @@ import ReactDOM from "react-dom";
 import { Column } from "@ant-design/plots";
 import { Box } from "@mui/material";
 import DatePickerDentist from "../../ui/date-picker/DatePickerDentist";
+import ChartLoading from "../../../img/chartLoading.gif";
 
-const ChartIncome = ({ data, onChangeDateRange }) => {
+const ChartIncome = ({ data, isLoading, onChangeDateRange }) => {
   //   const [data, setData] = useState([]);
 
   const formatter = new Intl.NumberFormat({
@@ -50,10 +51,20 @@ const ChartIncome = ({ data, onChangeDateRange }) => {
         <h4>Biểu đồ doanh thu</h4>
         <Box className="flex items-center gap-3">
           <h5>Doanh thu ngày</h5>
-          <DatePickerDentist placeholder={["Ngày bắt đầu","Ngày kết thúc"]} range onChange={onChangeDateRange} />
+          <DatePickerDentist
+            placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
+            range
+            onChange={onChangeDateRange}
+          />
         </Box>
       </Box>
-      <Column {...config} />
+     <Box minHeight="400px">
+     {!isLoading ? (
+        <Column {...config} />
+      ) : (
+        <img className="mx-auto w-[350px]" src={ChartLoading} alt="" />
+      )}
+     </Box>
     </Box>
   );
 };

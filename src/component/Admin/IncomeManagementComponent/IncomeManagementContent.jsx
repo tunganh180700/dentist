@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { Pagination, Typography, IconButton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { setIncomeId } from "../../../redux/modalSlice";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
 import {
   StyledTableCell,
   StyledTableRow,
   StyledTable,
 } from "../../ui/TableElements";
 import { Tabs } from "antd";
+import Loading from "../../ui/Loading";
 
 import {
   fetchAllIncome,
@@ -39,11 +32,13 @@ const IncomeManagementContent = () => {
   const totalSpendIncome = useSelector(
     (state) => state.listIncome.totalSpendIncome
   );
+
   const dispatch = useDispatch();
   const pageSize = useSelector((state) => state.listIncome.pageSize);
   const totalPages = useSelector((state) => state.listIncome.totalPage);
   const [currentPage, setCurrentPage] = useState(0);
   const [dataChart, setDataChart] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     handleFetchData();
@@ -73,10 +68,12 @@ const IncomeManagementContent = () => {
     currency: "VND",
   });
 
-  const handleFetchData = (filter = null) => {
-    dispatch(fetchAllIncome(filter || {}));
-    dispatch(fetchAllNetIncome(filter || {}));
-    dispatch(fetchAllTotalSpendIncome(filter || {}));
+  const handleFetchData = async (filter = null) => {
+    setLoading(true);
+    await dispatch(fetchAllIncome(filter || {}));
+    await dispatch(fetchAllNetIncome(filter || {}));
+    await dispatch(fetchAllTotalSpendIncome(filter || {}));
+    setLoading(false);
   };
 
   const onFetchDataByDate = (date) => {
@@ -181,8 +178,13 @@ const IncomeManagementContent = () => {
 
   return (
     <>
+      {loading && <Loading />}
       <h2 className="font-bold mb-4">Quản lý Thu nhập</h2>
-      <ChartIncome data={dataChart} onChangeDateRange={onFetchDataByDate} />
+      <ChartIncome
+        data={dataChart}
+        isLoading={loading}
+        onChangeDateRange={onFetchDataByDate}
+      />
       <Tabs
         defaultActiveKey="1"
         className="mt-3"
