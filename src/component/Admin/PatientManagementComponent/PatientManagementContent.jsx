@@ -202,7 +202,7 @@ const PatientManagementContent = () => {
     let query = {};
     for (const prop in searchValue) {
       if (searchValue[prop]) {
-        query[prop] = searchValue[prop];
+        query[prop] = searchValue[prop].trim();
       }
     }
     return query;
@@ -497,7 +497,7 @@ const PatientManagementContent = () => {
           <Box className="mb-3">
             <p className="mb-1">Ngày sinh</p>
             <DatePickerDentist
-            height="56px"
+              height="56px"
               value={searchValue.birthdate}
               onChange={(value) => {
                 setSearchValue({
