@@ -36,6 +36,7 @@ const initState = {
   statusAddMaterialExport: false,
   isAddMaterialExport: false,
   message: "",
+  loading: false
 };
 
 const listMaterialExportSlice = createSlice({
@@ -44,6 +45,9 @@ const listMaterialExportSlice = createSlice({
   reducers: {
     setListMaterialExport: (state, action) => {
       state.listMaterialExport = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -92,13 +96,16 @@ const listMaterialExportSlice = createSlice({
 
 export const fetchAllMaterialExport = createAsyncThunk(
   "listMaterialExport/fetchAllMaterialExport",
-  async (paramsSearch) => {
+  async (paramsSearch, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.get(listMaterialExportAPI, {
         params: paramsSearch,
       });
+      dispatch(setLoading(false))
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
     }
   }
@@ -106,11 +113,14 @@ export const fetchAllMaterialExport = createAsyncThunk(
 
 export const fetchPatientMaterialExport = createAsyncThunk(
   "listMaterialExport/fetchPatientMaterialExport",
-  async (patientId) => {
+  async (patientId, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.get(patientMaterialExportAPI + patientId);
+      dispatch(setLoading(false))
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
     }
   }
@@ -118,15 +128,18 @@ export const fetchPatientMaterialExport = createAsyncThunk(
 
 export const updateMaterialExport = createAsyncThunk(
   "listMaterialExport/updateMaterialExport",
-  async (data) => {
+  async (data, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.put(
         updateMaterialExportAPI + data.materialExportId,
         data
       );
+      dispatch(setLoading(false))
       toast.success(UPDATE_SUCCESS, toastCss);
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
       toast.error(UPDATE_FAIL_EXPORT_MATERIAL, toastCss);
     }
@@ -135,14 +148,17 @@ export const updateMaterialExport = createAsyncThunk(
 
 export const deleteMaterialExport = createAsyncThunk(
   "listMaterialExport/deleteMaterialExport",
-  async (materialExportId) => {
+  async (materialExportId, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.delete(
         deleteMaterialExportAPI + materialExportId
       );
+      dispatch(setLoading(false))
       toast.success(DELETE_SUCCESS, toastCss);
       return materialExportId;
     } catch (error) {
+      dispatch(setLoading(false))
       toast.error(DELETE_FAIL_EXPORT_MATERIAL, toastCss);
     }
   }
@@ -150,17 +166,19 @@ export const deleteMaterialExport = createAsyncThunk(
 
 export const addMaterialExport = createAsyncThunk(
   "listMaterialExport/addMaterialExport",
-  async (values) => {
+  async (values, {dispatch}) => {
     try {
-      console.log(values);
+      dispatch(setLoading(true))
       const res = await axiosInstance.post(addMaterialExportAPI, values);
+      dispatch(setLoading(false))
       toast.success("Thêm vật liệu thành công !!!!!", toastCss);
       return res.data;
     } catch (error) {
       console.log(error);
+      dispatch(setLoading(false))
       toast.error("Thêm mới thất bại :(", toastCss);
     }
   }
 );
-export const { setListMaterialExport } = listMaterialExportSlice.actions;
+export const { setListMaterialExport, setLoading } = listMaterialExportSlice.actions;
 export default listMaterialExportSlice.reducer;

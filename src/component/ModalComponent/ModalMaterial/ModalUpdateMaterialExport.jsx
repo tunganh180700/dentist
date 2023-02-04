@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
-import { Modal } from "antd";
+import { Modal, Skeleton } from "antd";
 import { TextField } from "@mui/material";
 import "./../style.css";
 import Typography from "@mui/material/Typography";
@@ -23,6 +23,7 @@ import moment from "moment";
 import { regexNumber, validationDate } from "../../../config/validation";
 import { set, values } from "lodash";
 import * as yup from "yup";
+import InputDentist from "../../ui/input";
 
 const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
   const dispatch = useDispatch();
@@ -189,16 +190,17 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
       >
-        {loading === false && (
+        {loading === false ? (
           <>
             <Box>
               <FormControl fullWidth>
-                <InputLabel id="material">Vật liệu</InputLabel>
+                <InputLabel id="material"></InputLabel>
+                <p className={`mb-2 font-bold`}>Vật liệu</p>
                 <Select
-                  style={{ width: "100%", height: "10%" }}
+                  style={{ width: "100%", height: "56px" }}
                   labelId="material"
+                  className="mb-2"
                   id="materialSelect"
-                  label="Vật liệu"
                   value={materialId}
                   onChange={(e) => setMaterialId(e.target.value)}
                 >
@@ -213,12 +215,12 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
             <Box>
               <FormControl fullWidth>
-                <InputLabel id="patient">Bệnh nhân</InputLabel>
+                <p className={`mb-2 font-bold`}>Bệnh nhân</p>
                 <Select
-                  style={{ width: "100%", height: "10%" }}
+                  style={{ width: "100%", height: "56px" }}
                   labelId="patient"
+                  className="mb-2"
                   id="patientSelect"
-                  label="Bệnh nhân"
                   value={patientId}
                   onChange={(e) => setPatientId(e.target.value)}
                 >
@@ -233,12 +235,13 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
 
             <Box>
               <FormControl fullWidth>
-                <InputLabel id="patientrecord">Date record</InputLabel>
+                <p className={`mb-2 font-bold`}>Ngày xuất</p>
                 <Select
-                  style={{ width: "100%", height: "10%" }}
+                  style={{ width: "100%", height: "56px" }}
+                  className="mb-2"
                   labelId="patientrecord"
                   id="patientrecordSelect"
-                  label="Date record"
+                  placeholder="Ngày xuất"
                   value={patientRecordId}
                   onChange={(e) => setPatientRecordId(e.target.value)}
                 >
@@ -254,57 +257,35 @@ const ModalUpdateMaterialExport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
               </FormControl>
             </Box>
 
-            <TextField
-              margin="normal"
+            <InputDentist
               required
-              fullWidth
               id="amount"
               label="Số lượng"
-              name="amount"
-              autoComplete="amount"
               value={formik.values.amount}
-              autoFocus
               onChange={formik.handleChange}
+              error={{
+                message: formik.errors.amount,
+                touched: formik.touched.amount,
+              }}
             />
-            {formik.errors.amount && formik.touched.amount && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.amount}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
-              required
-              disabled
-              fullWidth
+            <InputDentist
               id="unitPrice"
               label="Đơn giá"
-              name="unitPrice"
-              autoComplete="unitPrice"
-              value={unitPrice}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            {formik.errors.unitPrice && formik.touched.unitPrice && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.unitPrice}
-              </Typography>
-            )}
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
+              value={formik.values.unitPrice}
               disabled
-              id="totalPrice"
-              label="Tổng giá"
-              name="totalPrice"
-              autoComplete="totalPrice"
+            />
+            <InputDentist
+              id="unitPrice"
+              label="Tổng tiền"
               value={materialPrice}
-              autoFocus
-              onChange={formik.handleChange}
+              disabled
             />
           </>
-        )}
+        ) : <>
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        </>}
       </Modal>
     </>
   );

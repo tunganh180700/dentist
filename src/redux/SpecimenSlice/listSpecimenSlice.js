@@ -39,6 +39,7 @@ const initState = {
   statusFetchPatientSpecimen: false,
   isUseSpecimen: false,
   message: "",
+  loading: false,
   statusSpecimen: 0,
 };
 
@@ -48,6 +49,9 @@ const listSpecimenSlice = createSlice({
   reducers: {
     setListSpecimen: (state, action) => {
       state.listSpecimen = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -120,25 +124,30 @@ const listSpecimenSlice = createSlice({
 
 export const fetchAllSpecimen = createAsyncThunk(
   "listSpecimen/fetchAllSpecimen",
-  async (paramSearch) => {
+  async (paramSearch, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.get(listSpecimenAPI, {
         params: paramSearch,
       });
+      dispatch(setLoading(false))
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
     }
   }
 );
 export const fetchPatientSpecimen = createAsyncThunk(
   "listSpecimen/fetchPatientSpecimen",
-  async (patientId) => {
+  async (patientId, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.get(patientSpecimenAPI + patientId);
-      console.log('here', res);
+      dispatch(setLoading(false))
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
     }
   }
@@ -165,14 +174,16 @@ export const fetchPatientSpecimen = createAsyncThunk(
 // })
 export const searchSpecimen = createAsyncThunk(
   "listSpecimen/searchSpecimen",
-  async (paramSearch) => {
+  async (paramSearch, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.get(searchSpecimenAPI, {
         params: paramSearch,
       });
-      console.log("search spec = ", res.data);
+      dispatch(setLoading(false))
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false))
       console.log(error);
     }
   }
@@ -180,17 +191,19 @@ export const searchSpecimen = createAsyncThunk(
 
 export const updateSpecimen = createAsyncThunk(
   "listSpecimen/updateSpecimen",
-  async (data) => {
+  async (data, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       const res = await axiosInstance.put(
         updateSpecimensAPI + data.specimenId,
         data
       );
-      console.log(res);
+      dispatch(setLoading(false))
       toast.success(UPDATE_SUCCESS, toastCss);
       return res.data;
     } catch (error) {
       console.log(error);
+      dispatch(setLoading(false))
       toast.error(UPDATE_FAIL, toastCss);
     }
   }
@@ -198,13 +211,15 @@ export const updateSpecimen = createAsyncThunk(
 
 export const deleteSpecimen = createAsyncThunk(
   "listSpecimen/deleteSpecimen",
-  async (specimenId) => {
-    console.log("sss", specimenId);
+  async (specimenId, {dispatch}) => {
     try {
-      const res = await axiosInstance.delete(deleteSpecimensAPI + specimenId);
+      dispatch(setLoading(true))
+       await axiosInstance.delete(deleteSpecimensAPI + specimenId);
+      dispatch(setLoading(false))
       toast.success(DELETE_SUCCESS, toastCss);
       return specimenId;
     } catch (error) {
+      dispatch(setLoading(false))
       toast.error(DELETE_FAIL, toastCss);
     }
   }
@@ -212,15 +227,16 @@ export const deleteSpecimen = createAsyncThunk(
 
 export const addSpecimen = createAsyncThunk(
   "listSpecimen/addSpecimen",
-  async (values) => {
+  async (values, {dispatch}) => {
     try {
-      console.log("body=", values);
+      dispatch(setLoading(true))
       const res = await axiosInstance.post(addSpecimensAPI, values);
       toast.success("Thêm thành công !!!!!", toastCss);
-      console.log(res.data);
+      dispatch(setLoading(false))
       return res.data;
     } catch (error) {
       console.log(error);
+      dispatch(setLoading(false))
       toast.error("Thêm thất bại :(", toastCss);
     }
   }
@@ -246,16 +262,19 @@ export const reportSpecimen = createAsyncThunk(
 
 export const confirmUsedSpecimen = createAsyncThunk(
   "listSpecimen/confirmUsedSpecimen",
-  async (specimenId) => {
+  async (specimenId, {dispatch}) => {
     try {
+      dispatch(setLoading(true))
       axiosInstance.post(useSpecimenAPI + specimenId).then(() => {
+      dispatch(setLoading(false))
         toast.success("Cập nhật sử dụng mẫu vật thành công");
       });
     } catch (error) {
+      dispatch(setLoading(false))
       toast.error("Cập nhật sử dụng mẫu vật không thành công");
     }
   }
 );
 
-export const { setListSpecimen } = listSpecimenSlice.actions;
+export const { setListSpecimen, setLoading } = listSpecimenSlice.actions;
 export default listSpecimenSlice.reducer;

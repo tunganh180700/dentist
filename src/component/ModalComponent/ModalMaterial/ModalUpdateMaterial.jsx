@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
-import { Modal } from "antd";
+import { Modal, Skeleton } from "antd";
 import { TextField } from "@mui/material";
 import "./../style.css";
 import Typography from "@mui/material/Typography";
@@ -92,7 +92,7 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
       >
-        {loading === false && (
+        {!loading ? (
           <>
             <InputDentist
               required
@@ -129,6 +129,11 @@ const ModalUpdateMaterial = ({ modalUpdateOpen, setModalUpdateOpen }) => {
                 touched: formik.touched.price,
               }}
             />
+          </>
+        ) : (
+          <>
+            <Skeleton />
+            <Skeleton />
           </>
         )}
       </Modal>

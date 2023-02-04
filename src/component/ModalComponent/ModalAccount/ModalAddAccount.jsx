@@ -27,6 +27,7 @@ import moment from "moment/moment";
 import { addAccount } from "../../../redux/AccountSlice/listAccountSlice";
 import axiosInstance from "../../../config/customAxios";
 import RoleTag from "../../ui/RoleTag";
+import InputDentist from "../../ui/input";
 
 const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
   const dispatch = useDispatch();
@@ -124,79 +125,67 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
       >
-        <TextField
-          margin="normal"
-          required
-          fullWidth
+        <InputDentist
           id="fullName"
+          required
           label="Họ và tên"
-          name="fullName"
-          autoComplete="fullName"
           value={formik.values.fullName}
-          autoFocus
           onChange={formik.handleChange}
+          error={{
+            message: formik.errors.fullName,
+            touched: formik.touched.fullName,
+          }}
         />
-        {formik.errors.fullName && formik.touched.fullName && (
-          <Typography style={{ color: "red", fontStyle: "italic" }}>
-            {formik.errors.fullName}
-          </Typography>
-        )}
-        <TextField
-          margin="normal"
+        <Box className="mb-2">
+          <p className={`mb-1 font-bold`}>
+            Mật khẩu <span className="text-red-600">*</span>
+          </p>
+          <TextField
+            required
+            fullWidth
+            id="password"
+            label=""
+            name="password"
+            autoComplete="password"
+            value={formik.values.password}
+            type={"password"}
+            onChange={formik.handleChange}
+          />
+          {formik.errors.password && formik.touched.password && (
+            <Typography
+              style={{ color: "red", fontStyle: "italic", fontSize: "14px" }}
+            >
+              {formik.errors.password}
+            </Typography>
+          )}
+        </Box>
+
+        <InputDentist
+          id="phone"
           required
-          fullWidth
-          id="password"
-          label="Mật khẩu"
-          name="password"
-          autoComplete="password"
-          autoFocus
-          value={formik.values.password}
-          type={"password"}
-          onChange={formik.handleChange}
-        />
-        {formik.errors.password && formik.touched.password && (
-          <Typography style={{ color: "red", fontStyle: "italic" }}>
-            {formik.errors.password}
-          </Typography>
-        )}
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="phonenumber"
           label="Số điện thoại"
-          name="phone"
-          autoComplete="phonenumber"
           value={formik.values.phone}
-          autoFocus
           onChange={formik.handleChange}
+          error={{
+            message: formik.errors.phone,
+            touched: formik.touched.phone,
+          }}
         />
-        {formik.errors.phone && formik.touched.phone && (
-          <Typography style={{ color: "red", fontStyle: "italic" }}>
-            {formik.errors.phone}
-          </Typography>
-        )}
-        <TextField
-          className="mb-4"
-          margin="normal"
-          required
-          fullWidth
+        <InputDentist
           id="email"
+          required
           label="Email"
-          name="email"
-          autoComplete="email"
           value={formik.values.email}
-          autoFocus
           onChange={formik.handleChange}
+          error={{
+            message: formik.errors.email,
+            touched: formik.touched.email,
+          }}
         />
-        {formik.errors.email && formik.touched.email && (
-          <Typography style={{ color: "red", fontStyle: "italic" }}>
-            {formik.errors.email}
-          </Typography>
-        )}
+        <p className={`mb-1 font-bold`}>Ngày sinh</p>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            className="mb-3"
+            className="mb-2"
             label="Ngày sinh"
             name="birthdate"
             value={value}
@@ -208,33 +197,28 @@ const ModalAddAcount = ({ modalAddOpen, setModalAddOpen }) => {
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
-        <TextField
-          margin="normal"
-          required
-          fullWidth
+
+        <InputDentist
           id="salary"
+          required
           label="Lương"
-          name="salary"
-          autoComplete="salary"
           value={formik.values.salary}
-          autoFocus
           onChange={formik.handleChange}
+          error={{
+            message: formik.errors.salary,
+            touched: formik.touched.salary,
+          }}
         />
-        {formik.errors.salary && formik.touched.salary && (
-          <Typography style={{ color: "red", fontStyle: "italic" }}>
-            {formik.errors.salary}
-          </Typography>
-        )}
-        <Box sx={{ minWidth: 120 }} className="w-full">
+        <Box sx={{ minWidth: 120 }} className="w-full mt-0">
           <FormControl fullWidth>
-            <InputLabel id="permisstion">Quyền hạn</InputLabel>
+          <p className={`mb-2 font-bold`}>
+            Quyền hạn <span className="text-red-600">*</span>
+          </p>
             <Select
               labelId="permisstion"
               id="permisstionSelect"
-              label="Quyền hạn"
               value={roleId}
-              
-              className="min-h-[70px] min-w-[200px]"
+              className="min-h-[56px] min-w-[200px]"
               onChange={(e) => setRoleId(e.target.value)}
             >
               {roleIds?.map((item) => (

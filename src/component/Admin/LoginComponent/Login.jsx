@@ -11,7 +11,7 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
@@ -50,6 +50,13 @@ const LoginComponent = () => {
     justifyContent: "center",
     alignItems: "center",
   };
+  useEffect(() => {
+    if (localStorage.getItem("token") && localStorage.getItem("role")) {
+      navigate("/patient-management");
+    } else {
+      navigate("/login");
+    }
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -102,7 +109,13 @@ const LoginComponent = () => {
         <Box className="text-center font-bold text-2xl">
           <p>Đăng nhập</p>
         </Box>
-        <Grid style={{ display: "flex", justifyContent: "center", marginBottom:"20px" }}>
+        <Grid
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "20px",
+          }}
+        >
           <img
             className="cursor-pointer"
             src={Logo}
@@ -131,8 +144,8 @@ const LoginComponent = () => {
         {formik.errors.userName && formik.touched.userName && (
           <Typography color={"red"}>{formik.errors.userName}</Typography>
         )}
-           <p className={`mb-1 font-bold mt-3`}>
-           Mật khẩu <span className="text-red-600">*</span>
+        <p className={`mb-1 font-bold mt-3`}>
+          Mật khẩu <span className="text-red-600">*</span>
         </p>
         <OutlinedInput
           required

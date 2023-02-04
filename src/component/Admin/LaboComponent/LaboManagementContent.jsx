@@ -18,6 +18,7 @@ import InputDentist from "../../ui/input";
 import ModalSendSample from "../../ModalComponent/ModalLabo/ModalSendSample";
 import ModalReceivedSample from "../../ModalComponent/ModalLabo/ModalReceivedSample";
 import Loading from "../../ui/Loading";
+import { Skeleton } from "antd";
 
 const LaboManagementContent = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const LaboManagementContent = () => {
   const isUpdateLabo = useSelector((state) => state.listLabo.isUpdateLabo);
   const isDeleteLabo = useSelector((state) => state.listLabo.isDeleteLabo);
   const isAddLabo = useSelector((state) => state.listLabo.isAddLabo);
+  const loading = useSelector((state) => state.listLabo.loading);
 
   const [searchLabo, setSearchLabo] = useState("");
   const [listLabo, setListLabo] = useState(allLabo);
@@ -35,20 +37,16 @@ const LaboManagementContent = () => {
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [modalSendSample, setModalSendSample] = useState(false);
   const [modalReceiveSample, setModalReceiveSample] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [isChangeLaboSelected, setIsChangeLaboSelected] = useState(true);
 
   useEffect(() => {
     if (isUpdateLabo || isDeleteLabo || isAddLabo) {
-      setLoading(true);
       dispatch(
         fetchAllLabo({
           size: pageSize,
         })
       );
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
       if (isDeleteLabo) {
         setIsChangeLaboSelected(true);
         return;
@@ -58,15 +56,11 @@ const LaboManagementContent = () => {
   }, [isUpdateLabo, isDeleteLabo, isAddLabo]);
 
   useEffect(() => {
-    setLoading(true);
     dispatch(
       fetchAllLabo({
         size: pageSize,
       })
     );
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   }, []);
 
   useEffect(() => {
@@ -93,7 +87,7 @@ const LaboManagementContent = () => {
 
   return (
     <>
-      {loading && <Loading />}
+      {/* {loading && <Loading />} */}
       <h2 className="font-bold mb-2"> Quản Lý Labo</h2>
       <div className="flex gap-3 justify-end mb-3">
         <Button
@@ -153,18 +147,25 @@ const LaboManagementContent = () => {
             <p className="font-bold text-center">
               Có ( {listLabo.length} ) kết quả
             </p>
-            <div className="flex flex-col gap-2 px-3  overflow-y-scroll max-h-[515px] text-left">
-              {listLabo.map((item, index) => (
-                <Box
-                  className={`whitespace-nowrap p-2 rounded-md cursor-pointer hover:bg-slate-100 ${
-                    laboSelected === item.laboId && "bg-sky-100 text-sky-600"
-                  }`}
-                  onClick={() => setLaboSelected(item.laboId)}
-                >
-                  {item.laboName}
-                </Box>
-              ))}
-            </div>
+            {listLabo.length ? (
+              <div className="flex flex-col gap-2 px-3 overflow-y-scroll max-h-[515px] text-left">
+                {listLabo.map((item, index) => (
+                  <Box
+                    className={`whitespace-nowrap p-2 rounded-md cursor-pointer hover:bg-slate-100 ${
+                      laboSelected === item.laboId && "bg-sky-100 text-sky-600"
+                    }`}
+                    onClick={() => setLaboSelected(item.laboId)}
+                  >
+                    {item.laboName}
+                  </Box>
+                ))}
+              </div>
+            ) : (
+              <Box className="px-3">
+                <Skeleton />
+                <Skeleton />
+              </Box>
+            )}
             <Button
               color="success"
               className="fixed bottom-0 top-3"

@@ -22,7 +22,7 @@ import Loading from "../../ui/Loading";
 import { statusLaboColor, statusLaboFormatter } from "../../style-config";
 
 const ModalDetailLabo = () => {
-  const [loading, setLoading] = useState();
+  // const [loading, setLoading] = useState();
   const laboId = useSelector((state) => state.modal.laboId);
   const specimensDTOS = useSelector((state) => state.choosenLabo.specimensDTOS);
   const dispatch = useDispatch();
@@ -36,6 +36,7 @@ const ModalDetailLabo = () => {
   const isDeleteSpecimens = useSelector(
     (state) => state.choosenLabo.isDeleteSpecimens
   );
+  const loading = useSelector((state) => state.choosenLabo.loading);
 
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [listLaboRecord, setListLaboRecord] = useState([]);
@@ -45,7 +46,6 @@ const ModalDetailLabo = () => {
 
   useEffect(() => {
     if (laboId) {
-      setLoading(true);
       try {
         if (laboId) {
           dispatch(fetchLabo(laboId));
@@ -53,14 +53,10 @@ const ModalDetailLabo = () => {
       } catch (error) {
         console.log(error);
       }
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
     }
   }, [laboId]);
   useEffect(() => {
     if (isDeleteSpecimens) {
-      setLoading(true);
       try {
         if (laboId) {
           dispatch(fetchLabo(laboId));
@@ -68,14 +64,10 @@ const ModalDetailLabo = () => {
       } catch (error) {
         console.log(error);
       }
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
     }
   }, [isDeleteSpecimens]);
 
   useEffect(() => {
-    setLoading(true);
     try {
       if (laboId && (isUpdatePrepareSample || isUpdateReceiveSample)) {
         dispatch(fetchLabo(laboId));
@@ -83,9 +75,6 @@ const ModalDetailLabo = () => {
     } catch (error) {
       console.log(error);
     }
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   }, [isUpdatePrepareSample, isUpdateReceiveSample]);
 
   return (

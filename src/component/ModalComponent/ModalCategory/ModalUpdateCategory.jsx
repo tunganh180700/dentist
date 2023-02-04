@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Modal } from "antd";
+import { Modal, Skeleton } from "antd";
 import "antd/dist/antd.css";
 import { Typography, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,17 +34,18 @@ const ModalUpdateCategory = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     },
   });
   const fetchCategory = async (categoryServiceId) => {
-    setLoading(true);
     try {
+      setLoading(true);
       const res = await axiosInstance.get(
         getCategoryByIdAPI + categoryServiceId
       );
+      setLoading(false);
       formik.setValues(res.data);
       setNameOriginCategory(res.data.categoryServiceName);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -66,18 +67,24 @@ const ModalUpdateCategory = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         okButtonProps={{ disabled: disabledBtnOk }}
         onCancel={() => setModalUpdateOpen(false)}
       >
-        <InputDentist
-          required
-          id="categoryServiceName"
-          label="Loại dịch vụ"
-          isEdit
-          value={formik.values.categoryServiceName}
-          onChange={formik.handleChange}
-          error={{
-            message: formik.errors.categoryServiceName,
-            touched: formik.touched.categoryServiceName,
-          }}
-        />
+        {!loading ? (
+          <InputDentist
+            required
+            id="categoryServiceName"
+            label="Loại dịch vụ"
+            isEdit
+            value={formik.values.categoryServiceName}
+            onChange={formik.handleChange}
+            error={{
+              message: formik.errors.categoryServiceName,
+              touched: formik.touched.categoryServiceName,
+            }}
+          />
+        ) : (
+          <>
+            <Skeleton />
+          </>
+        )}
       </Modal>
     </>
   );

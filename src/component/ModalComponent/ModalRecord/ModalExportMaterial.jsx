@@ -38,7 +38,15 @@ const ModalExportMaterial = ({
     try {
       setLoading(true);
       let { data } = await axiosInstance.get(listAllMaterialAPI);
-      data = data.filter((item) => item.amount > 0);
+      data = data.filter((item) =>
+        materialExportDTOS.length
+          ? item.amount || item.amount +
+              +materialExportDTOS.find(
+                (item_DTOS) => item_DTOS.materialId === item.materialId
+              )?.totalAmount >
+            0
+          : item.amount > 0
+      );
       setMaterial(data);
       setLoading(false);
     } catch (error) {
@@ -57,10 +65,9 @@ const ModalExportMaterial = ({
   };
 
   useEffect(() => {
-    if (modalExportOpen) {
+    if (modalExportOpen || materialExportDTOS.length) {
       getMaterials();
     }
-    // setMaterialExport(materialExportDTOS);
   }, [modalExportOpen]);
 
   useEffect(() => {
@@ -75,6 +82,7 @@ const ModalExportMaterial = ({
         unitPrice: item.unitPrice,
         isShow: item.isShow,
         total: item.unitPrice * item.amount,
+        totalAmount: item.totalAmount,
         statusChange: item.statusChange,
       }));
       setMaterialExport(dataDTOS);
@@ -97,7 +105,7 @@ const ModalExportMaterial = ({
           width="65%"
           onOk={() => {
             const error = materialExport.some(
-              (item) => item.amount > maxAmount(item?.materialId)
+              (item) => item.amount > item.totalAmount
             );
             if (error) {
               setErrorMessage("Vật liệu trong kho không đủ để bán!");
@@ -126,7 +134,9 @@ const ModalExportMaterial = ({
                   amount: 1,
                   unitPrice: listOptionMaterialEnable[0]?.price,
                   total: listOptionMaterialEnable[0]?.price,
-                  // totalAmount: listOptionMaterialEnable[0]?.price,
+                  totalAmount: maxAmount(
+                    listOptionMaterialEnable[0]?.materialId
+                  ),
                   statusChange: "add",
                 },
               ]);
@@ -195,32 +205,8 @@ const ModalExportMaterial = ({
                     </Select>
                   </StyledTableCell>
                   <StyledTableCell>
-                    {maxAmount(materialExportItem?.materialId)}
+                    {materialExportItem.totalAmount}
                   </StyledTableCell>
-                  {/* <StyledTableCell padding="none">
-                  <TextField
-                    endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
-                    size="small"
-                    id="amount"
-                    type="number"
-                    InputProps={{
-                      inputProps: {
-                        min: 1,
-                        max: maxAmount(materialExport?.materialId),
-                      },
-                    }}
-                    value={materialExport.amount}
-                    className="h-[30px] bg-white"
-                    onChange={(e) =>
-                      setMaterialExport((prev) => {
-                        prev[index].amount = e.target.value;
-                        prev[index].total =
-                          (e.target.value || 0) * (prev[index].unitPrice || 0);
-                        return _.cloneDeep(prev);
-                      })
-                    }
-                  />
-                </StyledTableCell> */}
                   <StyledTableCell padding="none">
                     <OutlinedInput
                       endAdornment={<p className="mb-0 leading-0 text-xs"></p>}
@@ -229,7 +215,9 @@ const ModalExportMaterial = ({
                       value={materialExportItem.amount}
                       type="number"
                       inputProps={{
-                        max: maxAmount(materialExportItem?.materialId),
+                        max:
+                          materialExportItem?.totalAmount ||
+                          maxAmount(materialExportItem?.materialId),
                         min: 1,
                       }}
                       className="h-[30px] bg-white"

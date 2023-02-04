@@ -8,6 +8,7 @@ import {
   updateReceiveAPI,
 } from "../../config/baseAPI";
 import axiosInstance from "../../config/customAxios";
+import { toast } from "react-toastify";
 
 const initState = {
   choosenLabo: {},
@@ -22,7 +23,8 @@ const initState = {
   receiveSamples: [],
   isUpdatePrepareSample: false,
   isUpdateReceiveSample: false,
-  isDeleteSpecimens: false
+  isDeleteSpecimens: false,
+  loading: false,
 };
 const choosenLaboSlice = createSlice({
   name: "choosenLabo",
@@ -41,9 +43,11 @@ const choosenLaboSlice = createSlice({
       state.totalMoney = action.payload;
     },
     setIsDeleteSpecimens: (state, action) => {
-      state.isDeleteSpecimens = action.payload;;
+      state.isDeleteSpecimens = action.payload;
     },
-    
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -65,7 +69,7 @@ const choosenLaboSlice = createSlice({
         state.phone = action.payload.phone;
         state.totalMoney = action.payload.totalMoney;
         state.specimensDTOS = action.payload.specimensDTOS;
-        state.isDeleteSpecimens = false
+        state.isDeleteSpecimens = false;
       })
       .addCase(fetchPrepareSample.fulfilled, (state, action) => {
         state.isUpdatePrepareSample = false;
@@ -76,7 +80,6 @@ const choosenLaboSlice = createSlice({
       })
       .addCase(updateReceiveSample.fulfilled, (state, action) => {
         state.isUpdateReceiveSample = true;
-
       })
       .addCase(fetchListReceive.fulfilled, (state, action) => {
         state.isUpdateReceiveSample = false;
@@ -85,22 +88,31 @@ const choosenLaboSlice = createSlice({
   },
 });
 
-export const fetchLabo = createAsyncThunk("labos/fetchLabo", async (laboId) => {
-  try {
-    const res = await axiosInstance.get(getLaboByIdAPI + laboId);
-    return res.data;
-  } catch (error) {
-    console.log(error);
+export const fetchLabo = createAsyncThunk(
+  "labos/fetchLabo",
+  async (laboId, { dispatch }) => {
+    try {
+      dispatch(setLoading(true));
+      const res = await axiosInstance.get(getLaboByIdAPI + laboId);
+      dispatch(setLoading(false));
+      return res.data;
+    } catch (error) {
+      dispatch(setLoading(false));
+      console.log(error);
+    }
   }
-});
+);
 
 export const fetchPrepareSample = createAsyncThunk(
   "labos/fetchPrepareSample",
-  async (laboId) => {
+  async (laboId, { dispatch }) => {
     try {
+      dispatch(setLoading(true));
       const res = await axiosInstance.get(getListPrepareByIdAPI + laboId);
+      dispatch(setLoading(false));
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false));
       console.log(error);
     }
   }
@@ -108,11 +120,14 @@ export const fetchPrepareSample = createAsyncThunk(
 
 export const fetchListReceive = createAsyncThunk(
   "labos/fetchListReceive",
-  async (laboId) => {
+  async (laboId, { dispatch }) => {
     try {
+      dispatch(setLoading(true));
       const res = await axiosInstance.get(getListReceiveByIdAPI + laboId);
+      dispatch(setLoading(false));
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false));
       console.log(error);
     }
   }
@@ -120,11 +135,17 @@ export const fetchListReceive = createAsyncThunk(
 
 export const updatePrepareSample = createAsyncThunk(
   "labos/updatePrepareSample",
-  async (payload) => {
+  async (payload, { dispatch }) => {
     try {
+      dispatch(setLoading(true));
       const res = await axiosInstance.put(updatePrepareAPI, payload);
+      dispatch(setLoading(false));
+
+      toast.success("Gửi mẫu vật thành công!");
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false));
+      toast.error("Gửi mẫu vật thất bại!");
       console.log(error);
     }
   }
@@ -132,11 +153,16 @@ export const updatePrepareSample = createAsyncThunk(
 
 export const updateReceiveSample = createAsyncThunk(
   "labos/updateReceiveSample",
-  async (payload) => {
+  async (payload, { dispatch }) => {
     try {
+      dispatch(setLoading(true));
       const res = await axiosInstance.put(updateReceiveAPI, payload);
+      dispatch(setLoading(false));
+      toast.success("Nhận mẫu vật thành công");
       return res.data;
     } catch (error) {
+      dispatch(setLoading(false));
+      toast.error("Nhận mẫu vật thất bại!");
       console.log(error);
     }
   }
@@ -148,7 +174,8 @@ export const {
   setPhone,
   setTotalMoney,
   setMessage,
-  setIsDeleteSpecimens
+  setIsDeleteSpecimens,
+  setLoading
 } = choosenLaboSlice.actions;
 
 export default choosenLaboSlice.reducer;

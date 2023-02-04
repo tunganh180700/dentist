@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal } from "antd";
+import { Modal, Skeleton } from "antd";
 import "antd/dist/antd.css";
 import { Typography, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,21 +59,21 @@ const ModalUpdateService = ({
       setTimeout(() => {
         isSubmitForm(true);
       }, 1000);
-      // formik.handleReset()
     },
   });
 
   const fetchService = async (serviceId) => {
-    setLoading(true);
     try {
+      setLoading(true);
       const res = await axiosInstance.get(getServiceByIdAPI + serviceId);
       formik.setValues(res.data);
       setCategoryId(res.data.categoryServiceId);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
     isSubmitForm(false);
-    setLoading(false);
   };
   useEffect(() => {
     if (serviceId) fetchService(serviceId);
@@ -87,7 +87,7 @@ const ModalUpdateService = ({
         onOk={formik.handleSubmit}
         onCancel={() => setModalUpdateOpen(false)}
       >
-        {loading === false && (
+        {!loading ? (
           <>
             <InputDentist
               required
@@ -139,7 +139,10 @@ const ModalUpdateService = ({
               }}
             />
           </>
-        )}
+        ) : <>
+        <Skeleton />
+        <Skeleton />
+        </>}
       </Modal>
     </>
   );

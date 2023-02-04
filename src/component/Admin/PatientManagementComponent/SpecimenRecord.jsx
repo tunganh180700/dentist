@@ -21,6 +21,7 @@ import {
 import { confirmUsedSpecimen } from "../../../redux/SpecimenSlice/listSpecimenSlice";
 import "./style.css";
 import _ from "lodash";
+import Loading from "../../ui/Loading";
 
 const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
   const dispatch = useDispatch();
@@ -51,19 +52,15 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
   //   const isUseSpecimen = useSelector(
   //     (state) => state.listSpecimen.isUseSpecimen
   //   );
-  //   const isSearchSpecimen = useSelector(
-  //     (state) => state.listSpecimen.isSearchSpecimen
-  //   );
-  const [loading, setLoading] = useState(false);
+  const loading = useSelector((state) => state.listSpecimen.loading);
+  // const [loading, setLoading] = useState(false);
 
   const loadSpecimenList = () => {
-    setLoading(true);
     try {
       dispatch(fetchPatientSpecimen(patientId));
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -78,27 +75,32 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
   //   }, [currentPage]);
 
   return (
-    <Modal width={1500} open={isShow} footer={null} 
-     onCancel={() => setIsShow(false)}>
-      <p className="text-center font-bold text-2xl">Danh sách mẫu vật</p>
-      {loading === false && (
-        <>
-          <StyledTable size="small" className="shadow-md">
-            <TableHead>
-              <StyledTableRow>
-                <StyledTableCell>Tên mẫu vật</StyledTableCell>
-                <StyledTableCell>Ngày nhận</StyledTableCell>
-                <StyledTableCell>Ngày giao</StyledTableCell>
-                <StyledTableCell>Ngày sử dụng</StyledTableCell>
-                <StyledTableCell>Số lượng</StyledTableCell>
-                <StyledTableCell>Đơn giá</StyledTableCell>
-                <StyledTableCell>Loại dịch vụ</StyledTableCell>
-                <StyledTableCell>Labo</StyledTableCell>
-                <StyledTableCell>Trạng thái</StyledTableCell>
-                <StyledTableCell></StyledTableCell>
-                <StyledTableCell></StyledTableCell>
-              </StyledTableRow>
-            </TableHead>
+    <>
+      {loading && <Loading />}
+      <Modal
+        width={1500}
+        open={isShow}
+        footer={null}
+        onCancel={() => setIsShow(false)}
+      >
+        <p className="text-center font-bold text-2xl">Danh sách mẫu vật</p>
+        <StyledTable size="small" className="shadow-md">
+          <TableHead>
+            <StyledTableRow>
+              <StyledTableCell>Tên mẫu vật</StyledTableCell>
+              <StyledTableCell>Ngày nhận</StyledTableCell>
+              <StyledTableCell>Ngày giao</StyledTableCell>
+              <StyledTableCell>Ngày sử dụng</StyledTableCell>
+              <StyledTableCell>Số lượng</StyledTableCell>
+              <StyledTableCell>Đơn giá</StyledTableCell>
+              <StyledTableCell>Loại dịch vụ</StyledTableCell>
+              <StyledTableCell>Labo</StyledTableCell>
+              <StyledTableCell>Trạng thái</StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+            </StyledTableRow>
+          </TableHead>
+          {loading === false && (
             <TableBody>
               {listPatientSpecimens.map((item) => (
                 <StyledTableRow key={item.specimenId}>
@@ -176,10 +178,9 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
                 </StyledTableRow>
               ))}
             </TableBody>
-          </StyledTable>
-        </>
-      )}
-      {/* <div
+          )}
+        </StyledTable>
+        {/* <div
         style={{
           display: "flex",
           justifyContent: "center",
@@ -195,33 +196,34 @@ const SpecimenRecord = ({ patientId, isShow, setIsShow }) => {
           />
         ) : null}
       </div> */}
-      <ModalReportSpecimen
-        specimenId={specimenId}
-        isShow={reportOpen}
-        setIsShow={setReportOpen}
-        submit={setIsSubmit}
-      />
-      <Modal
-        title="Sử dụng mẫu vật"
-        onOk={() => {
-          dispatch(confirmUsedSpecimen(specimenId));
-          setTimeout(() => {
-            setIsSubmit(true);
+        <ModalReportSpecimen
+          specimenId={specimenId}
+          isShow={reportOpen}
+          setIsShow={setReportOpen}
+          submit={setIsSubmit}
+        />
+        <Modal
+          title="Sử dụng mẫu vật"
+          onOk={() => {
+            dispatch(confirmUsedSpecimen(specimenId));
+            setTimeout(() => {
+              setIsSubmit(true);
+              setModalDeleteOpen(false);
+            }, 1000);
+          }}
+          open={modalDeleteOpen}
+          onCancel={() => {
             setModalDeleteOpen(false);
-          }, 1000);
-        }}
-        open={modalDeleteOpen}
-        onCancel={() => {
-          setModalDeleteOpen(false);
-        }}
-      >
-        <p>"Bạn có chắc chắn muốn dùng mẫu vật này không ?"</p>
-      </Modal>
-      {/* <ModalUpdateSpecimens
+          }}
+        >
+          <p>"Bạn có chắc chắn muốn dùng mẫu vật này không ?"</p>
+        </Modal>
+        {/* <ModalUpdateSpecimens
         modalUpdateOpen={modalUpdateOpen}
         setModalUpdateOpen={setModalUpdateOpen}
       /> */}
-    </Modal>
+      </Modal>
+    </>
   );
 };
 

@@ -17,8 +17,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Divider, Modal } from "antd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import { Link, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import axiosInstance from "../../../config/customAxios";
 import { allPatientRecordAPI } from "../../../config/baseAPI";
 import ModalAddRecord from "../../ModalComponent/ModalRecord/ModalAddRecord";
@@ -56,6 +56,7 @@ const RecordManagementContent = () => {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [patientPageIn, setPatientPageIn] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [isEditRecord, setIsEditRecord] = useState(false);
   const [role, setRole] = useState(null);
@@ -70,7 +71,7 @@ const RecordManagementContent = () => {
 
   const { id } = useParams();
   const [recordList, setRecordList] = useState([]);
-
+  const { search } = useLocation();
   const styleTxt = {
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
@@ -123,7 +124,7 @@ const RecordManagementContent = () => {
     <>
       {loading && <Loading />}
       <Box className="flex items-center gap-3 mb-4">
-        <Link className="text-decoration-none flex" to={"/patient-management"}>
+        <Link className="text-decoration-none flex" to={`/patient-management${search}`}>
           <ArrowBackIosNewIcon />
           <span className="text-base">Quay lại danh sách</span>
         </Link>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
-import { Modal } from "antd";
-import { TextField } from "@mui/material";
+import { Modal, Skeleton } from "antd";
+import { Box, TextField } from "@mui/material";
 import "./../style.css";
 import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
@@ -18,6 +18,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import moment from "moment/moment";
 import axiosInstance from "../../../config/customAxios";
+import InputDentist from "../../ui/input";
 
 const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
   const dispatch = useDispatch();
@@ -118,105 +119,97 @@ const ModalUpdateMaterialImport = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         onOk={formik.handleSubmit}
         onCancel={handleCancel}
       >
-        {loading === false && (
+        {!loading ? (
           <>
-            <TextField
-              margin="normal"
-              required
-              disabled
-              fullWidth
-              id="materialName"
-              label="Vật liệu"
-              name="materialName"
-              autoComplete="materialName"
-              value={formik.values.materialName}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            {formik.errors.materialName && formik.touched.materialName && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.materialName}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="supplyName"
-              label="Vật liệu cung cấp"
-              name="supplyName"
-              autoComplete="supplyName"
-              value={formik.values.supplyName}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            {formik.errors.supplyName && formik.touched.supplyName && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.supplyName}
-              </Typography>
-            )}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-               className="my-2"
-                label="Date"
-                name="date"
-                value={value}
-                disableFuture={true}
-                onChange={(newValue) => {
-                  setValue(newValue);
-                  console.log(newValue);
+            <Box className="mb-3 text-lg">
+              <p>
+                Tên vật liệu :{" "}
+                <span className={` font-bold`}>
+                  {formik.values.materialName}
+                </span>
+              </p>
+            </Box>
+            <Box className="mb-3">
+              <InputDentist
+                required
+                id="supplyName"
+                label="Vật liệu cung cấp"
+                value={formik.values.supplyName}
+                onChange={formik.handleChange}
+                error={{
+                  message: formik.errors.supplyName,
+                  touched: formik.touched.supplyName,
                 }}
-                renderInput={(params) => <TextField {...params} />}
               />
-            </LocalizationProvider>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="amount"
-              label="Số lượng"
-              name="amount"
-              type={"number"}
-              min={0}
-              autoComplete="amount"
-              value={formik.values.amount}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            {formik.errors.amount && formik.touched.amount && (
-              <Typography style={{ color: "red" }}>
-                {formik.errors.amount}
-              </Typography>
-            )}
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="unitPrice"
-              label="Đơn giá"
-              type={"number"}
-              min={0}
-              name="unitPrice"
-              autoComplete="unitPrice"
-              value={formik.values.unitPrice}
-              autoFocus
-              onChange={formik.handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              disabled
-              fullWidth
-              id="totalPrice"
-              label="Tổng tiền"
-              type={"number"}
-              min={0}
-              name="totalPrice"
-              autoComplete="totalPrice"
-              value={materialPrice}
-              autoFocus
-              onChange={formik.handleChange}
-            />
+            </Box>
+            <Box className="mb-3">
+              <p className={`mb-1 font-bold`}>Ngày nhập hàng:</p>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  placeholder="Ngày nhập hàng"
+                  name="date"
+                  value={value}
+                  disableFuture={true}
+                  onChange={(newValue) => {
+                    setValue(newValue);
+                    console.log(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </Box>
+            <Box className="mb-3">
+              <p className={`mb-1 font-bold`}>Số lượng:</p>
+              <TextField
+                required
+                fullWidth
+                id="amount"
+                name="amount"
+                type={"number"}
+                min={0}
+                autoComplete="amount"
+                value={formik.values.amount}
+                autoFocus
+                onChange={formik.handleChange}
+              />
+              {formik.errors.amount && formik.touched.amount && (
+                <Typography style={{ color: "red", fontSize: "12px" }}>
+                  {formik.errors.amount}
+                </Typography>
+              )}
+            </Box>
+            <Box className="mb-3">
+              <p className={`mb-1 font-bold`}>Đơn giá:</p>
+              <TextField
+                required
+                fullWidth
+                id="unitPrice"
+                name="unitPrice"
+                type={"number"}
+                min={0}
+                autoComplete="unitPrice"
+                value={formik.values.unitPrice}
+                autoFocus
+                onChange={formik.handleChange}
+              />
+              {formik.errors.unitPrice && formik.touched.unitPrice && (
+                <Typography style={{ color: "red", fontSize: "12px" }}>
+                  {formik.errors.unitPrice}
+                </Typography>
+              )}
+            </Box>
+            <Box className="text-xl text-right">
+              <p className="mb-0">
+                Tổng tiền :{" "}
+                <span className={`font-bold`}>{materialPrice} VND</span>
+              </p>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
           </>
         )}
       </Modal>

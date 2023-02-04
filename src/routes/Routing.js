@@ -28,8 +28,7 @@ const Routing = () => {
     // <Dashboard title="Dashboard" component={  } />
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginComponent />} />
-        {/* <Route path="/forgot" element={<ForgotPassword />} /> */}
+        <Route path="login" element={<LoginComponent />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="/" element={<DefaultLayout />}>
           <Route index element={<HomePage />} />
@@ -55,8 +54,8 @@ const Routing = () => {
           <Route path="profile" element={<ProfileManagement />} />
           <Route path="specimen" element={<SpecimenManagement />} />
           <Route path="schedule" element={<ScheduleManagement />} />
-          <Route path="*" element={<>404 Error</>} />
         </Route>
+          <Route path="*" element={<>404 Error</>} />
       </Routes>
     </Router>
   );

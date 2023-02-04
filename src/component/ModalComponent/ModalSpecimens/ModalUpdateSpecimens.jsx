@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
-import { Modal } from "antd";
+import { Modal, Skeleton } from "antd";
 import { TextField, Button, Chip } from "@mui/material";
 import "./../style.css";
 import Typography from "@mui/material/Typography";
@@ -34,6 +34,7 @@ import InputDentist from "../../ui/input";
 import { statusLaboColor, statusLaboFormatter } from "../../style-config";
 import { toast } from "react-toastify";
 import { toastCss } from "../../../redux/toastCss";
+import Loading from "../../ui/Loading";
 
 const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
   const dispatch = useDispatch();
@@ -76,7 +77,6 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
   const loadPatient = async () => {
     try {
       const res = await axiosInstance.get(listAllPatientAPI);
-      console.log("update patient = ", res.data);
       setPatientIds(res.data);
       setPatientId(res.data[0].patientId);
     } catch (error) {
@@ -108,17 +108,27 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(receiveDate, deliveryDate);
-      if (!deliveryDate || !receiveDate || moment(receiveDate.$d || receiveDate).diff(deliveryDate.$d || deliveryDate, "minutes") < 0) {
+      if (
+        !deliveryDate ||
+        !receiveDate ||
+        moment(receiveDate.$d || receiveDate).diff(
+          deliveryDate.$d || deliveryDate,
+          "minutes"
+        ) < 0
+      ) {
         if (receiveDate !== null) {
-          values.receiveDate = moment(receiveDate.$d || receiveDate).format(validationDate);
-        }else{
-            values.receiveDate = null
+          values.receiveDate = moment(receiveDate.$d || receiveDate).format(
+            validationDate
+          );
+        } else {
+          values.receiveDate = null;
         }
         if (deliveryDate !== null) {
-          values.deliveryDate = moment(deliveryDate.$d || deliveryDate).format(validationDate);
-        }else{
-            values.deliveryDate = null
+          values.deliveryDate = moment(deliveryDate.$d || deliveryDate).format(
+            validationDate
+          );
+        } else {
+          values.deliveryDate = null;
         }
         values.patientId = patientId;
         values.laboId = laboId;
@@ -136,22 +146,23 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
   });
 
   const fetchSpecimens = async (specimenId) => {
-    setLoading(true);
     try {
-      const res = await axiosInstance.get(getSpecimensByIdAPI + specimenId);
-      formik.setValues(res.data);
-      setPatientId(res.data.patientId);
-      setPatientRecordId(res.data.patientRecordId);
-      setServiceId(res.data.serviceId);
-      setLaboId(res.data.laboId);
-      setReceiveDate(res.data.receiveDate);
-      setDeliveryDate(res.data.deliveryDate);
-      setButtonReportEnable(res.data.buttonReportEnable);
-      setButtonUseEnable(res.data.buttonUseEnable);
+      const res_specimen = await axiosInstance.get(
+        getSpecimensByIdAPI + specimenId
+      );
+      formik.setValues(res_specimen.data);
+      setPatientId(res_specimen.data.patientId);
+      setPatientRecordId(res_specimen.data.patientRecordId);
+      setServiceId(res_specimen.data.serviceId);
+      setLaboId(res_specimen.data.laboId);
+      setReceiveDate(res_specimen.data.receiveDate);
+      setDeliveryDate(res_specimen.data.deliveryDate);
+      setButtonReportEnable(res_specimen.data.buttonReportEnable);
+      setButtonUseEnable(res_specimen.data.buttonUseEnable);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -159,41 +170,30 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
   }, [specimenId, modalUpdateOpen]);
 
   const loadRecordByTreatmentId = async (patientId) => {
-    setLoading(true);
     try {
-      const res = await axiosInstance.get(
+      setLoading(true);
+      const res_record = await axiosInstance.get(
         listPatientRecordByTreatmentIdAPI + patientId
       );
-      setPatientRecordIds(res.data);
-      setPatientRecordId(res.data[0].patientRecordId);
-    } catch (error) {
-      console.log(error);
-    }
-    setLoading(false);
-  };
-
-  const loadServiceByPatientId = async (patientId) => {
-    setLoading(true);
-    try {
       await axiosInstance
         .get(listTreatingServiceAPI + patientId)
         .then((res) => {
-          console.log("services = ", res.data);
           setServices(res.data);
           setServiceId(res.data[0].serviceId);
         });
+      setPatientRecordIds(res_record.data);
+      setPatientRecordId(res_record.data[0].patientRecordId);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
-    if (patientId > 0) {
+    if (patientId && modalUpdateOpen) {
       loadRecordByTreatmentId(patientId);
-      loadServiceByPatientId(patientId);
     }
-  }, [patientId]);
+  }, [patientId, modalUpdateOpen]);
 
   useEffect(() => {
     if (receiveDate === null && deliveryDate === null) {
@@ -207,9 +207,23 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
     }
   }, [receiveDate, deliveryDate]);
 
-  useEffect(()=>{
-    if(!receiveDate) setDeliveryDate(null)
-  }, [receiveDate])
+  useEffect(() => {
+    if (!receiveDate) setDeliveryDate(null);
+  }, [receiveDate]);
+
+  const patientName = useMemo(() => {
+    return patientIds.find((item) => item.patientId === patientId)?.patientName;
+  }, [patientIds]);
+
+  const dateRender = useMemo(() => {
+    return patientRecordIds.find(
+      (item) => item.patientRecordId === patientRecordId
+    )?.date;
+  }, [patientRecordIds]);
+
+  const serviceNameRender = useMemo(() => {
+    return services.find((item) => item.serviceId === serviceId)?.serviceName;
+  }, [services]);
 
   return (
     <>
@@ -219,246 +233,132 @@ const ModalUpdateSpecimens = ({ modalUpdateOpen, setModalUpdateOpen }) => {
         onOk={formik.handleSubmit}
         onCancel={() => setModalUpdateOpen(false)}
       >
-        <Box>
-          <p className="text-lg">
-            Bệnh nhân:{" "}
-            <span className="font-bold text-base">
-              {
-                patientIds.find((item) => item.patientId === patientId)
-                  ?.patientName
-              }
-            </span>
-          </p>
-        </Box>
-        <Box>
-          <p className="text-lg">
-            Ngày khám:{" "}
-            <span className="font-bold text-base">
-              {
-                patientRecordIds.find(
-                  (item) => item.patientRecordId === patientRecordId
-                )?.date
-              }
-            </span>
-          </p>
-        </Box>
-        <Box>
-          <p className="text-lg">
-            Dịch vụ:{" "}
-            <span className="font-bold text-base">
-              {
-                services.find((item) => item.serviceId === serviceId)
-                  ?.serviceName
-              }
-            </span>
-          </p>
-        </Box>
-        {/* <Box sx={{ minWidth: 120 }}>
-          <FormControl fullWidth>
-            <InputLabel id="service">Dịch vụ</InputLabel>
-            <Select
-              labelId="service"
-              id="serviceSelect"
-              label="Dịch vụ"
-              value={serviceId}
-              onChange={(e) => setServiceId(e.target.value)}
-            >
-              {services?.map((item) => (
-                <MenuItem key={item.serviceId} value={item.serviceId}>
-                  {item.serviceName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box> */}
-        {/* <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="specimenName"
-          label="Mẫu thử nghiệm"
-          name="specimenName"
-          autoComplete="specimenName"
-          value={formik.values.specimenName}
-          autoFocus
-          onChange={formik.handleChange}
-        />
-        {formik.errors.specimenName && (
-          <Typography style={{ color: "red" }}>
-            {formik.errors.specimenName}
-          </Typography>
-        )} */}
-        <InputDentist
-          id="specimenName"
-          required
-          label="Mẫu thử nghiệm:"
-          value={formik.values.specimenName}
-          onChange={formik.handleChange}
-          error={{
-            message: formik.errors.specimenName,
-            touched: formik.touched.specimenName,
-          }}
-        />
+        {!loading ? (
+          <>
+            <Box>
+              <p className="text-lg">
+                Bệnh nhân:{" "}
+                <span className="font-bold text-base">{patientName}</span>
+              </p>
+            </Box>
+            <Box>
+              <p className="text-lg">
+                Ngày khám:{" "}
+                <span className="font-bold text-base">{dateRender}</span>
+              </p>
+            </Box>
+            <Box>
+              <p className="text-lg">
+                Dịch vụ:{" "}
+                <span className="font-bold text-base">{serviceNameRender}</span>
+              </p>
+            </Box>
 
-        {/* <Box sx={{ minWidth: 120 }}>
-          <FormControl fullWidth>
-            <InputLabel id="patient">Bệnh nhân</InputLabel>
-            <Select
-              labelId="patient"
-              id="patientSelect"
-              label="Bệnh nhân"
-              value={patientId}
-              onChange={(e) => setPatientId(e.target.value)}
-            >
-              {patientIds?.map((item) => (
-                <MenuItem key={item.patientId} value={item.patientId}>
-                  {item.patientName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box> */}
-
-        {/* <Box sx={{ minWidth: 120 }}>
-          <FormControl fullWidth>
-            <InputLabel id="patientrecord">Date record</InputLabel>
-            <Select
-              labelId="patientrecord"
-              id="patientrecordSelect"
-              label="Date record"
-              value={patientRecordId}
-              onChange={(e) => setPatientRecordId(e.target.value)}
-            >
-              {patientRecordIds?.map((item) => (
-                <MenuItem
-                  key={item.patientRecordId}
-                  value={item.patientRecordId}
-                >
-                  {item.date}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box> */}
-
-        {/* <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="amount"
-          label="Số lượng"
-          name="amount"
-          autoComplete="amount"
-          value={formik.values.amount}
-          autoFocus
-          onChange={formik.handleChange}
-        />
-        {formik.errors.amount && (
-          <Typography style={{ color: "red" }}>
-            {formik.errors.amount}
-          </Typography>
-        )} */}
-        <InputDentist
-          id="amount"
-          required
-          label="Số lượng:"
-          value={formik.values.amount}
-          onChange={formik.handleChange}
-          error={{
-            message: formik.errors.amount,
-            touched: formik.touched.amount,
-          }}
-        />
-
-        {/* <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="unitPrice"
-          label="Đơn giá"
-          name="unitPrice"
-          autoComplete="unitPrice"
-          value={formik.values.unitPrice}
-          autoFocus
-          onChange={formik.handleChange}
-        />
-        {formik.errors.unitPrice && (
-          <Typography style={{ color: "red" }}>
-            {formik.errors.unitPrice}
-          </Typography>
-        )} */}
-        <InputDentist
-          id="unitPrice"
-          required
-          label="Đơn giá:"
-          value={formik.values.unitPrice}
-          onChange={formik.handleChange}
-          error={{
-            message: formik.errors.unitPrice,
-            touched: formik.touched.unitPrice,
-          }}
-        />
-        <Box class="mb-3">
-          <p className={`mb-1 font-bold`}>Labo</p>
-          <FormControl fullWidth>
-            <Select
-              id="laboSelect"
-              value={laboId}
-              fullWidth
-              onChange={(e) => setLaboId(e.target.value)}
-            >
-              {labos?.map((item) => (
-                <MenuItem key={item.laboId} value={item.laboId}>
-                  {item.laboName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <p className={`mb-1 font-bold`}>Ngày labo nhận</p>
-          <DatePicker
-            name="receiveDate"
-            className="mb-3"
-            inputFormat="DD/MM/YYYY"
-            value={receiveDate}
-            onChange={(newValue) => {
-              setReceiveDate(newValue);
-            }}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </LocalizationProvider>
-
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <p className={`mb-1 font-bold`}>Ngày labo giao</p>
-          <DatePicker
-            name="deliveryDate"
-            className="mb-3"
-            inputFormat="DD/MM/YYYY"
-            value={deliveryDate}
-            disabled={!receiveDate}
-            onChange={(newValue) => {
-              setDeliveryDate(newValue);
-            }}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </LocalizationProvider>
-
-        <Box className="">
-          <p className={`mb-1 mr-3 font-bold`}>
-            Trạng thái:
-            <Chip
-              className="font-normal ml-3"
-              size="medium"
-              style={{
-                backgroundColor: `${statusLaboColor(statusStr)}`,
-                color: "#fff",
+            <InputDentist
+              id="specimenName"
+              required
+              label="Mẫu thử nghiệm:"
+              value={formik.values.specimenName}
+              onChange={formik.handleChange}
+              error={{
+                message: formik.errors.specimenName,
+                touched: formik.touched.specimenName,
               }}
-              label={statusLaboFormatter(statusStr)}
             />
-          </p>
-        </Box>
+
+            <InputDentist
+              id="amount"
+              required
+              label="Số lượng:"
+              value={formik.values.amount}
+              onChange={formik.handleChange}
+              error={{
+                message: formik.errors.amount,
+                touched: formik.touched.amount,
+              }}
+            />
+            <InputDentist
+              id="unitPrice"
+              required
+              label="Đơn giá:"
+              value={formik.values.unitPrice}
+              onChange={formik.handleChange}
+              error={{
+                message: formik.errors.unitPrice,
+                touched: formik.touched.unitPrice,
+              }}
+            />
+            <Box class="mb-3">
+              <p className={`mb-1 font-bold`}>Labo</p>
+              <FormControl fullWidth>
+                <Select
+                  id="laboSelect"
+                  value={laboId}
+                  fullWidth
+                  onChange={(e) => setLaboId(e.target.value)}
+                >
+                  {labos?.map((item) => (
+                    <MenuItem key={item.laboId} value={item.laboId}>
+                      {item.laboName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <p className={`mb-1 font-bold`}>Ngày labo nhận</p>
+              <DatePicker
+                name="receiveDate"
+                className="mb-3"
+                inputFormat="DD/MM/YYYY"
+                value={receiveDate}
+                onChange={(newValue) => {
+                  setReceiveDate(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <p className={`mb-1 font-bold`}>Ngày labo giao</p>
+              <DatePicker
+                name="deliveryDate"
+                className="mb-3"
+                inputFormat="DD/MM/YYYY"
+                value={deliveryDate}
+                disabled={!receiveDate}
+                onChange={(newValue) => {
+                  setDeliveryDate(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+
+            <Box className="">
+              <p className={`mb-1 mr-3 font-bold`}>
+                Trạng thái:
+                <Chip
+                  className="font-normal ml-3"
+                  size="medium"
+                  style={{
+                    backgroundColor: `${statusLaboColor(statusStr)}`,
+                    color: "#fff",
+                  }}
+                  label={statusLaboFormatter(statusStr)}
+                />
+              </p>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+          </>
+        )}
 
         {/* </>} */}
       </Modal>

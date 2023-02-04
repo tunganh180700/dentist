@@ -18,8 +18,9 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Sidebar from "../Admin/SidebarComponent/Sidebar";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import HeaderAdmin from "../Admin/HeaderComponent/HeaderAdmin";
+import { menu } from "../Admin/SidebarComponent/constant";
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -73,6 +74,22 @@ function LayoutDefault({ component }) {
     setOpen(!open);
   };
 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const roleAccount = localStorage.getItem("role");
+  React.useEffect(() => {
+    const mapPermission = menu.map((item) => ({
+      pathName: item.href,
+      permission: item.permission,
+    }));
+    const check = mapPermission.find(
+      (item) => item.pathName === location.pathname
+    );
+    if (!check || !check.permission.includes(roleAccount)) {
+      navigate("/patient-management");
+    }
+  }, []);
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box
@@ -124,7 +141,11 @@ function LayoutDefault({ component }) {
           >
             <Box className="relative h-full flex flex-col justify-between">
               <Sidebar isOpenSideBar={open} />
-              <Box role="button" className="text-center z-10 bg-white" onClick={toggleDrawer}>
+              <Box
+                role="button"
+                className="text-center z-10 bg-white"
+                onClick={toggleDrawer}
+              >
                 {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
               </Box>
             </Box>

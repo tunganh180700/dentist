@@ -49,65 +49,60 @@ const MaterialManagementContent = () => {
   const totalMaterials = useSelector(
     (state) => state.listMaterial.totalMaterials
   );
+  const loading = useSelector((state) => state.listMaterial.loading);
   const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [modalAddOpen, setModalAddOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isFilter, setIsFilter] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
-    setLoading(true);
     dispatch(
       fetchAllMaterial({
         size: 12,
         page: currentPage,
-        name: searchValue,
+        name: searchValue.trim(),
       })
     );
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   }, [currentPage]);
-  
+
   useEffect(() => {
     if (isUpdateMaterial || isDeleteMaterial || isAddMaterial) {
-      setLoading(true);
       dispatch(
         fetchAllMaterial({
           size: 12,
           page: currentPage,
-          name: searchValue,
+          name: searchValue.trim(),
         })
       );
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
     }
   }, [isUpdateMaterial, isDeleteMaterial, isAddMaterial]);
 
   const handleSearch = (searchValue) => {
-    setLoading(true);
-    if (currentPage === 0) {
-      dispatch(
-        fetchAllMaterial({
-          size: 12,
-          page: 0,
-          name: searchValue,
-        })
-      );
-    } else {
-      setCurrentPage(0);
+    try {
+      if (currentPage === 0) {
+        dispatch(
+          fetchAllMaterial({
+            size: 12,
+            page: 0,
+            name: searchValue.trim(),
+          })
+        );
+      } else {
+        setCurrentPage(0);
+      }
+      setIsFilter(true);
+      setOpenFilter(false);
+    } catch (err) {
+      setIsFilter(false);
     }
-    setOpenFilter(false);
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   };
 
   const onResetFilter = () => {
     setSearchValue("");
     handleSearch("");
+    setIsFilter(false);
   };
 
   return (
@@ -243,7 +238,7 @@ const MaterialManagementContent = () => {
               variant="contained"
               color="warning"
               onClick={onResetFilter}
-              disabled={!searchValue}
+              disabled={!isFilter}
             >
               Đặt lại
             </Button>

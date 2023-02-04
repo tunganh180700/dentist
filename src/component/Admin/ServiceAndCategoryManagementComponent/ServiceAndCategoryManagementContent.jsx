@@ -41,7 +41,7 @@ import {
 } from "../../ui/TableElements";
 import InputDentist from "../../ui/input";
 import Loading from "../../ui/Loading";
-import { Modal } from "antd";
+import { Modal, Skeleton } from "antd";
 
 const color = {
   border: "rgba(0, 0, 0, 0.2)",
@@ -81,7 +81,8 @@ const ServiceAndCategoryManagementContent = () => {
   const [modalAddServiceOpen, setModalAddServiceOpen] = useState(false);
   const [modalUpdateServiceOpen, setModalUpdateServiceOpen] = useState(false);
   const id = useSelector((state) => state.listCategory.id);
-  const [loading, setLoading] = useState();
+  const loading = useSelector((state) => state.listCategory.loading);
+  // const [loading, setLoading] = useState();
 
   const [originData, setOriginData] = useState([]);
   const [categoryServiceIds, setCategoryServiceIds] = useState([]);
@@ -96,7 +97,6 @@ const ServiceAndCategoryManagementContent = () => {
   const [searchCategory, setSearchCategory] = useState("");
 
   const loadCategory = async () => {
-    setLoading(true);
     try {
       const res = await axiosInstance.get(listAllCategoryAPI);
       setCategoryServiceId(res.data[0].categoryServiceId);
@@ -104,17 +104,14 @@ const ServiceAndCategoryManagementContent = () => {
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
   };
   const loadCategoryNotChangeId = async () => {
-    setLoading(true);
     try {
       const res = await axiosInstance.get(listAllCategoryAPI);
       setOriginData(res.data);
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -148,13 +145,11 @@ const ServiceAndCategoryManagementContent = () => {
   }, [searchCategory, originData]);
 
   const loadServiceByCategoryId = async (categoryServiceId) => {
-    setLoading(true);
     try {
       dispatch(fetchAllServiceByCategory(categoryServiceId));
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
   };
   useEffect(() => {
     setServiceIds(listServiceByCategory);
@@ -221,21 +216,29 @@ const ServiceAndCategoryManagementContent = () => {
             <p className="font-bold text-center">
               Có ( {categoryServiceIds.length} ) kết quả
             </p>
-            <div className="flex flex-col gap-2 px-3 max-h-[515px] overflow-y-scroll overflow-x-hidden text-left">
-              {categoryServiceIds.map((item, index) => (
-                <Box
-                  className={`whitespace-nowrap p-2 rounded-md cursor-pointer hover:bg-slate-100 ${
-                    categoryServiceId === item.categoryServiceId &&
-                    "bg-sky-100 text-sky-600"
-                  }`}
-                  onClick={() => {
-                    setCategoryServiceId(item.categoryServiceId);
-                  }}
-                >
-                  {item.categoryServiceName}
-                </Box>
-              ))}
-            </div>
+            {categoryServiceIds.length ? (
+              <div className="flex flex-col gap-2 px-3 max-h-[515px] overflow-y-scroll overflow-x-hidden text-left">
+                {categoryServiceIds.map((item, index) => (
+                  <Box
+                    className={`whitespace-nowrap p-2 rounded-md cursor-pointer hover:bg-slate-100 ${
+                      categoryServiceId === item.categoryServiceId &&
+                      "bg-sky-100 text-sky-600"
+                    }`}
+                    onClick={() => {
+                      setCategoryServiceId(item.categoryServiceId);
+                    }}
+                  >
+                    {item.categoryServiceName}
+                  </Box>
+                ))}
+              </div>
+            ) : (
+              <Box className="px-3">
+                <Skeleton />
+                <Skeleton />
+                <Skeleton />
+              </Box>
+            )}
             <Button
               color="success"
               className="fixed bottom-0 top-3"
