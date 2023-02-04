@@ -70,19 +70,19 @@ export const fetchAllWaiting = createAsyncThunk('listWaiting/fetchAllWaiting', a
 export const callWaiting = createAsyncThunk('listWaiting/callWaiting', async (id) => {
     axiosInstance.post(callWaitingAPI + id)
         .then(res => {
-            toast("Gọi bệnh nhân thành công");
+            toast.success("Đăng kí khám thành công");
         })
         .catch(err => {
-            toast("Gọi bệnh nhân không thành công");
+            toast.error("Đăng kí khám không thành công");
         });
 })
 
 export const deleteWaiting = createAsyncThunk('listWaiting/deleteWaiting', async (id) => {
     try {
          await axiosInstance.delete(deleteWaitingAPI + id);
-        toast("Xóa thành công");
+        toast.success("Xóa thành công");
     } catch (error) {
-        toast("Xóa không thành công");
+        toast.error("Xóa không thành công");
     }
 })
 

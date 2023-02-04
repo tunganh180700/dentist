@@ -86,6 +86,7 @@ const ModalAddRecord = ({
 
   const [materialExportDTOS, setMaterialExportDTOS] = useState([]);
   const [specimenDTOS, setSpecimenDTOS] = useState([]);
+  const [loading2, setLoading2] = useState(false);
 
   const validationSchema = yup.object({
     reason: yup
@@ -109,14 +110,14 @@ const ModalAddRecord = ({
 
   const loadServiceOption = async () => {
     try {
-      dispatch(setLoading(true));
+      setLoading2(true);
       const res = await axiosInstance.get(listAllServiceAPI);
       setOriginListService(res.data);
       setServiceIds(res.data);
-      dispatch(setLoading(false));
+      setLoading2(false);
     } catch (error) {
       console.log(error);
-      dispatch(setLoading(false));
+      setLoading2(false);
     }
   };
 
@@ -130,7 +131,6 @@ const ModalAddRecord = ({
       } else {
         getServiceTreating(id);
       }
-      setTimeout(() => {}, 1000);
     }
   }, [modalAddOpen]);
 
@@ -243,6 +243,9 @@ const ModalAddRecord = ({
         statusCount: "up",
         value: 0,
       });
+      setModalAddOpen(false);
+      formik.handleReset();
+
       refSocket.sendMessage(
         "/topic/group",
         JSON.stringify({ message: "re-fetch" })
@@ -255,8 +258,6 @@ const ModalAddRecord = ({
         "/topic/Receptionist",
         JSON.stringify({ message: "re-fetch-noti" })
       );
-      setModalAddOpen(false);
-      formik.handleReset();
     },
   });
 
@@ -385,7 +386,7 @@ const ModalAddRecord = ({
 
   return (
     <>
-      {/* {loading && <Loading />} */}
+      {loading2 && <Loading />}
       <Modal
         title={`Ngày ${moment(valueDate).format("DD-MM-YYYY")}`}
         open={modalAddOpen}

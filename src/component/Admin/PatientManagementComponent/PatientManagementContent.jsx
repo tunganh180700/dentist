@@ -484,6 +484,7 @@ const PatientManagementContent = () => {
             <p className="mb-1">Họ tên</p>
             <TextField
               required
+              fullWidth
               value={searchValue.name}
               onChange={(newValue) =>
                 setSearchValue({
@@ -496,6 +497,7 @@ const PatientManagementContent = () => {
           <Box className="mb-3">
             <p className="mb-1">Ngày sinh</p>
             <DatePickerDentist
+            height="56px"
               value={searchValue.birthdate}
               onChange={(value) => {
                 setSearchValue({
@@ -509,6 +511,7 @@ const PatientManagementContent = () => {
             <p className="mb-1">Số điện thoại</p>
             <TextField
               required
+              fullWidth
               value={searchValue.phone}
               onChange={(newValue) =>
                 setSearchValue({
@@ -522,6 +525,7 @@ const PatientManagementContent = () => {
             <p className="mb-1">Địa chỉ</p>
             <TextField
               required
+              fullWidth
               value={searchValue.address}
               onChange={(newValue) =>
                 setSearchValue({
@@ -535,6 +539,7 @@ const PatientManagementContent = () => {
             <p className="mb-1">Email</p>
             <TextField
               required
+              fullWidth
               value={searchValue.email}
               onChange={(newValue) =>
                 setSearchValue({

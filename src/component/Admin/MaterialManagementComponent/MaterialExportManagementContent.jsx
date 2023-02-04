@@ -205,6 +205,7 @@ const MaterialExportManagementContent = () => {
           <Box className="mb-3">
             <p className="mb-1">Tên bệnh nhân</p>
             <TextField
+              fullWidth
               required
               value={searchValue}
               onChange={(newValue) => setSearchValue(newValue.target.value)}

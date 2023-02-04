@@ -252,6 +252,7 @@ const BillManagementContent = () => {
             <p className="mb-1">Tên bệnh nhân</p>
             <TextField
               required
+              fullWidth
               value={searchValue.patientName}
               onChange={(newValue) =>
                 setSearchValue({
@@ -265,6 +266,7 @@ const BillManagementContent = () => {
             <p className="mb-1">Số điện thoại</p>
             <TextField
               required
+              fullWidth
               value={searchValue.phone}
               onChange={(newValue) =>
                 setSearchValue({

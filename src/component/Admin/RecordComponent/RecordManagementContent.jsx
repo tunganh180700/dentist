@@ -124,7 +124,10 @@ const RecordManagementContent = () => {
     <>
       {loading && <Loading />}
       <Box className="flex items-center gap-3 mb-4">
-        <Link className="text-decoration-none flex" to={`/patient-management${search}`}>
+        <Link
+          className="text-decoration-none flex"
+          to={`/patient-management${search}`}
+        >
           <ArrowBackIosNewIcon />
           <span className="text-base">Quay lại danh sách</span>
         </Link>
@@ -143,43 +146,44 @@ const RecordManagementContent = () => {
         <Box className="flex gap-3 mb-3">
           <p className="font-bold text-lg mb-0">Có ({totalElements}) hồ sơ</p>
           {role !== "Receptionist" && (
-            <Button
-              variant="contained"
-              color="success"
-              endIcon={<AddCircleIcon />}
-              onClick={() => {
-                if (!disableAddButton) {
-                  setIsEditRecord(false);
-                  setModalAddOpen(true);
-                  return;
-                }
-                setIsShowCanotAdd(true);
-              }}
-            >
-              <span className="leading-none">Thêm hồ sơ</span>
-            </Button>
+            <Box className="flex gap-3">
+              <Button
+                variant="contained"
+                color="success"
+                endIcon={<AddCircleIcon />}
+                onClick={() => {
+                  if (!disableAddButton) {
+                    setIsEditRecord(false);
+                    setModalAddOpen(true);
+                    return;
+                  }
+                  setIsShowCanotAdd(true);
+                }}
+              >
+                <span className="leading-none">Thêm hồ sơ</span>
+              </Button>
+              <Button
+                variant="contained"
+                color="info"
+                endIcon={<RemoveRedEyeIcon />}
+                onClick={() => {
+                  setModalDetailSpecimen(true);
+                }}
+              >
+                <span className="leading-none">Danh sách mẫu vật</span>
+              </Button>
+              <Button
+                variant="contained"
+                color="info"
+                endIcon={<RemoveRedEyeIcon />}
+                onClick={() => {
+                  setModalProducstSold(true);
+                }}
+              >
+                <span className="leading-none">Sản phẩm đã mua</span>
+              </Button>
+            </Box>
           )}
-
-          <Button
-            variant="contained"
-            color="info"
-            endIcon={<RemoveRedEyeIcon />}
-            onClick={() => {
-              setModalDetailSpecimen(true);
-            }}
-          >
-            <span className="leading-none">Danh sách mẫu vật</span>
-          </Button>
-          <Button
-            variant="contained"
-            color="info"
-            endIcon={<RemoveRedEyeIcon />}
-            onClick={() => {
-              setModalProducstSold(true);
-            }}
-          >
-            <span className="leading-none">Sản phẩm đã mua</span>
-          </Button>
         </Box>
         <StyledTable className="shadow-md" size="small">
           <TableHead>

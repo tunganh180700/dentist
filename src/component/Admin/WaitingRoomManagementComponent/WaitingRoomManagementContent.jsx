@@ -405,7 +405,6 @@ const WaitingRoomManagementContent = () => {
   return (
     <>
       {loading && <Loading />}
-      <ToastContainer />
       <h2 className="font-bold mb-4">Quản Lý Phòng Chờ</h2>
       <SockJsClient
         url={process.env.REACT_APP_SOCKET_URL}

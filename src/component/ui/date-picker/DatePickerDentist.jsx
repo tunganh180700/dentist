@@ -16,6 +16,7 @@ const disabledDate = (current) => {
 
 const DatePickerDentist = ({
   value,
+  height = "56px",
   range = false,
   placeholder,
   onChange,
@@ -36,6 +37,7 @@ const DatePickerDentist = ({
         />
       ) : (
         <DatePicker
+          className={`h-[${height}]`}
           value={value ? moment(value) : null}
           onChange={onChange}
           placeholder="Chọn ngày"
